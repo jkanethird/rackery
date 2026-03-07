@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/exif_service.dart';
@@ -7,6 +8,7 @@ import 'package:ebird_generator/services/bird_classifier.dart';
 import 'package:ebird_generator/services/csv_service.dart';
 import 'package:ebird_generator/services/image_converter.dart';
 import 'package:ebird_generator/services/bird_detector.dart';
+import 'package:ebird_generator/ui/sine_wave_progress.dart';
 import 'package:image/image.dart' as img;
 import 'dart:math';
 
@@ -115,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
             if (detectedBirds.isEmpty) {
               // Fallback if no specific birds detected, classify the whole image
               final fallbackBytes = await File(processedPath).readAsBytes();
-              final fallbackImg = img.decodeImage(fallbackBytes);
+              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
               if (fallbackImg != null) {
                 final speciesList = await _classifier.classify(fallbackImg);
                 final species = speciesList.isNotEmpty
@@ -139,6 +141,7 @@ class _MainScreenState extends State<MainScreen> {
 
               // Classify each detected bird crop
               for (int cropIdx = 0; cropIdx < detectedBirds.length; cropIdx++) {
+                await Future.delayed(Duration.zero);
                 final cropInfo = detectedBirds[cropIdx];
                 final speciesList = await _classifier.classify(
                   cropInfo.croppedImage,
@@ -153,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
                   photoObservations[species]!.boundingBoxes.add(cropInfo.box);
                 } else {
                   // Save a single representative crop for the UI icon
-                  final cropBytes = img.encodeJpg(cropInfo.croppedImage);
+                  final cropBytes = await compute(img.encodeJpg, cropInfo.croppedImage);
                   final tempDir = await Directory.systemTemp.createTemp();
                   final filename = filePath.split(Platform.pathSeparator).last;
                   final cropPath = '${tempDir.path}/crop_${cropIdx}_$filename';
@@ -261,8 +264,8 @@ class _MainScreenState extends State<MainScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("Processing images..."),
-                        const SizedBox(height: 4),
-                        LinearProgressIndicator(value: _progress),
+                        const SizedBox(height: 8),
+                        SineWaveProgressIndicator(value: _progress),
                       ],
                     ),
                   )

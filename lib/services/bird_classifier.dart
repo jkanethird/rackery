@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:http/http.dart' as http;
 import 'package:ebird_generator/services/bird_names.dart';
@@ -13,7 +14,7 @@ class BirdClassifier {
   Future<List<String>> classify(img.Image image) async {
     try {
       // Encode the image to base64
-      final jpgBytes = img.encodeJpg(image);
+      final jpgBytes = await compute(img.encodeJpg, image);
       final base64Image = base64Encode(jpgBytes);
 
       final prompt = """You are an expert ornithologist identifying birds for an eBird checklist.
