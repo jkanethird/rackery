@@ -11,6 +11,13 @@ class BirdCrop {
   BirdCrop(this.croppedImage, this.confidence, this.box);
 }
 
+class _RawDetection {
+  final Rectangle<int> box;
+  final double score;
+
+  _RawDetection(this.box, this.score);
+}
+
 class BirdDetector {
   Interpreter? _interpreter;
 
@@ -36,7 +43,7 @@ class BirdDetector {
     final int targetW = inputShape[1]; // 320
     final int targetH = inputShape[2]; // 320
 
-    List<BirdCrop> allCrops = [];
+    List<_RawDetection> rawDetections = [];
 
     // Tiling strategy: 3x3 grid with 50% overlap to catch birds on seams
     // We'll iterate row and cols.
@@ -109,7 +116,8 @@ class BirdDetector {
           int detectedClass = classes[0][i].toInt();
 
           // Bird is 16 in COCO.
-          if (score > 0.4 && (detectedClass == 16 || detectedClass == 15)) {
+          // Lowering confidence threshold to 0.25 to catch distant birds but suppress noise (like stray tails).
+          if (score > 0.25 && (detectedClass == 16 || detectedClass == 15)) {
             List<double> box = locations[0][i];
             double ymin = box[0];
             double xmin = box[1];
@@ -139,37 +147,54 @@ class BirdDetector {
               localH,
             );
 
-            // Basic deduplication (NMS)
-            bool isDuplicate = false;
-            for (var existing in allCrops) {
-              var intersect = existing.box.intersection(birdRect);
-              if (intersect != null) {
-                double iou =
-                    intersect.width *
-                    intersect.height /
-                    (birdRect.width * birdRect.height +
-                        existing.box.width * existing.box.height -
-                        intersect.width * intersect.height);
-                if (iou > 0.25) {
-                  isDuplicate = true;
-                  break;
-                }
-              }
-            }
-
-            if (!isDuplicate) {
-              final cropped = img.copyCrop(
-                originalImage,
-                x: globalX,
-                y: globalY,
-                width: localW,
-                height: localH,
-              );
-              allCrops.add(BirdCrop(cropped, score, birdRect));
-            }
+            // Basic deduplication is deferred to after all crops are collected
+            rawDetections.add(_RawDetection(birdRect, score));
           }
         }
       }
+    }
+
+    // Sort by confidence descending for proper NMS
+    rawDetections.sort((a, b) => b.score.compareTo(a.score));
+
+    List<_RawDetection> finalDetections = [];
+    for (var current in rawDetections) {
+      bool isDuplicate = false;
+      for (var existing in finalDetections) {
+        var intersect = existing.box.intersection(current.box);
+        if (intersect != null && intersect.width > 0 && intersect.height > 0) {
+          double intersectArea = (intersect.width * intersect.height).toDouble();
+          double area1 = (current.box.width * current.box.height).toDouble();
+          double area2 = (existing.box.width * existing.box.height).toDouble();
+          
+          double iou = intersectArea / (area1 + area2 - intersectArea);
+          double ioMin = intersectArea / min(area1, area2);
+          
+          // Use typical NMS IoU threshold (0.35) 
+          // Use ioMin (0.35) aggressively to catch and destroy small sub-crops (tails/wings) 
+          // detected at tile boundaries that are mostly contained within a larger bounding box.
+          if (iou > 0.35 || ioMin > 0.35) {
+            isDuplicate = true;
+            break;
+          }
+        }
+      }
+      
+      if (!isDuplicate) {
+        finalDetections.add(current);
+      }
+    }
+
+    List<BirdCrop> allCrops = [];
+    for (var det in finalDetections) {
+      final cropped = img.copyCrop(
+        originalImage,
+        x: det.box.left,
+        y: det.box.top,
+        width: det.box.width,
+        height: det.box.height,
+      );
+      allCrops.add(BirdCrop(cropped, det.score, det.box));
     }
 
     return allCrops;
