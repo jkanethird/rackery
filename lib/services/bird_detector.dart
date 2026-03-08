@@ -26,67 +26,33 @@ class _TensorPrepData {
   _TensorPrepData(this.image, this.targetW, this.targetH);
 }
 
-class _PreparedTile {
-  final int xOffset;
-  final int yOffset;
-  final int tileW;
-  final int tileH;
-  final List<List<List<List<int>>>> tensor;
-  
-  _PreparedTile(this.xOffset, this.yOffset, this.tileW, this.tileH, this.tensor);
-}
+// Prepares the entire image as a single tensor for EfficientDet-Lite4
+List<List<List<List<int>>>> _prepareSingleTensor(_TensorPrepData data) {
+  img.Image imageInput = img.copyResize(
+    data.image,
+    width: data.targetW,
+    height: data.targetH,
+    interpolation: img.Interpolation.linear,
+  );
 
-List<_PreparedTile> _prepareAllTensors(_TensorPrepData data) {
-  int tileW = data.image.width ~/ 2;
-  int tileH = data.image.height ~/ 2;
-  int stepX = tileW ~/ 2;
-  int stepY = tileH ~/ 2;
-
-  List<int> xOffsets = [0, stepX, data.image.width - tileW];
-  List<int> yOffsets = [0, stepY, data.image.height - tileH];
-
-  List<_PreparedTile> outputs = [];
-
-  for (int yOffset in yOffsets) {
-    for (int xOffset in xOffsets) {
-      img.Image tile = img.copyCrop(
-        data.image,
-        x: xOffset,
-        y: yOffset,
-        width: tileW,
-        height: tileH,
-      );
-
-      img.Image imageInput = img.copyResize(
-        tile,
-        width: data.targetW,
-        height: data.targetH,
-      );
-
-      final tensor = List.generate(
-        1,
-        (_) => List.generate(
-          data.targetH,
-          (y) => List.generate(data.targetW, (x) {
-            final pixel = imageInput.getPixel(x, y);
-            return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
-          }),
-        ),
-      );
-      outputs.add(_PreparedTile(xOffset, yOffset, tileW, tileH, tensor));
-    }
-  }
-  return outputs;
+  return List.generate(
+    1,
+    (_) => List.generate(
+      data.targetH,
+      (y) => List.generate(data.targetW, (x) {
+        final pixel = imageInput.getPixel(x, y);
+        return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
+      }),
+    ),
+  );
 }
 
 class BirdDetector {
   Interpreter? _interpreter;
 
-  // For EfficientDet-Lite0 Task Library model from TF Hub
-  // Usually bird is 16 (0-indexed background might shift it)
   Future<void> init() async {
     _interpreter = await Interpreter.fromAsset(
-      'assets/efficientdet_task.tflite',
+      'assets/efficientdet_lite4.tflite',
     );
   }
 
@@ -96,89 +62,74 @@ class BirdDetector {
     }
 
     final fileBytes = await File(imagePath).readAsBytes();
-    // Offload the heaviest operation: decoding the full size image
     final originalImage = await compute(img.decodeImage, fileBytes);
     if (originalImage == null) return [];
 
-    // EfficientDet-Lite0 expects 320x320 RGB input
+    // EfficientDet-Lite4 expects 512x512 RGB input
     final inputShape = _interpreter!.getInputTensor(0).shape;
-    final int targetW = inputShape[1]; // 320
-    final int targetH = inputShape[2]; // 320
+    final int targetW = inputShape[1];
+    final int targetH = inputShape[2];
 
-    List<_RawDetection> rawDetections = [];
-
-    final preparedTiles = await compute(
-      _prepareAllTensors,
+    final tensor = await compute(
+      _prepareSingleTensor,
       _TensorPrepData(originalImage, targetW, targetH),
     );
 
-    for (var tile in preparedTiles) {
-      // Yield to maintain smooth animations during TFLite executions
-      await Future.delayed(Duration.zero);
+    // EfficientDet-Lite4 output map:
+    // 0: Locations [1, 25, 4]
+    // 1: Classes [1, 25]
+    // 2: Scores [1, 25]
+    // 3: Count [1]
+    Map<int, Object> dynamicOutputs = {
+      0: List<List<List<double>>>.filled(1, List.filled(25, List.filled(4, 0.0))),
+      1: List<List<double>>.filled(1, List.filled(25, 0.0)),
+      2: List<List<double>>.filled(1, List.filled(25, 0.0)),
+      3: List<double>.filled(1, 0.0),
+    };
 
-      // Safer to just map identically to the test we ran:
-      // StatefulPartitionedCall:3 [1, 25, 4] -> Box
-      // StatefulPartitionedCall:2 [1, 25] -> Classes
-      // StatefulPartitionedCall:1 [1, 25] -> Scores
-      // StatefulPartitionedCall:0 [1] -> Count
-      Map<int, Object> dynamicOutputs = {
-        0: List<List<List<double>>>.filled(
-          1,
-          List.filled(25, List.filled(4, 0.0)),
-        ),
-        1: List<List<double>>.filled(1, List.filled(25, 0.0)),
-        2: List<List<double>>.filled(1, List.filled(25, 0.0)),
-        3: List<double>.filled(1, 0.0),
-      };
+    _interpreter!.runForMultipleInputs([tensor], dynamicOutputs);
 
-      _interpreter!.runForMultipleInputs([tile.tensor], dynamicOutputs);
+    var locations = dynamicOutputs[0] as List<List<List<double>>>;
+    var classes = dynamicOutputs[1] as List<List<double>>;
+    var scores = dynamicOutputs[2] as List<List<double>>;
+    var counts = dynamicOutputs[3] as List<double>;
 
-      var locations = dynamicOutputs[0] as List<List<List<double>>>;
-      var classes = dynamicOutputs[1] as List<List<double>>;
-      var scores = dynamicOutputs[2] as List<List<double>>;
-      var counts = dynamicOutputs[3] as List<double>;
+    int count = counts[0].toInt();
+    List<_RawDetection> rawDetections = [];
 
-      int count = counts[0].toInt();
+    for (int i = 0; i < count; i++) {
+      double score = scores[0][i];
+      int detectedClass = classes[0][i].toInt();
 
-      for (int i = 0; i < count; i++) {
-        double score = scores[0][i];
-        int detectedClass = classes[0][i].toInt();
+      // Bird class is 16 in COCO. 
+      // Lite4 is very accurate, we can trust 0.20 score securely.
+      if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
+        List<double> box = locations[0][i];
+        
+        // EfficientDet outputs coordinates normalized to [0, 1] as [ymin, xmin, ymax, xmax]
+        double ymin = box[0].clamp(0.0, 1.0);
+        double xmin = box[1].clamp(0.0, 1.0);
+        double ymax = box[2].clamp(0.0, 1.0);
+        double xmax = box[3].clamp(0.0, 1.0);
 
-        // Bird is 16 in COCO.
-        // Lowering confidence threshold to 0.25 to catch distant birds but suppress noise (like stray tails).
-        if (score > 0.25 && (detectedClass == 16 || detectedClass == 15)) {
-          List<double> box = locations[0][i];
-          double ymin = box[0];
-          double xmin = box[1];
-          double ymax = box[2];
-          double xmax = box[3];
+        int localX = (xmin * originalImage.width).toInt();
+        int localY = (ymin * originalImage.height).toInt();
+        int localW = ((xmax - xmin) * originalImage.width).toInt();
+        int localH = ((ymax - ymin) * originalImage.height).toInt();
 
-          // Local tile coordinates
-          int localX = (xmin * tile.tileW).toInt();
-          int localY = (ymin * tile.tileH).toInt();
-          int localW = ((xmax - xmin) * tile.tileW).toInt();
-          int localH = ((ymax - ymin) * tile.tileH).toInt();
+        localX = localX.clamp(0, originalImage.width - 1);
+        localY = localY.clamp(0, originalImage.height - 1);
+        localW = localW.clamp(1, originalImage.width - localX);
+        localH = localH.clamp(1, originalImage.height - localY);
 
-          // Global image coordinates
-          int globalX = tile.xOffset + localX;
-          int globalY = tile.yOffset + localY;
-
-          // Constrain
-          globalX = globalX.clamp(0, originalImage.width - 1);
-          globalY = globalY.clamp(0, originalImage.height - 1);
-          localW = localW.clamp(1, originalImage.width - globalX);
-          localH = localH.clamp(1, originalImage.height - globalY);
-
-          Rectangle<int> birdRect = Rectangle<int>(
-            globalX,
-            globalY,
-            localW,
-            localH,
-          );
-
-          // Basic deduplication is deferred to after all crops are collected
-          rawDetections.add(_RawDetection(birdRect, score));
+        // Sanity checks
+        double aspectRatio = localW / localH;
+        if (localW < 10 || localH < 10 || aspectRatio > 5.0 || aspectRatio < 0.20) {
+          continue;
         }
+
+        Rectangle<int> birdRect = Rectangle<int>(localX, localY, localW, localH);
+        rawDetections.add(_RawDetection(birdRect, score));
       }
     }
 
@@ -194,14 +145,12 @@ class BirdDetector {
           double intersectArea = (intersect.width * intersect.height).toDouble();
           double area1 = (current.box.width * current.box.height).toDouble();
           double area2 = (existing.box.width * existing.box.height).toDouble();
-          
           double iou = intersectArea / (area1 + area2 - intersectArea);
           double ioMin = intersectArea / min(area1, area2);
           
-          // Use typical NMS IoU threshold (0.35) 
-          // Use ioMin (0.35) aggressively to catch and destroy small sub-crops (tails/wings) 
-          // detected at tile boundaries that are mostly contained within a larger bounding box.
-          if (iou > 0.35 || ioMin > 0.35) {
+          // Since we process the whole image at once, we don't have tile-split fragmentation anymore.
+          // Standard IoU / ioMin check is now extremely robust.
+          if (iou > 0.30 || ioMin > 0.50) {
             isDuplicate = true;
             break;
           }
@@ -215,7 +164,6 @@ class BirdDetector {
 
     List<BirdCrop> allCrops = [];
     for (var det in finalDetections) {
-      await Future.delayed(Duration.zero);
       final cropped = img.copyCrop(
         originalImage,
         x: det.box.left,

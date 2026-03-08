@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/exif_service.dart';
+import 'package:ebird_generator/services/geo_region_service.dart';
 import 'package:ebird_generator/services/bird_classifier.dart';
 import 'package:ebird_generator/services/csv_service.dart';
 import 'package:ebird_generator/services/image_converter.dart';
@@ -29,23 +30,31 @@ class _MainScreenState extends State<MainScreen> {
   Observation? _selectedObservation;
   String? _currentlyDisplayedImage;
 
+  // Left panel state
+  List<String> _selectedFiles = [];
+  final Set<String> _processingFiles = {};
+
   String? get _displayImagePath {
-    if (_selectedObservation != null &&
-        _selectedObservation!.fullImageDisplayPath != null) {
-      return _selectedObservation!.fullImageDisplayPath;
-    }
     if (_currentlyDisplayedImage == null) return null;
 
-    // Find the first observation for this image to get its processed JPEG path
+    // Prefer the observation's processed JPEG path (works for both HEIC and JPEG sources)
+    // First, check the selected observation
+    if (_selectedObservation != null) {
+      final path = _selectedObservation!.fullImageDisplayPath;
+      if (path != null && !path.toLowerCase().endsWith('.heic')) return path;
+    }
+
+    // Then check any observation for the current image
     try {
       final obs = _observations.firstWhere(
         (o) => o.imagePath == _currentlyDisplayedImage,
       );
-      return obs.fullImageDisplayPath ?? _currentlyDisplayedImage;
-    } catch (_) {
-      // Fallback to original path if no observations yet (e.g. during processing)
-      return _currentlyDisplayedImage;
-    }
+      final path = obs.fullImageDisplayPath;
+      if (path != null && !path.toLowerCase().endsWith('.heic')) return path;
+    } catch (_) {}
+
+    // Fall back to the original path (could be HEIC or JPEG)
+    return _currentlyDisplayedImage;
   }
 
   @override
@@ -85,111 +94,140 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     if (result != null) {
+      final newFilesList = result.files.toList();
+      // Sort files by size ascending so the quickest ones process first
+      newFilesList.sort((a, b) => a.size.compareTo(b.size));
+      final newFiles = newFilesList.map((f) => f.path!).toList();
       setState(() {
         _isProcessing = true;
         _progress = 0.0;
+
+        // Add new files to the list without clearing previous ones if you wanted accumulation,
+        // but to match previous behavior of totally resetting, we wipe the slate:
         _observations.clear();
         _selectedObservation = null;
         _currentlyDisplayedImage = null;
+
+        _selectedFiles = newFiles;
+        _processingFiles.clear();
+        _processingFiles.addAll(newFiles);
       });
 
-      int total = result.files.length;
+      int total = _selectedFiles.length;
       for (int i = 0; i < total; i++) {
-        final filePath = result.files[i].path;
-        if (filePath != null) {
-          setState(() {
-            _currentlyDisplayedImage = filePath; // Update left side immediately
-          });
-          try {
-            // Convert to JPEG if HEIC/HEIF
-            final processedPath =
-                await ImageConverter.convertToJpegIfNeeded(filePath) ??
-                filePath;
+        final filePath = _selectedFiles[i];
+        try {
+          // Convert to JPEG if HEIC/HEIF
+          final processedPath =
+              await ImageConverter.convertToJpegIfNeeded(filePath) ?? filePath;
 
-            // Extract EXIF from original file
-            final exifData = await ExifService.extractExif(filePath);
+          // Extract EXIF from original file
+          final exifData = await ExifService.extractExif(filePath);
 
-            // Detect all birds in the image
-            List<BirdCrop> detectedBirds = await _detector.detectAndCrop(
-              processedPath,
-            );
+          // Detect all birds in the image
+          List<BirdCrop> detectedBirds = await _detector.detectAndCrop(
+            processedPath,
+          );
 
-            if (detectedBirds.isEmpty) {
-              // Fallback if no specific birds detected, classify the whole image
-              final fallbackBytes = await File(processedPath).readAsBytes();
-              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
-              if (fallbackImg != null) {
-                final speciesList = await _classifier.classify(fallbackImg);
-                final species = speciesList.isNotEmpty
-                    ? speciesList.first
-                    : "Unknown";
-                _observations.add(
-                  Observation(
-                    imagePath: filePath,
-                    displayPath: processedPath,
-                    fullImageDisplayPath: processedPath,
-                    speciesName: species,
-                    possibleSpecies: speciesList,
-                    exifData: exifData,
-                    count: 1,
-                  ),
-                );
-              }
-            } else {
-              // Track aggregated observations for this specific photo
-              Map<String, Observation> photoObservations = {};
-
-              // Classify each detected bird crop
-              for (int cropIdx = 0; cropIdx < detectedBirds.length; cropIdx++) {
-                await Future.delayed(Duration.zero);
-                final cropInfo = detectedBirds[cropIdx];
-                final speciesList = await _classifier.classify(
-                  cropInfo.croppedImage,
-                );
-                final species = speciesList.isNotEmpty
-                    ? speciesList.first
-                    : "Unknown";
-
-                if (photoObservations.containsKey(species)) {
-                  // Aggregate
-                  photoObservations[species]!.count += 1;
-                  photoObservations[species]!.boundingBoxes.add(cropInfo.box);
-                } else {
-                  // Save a single representative crop for the UI icon
-                  final cropBytes = await compute(img.encodeJpg, cropInfo.croppedImage);
-                  final tempDir = await Directory.systemTemp.createTemp();
-                  final filename = filePath.split(Platform.pathSeparator).last;
-                  final cropPath = '${tempDir.path}/crop_${cropIdx}_$filename';
-                  await File(cropPath).writeAsBytes(cropBytes);
-
-                  photoObservations[species] = Observation(
-                    imagePath: filePath,
-                    displayPath: cropPath,
-                    fullImageDisplayPath: processedPath,
-                    speciesName: species,
-                    possibleSpecies: speciesList,
-                    exifData: exifData,
-                    count: 1,
-                    boundingBoxes: [cropInfo.box],
-                  );
-                }
-              }
-
-              _observations.addAll(photoObservations.values);
-            }
-          } catch (e) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error processing $filePath: $e')),
+          if (detectedBirds.isEmpty) {
+            // Fallback: no birds detected, classify the whole image
+            final fallbackBytes = await File(processedPath).readAsBytes();
+            final fallbackImg = await compute(img.decodeImage, fallbackBytes);
+            if (fallbackImg != null) {
+              final speciesList = await _classifier.classifyFile(
+                processedPath,
+                latitude: exifData.latitude,
+                longitude: exifData.longitude,
+              );
+              final species = speciesList.isNotEmpty
+                  ? speciesList.first
+                  : "Unknown";
+              // Use full image as coverage box
+              final fullImageBox = Rectangle<int>(
+                0,
+                0,
+                fallbackImg.width,
+                fallbackImg.height,
+              );
+              _observations.add(
+                Observation(
+                  imagePath: filePath,
+                  displayPath: processedPath,
+                  fullImageDisplayPath: processedPath,
+                  speciesName: species,
+                  possibleSpecies: speciesList,
+                  exifData: exifData,
+                  count: 1,
+                  boundingBoxes: [fullImageBox],
+                ),
               );
             }
+          } else {
+            // Track aggregated observations for this specific photo
+            Map<String, Observation> photoObservations = {};
+
+            // Classify each detected bird crop
+            for (int cropIdx = 0; cropIdx < detectedBirds.length; cropIdx++) {
+              await Future.delayed(Duration.zero);
+              final cropInfo = detectedBirds[cropIdx];
+              // Send the FULL image with bounding box context - far more accurate
+              // than sending a tiny crop that lacks visual detail and context
+              final speciesList = await _classifier.classifyFile(
+                processedPath,
+                box: cropInfo.box,
+                latitude: exifData.latitude,
+                longitude: exifData.longitude,
+              );
+              final species = speciesList.isNotEmpty
+                  ? speciesList.first
+                  : "Unknown";
+
+              if (photoObservations.containsKey(species)) {
+                // Aggregate
+                photoObservations[species]!.count += 1;
+                photoObservations[species]!.boundingBoxes.add(cropInfo.box);
+              } else {
+                // Save a single representative crop for the UI icon
+                final cropBytes = await compute(
+                  img.encodeJpg,
+                  cropInfo.croppedImage,
+                );
+                final tempDir = await Directory.systemTemp.createTemp();
+                final filename = filePath.split(Platform.pathSeparator).last;
+                final cropPath = '${tempDir.path}/crop_${cropIdx}_$filename';
+                await File(cropPath).writeAsBytes(cropBytes);
+
+                photoObservations[species] = Observation(
+                  imagePath: filePath,
+                  displayPath: cropPath,
+                  fullImageDisplayPath: processedPath,
+                  speciesName: species,
+                  possibleSpecies: speciesList,
+                  exifData: exifData,
+                  count: 1,
+                  boundingBoxes: [cropInfo.box],
+                );
+              }
+            }
+
+            _observations.addAll(photoObservations.values);
+          }
+        } catch (e) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error processing $filePath: $e')),
+            );
           }
         }
+        // No closing brace needed here as we removed the `if (filePath != null)` check earlier
+
         setState(() {
+          _processingFiles.remove(filePath);
           _progress = (i + 1) / total;
         });
       }
 
+      // Final state update
       setState(() {
         _isProcessing = false;
         if (_observations.isNotEmpty) {
@@ -285,7 +323,63 @@ class _MainScreenState extends State<MainScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Left side: Image with bounding boxes
+                // Far Left side: List of selected photos
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Theme.of(context).cardColor,
+                    child: ListView.builder(
+                      itemCount: _selectedFiles.length,
+                      itemBuilder: (context, index) {
+                        final file = _selectedFiles[index];
+                        final isProcessing = _processingFiles.contains(file);
+                        final filename = file
+                            .split(Platform.pathSeparator)
+                            .last;
+                        final isSelected = _currentlyDisplayedImage == file;
+
+                        return ListTile(
+                          selected: isSelected,
+                          selectedTileColor: Colors.blue.withValues(alpha: 0.1),
+                          title: Text(
+                            filename,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                          trailing: isProcessing
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                  size: 16,
+                                ),
+                          onTap: () {
+                            setState(() {
+                              _currentlyDisplayedImage = file;
+                              // Try to find the associated observation if it exists to show boxes
+                              _selectedObservation = _observations
+                                  .where((o) => o.imagePath == file)
+                                  .firstOrNull;
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const VerticalDivider(width: 1),
+
+                // Center side: Image with bounding boxes
                 Expanded(
                   flex: 2,
                   child: _currentlyDisplayedImage == null
@@ -311,7 +405,8 @@ class _MainScreenState extends State<MainScreen> {
                                         builder: (context, snapshot) {
                                           if (!snapshot.hasData) {
                                             return const Center(
-                                              child: CircularProgressIndicator(),
+                                              child:
+                                                  CircularProgressIndicator(),
                                             );
                                           }
 
@@ -326,8 +421,10 @@ class _MainScreenState extends State<MainScreen> {
                                                 File(displayPath),
                                                 fit: BoxFit.contain,
                                               ),
-                                              if (_selectedObservation != null &&
-                                                  _selectedObservation!.imagePath ==
+                                              if (_selectedObservation !=
+                                                      null &&
+                                                  _selectedObservation!
+                                                          .imagePath ==
                                                       _currentlyDisplayedImage &&
                                                   _selectedObservation!
                                                       .boundingBoxes
@@ -335,8 +432,9 @@ class _MainScreenState extends State<MainScreen> {
                                                 Positioned.fill(
                                                   child: CustomPaint(
                                                     painter: _BoundingBoxPainter(
-                                                      boxes: _selectedObservation!
-                                                          .boundingBoxes,
+                                                      boxes:
+                                                          _selectedObservation!
+                                                              .boundingBoxes,
                                                       imageSize: imgSize,
                                                     ),
                                                   ),
@@ -349,12 +447,59 @@ class _MainScreenState extends State<MainScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                _currentlyDisplayedImage!.split('/').last.split('\\').last,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              const SizedBox(height: 8),
+                              // Geographic location from EXIF GPS data
+                              Builder(
+                                builder: (context) {
+                                  final obs =
+                                      _selectedObservation ??
+                                      _observations
+                                          .where(
+                                            (o) =>
+                                                o.imagePath ==
+                                                _currentlyDisplayedImage,
+                                          )
+                                          .firstOrNull;
+                                  final lat = obs?.exifData.latitude;
+                                  final lon = obs?.exifData.longitude;
+                                  if (lat == null || lon == null) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on,
+                                        size: 14,
+                                        color: Colors.blueGrey,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Flexible(
+                                        child: SelectableText(
+                                          GeoRegionService.describe(lat, lon),
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.blueGrey,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 8),
+                              SelectableText(
+                                _currentlyDisplayedImage!
+                                    .split('/')
+                                    .last
+                                    .split('\\')
+                                    .last,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                                 textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
@@ -453,16 +598,16 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+                    }, // end itemBuilder
+                  ), // end ListView.builder
+                ), // end right Expanded
+              ], // end Row children
+            ), // end Row
+          ), // end outer Expanded
+        ], // end Column children
+      ), // end Column
+    ); // end Scaffold
+  } // end build
 
   Future<Size> _getImageSize(String path) async {
     final file = File(path);

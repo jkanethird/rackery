@@ -1,0 +1,7 @@
+INPUTS:
+serving_default_images:0 type: uint8 shape: [1, 512, 512, 3]
+OUTPUTS:
+StatefulPartitionedCall:3 type: float32 shape: [1, 25, 4]
+StatefulPartitionedCall:2 type: float32 shape: [1, 25]
+StatefulPartitionedCall:1 type: float32 shape: [1, 25]
+StatefulPartitionedCall:0 type: float32 shape: [1]
