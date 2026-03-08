@@ -81,7 +81,10 @@ class BirdDetector {
     // 2: Scores [1, 25]
     // 3: Count [1]
     Map<int, Object> dynamicOutputs = {
-      0: List<List<List<double>>>.filled(1, List.filled(25, List.filled(4, 0.0))),
+      0: List<List<List<double>>>.filled(
+        1,
+        List.filled(25, List.filled(4, 0.0)),
+      ),
       1: List<List<double>>.filled(1, List.filled(25, 0.0)),
       2: List<List<double>>.filled(1, List.filled(25, 0.0)),
       3: List<double>.filled(1, 0.0),
@@ -101,11 +104,11 @@ class BirdDetector {
       double score = scores[0][i];
       int detectedClass = classes[0][i].toInt();
 
-      // Bird class is 16 in COCO. 
+      // Bird class is 16 in COCO.
       // Lite4 is very accurate, we can trust 0.20 score securely.
       if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
         List<double> box = locations[0][i];
-        
+
         // EfficientDet outputs coordinates normalized to [0, 1] as [ymin, xmin, ymax, xmax]
         double ymin = box[0].clamp(0.0, 1.0);
         double xmin = box[1].clamp(0.0, 1.0);
@@ -124,11 +127,19 @@ class BirdDetector {
 
         // Sanity checks
         double aspectRatio = localW / localH;
-        if (localW < 10 || localH < 10 || aspectRatio > 5.0 || aspectRatio < 0.20) {
+        if (localW < 10 ||
+            localH < 10 ||
+            aspectRatio > 5.0 ||
+            aspectRatio < 0.20) {
           continue;
         }
 
-        Rectangle<int> birdRect = Rectangle<int>(localX, localY, localW, localH);
+        Rectangle<int> birdRect = Rectangle<int>(
+          localX,
+          localY,
+          localW,
+          localH,
+        );
         rawDetections.add(_RawDetection(birdRect, score));
       }
     }
@@ -142,12 +153,13 @@ class BirdDetector {
       for (var existing in finalDetections) {
         var intersect = existing.box.intersection(current.box);
         if (intersect != null && intersect.width > 0 && intersect.height > 0) {
-          double intersectArea = (intersect.width * intersect.height).toDouble();
+          double intersectArea = (intersect.width * intersect.height)
+              .toDouble();
           double area1 = (current.box.width * current.box.height).toDouble();
           double area2 = (existing.box.width * existing.box.height).toDouble();
           double iou = intersectArea / (area1 + area2 - intersectArea);
           double ioMin = intersectArea / min(area1, area2);
-          
+
           // Since we process the whole image at once, we don't have tile-split fragmentation anymore.
           // Standard IoU / ioMin check is now extremely robust.
           if (iou > 0.30 || ioMin > 0.50) {
@@ -156,7 +168,7 @@ class BirdDetector {
           }
         }
       }
-      
+
       if (!isDuplicate) {
         finalDetections.add(current);
       }

@@ -37,7 +37,6 @@ class ExifService {
         tags.containsKey('GPS GPSLatitudeRef') &&
         tags.containsKey('GPS GPSLongitude') &&
         tags.containsKey('GPS GPSLongitudeRef')) {
-      
       final latValues = tags['GPS GPSLatitude']!.values.toList();
       final latRef = tags['GPS GPSLatitudeRef']!.printable;
       lat = _getCoordinate(latValues, latRef);
@@ -53,7 +52,9 @@ class ExifService {
   static DateTime? _parseExifDate(String dateString) {
     try {
       // Standard EXIF format: 'YYYY:MM:DD HH:MM:SS'
-      final formattedDate = dateString.replaceFirst(':', '-').replaceFirst(':', '-');
+      final formattedDate = dateString
+          .replaceFirst(':', '-')
+          .replaceFirst(':', '-');
       return DateTime.parse(formattedDate);
     } catch (e) {
       return null;
@@ -75,7 +76,16 @@ class ExifService {
   }
 
   static double _parseRatio(dynamic value) {
+    if (value == null) return 0.0;
     if (value is num) return value.toDouble();
+
+    // The exif package often returns a custom Ratio object for GPS coordinates
+    try {
+      if (value.denominator != 0) {
+        return value.numerator / value.denominator;
+      }
+    } catch (_) {}
+
     final str = value.toString();
     if (str.contains('/')) {
       final parts = str.split('/');
