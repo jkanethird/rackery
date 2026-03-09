@@ -13,6 +13,7 @@ class Observation {
   int count;
   ExifData exifData;
   List<Rectangle<int>> boundingBoxes;
+  String burstId;
 
   /// All source photos that contributed to this observation (across burst/merge).
   List<SourceImage> sourceImages;
@@ -30,6 +31,7 @@ class Observation {
     required this.exifData,
     this.count = 1,
     this.boundingBoxes = const [],
+    this.burstId = "",
     List<SourceImage>? sourceImages,
     Map<String, List<Rectangle<int>>>? boxesByImagePath,
   }) : sourceImages =
@@ -99,42 +101,42 @@ class BurstGroup {
     dominantSpecies = mostFrequent;
   }
 
-  Observation toObservation() {
-    // Collect unique source photos (by imagePath) from all contributing observations
-    final seen = <String>{};
-    final sources = <SourceImage>[];
-    for (final obs in observations) {
-      for (final src in obs.sourceImages) {
-        if (seen.add(src.imagePath)) sources.add(src);
-      }
-    }
+  Observation toObservation({String burstId = ""}) {
+    if (observations.isEmpty) throw Exception("Cannot convert empty BurstGroup");
 
-    // Collect bounding boxes per source image path
-    final Map<String, List<Rectangle<int>>> boxMap = {};
-    for (final obs in observations) {
+    // Start with the first observation as the base
+    final base = observations.first;
+
+    List<SourceImage> sourceImages = [];
+    Map<String, List<Rectangle<int>>> boxesByImagePath = {};
+    List<Rectangle<int>> boxes = [];
+    List<String> possibleSpecies = [];
+
+
+    for (var obs in observations) {
+      sourceImages.addAll(obs.sourceImages);
+
       for (final entry in obs.boxesByImagePath.entries) {
-        boxMap.putIfAbsent(entry.key, () => []).addAll(entry.value);
+        boxesByImagePath.putIfAbsent(entry.key, () => []).addAll(entry.value);
+      }
+      boxes.addAll(obs.boundingBoxes);
+      for (final s in obs.possibleSpecies) {
+        if (!possibleSpecies.contains(s)) possibleSpecies.add(s);
       }
     }
 
     return Observation(
-      imagePath: observations.first.imagePath,
-      displayPath: observations.first.displayPath,
-      fullImageDisplayPath: observations.first.fullImageDisplayPath,
+      imagePath: base.imagePath,
+      displayPath: base.displayPath,
+      fullImageDisplayPath: base.fullImageDisplayPath,
       speciesName: dominantSpecies,
-      possibleSpecies: [dominantSpecies],
-      exifData: baseExifData ?? observations.first.exifData,
+      possibleSpecies: possibleSpecies,
+      exifData: base.exifData,
       count: totalCount,
-      boundingBoxes: observations.first.boundingBoxes,
-      sourceImages: sources.isEmpty
-          ? [
-              (
-                imagePath: observations.first.imagePath,
-                fullImageDisplayPath: observations.first.fullImageDisplayPath,
-              ),
-            ]
-          : sources,
-      boxesByImagePath: boxMap,
+      boundingBoxes: boxes,
+      sourceImages: sourceImages,
+      boxesByImagePath: boxesByImagePath,
+      burstId: burstId,
     );
   }
 }

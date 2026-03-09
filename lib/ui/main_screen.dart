@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/services/geo_region_service.dart';
@@ -13,6 +15,14 @@ import 'package:ebird_generator/services/bird_detector.dart';
 import 'package:ebird_generator/ui/sine_wave_progress.dart';
 import 'package:image/image.dart' as img;
 import 'dart:math';
+
+const _kLastPickerDirKey = 'last_picker_directory';
+
+class DragData {
+  final int obsIndex;
+  final List<int>? indIndices;
+  DragData({required this.obsIndex, this.indIndices});
+}
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -44,6 +54,15 @@ class _MainScreenState extends State<MainScreen> {
   final ScrollController _observationScrollController = ScrollController();
   // Index of the observation currently being dragged (for visual feedback)
   int? _draggingIndex;
+  
+  // Individual selection in right pane
+  final Set<int> _selectedIndividualIndices = {};
+  int? _lastSelectedIndividualIndex;
+  // Expanded observation indices
+  final Set<int> _expandedObservations = {};
+  
+  int _currentCenterPage = 0;
+  final PageController _pageController = PageController();
 
   /// Returns the best displayable (non-HEIC) path for the currently selected image.
   /// Checks processed observations first; falls back to on-demand HEIC conversion.
@@ -96,59 +115,60 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _selectAndProcessPhotos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastDir = prefs.getString(_kLastPickerDirKey);
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
+      initialDirectory: lastDir,
       allowedExtensions: [
-        'jpg',
-        'jpeg',
-        'png',
-        'heic',
-        'heif',
-        'JPG',
-        'JPEG',
-        'PNG',
-        'HEIC',
-        'HEIF',
+        'jpg', 'jpeg', 'png', 'heic', 'heif',
+        'JPG', 'JPEG', 'PNG', 'HEIC', 'HEIF',
       ],
     );
 
     if (result != null) {
-      final newFilesList = result.files.toList();
-      // Sort files by size ascending so the quickest ones process first
-      newFilesList.sort((a, b) => a.size.compareTo(b.size));
-      final newFiles = newFilesList.map((f) => f.path!).toList();
+      // Remember the directory for next time
+      final firstPath = result.files.first.path;
+      if (firstPath != null) {
+        final dir = File(firstPath).parent.path;
+        await prefs.setString(_kLastPickerDirKey, dir);
+      }
+
+      // Only process files that haven't already been added
+      final pickedPaths = result.files.map((f) => f.path!).toSet();
+      final existingPaths = _selectedFiles.toSet();
+      final newPaths = pickedPaths.difference(existingPaths).toList();
+
+      if (newPaths.isEmpty) return; // Nothing new to add
+
+      // Sort new files by size so small ones process first
+      newPaths.sort((a, b) => File(a).lengthSync().compareTo(File(b).lengthSync()));
+
       setState(() {
         _isProcessing = true;
         _progress = 0.0;
-
-        _observations.clear();
-        _selectedObservation = null;
-        _currentlyDisplayedImage = null;
-        _fileBursts = [];
-
-        _selectedFiles = newFiles;
-        _processingFiles.clear();
-        _processingFiles.addAll(newFiles);
-        _imageExifData.clear();
+        _selectedFiles.addAll(newPaths);
+        _processingFiles.addAll(newPaths);
       });
 
-      // 1) Pre-extract EXIF for all files so we can group them by time
-      List<Map<String, dynamic>> fileData = [];
-      for (String path in _selectedFiles) {
+      // Pre-extract EXIF for new files
+      for (String path in newPaths) {
         try {
           final exif = await ExifService.extractExif(path);
           _imageExifData[path] = exif;
-          fileData.add({'path': path, 'exif': exif});
         } catch (_) {
-          // If EXIF fails, still include it with a null date
           _imageExifData[path] = ExifData();
-          fileData.add({'path': path, 'exif': _imageExifData[path]});
         }
       }
 
-      // Sort files chronologically for burst grouping
-      fileData.sort((a, b) {
+      // Re-group ALL files (old + new) chronologically into bursts
+      List<Map<String, dynamic>> allFileData = _selectedFiles.map((path) {
+        return {'path': path, 'exif': _imageExifData[path] ?? ExifData()};
+      }).toList();
+
+      allFileData.sort((a, b) {
         final dateA = (a['exif'] as ExifData).dateTime;
         final dateB = (b['exif'] as ExifData).dateTime;
         if (dateA == null && dateB == null) return 0;
@@ -157,17 +177,13 @@ class _MainScreenState extends State<MainScreen> {
         return dateA.compareTo(dateB);
       });
 
-      // 2) Group files into bursts (<= 15 seconds apart)
       List<List<String>> bursts = [];
       List<String> currentBurst = [];
       DateTime? lastTime;
-
-      for (var data in fileData) {
+      for (var data in allFileData) {
         final path = data['path'] as String;
         final date = (data['exif'] as ExifData).dateTime;
-
         if (date == null) {
-          // Files without timestamps get their own burst
           if (currentBurst.isNotEmpty) bursts.add(List.from(currentBurst));
           bursts.add([path]);
           currentBurst.clear();
@@ -189,40 +205,35 @@ class _MainScreenState extends State<MainScreen> {
       }
       if (currentBurst.isNotEmpty) bursts.add(currentBurst);
 
-      // Save burst structure to state so the left panel can render groups
       setState(() {
         _fileBursts = bursts;
         _selectedFiles = bursts.expand((b) => b).toList();
       });
 
-      int totalBursts = bursts.length;
-      int totalFiles = _selectedFiles.length;
+      // Determine which bursts contain at least one new file
+      final newPathSet = newPaths.toSet();
+      final int totalNewFiles = newPaths.length;
       int processedCount = 0;
 
-      for (int i = 0; i < totalBursts; i++) {
+      for (int i = 0; i < bursts.length; i++) {
         final burstFiles = bursts[i];
+        final burstHasNew = burstFiles.any((p) => newPathSet.contains(p));
+        if (!burstHasNew) continue; // Skip bursts that are fully already processed
 
-        // Group crops by their AI predicted species.
-        // This ensures the 1 Mute Swan gets its own checklist row and isn't outvoted by 15 Mallards.
         Map<String, BurstGroup> burstGroupsBySpecies = {};
 
         for (String filePath in burstFiles) {
+          final isNew = newPathSet.contains(filePath);
+          if (!isNew) continue; // Only process new files within the burst
+
           try {
-            // Convert to JPEG if HEIC/HEIF
             final processedPath =
                 await ImageConverter.convertToJpegIfNeeded(filePath) ??
                 filePath;
-
-            // Extract EXIF from original file
             final exifData = await ExifService.extractExif(filePath);
-
-            // Detect all birds in the image
-            List<BirdCrop> detectedBirds = await _detector.detectAndCrop(
-              processedPath,
-            );
+            List<BirdCrop> detectedBirds = await _detector.detectAndCrop(processedPath);
 
             if (detectedBirds.isEmpty) {
-              // Fallback: no birds detected, classify the whole image
               final fallbackBytes = await File(processedPath).readAsBytes();
               final fallbackImg = await compute(img.decodeImage, fallbackBytes);
               if (fallbackImg != null) {
@@ -232,16 +243,8 @@ class _MainScreenState extends State<MainScreen> {
                   longitude: exifData.longitude,
                   photoDate: exifData.dateTime,
                 );
-                final species = speciesList.isNotEmpty
-                    ? speciesList.first
-                    : "Unknown";
-                // Use full image as coverage box
-                final fullImageBox = Rectangle<int>(
-                  0,
-                  0,
-                  fallbackImg.width,
-                  fallbackImg.height,
-                );
+                final species = speciesList.isNotEmpty ? speciesList.first : "Unknown";
+                final fullImageBox = Rectangle<int>(0, 0, fallbackImg.width, fallbackImg.height);
                 final obs = Observation(
                   imagePath: filePath,
                   displayPath: processedPath,
@@ -257,10 +260,6 @@ class _MainScreenState extends State<MainScreen> {
                     .addObservation(obs);
               }
             } else {
-              // ── Per-photo cluster-based identification ────────────────────
-              // Group similar-size crops into clusters so all Turnstones in a
-              // frame get ONE LLM call showing their collective visual evidence.
-              // Different-size clusters (e.g. Swan vs. Mallard) stay separate.
               final clusters = _clusterer.cluster(detectedBirds);
               final Map<String, Observation> photoObservations = {};
 
@@ -269,7 +268,6 @@ class _MainScreenState extends State<MainScreen> {
                 final clusterCrops = clusters[ci];
                 final clusterBoxes = clusterCrops.map((c) => c.box).toList();
 
-                // One LLM call per cluster — all boxes visible simultaneously
                 final speciesList = await _classifier.classifyCluster(
                   processedPath,
                   boxes: clusterBoxes,
@@ -278,21 +276,14 @@ class _MainScreenState extends State<MainScreen> {
                   photoDate: exifData.dateTime,
                 );
 
-                final species = speciesList.isNotEmpty
-                    ? speciesList.first
-                    : 'Unknown';
+                final species = speciesList.isNotEmpty ? speciesList.first : 'Unknown';
 
                 if (photoObservations.containsKey(species)) {
                   photoObservations[species]!.count += clusterCrops.length;
-                  photoObservations[species]!.boundingBoxes.addAll(
-                    clusterBoxes,
-                  );
+                  photoObservations[species]!.boundingBoxes.addAll(clusterBoxes);
+                  photoObservations[species]!.boxesByImagePath.putIfAbsent(filePath, () => []).addAll(clusterBoxes);
                 } else {
-                  // Encode the first crop of this cluster as the thumbnail
-                  final cropBytes = await compute(
-                    img.encodeJpg,
-                    clusterCrops.first.croppedImage,
-                  );
+                  final cropBytes = await compute(img.encodeJpg, clusterCrops.first.croppedImage);
                   final tempDir = await Directory.systemTemp.createTemp();
                   final filename = filePath.split(Platform.pathSeparator).last;
                   final cropPath = '${tempDir.path}/cluster_${ci}_$filename';
@@ -328,31 +319,52 @@ class _MainScreenState extends State<MainScreen> {
           processedCount++;
           setState(() {
             _processingFiles.remove(filePath);
-            _progress = processedCount / totalFiles;
+            _progress = processedCount / totalNewFiles;
           });
-        } // End of `for (String filePath in burstFiles)`
+        } // end for filePath in burstFiles
 
-        // Now that the burst is fully processed, convert BurstGroups to Observations
         if (mounted) {
           setState(() {
             for (var bg in burstGroupsBySpecies.values) {
               if (bg.observations.isNotEmpty) {
-                _observations.add(bg.toObservation());
+                _observations.add(bg.toObservation(burstId: "burst_$i"));
               }
             }
           });
         }
-      } // End of `for (int i = 0... bursts.length)`
+      } // end for burst
 
-      // Final state update
       setState(() {
         _isProcessing = false;
-        if (_observations.isNotEmpty) {
+        if (_selectedObservation == null && _observations.isNotEmpty) {
           _selectedObservation = _observations.first;
+          _selectedIndividualIndices.clear();
+          _lastSelectedIndividualIndex = null;
+          _currentCenterPage = 0;
+          if (_pageController.hasClients) _pageController.jumpToPage(0);
           _currentlyDisplayedImage = _selectedObservation!.imagePath;
         }
       });
     }
+  }
+
+  void _clearAll() {
+    setState(() {
+      _observations.clear();
+      _selectedObservation = null;
+      _selectedIndividualIndices.clear();
+      _lastSelectedIndividualIndex = null;
+      _currentCenterPage = 0;
+      _currentlyDisplayedImage = null;
+      _fileBursts = [];
+      _selectedFiles.clear();
+      _processingFiles.clear();
+      _imageExifData.clear();
+      _expandedObservations.clear();
+      _progress = 0.0;
+      _isProcessing = false;
+    });
+    if (_pageController.hasClients) _pageController.jumpToPage(0);
   }
 
   Future<void> _exportCsv() async {
@@ -428,7 +440,144 @@ class _MainScreenState extends State<MainScreen> {
             .addAll(entry.value);
       }
       _observations.removeAt(fromIdx);
-      if (_selectedObservation == from) _selectedObservation = into;
+      if (_selectedObservation == from) {
+        _selectedObservation = into;
+        _selectedIndividualIndices.clear();
+        _lastSelectedIndividualIndex = null;
+        _currentCenterPage = 0;
+        if (_pageController.hasClients) _pageController.jumpToPage(0);
+      }
+    });
+  }
+
+  void _mergeIndividuals(int fromObsIdx, List<int> indIndices, int intoIdx) {
+    if (fromObsIdx == intoIdx) return;
+    if (indIndices.isEmpty) return;
+
+    setState(() {
+      final from = _observations[fromObsIdx];
+      final into = _observations[intoIdx];
+
+      into.count += indIndices.length;
+      from.count -= indIndices.length;
+
+      // Sort descending to safely remove elements by index without shifting earlier indices
+      final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+
+      for (final src in List.from(from.sourceImages)) {
+        final path = src.imagePath;
+        final fromBoxes = from.boxesByImagePath[path];
+        if (fromBoxes != null && fromBoxes.isNotEmpty) {
+          List<Rectangle<int>> sortedBoxes = List.from(fromBoxes);
+          sortedBoxes.sort((a, b) => a.left.compareTo(b.left));
+
+          for (final indIdx in sortedIndices) {
+            if (indIdx < sortedBoxes.length) {
+              final boxToMove = sortedBoxes[indIdx];
+              fromBoxes.remove(boxToMove);
+              into.boxesByImagePath.putIfAbsent(path, () => []).add(boxToMove);
+              
+              from.boundingBoxes.remove(boxToMove);
+              into.boundingBoxes.add(boxToMove);
+            }
+          }
+        }
+        
+        if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
+          into.sourceImages.add(src);
+        }
+      }
+
+      for (final s in from.possibleSpecies) {
+        if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
+      }
+
+      if (from.count <= 0) {
+        _observations.removeAt(fromObsIdx);
+      } else if (_selectedObservation == from) {
+        _selectedIndividualIndices.clear();
+        _lastSelectedIndividualIndex = null;
+      }
+
+      if (_selectedObservation == from && from.count <= 0) {
+        _selectedObservation = _observations.isNotEmpty ? _observations.first : null;
+        _selectedIndividualIndices.clear();
+        _lastSelectedIndividualIndex = null;
+        _currentCenterPage = 0;
+        if (_pageController.hasClients) _pageController.jumpToPage(0);
+      }
+    });
+  }
+
+  void _extractIndividuals(int fromObsIdx, List<int> indIndices, int insertAtIdx) {
+    if (indIndices.isEmpty) return;
+
+    setState(() {
+      final from = _observations[fromObsIdx];
+
+      Observation newObs = Observation(
+        imagePath: from.imagePath,
+        displayPath: from.displayPath,
+        fullImageDisplayPath: from.fullImageDisplayPath,
+        speciesName: from.speciesName,
+        possibleSpecies: List.from(from.possibleSpecies),
+        exifData: from.exifData,
+        count: indIndices.length,
+        boundingBoxes: [],
+        sourceImages: [],
+        boxesByImagePath: {},
+        burstId: from.burstId,
+      );
+
+      from.count -= indIndices.length;
+
+      // Sort descending safely
+      final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+
+      for (final src in List.from(from.sourceImages)) {
+        final path = src.imagePath;
+        final fromBoxes = from.boxesByImagePath[path];
+        if (fromBoxes != null && fromBoxes.isNotEmpty) {
+          List<Rectangle<int>> sortedBoxes = List.from(fromBoxes);
+          sortedBoxes.sort((a, b) => a.left.compareTo(b.left));
+
+          for (final indIdx in sortedIndices) {
+            if (indIdx < sortedBoxes.length) {
+              final boxToMove = sortedBoxes[indIdx];
+              fromBoxes.remove(boxToMove);
+              newObs.boxesByImagePath.putIfAbsent(path, () => []).add(boxToMove);
+              
+              from.boundingBoxes.remove(boxToMove);
+              newObs.boundingBoxes.add(boxToMove);
+            }
+          }
+        }
+        
+        if (newObs.boxesByImagePath.containsKey(path) && newObs.boxesByImagePath[path]!.isNotEmpty) {
+           newObs.sourceImages.add(src);
+        }
+      }
+
+      int actualInsertIdx = insertAtIdx;
+      if (from.count <= 0) {
+        _observations.removeAt(fromObsIdx);
+        if (insertAtIdx > fromObsIdx) {
+          actualInsertIdx--;
+        }
+      } else if (_selectedObservation == from) {
+        _selectedIndividualIndices.clear();
+        _lastSelectedIndividualIndex = null;
+      }
+
+      _observations.insert(actualInsertIdx, newObs);
+
+      if (_selectedObservation == from && from.count <= 0) {
+        _selectedObservation = newObs;
+        _selectedIndividualIndices.clear();
+        _lastSelectedIndividualIndex = null;
+        _currentCenterPage = 0;
+        if (_pageController.hasClients) _pageController.jumpToPage(0);
+      }
     });
   }
 
@@ -477,6 +626,10 @@ class _MainScreenState extends State<MainScreen> {
                 _selectedObservation = _observations
                     .where((o) => o.imagePath == file)
                     .firstOrNull;
+                _selectedIndividualIndices.clear();
+                _lastSelectedIndividualIndex = null;
+                _currentCenterPage = 0;
+                if (_pageController.hasClients) _pageController.jumpToPage(0);
               });
               // Scroll the right panel to the first matching observation
               WidgetsBinding.instance.addPostFrameCallback(
@@ -634,6 +787,12 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text("eBird Checklist Generator"),
         actions: [
+          if (_selectedFiles.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: _isProcessing ? null : _clearAll,
+              tooltip: "Clear all photos and results",
+            ),
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _observations.isEmpty || _isProcessing
@@ -709,6 +868,7 @@ class _MainScreenState extends State<MainScreen> {
                       Widget card = Opacity(
                         opacity: isDragging ? 0.4 : 1.0,
                         child: Card(
+                          clipBehavior: Clip.antiAlias,
                           shape: const SuperellipseBorder(m: 200.0, n: 20.0),
                           margin: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -717,92 +877,226 @@ class _MainScreenState extends State<MainScreen> {
                           color: isSelected
                               ? Colors.blue.withValues(alpha: 0.1)
                               : null,
-                          child: ListTile(
-                            shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                            onTap: () {
-                              setState(() {
-                                _selectedObservation = obs;
-                                _currentlyDisplayedImage = obs.imagePath;
-                              });
-                            },
-                            leading: obs.displayPath != null
-                                ? Image.file(
-                                    File(obs.displayPath!),
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  )
-                                : const Icon(Icons.image),
-                            title: Row(
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    key: ValueKey(
-                                      "${obs.imagePath}_${obs.speciesName}",
+                                ListTile(
+                                  shape: const SuperellipseBorder(
+                                    m: 200.0,
+                                    n: 20.0,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedObservation = obs;
+                                      _currentlyDisplayedImage = obs.imagePath;
+                                      _selectedIndividualIndices.clear();
+                                      _lastSelectedIndividualIndex = null;
+                                      _currentCenterPage = 0;
+                                      if (_pageController.hasClients) {
+                                        _pageController.jumpToPage(0);
+                                      }
+                                    });
+                                  },
+                                  leading: obs.displayPath != null
+                                      ? Image.file(
+                                          File(obs.displayPath!),
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : const Icon(Icons.image),
+                                  title: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          key: ValueKey(
+                                            "${obs.imagePath}_${obs.speciesName}",
+                                          ),
+                                          initialValue: obs.speciesName,
+                                          decoration: const InputDecoration(
+                                            labelText: "Species",
+                                          ),
+                                          onChanged: (val) {
+                                            obs.speciesName = val;
+                                          },
+                                        ),
+                                      ),
+                                      if (obs.possibleSpecies.length > 1)
+                                        PopupMenuButton<String>(
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down,
+                                          ),
+                                          tooltip: "AI Alternatives",
+                                          onSelected: (String value) {
+                                            setState(() {
+                                              obs.speciesName = value;
+                                            });
+                                          },
+                                          itemBuilder: (BuildContext context) {
+                                            return obs.possibleSpecies
+                                                .map(
+                                                  (String choice) =>
+                                                      PopupMenuItem<String>(
+                                                        value: choice,
+                                                        child: Text(choice),
+                                                      ),
+                                                )
+                                                .toList();
+                                          },
+                                        ),
+                                    ],
+                                  ),
+                                  subtitle: Text(
+                                    'Date: ${obs.exifData.dateTime?.toLocal().toString().split(".")[0] ?? "?"}\nLat: ${obs.exifData.latitude?.toStringAsFixed(4) ?? "?"}, Lon: ${obs.exifData.longitude?.toStringAsFixed(4) ?? "?"}',
+                                  ),
+                                  trailing: SizedBox(
+                                    width: 45,
+                                    child: TextFormField(
+                                      key: ValueKey("count_${obs.hashCode}_${obs.count}"),
+                                      initialValue: obs.count.toString(),
+                                      decoration: const InputDecoration(
+                                        labelText: "Count",
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (val) {
+                                        obs.count = int.tryParse(val) ?? 1;
+                                      },
                                     ),
-                                    initialValue: obs.speciesName,
-                                    decoration: const InputDecoration(
-                                      labelText: "Species",
-                                    ),
-                                    onChanged: (val) {
-                                      obs.speciesName = val;
-                                    },
                                   ),
                                 ),
-                                if (obs.possibleSpecies.length > 1)
-                                  PopupMenuButton<String>(
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    tooltip: "AI Alternatives",
-                                    onSelected: (String value) {
+                                if (obs.count > 1 && _expandedObservations.contains(index))
+                                  for (int i = 0; i < obs.count; i++)
+                                    Draggable<DragData>(
+                                      data: DragData(
+                                        obsIndex: index,
+                                        indIndices: (isSelected && _selectedIndividualIndices.contains(i))
+                                            ? _selectedIndividualIndices.toList()
+                                            : [i],
+                                      ),
+                                      feedback: Material(
+                                        elevation: 6,
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            (isSelected && _selectedIndividualIndices.contains(i) && _selectedIndividualIndices.length > 1)
+                                                ? "${_selectedIndividualIndices.length} Individuals"
+                                                : "Individual ${i + 1}",
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      childWhenDragging: Opacity(
+                                        opacity: 0.5,
+                                        child: ListTile(
+                                          contentPadding: const EdgeInsets.only(left: 82, right: 16),
+                                          title: Text(
+                                            (isSelected && _selectedIndividualIndices.contains(i) && _selectedIndividualIndices.length > 1)
+                                                ? "${_selectedIndividualIndices.length} Individuals"
+                                                : "Individual ${i + 1}",
+                                            style: const TextStyle(fontSize: 13),
+                                          ),
+                                        ),
+                                      ),
+                                      child: ListTile(
+                                        contentPadding: const EdgeInsets.only(left: 82, right: 16),
+                                        title: Text(
+                                          "Individual ${i + 1}",
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                        selected: isSelected && _selectedIndividualIndices.contains(i),
+                                        selectedColor: Theme.of(context).colorScheme.primary,
+                                        selectedTileColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                                        onTap: () {
+                                          final isCtrl = HardwareKeyboard.instance.isControlPressed || HardwareKeyboard.instance.isMetaPressed;
+                                          final isShift = HardwareKeyboard.instance.isShiftPressed;
+
+                                          setState(() {
+                                            if (_selectedObservation != obs) {
+                                              _selectedObservation = obs;
+                                              _currentlyDisplayedImage = obs.imagePath;
+                                              _selectedIndividualIndices.clear();
+                                              _lastSelectedIndividualIndex = null;
+                                            }
+
+                                            if (isCtrl) {
+                                              if (_selectedIndividualIndices.contains(i)) {
+                                                _selectedIndividualIndices.remove(i);
+                                                if (_lastSelectedIndividualIndex == i) _lastSelectedIndividualIndex = null;
+                                              } else {
+                                                _selectedIndividualIndices.add(i);
+                                                _lastSelectedIndividualIndex = i;
+                                              }
+                                            } else if (isShift && _lastSelectedIndividualIndex != null) {
+                                              int start = min(_lastSelectedIndividualIndex!, i);
+                                              int end = max(_lastSelectedIndividualIndex!, i);
+                                              _selectedIndividualIndices.clear();
+                                              for (int j = start; j <= end; j++) {
+                                                _selectedIndividualIndices.add(j);
+                                              }
+                                            } else {
+                                              _selectedIndividualIndices.clear();
+                                              _selectedIndividualIndices.add(i);
+                                              _lastSelectedIndividualIndex = i;
+                                            }
+
+                                            _currentCenterPage = 0;
+                                            if (_pageController.hasClients) {
+                                              _pageController.jumpToPage(0);
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                if (obs.count > 1)
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        obs.speciesName = value;
+                                        if (_expandedObservations.contains(index)) {
+                                          _expandedObservations.remove(index);
+                                        } else {
+                                          _expandedObservations.add(index);
+                                        }
                                       });
                                     },
-                                    itemBuilder: (BuildContext context) {
-                                      return obs.possibleSpecies
-                                          .map(
-                                            (String choice) =>
-                                                PopupMenuItem<String>(
-                                                  value: choice,
-                                                  child: Text(choice),
-                                                ),
-                                          )
-                                          .toList();
-                                    },
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 28,
+                                      child: Icon(
+                                        _expandedObservations.contains(index)
+                                            ? Icons.expand_less
+                                            : Icons.expand_more,
+                                        size: 20,
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
                                   ),
                               ],
                             ),
-                            subtitle: Text(
-                              'Date: ${obs.exifData.dateTime?.toLocal().toString().split(".")[0] ?? "?"}\nLat: ${obs.exifData.latitude?.toStringAsFixed(4) ?? "?"}, Lon: ${obs.exifData.longitude?.toStringAsFixed(4) ?? "?"}',
-                            ),
-                            trailing: SizedBox(
-                              width: 60,
-                              child: TextFormField(
-                                initialValue: obs.count.toString(),
-                                decoration: const InputDecoration(
-                                  labelText: "Count",
-                                ),
-                                keyboardType: TextInputType.number,
-                                onChanged: (val) {
-                                  obs.count = int.tryParse(val) ?? 1;
-                                },
-                              ),
-                            ),
-                          ),
                         ),
                       );
 
                       // Wrap in DragTarget first (inner), then Draggable (outer)
-                      return DragTarget<int>(
+                      Widget observationItem = DragTarget<DragData>(
                         onWillAcceptWithDetails: (details) =>
-                            details.data != index,
+                            details.data.obsIndex != index &&
+                            _observations[details.data.obsIndex].burstId ==
+                                _observations[index].burstId,
                         onAcceptWithDetails: (details) {
-                          _mergeObservations(details.data, index);
+                          if (details.data.indIndices == null) {
+                            _mergeObservations(details.data.obsIndex, index);
+                          } else {
+                            _mergeIndividuals(details.data.obsIndex, details.data.indIndices!, index);
+                          }
                         },
                         builder: (context, candidateData, rejectedData) {
                           final isHovered = candidateData.isNotEmpty;
-                          return Draggable<int>(
-                            data: index,
+                          return Draggable<DragData>(
+                            data: DragData(obsIndex: index),
                             onDragStarted: () =>
                                 setState(() => _draggingIndex = index),
                             onDragEnd: (_) =>
@@ -877,6 +1171,58 @@ class _MainScreenState extends State<MainScreen> {
                           );
                         },
                       );
+
+                      Widget dropZone(int insertIndex) {
+                        return DragTarget<DragData>(
+                          onWillAcceptWithDetails: (details) {
+                            if (details.data.indIndices == null) return false;
+                            final srcObs = _observations[details.data.obsIndex];
+                            // Must be from the same burst
+                            if (srcObs.burstId != _observations[index].burstId) return false;
+                            
+                            return true;
+                          },
+                          onAcceptWithDetails: (details) {
+                            _extractIndividuals(details.data.obsIndex, details.data.indIndices!, insertIndex);
+                          },
+                          builder: (context, candidateData, rejectedData) {
+                            return Container(
+                              height: 12,
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: candidateData.isNotEmpty
+                                    ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)
+                                    : Colors.transparent,
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      bool isFirstInBurst = index > 0 &&
+                          _observations[index].burstId !=
+                              _observations[index - 1].burstId;
+
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (isFirstInBurst)
+                            const Divider(
+                              height: 32,
+                              thickness: 1,
+                              indent: 32,
+                              endIndent: 32,
+                              color: Colors.white24,
+                            )
+                          else
+                            dropZone(index),
+                          observationItem,
+                          if (index == _observations.length - 1 || 
+                              _observations[index].burstId != _observations[index + 1].burstId)
+                            dropZone(index + 1),
+                        ],
+                      );
                     }, // end itemBuilder
                   ), // end ListView.builder
                 ), // end right Expanded
@@ -891,24 +1237,32 @@ class _MainScreenState extends State<MainScreen> {
   // ─────────────────── Center pane ─────────────────────────────────────────
 
   Widget _buildCenterPane() {
-    // Determine which sources to show:
-    // • When an observation with multiple source photos is selected → show all
-    // • Otherwise fall back to the currently displayed image (left-panel tap)
-    final sources =
-        _selectedObservation != null &&
-            _selectedObservation!.sourceImages.length > 1
-        ? _selectedObservation!.sourceImages
-        : (_currentlyDisplayedImage != null
-              ? <SourceImage>[
-                  (
-                    imagePath: _currentlyDisplayedImage!,
-                    fullImageDisplayPath:
-                        _selectedObservation?.fullImageDisplayPath,
-                  ),
-                ]
-              : null);
+    final obs = _selectedObservation;
+    List<SourceImage>? sources;
 
-    if (sources == null) {
+    if (obs != null) {
+      if (_selectedIndividualIndices.isNotEmpty) {
+        sources = obs.sourceImages.where((src) {
+          final boxes = obs.boxesByImagePath[src.imagePath];
+          if (boxes == null) return false;
+          return _selectedIndividualIndices.any((idx) => boxes.length > idx);
+        }).toList();
+        if (sources.isEmpty) {
+          sources = obs.sourceImages; // Fallback 
+        }
+      } else {
+        sources = obs.sourceImages;
+      }
+    } else if (_currentlyDisplayedImage != null) {
+      sources = [
+        (
+          imagePath: _currentlyDisplayedImage!,
+          fullImageDisplayPath: obs?.fullImageDisplayPath,
+        ),
+      ];
+    }
+
+    if (sources == null || sources.isEmpty) {
       return const Expanded(
         flex: 2,
         child: Center(child: Text('Select photos to begin')),
@@ -916,7 +1270,6 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     final isMulti = sources.length > 1;
-    final obs = _selectedObservation;
 
     Widget photoCard(SourceImage src) {
       final rawPath = src.imagePath;
@@ -933,17 +1286,32 @@ class _MainScreenState extends State<MainScreen> {
 
       // Shared: image + bounding-box overlay for a single resolved photo
       Widget buildStack(String displayPath, Size imgSize) {
-        final photoBoxes =
-            obs?.boxesByImagePath[rawPath] ??
-            (obs?.imagePath == rawPath ? obs!.boundingBoxes : const []);
+        final allPhotoBoxes = List<Rectangle<int>>.from(
+          obs?.boxesByImagePath[rawPath] ??
+              (obs?.imagePath == rawPath ? obs!.boundingBoxes : const []),
+        );
+
+        // Sort boxes left-to-right to have a deterministic ordering of "individuals" across photos
+        allPhotoBoxes.sort((a, b) => a.left.compareTo(b.left));
+
+        List<Rectangle<int>> photoBoxes = allPhotoBoxes;
+        if (_selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
+          photoBoxes = [];
+          for (int idx in _selectedIndividualIndices) {
+            if (idx < allPhotoBoxes.length) {
+              photoBoxes.add(allPhotoBoxes[idx]);
+            }
+          }
+        }
+
         return Stack(
           alignment: Alignment.center,
-          fit: isMulti ? StackFit.expand : StackFit.loose,
+          fit: StackFit.loose,
           children: [
             Image.file(
               File(displayPath),
               width: double.infinity,
-              fit: isMulti ? BoxFit.fill : BoxFit.contain,
+              fit: BoxFit.contain,
             ),
             if (obs != null && photoBoxes.isNotEmpty)
               Positioned.fill(
@@ -979,58 +1347,15 @@ class _MainScreenState extends State<MainScreen> {
         const SizedBox(height: 2),
         SelectableText(
           filename,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: isMulti ? 12 : 14,
+            fontSize: 14,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
       ];
 
-      if (isMulti) {
-        // Multi-photo mode: let each image display at its natural aspect ratio
-        // (no fixed height, no clipping). InteractiveViewer omitted because the
-        // outer ListView handles scrolling.
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FutureBuilder<String?>(
-              future: resolvedFuture,
-              builder: (context, pathSnap) {
-                final displayPath = pathSnap.data;
-                if (displayPath == null ||
-                    displayPath.toLowerCase().endsWith('.heic')) {
-                  return const SizedBox(
-                    height: 120,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                return FutureBuilder<Size>(
-                  future: _getImageSize(displayPath),
-                  builder: (context, sizeSnap) {
-                    if (!sizeSnap.hasData) {
-                      return const SizedBox(
-                        height: 120,
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-                    final imgSize = sizeSnap.data!;
-                    return AspectRatio(
-                      aspectRatio: imgSize.width / imgSize.height,
-                      child: buildStack(displayPath, imgSize),
-                    );
-                  },
-                );
-              },
-            ),
-            ...captions,
-          ],
-        );
-      }
-
-      // Single-photo mode: fill the pane with an interactive viewer
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -1077,42 +1402,124 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
 
-    // Multi-source: vertical scrollable strip
+    // Multi-source: PageView for horizontal pagination
     return Expanded(
       flex: 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.photo_library,
-                  size: 14,
-                  color: Colors.blueGrey,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '${sources.length} photos',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+      child: Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent) {
+             // If a text field (or similar input) has primary focus, don't intercept arrow keys.
+             // This allows the user to navigate text within the TextField.
+             final primaryFocus = FocusManager.instance.primaryFocus;
+             if (primaryFocus != null && primaryFocus.context != null) {
+               // A simple heuristic: if the focused widget is an EditableText (what TextField uses under the hood)
+               if (primaryFocus.context!.widget is EditableText) {
+                 return KeyEventResult.ignored;
+               }
+             }
+             
+            if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+              if (_currentCenterPage > 0) {
+                _pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+                return KeyEventResult.handled;
+              }
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+              if (_currentCenterPage < sources!.length - 1) {
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+                return KeyEventResult.handled;
+              }
+            }
+          }
+          return KeyEventResult.ignored;
+        },
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
               itemCount: sources.length,
-              separatorBuilder: (context, index) => const Divider(height: 16),
-              itemBuilder: (context, i) => photoCard(sources[i]),
+              onPageChanged: (i) {
+                setState(() => _currentCenterPage = i);
+              },
+              itemBuilder: (context, i) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: photoCard(sources![i]),
+                );
+              },
             ),
-          ),
-        ],
+            Positioned(
+              top: 16,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.photo_library, size: 14, color: Colors.white),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${_currentCenterPage + 1} / ${sources.length}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (_currentCenterPage > 0)
+              Positioned(
+                left: 16,
+                bottom: 16,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black54,
+                    hoverColor: Colors.black87,
+                  ),
+                  tooltip: "Previous photo",
+                  onPressed: () {
+                    _pageController.previousPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+              ),
+            if (_currentCenterPage < sources.length - 1)
+              Positioned(
+                right: 16,
+                bottom: 16,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward, color: Colors.white),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black54,
+                    hoverColor: Colors.black87,
+                  ),
+                  tooltip: "Next photo",
+                  onPressed: () {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

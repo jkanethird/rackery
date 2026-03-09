@@ -11,16 +11,15 @@ import 'package:ebird_generator/services/geo_region_service.dart';
 // more red bounding boxes and encodes to JPEG for the vision model.
 List<int> _annotateAndEncode(_AnnotationParams params) {
   img.Image source = params.image;
+  final boxes = params.boxes;
   img.Image region;
 
-  final boxes = params.boxes;
-  final isSingleBox = boxes.length == 1;
-
-  if (isSingleBox) {
+  if (boxes.length == 1) {
+    // For a single detected bird, crop with generous 200% padding so the bird
+    // is the prominent subject but has enough habitat/environment context.
     final box = boxes.first;
-    // Use generous 80% padding so small birds have plenty of context
-    final padX = (box.width * 0.8).round();
-    final padY = (box.height * 0.8).round();
+    final padX = (box.width * 2.0).round();
+    final padY = (box.height * 2.0).round();
 
     final cropX1 = (box.left - padX).clamp(0, source.width - 1);
     final cropY1 = (box.top - padY).clamp(0, source.height - 1);
@@ -35,7 +34,7 @@ List<int> _annotateAndEncode(_AnnotationParams params) {
       height: cropY2 - cropY1,
     );
 
-    // Translate the box to crop-relative coords
+    // Box coords relative to the crop
     final relBox = Rectangle<int>(
       box.left - cropX1,
       box.top - cropY1,
@@ -43,9 +42,9 @@ List<int> _annotateAndEncode(_AnnotationParams params) {
       box.height,
     );
 
-    // Upscale very small crops to at least 400px
-    if (region.width < 400 || region.height < 400) {
-      final scale = 400 / max(region.width, region.height);
+    // Upscale small crops so the bird is large enough to identify
+    if (region.width < 640 || region.height < 640) {
+      final scale = 640 / max(region.width, region.height);
       final newW = (region.width * scale).round();
       final newH = (region.height * scale).round();
       final scaleX = newW / region.width;
@@ -62,9 +61,9 @@ List<int> _annotateAndEncode(_AnnotationParams params) {
       _drawBoxes(region, [relBox]);
     }
   } else {
-    // For clusters of 2+ birds, use the full image (downscaled if needed)
-    // so the model sees all highlighted birds together.
+    // For multi-bird clusters use the full image so all boxes are visible.
     region = source;
+    _drawBoxes(region, boxes);
   }
 
   // Downscale to at most 1280px on longest edge
@@ -72,29 +71,7 @@ List<int> _annotateAndEncode(_AnnotationParams params) {
     final scale = 1280 / max(region.width, region.height);
     final newW = (region.width * scale).round();
     final newH = (region.height * scale).round();
-    final scaleX = newW / region.width;
-    final scaleY = newH / region.height;
-
-    if (!isSingleBox) {
-      // Draw boxes BEFORE downscale so coordinates can be scaled
-      final scaledBoxes = boxes
-          .map(
-            (b) => Rectangle<int>(
-              (b.left * scaleX).round(),
-              (b.top * scaleY).round(),
-              (b.width * scaleX).round(),
-              (b.height * scaleY).round(),
-            ),
-          )
-          .toList();
-      region = img.copyResize(region, width: newW, height: newH);
-      _drawBoxes(region, scaledBoxes);
-    } else {
-      region = img.copyResize(region, width: newW, height: newH);
-    }
-  } else if (!isSingleBox) {
-    // Full image at original resolution: draw boxes directly
-    _drawBoxes(region, boxes);
+    region = img.copyResize(region, width: newW, height: newH);
   }
 
   return img.encodeJpg(region, quality: 90);
@@ -103,7 +80,7 @@ List<int> _annotateAndEncode(_AnnotationParams params) {
 void _drawBoxes(img.Image image, List<Rectangle<int>> boxes) {
   final red = img.ColorRgb8(255, 50, 50);
   for (final box in boxes) {
-    for (int t = 0; t < 4; t++) {
+    for (int t = 0; t < 12; t++) {
       img.drawRect(
         image,
         x1: (box.left - t).clamp(0, image.width - 1),
@@ -329,7 +306,7 @@ class BirdClassifier {
       final base64Image = base64Encode(jpgBytes);
 
       final String boxGuide;
-      if (isCluster && boxes.length > 1) {
+      if (boxes.length > 1) {
         boxGuide =
             ' There are ${boxes.length} red rectangles drawn on the image, '
             'each highlighting one bird. All highlighted birds are the SAME species. '
@@ -382,15 +359,14 @@ class BirdClassifier {
       final prompt =
           'You are an expert ornithologist helping build an eBird checklist. '
           'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
-          'Identify the bird species using visible features: body shape, plumage color '
-          'and pattern, beak shape, leg color, size relative to surroundings, and habitat.\n'
-          'List your top 1-5 species guesses as a JSON array. '
-          'Use this format when possible: '
+          'First, explain your reasoning step-by-step. Identify the bird species using visible features: '
+          'body shape, plumage color and pattern, beak shape, leg color, size relative to surroundings, and habitat.\n'
+          'Second, carefully provide your top 1-5 species guesses based on your reasoning, formatted strictly as a JSON array.\n'
+          'Use this exact format for the array at the very end of your response: '
           '["Mallard (Anas platyrhynchos)", "American Black Duck (Anas rubripes)"]\n'
           'Be specific: distinguish between similar species (e.g. Mallard vs. Gadwall, '
           'Ruddy Turnstone vs. Sanderling, Canada Goose vs. Cackling Goose, etc.).\n'
-          'Only respond with ["Unknown Bird"] if there is NO bird visible at all. '
-          'OUTPUT ONLY THE JSON ARRAY, NOTHING ELSE.';
+          'Only respond with ["Unknown Bird"] if there is absolutely NO bird visible at all.';
 
       final response = await http.post(
         Uri.parse('http://localhost:11434/api/generate'),
@@ -400,7 +376,7 @@ class BirdClassifier {
           'prompt': prompt,
           'images': [base64Image],
           'stream': false,
-          'options': {'temperature': 0.2, 'num_predict': 256},
+          'options': {'temperature': 0.2, 'num_predict': 512},
         }),
       );
 
@@ -423,31 +399,44 @@ class BirdClassifier {
       final data = jsonDecode(body);
       String responseText = data['response'].toString().trim();
 
-      // Strip markdown fences
-      if (responseText.startsWith('```json')) {
-        responseText = responseText.substring(7);
-        if (responseText.endsWith('```')) {
-          responseText = responseText.substring(0, responseText.length - 3);
-        }
-      } else if (responseText.startsWith('```')) {
-        responseText = responseText.substring(3);
-        if (responseText.endsWith('```')) {
-          responseText = responseText.substring(0, responseText.length - 3);
-        }
-      }
-      responseText = responseText.trim();
+      List<String> rawSpeciesList = [];
 
-      // Robustly extract the first JSON array found in the response
+      // 1. Try JSON Array first
       final arrayRegex = RegExp(r'\[.*?\]', dotAll: true);
       final match = arrayRegex.firstMatch(responseText);
-      if (match != null) responseText = match.group(0)!;
+      if (match != null) {
+        try {
+          final List<dynamic> jsonList = jsonDecode(match.group(0)!);
+          rawSpeciesList = jsonList.map((e) => e.toString().trim()).toList();
+        } catch (_) {}
+      }
 
-      final List<dynamic> jsonList = jsonDecode(responseText);
-      List<String> rawSpeciesList = jsonList
-          .map((e) => e.toString().trim())
-          .toList();
+      // 2. Try looking for formatted strings "Common Name (Scientific Name)"
+      if (rawSpeciesList.isEmpty) {
+        final speciesNameRegex = RegExp(r"([A-Za-z \-'\.,]+?\s*\([A-Z][a-z]+ [a-z]+\))");
+        final matches = speciesNameRegex.allMatches(responseText);
+        for (final m in matches) {
+          rawSpeciesList.add(m.group(1)!.trim());
+        }
+      }
+      
+      // 3. Try pulling bulleted items
+      if (rawSpeciesList.isEmpty) {
+        final bulletRegex = RegExp(r'[-*]\s*"?([^"\n]+)"?');
+        final matches = bulletRegex.allMatches(responseText);
+        for (final m in matches) {
+           rawSpeciesList.add(m.group(1)!.trim());
+        }
+      }
 
-      if (rawSpeciesList.isEmpty) return ["Unknown Bird"];
+      // 4. Default Unknown
+      if (rawSpeciesList.isEmpty) {
+        if (responseText.toLowerCase().contains("unknown bird")) {
+          return ["Unknown Bird"];
+        }
+        debugPrint('Failed to extract any species from response text.');
+        return ["Unknown Bird"];
+      }
 
       List<String> processedSpecies = [];
       Set<String> seenScientifics = {};
@@ -475,7 +464,7 @@ class BirdClassifier {
       if (processedSpecies.isEmpty) return ["Unknown Bird"];
       return processedSpecies;
     } catch (e) {
-      debugPrint('Failed to parse LLM JSON response: $body');
+      debugPrint('Failed to parse LLM JSON response: $e');
       return ["Unknown Bird"];
     }
   }
