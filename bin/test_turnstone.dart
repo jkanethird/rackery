@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print, unused_local_variable, await_only_futures, unused_element, unused_import
 import 'dart:io';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
