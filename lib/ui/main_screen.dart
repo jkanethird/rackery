@@ -1,3 +1,4 @@
+import 'widgets/observation_card.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -61,7 +62,6 @@ class _MainScreenState extends State<MainScreen> {
   final Set<int> _selectedIndividualIndices = {};
   int? _lastSelectedIndividualIndex;
   // Expanded observation indices
-  final Set<int> _expandedObservations = {};
 
   int _currentCenterPage = 0;
   final PageController _pageController = PageController();
@@ -527,7 +527,6 @@ class _MainScreenState extends State<MainScreen> {
       _selectedFiles.clear();
       _processingFiles.clear();
       _imageExifData.clear();
-      _expandedObservations.clear();
       _progress = 0.0;
       _progressMessage = "";
       _isProcessing = false;
@@ -1051,382 +1050,90 @@ class _MainScreenState extends State<MainScreen> {
                       final isSelected = _selectedObservation == obs;
                       final isDragging = _draggingIndex == index;
 
-                      Widget card = Opacity(
-                        opacity: isDragging ? 0.4 : 1.0,
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          color: isSelected
-                              ? Colors.blue.withValues(alpha: 0.1)
-                              : null,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                shape: const SuperellipseBorder(
-                                  m: 200.0,
-                                  n: 20.0,
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    _selectedObservation = obs;
-                                    _currentlyDisplayedImage = obs.imagePath;
-                                    _selectedIndividualIndices.clear();
-                                    _lastSelectedIndividualIndex = null;
-                                    _currentCenterPage = 0;
-                                    if (_pageController.hasClients) {
-                                      _pageController.jumpToPage(0);
-                                    }
-                                  });
-                                },
-                                leading: obs.displayPath != null
-                                    ? Image.file(
-                                        File(obs.displayPath!),
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : const Icon(Icons.image),
-                                title: Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        key: ValueKey(
-                                          "${obs.imagePath}_${obs.speciesName}",
-                                        ),
-                                        initialValue: obs.speciesName,
-                                        decoration: const InputDecoration(
-                                          labelText: "Species",
-                                        ),
-                                        onChanged: (val) {
-                                          obs.speciesName = val;
-                                        },
-                                      ),
-                                    ),
-                                    if (obs.possibleSpecies.length > 1)
-                                      PopupMenuButton<String>(
-                                        icon: const Icon(Icons.arrow_drop_down),
-                                        tooltip: "AI Alternatives",
-                                        onSelected: (String value) {
-                                          setState(() {
-                                            obs.speciesName = value;
-                                          });
-                                        },
-                                        itemBuilder: (BuildContext context) {
-                                          return obs.possibleSpecies
-                                              .map(
-                                                (String choice) =>
-                                                    PopupMenuItem<String>(
-                                                      value: choice,
-                                                      child: Text(choice),
-                                                    ),
-                                              )
-                                              .toList();
-                                        },
-                                      ),
-                                  ],
-                                ),
-                                subtitle: Text(
-                                  'Date: ${obs.exifData.dateTime?.toLocal().toString().split(".")[0] ?? "?"}\nLat: ${obs.exifData.latitude?.toStringAsFixed(4) ?? "?"}, Lon: ${obs.exifData.longitude?.toStringAsFixed(4) ?? "?"}',
-                                ),
-                                trailing: SizedBox(
-                                  width: 45,
-                                  child: TextFormField(
-                                    key: ValueKey(
-                                      "count_${obs.hashCode}_${obs.count}",
-                                    ),
-                                    initialValue: obs.count.toString(),
-                                    decoration: const InputDecoration(
-                                      labelText: "Count",
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (val) {
-                                      obs.count = int.tryParse(val) ?? 1;
-                                    },
-                                  ),
-                                ),
-                              ),
-                              if (obs.count > 1 &&
-                                  _expandedObservations.contains(index))
-                                for (int i = 0; i < obs.count; i++)
-                                  Draggable<DragData>(
-                                    data: DragData(
-                                      obsIndex: index,
-                                      indIndices:
-                                          (isSelected &&
-                                              _selectedIndividualIndices
-                                                  .contains(i))
-                                          ? _selectedIndividualIndices.toList()
-                                          : [i],
-                                    ),
-                                    feedback: Material(
-                                      elevation: 6,
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 12,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainerHighest,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          (isSelected &&
-                                                  _selectedIndividualIndices
-                                                      .contains(i) &&
-                                                  _selectedIndividualIndices
-                                                          .length >
-                                                      1)
-                                              ? "${_selectedIndividualIndices.length} Individuals"
-                                              : "Individual ${i + 1}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    childWhenDragging: Opacity(
-                                      opacity: 0.5,
-                                      child: ListTile(
-                                        contentPadding: const EdgeInsets.only(
-                                          left: 82,
-                                          right: 16,
-                                        ),
-                                        title: Text(
-                                          (isSelected &&
-                                                  _selectedIndividualIndices
-                                                      .contains(i) &&
-                                                  _selectedIndividualIndices
-                                                          .length >
-                                                      1)
-                                              ? "${_selectedIndividualIndices.length} Individuals"
-                                              : "Individual ${i + 1}",
-                                          style: const TextStyle(fontSize: 13),
-                                        ),
-                                      ),
-                                    ),
-                                    child: ListTile(
-                                      contentPadding: const EdgeInsets.only(
-                                        left: 82,
-                                        right: 16,
-                                      ),
-                                      title: Text(
-                                        "Individual ${i + 1}",
-                                        style: const TextStyle(fontSize: 13),
-                                      ),
-                                      selected:
-                                          isSelected &&
-                                          _selectedIndividualIndices.contains(
-                                            i,
-                                          ),
-                                      selectedColor: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                      selectedTileColor: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withValues(alpha: 0.1),
-                                      onTap: () {
-                                        final isCtrl =
-                                            HardwareKeyboard
-                                                .instance
-                                                .isControlPressed ||
-                                            HardwareKeyboard
-                                                .instance
-                                                .isMetaPressed;
-                                        final isShift = HardwareKeyboard
-                                            .instance
-                                            .isShiftPressed;
 
-                                        setState(() {
-                                          if (_selectedObservation != obs) {
-                                            _selectedObservation = obs;
-                                            _currentlyDisplayedImage =
-                                                obs.imagePath;
-                                            _selectedIndividualIndices.clear();
-                                            _lastSelectedIndividualIndex = null;
-                                          }
-
-                                          if (isCtrl) {
-                                            if (_selectedIndividualIndices
-                                                .contains(i)) {
-                                              _selectedIndividualIndices.remove(
-                                                i,
-                                              );
-                                              if (_lastSelectedIndividualIndex ==
-                                                  i) {
-                                                _lastSelectedIndividualIndex =
-                                                    null;
-                                              }
-                                            } else {
-                                              _selectedIndividualIndices.add(i);
-                                              _lastSelectedIndividualIndex = i;
-                                            }
-                                          } else if (isShift &&
-                                              _lastSelectedIndividualIndex !=
-                                                  null) {
-                                            int start = min(
-                                              _lastSelectedIndividualIndex!,
-                                              i,
-                                            );
-                                            int end = max(
-                                              _lastSelectedIndividualIndex!,
-                                              i,
-                                            );
-                                            _selectedIndividualIndices.clear();
-                                            for (int j = start; j <= end; j++) {
-                                              _selectedIndividualIndices.add(j);
-                                            }
-                                          } else {
-                                            _selectedIndividualIndices.clear();
-                                            _selectedIndividualIndices.add(i);
-                                            _lastSelectedIndividualIndex = i;
-                                          }
-
-                                          _currentCenterPage = 0;
-                                          if (_pageController.hasClients) {
-                                            _pageController.jumpToPage(0);
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ),
-                              if (obs.count > 1)
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      if (_expandedObservations.contains(
-                                        index,
-                                      )) {
-                                        _expandedObservations.remove(index);
-                                      } else {
-                                        _expandedObservations.add(index);
-                                      }
-                                    });
-                                  },
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    height: 28,
-                                    child: Icon(
-                                      _expandedObservations.contains(index)
-                                          ? Icons.expand_less
-                                          : Icons.expand_more,
-                                      size: 20,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      );
-
-                      // Wrap in DragTarget first (inner), then Draggable (outer)
-                      Widget observationItem = DragTarget<DragData>(
-                        onWillAcceptWithDetails: (details) =>
-                            details.data.obsIndex != index &&
-                            _observations[details.data.obsIndex].burstId ==
-                                _observations[index].burstId,
-                        onAcceptWithDetails: (details) {
-                          if (details.data.indIndices == null) {
-                            _mergeObservations(details.data.obsIndex, index);
-                          } else {
-                            _mergeIndividuals(
-                              details.data.obsIndex,
-                              details.data.indIndices!,
-                              index,
-                            );
-                          }
+                      Widget observationItem = ObservationCard(
+                        obs: obs,
+                        index: index,
+                        isSelected: isSelected,
+                        isDragging: isDragging,
+                        selectedIndividualIndices: _selectedIndividualIndices.toList(),
+                        lastSelectedIndividualIndex: _lastSelectedIndividualIndex,
+                        onTapCard: () {
+                          setState(() {
+                            _selectedObservation = obs;
+                            _currentlyDisplayedImage = obs.imagePath;
+                            _selectedIndividualIndices.clear();
+                            _lastSelectedIndividualIndex = null;
+                            _currentCenterPage = 0;
+                            if (_pageController.hasClients) {
+                              _pageController.jumpToPage(0);
+                            }
+                          });
                         },
-                        builder: (context, candidateData, rejectedData) {
-                          final isHovered = candidateData.isNotEmpty;
-                          return Draggable<DragData>(
-                            data: DragData(obsIndex: index),
-                            onDragStarted: () =>
-                                setState(() => _draggingIndex = index),
-                            onDragEnd: (_) =>
-                                setState(() => _draggingIndex = null),
-                            onDraggableCanceled: (velocity, offset) =>
-                                setState(() => _draggingIndex = null),
-                            feedback: Material(
-                              elevation: 6,
-                              borderRadius: BorderRadius.circular(12),
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 320,
-                                ),
-                                child: Opacity(
-                                  opacity: 0.85,
-                                  child: Card(
-                                    margin: EdgeInsets.zero,
-                                    child: ListTile(
-                                      leading: obs.displayPath != null
-                                          ? Image.file(
-                                              File(obs.displayPath!),
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : const Icon(Icons.image),
-                                      title: Text(
-                                        obs.speciesName,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      trailing: Text(
-                                        '×${obs.count}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            childWhenDragging: const SizedBox.shrink(),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 150),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: isHovered
-                                    ? Border.all(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                        width: 2,
-                                      )
-                                    : null,
-                                boxShadow: isHovered
-                                    ? [
-                                        BoxShadow(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withValues(alpha: 0.3),
-                                          blurRadius: 8,
-                                          spreadRadius: 1,
-                                        ),
-                                      ]
-                                    : null,
-                              ),
-                              child: card,
-                            ),
-                          );
+                        onTapIndividual: (int i) {
+                          final isCtrl = HardwareKeyboard.instance.isControlPressed ||
+                                         HardwareKeyboard.instance.isMetaPressed;
+                          final isShift = HardwareKeyboard.instance.isShiftPressed;
+
+                          setState(() {
+                            if (_selectedObservation != obs) {
+                              _selectedObservation = obs;
+                              _currentlyDisplayedImage = obs.imagePath;
+                              _selectedIndividualIndices.clear();
+                              _lastSelectedIndividualIndex = null;
+                            }
+
+                            if (isCtrl) {
+                              if (_selectedIndividualIndices.contains(i)) {
+                                _selectedIndividualIndices.remove(i);
+                                if (_lastSelectedIndividualIndex == i) {
+                                  _lastSelectedIndividualIndex = null;
+                                }
+                              } else {
+                                _selectedIndividualIndices.add(i);
+                                _lastSelectedIndividualIndex = i;
+                              }
+                            } else if (isShift && _lastSelectedIndividualIndex != null) {
+                              int start = min(_lastSelectedIndividualIndex!, i);
+                              int end = max(_lastSelectedIndividualIndex!, i);
+                              _selectedIndividualIndices.clear();
+                              for (int j = start; j <= end; j++) {
+                                _selectedIndividualIndices.add(j);
+                              }
+                            } else {
+                              _selectedIndividualIndices.clear();
+                              _selectedIndividualIndices.add(i);
+                              _lastSelectedIndividualIndex = i;
+                            }
+
+                            _currentCenterPage = 0;
+                            if (_pageController.hasClients) {
+                              _pageController.jumpToPage(0);
+                            }
+                          });
+                        },
+                        onSpeciesChanged: (String val) {
+                          obs.speciesName = val;
+                        },
+                        onSpeciesSelected: (String choice) {
+                          setState(() {
+                            obs.speciesName = choice;
+                          });
+                        },
+                        onCountChanged: (int count) {
+                          obs.count = count;
+                        },
+                        onMergeObservations: _mergeObservations,
+                        onMergeIndividuals: _mergeIndividuals,
+                        onDragStarted: (int dragIndex) {
+                          setState(() => _draggingIndex = dragIndex);
+                        },
+                        onDragEnded: () {
+                          setState(() => _draggingIndex = null);
                         },
                       );
+                      bool isFirstInBurst = index > 0 &&
+                          _observations[index].burstId != _observations[index - 1].burstId;
 
                       Widget dropZone(int insertIndex) {
                         return DragTarget<DragData>(
@@ -1434,11 +1141,9 @@ class _MainScreenState extends State<MainScreen> {
                             if (details.data.indIndices == null) return false;
                             final srcObs = _observations[details.data.obsIndex];
                             // Must be from the same burst
-                            if (srcObs.burstId !=
-                                _observations[index].burstId) {
+                            if (srcObs.burstId != _observations[index].burstId) {
                               return false;
                             }
-
                             return true;
                           },
                           onAcceptWithDetails: (details) {
@@ -1451,25 +1156,17 @@ class _MainScreenState extends State<MainScreen> {
                           builder: (context, candidateData, rejectedData) {
                             return Container(
                               height: 12,
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                              ),
+                              margin: const EdgeInsets.symmetric(horizontal: 24),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
                                 color: candidateData.isNotEmpty
-                                    ? Theme.of(context).colorScheme.primary
-                                          .withValues(alpha: 0.5)
+                                    ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)
                                     : Colors.transparent,
                               ),
                             );
                           },
                         );
                       }
-
-                      bool isFirstInBurst =
-                          index > 0 &&
-                          _observations[index].burstId !=
-                              _observations[index - 1].burstId;
 
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -1481,16 +1178,15 @@ class _MainScreenState extends State<MainScreen> {
                               indent: 32,
                               endIndent: 32,
                               color: Colors.white24,
-                            )
-                          else
-                            dropZone(index),
+                            ),
+                          dropZone(index),
                           observationItem,
-                          if (index == _observations.length - 1 ||
-                              _observations[index].burstId !=
-                                  _observations[index + 1].burstId)
+                          if (index == _observations.length - 1)
                             dropZone(index + 1),
                         ],
                       );
+
+
                     }, // end itemBuilder
                   ), // end ListView.builder
                 ), // end right Expanded
