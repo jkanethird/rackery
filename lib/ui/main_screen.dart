@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   bool _isInit = false;
   bool _isProcessing = false;
   double _progress = 0.0;
+  String _progressMessage = "";
   final List<Observation> _observations = [];
   Observation? _selectedObservation;
   String? _currentlyDisplayedImage;
@@ -159,6 +161,7 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         _isProcessing = true;
         _progress = 0.0;
+        _progressMessage = "Preparing files...";
         _selectedFiles.addAll(newPaths);
         _processingFiles.addAll(newPaths);
       });
@@ -220,148 +223,283 @@ class _MainScreenState extends State<MainScreen> {
         _selectedFiles = bursts.expand((b) => b).toList();
       });
 
-      // Determine which bursts contain at least one new file
+      // Phase 1: Parallel Detection
       final newPathSet = newPaths.toSet();
-      final int totalNewFiles = newPaths.length;
-      int processedCount = 0;
 
-      for (int i = 0; i < bursts.length; i++) {
-        final burstFiles = bursts[i];
-        final burstHasNew = burstFiles.any((p) => newPathSet.contains(p));
-        if (!burstHasNew)
-          continue; // Skip bursts that are fully already processed
+      int totalBytesPhase1 = 0;
+      for (final p in newPaths) {
+        totalBytesPhase1 += File(p).lengthSync();
+      }
+      int processedBytesPhase1 = 0;
+      int totalBursts = bursts.length;
+      int completedBurstsPhase2 = 0;
+      int totalIdentifications = 0;
+      int completedIdentifications = 0;
 
-        Map<String, BurstGroup> burstGroupsBySpecies = {};
+      setState(() {
+        _progressMessage = "Detecting & Classifying...";
+        _progress = 0.0;
+      });
 
-        for (String filePath in burstFiles) {
-          final isNew = newPathSet.contains(filePath);
-          if (!isNew) continue; // Only process new files within the burst
+      Map<String, _Phase1Result> phase1Results = {};
+      List<Completer<void>> burstCompleters = List.generate(
+        bursts.length,
+        (_) => Completer<void>(),
+      );
 
-          try {
-            final processedPath =
-                await ImageConverter.convertToJpegIfNeeded(filePath) ??
-                filePath;
-            final exifData = await ExifService.extractExif(filePath);
-            List<BirdCrop> detectedBirds = await _detector.detectAndCrop(
-              processedPath,
-            );
+      // --- PHASE 1 WORKER ---
+      Future<void> phase1Worker = Future(() async {
+        for (int i = 0; i < bursts.length; i++) {
+          final burstFiles = bursts[i];
 
-            if (detectedBirds.isEmpty) {
-              final fallbackBytes = await File(processedPath).readAsBytes();
-              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
-              if (fallbackImg != null) {
-                final speciesList = await _classifier.classifyFile(
-                  processedPath,
-                  latitude: exifData.latitude,
-                  longitude: exifData.longitude,
-                  photoDate: exifData.dateTime,
-                );
-                final species = speciesList.isNotEmpty
-                    ? speciesList.first
-                    : "Unknown";
-                final fullImageBox = Rectangle<int>(
-                  0,
-                  0,
-                  fallbackImg.width,
-                  fallbackImg.height,
-                );
-                final obs = Observation(
-                  imagePath: filePath,
-                  displayPath: processedPath,
-                  fullImageDisplayPath: processedPath,
-                  speciesName: species,
-                  possibleSpecies: speciesList,
-                  exifData: exifData,
-                  count: 1,
-                  boundingBoxes: [fullImageBox],
-                );
-                burstGroupsBySpecies
-                    .putIfAbsent(species, () => BurstGroup())
-                    .addObservation(obs);
-              }
-            } else {
-              final clusters = _clusterer.cluster(detectedBirds);
-              final Map<String, Observation> photoObservations = {};
-
-              for (int ci = 0; ci < clusters.length; ci++) {
-                await Future.delayed(Duration.zero);
-                final clusterCrops = clusters[ci];
-                final clusterBoxes = clusterCrops.map((c) => c.box).toList();
-
-                final speciesList = await _classifier.classifyCluster(
-                  processedPath,
-                  boxes: clusterBoxes,
-                  latitude: exifData.latitude,
-                  longitude: exifData.longitude,
-                  photoDate: exifData.dateTime,
-                );
-
-                final species = speciesList.isNotEmpty
-                    ? speciesList.first
-                    : 'Unknown';
-
-                if (photoObservations.containsKey(species)) {
-                  photoObservations[species]!.count += clusterCrops.length;
-                  photoObservations[species]!.boundingBoxes.addAll(
-                    clusterBoxes,
-                  );
-                  photoObservations[species]!.boxesByImagePath
-                      .putIfAbsent(filePath, () => [])
-                      .addAll(clusterBoxes);
-                } else {
-                  final cropBytes = clusterCrops.first.croppedJpgBytes;
-                  final tempDir = await Directory.systemTemp.createTemp();
-                  final filename = filePath.split(Platform.pathSeparator).last;
-                  final cropPath = '${tempDir.path}/cluster_${ci}_$filename';
-                  await File(cropPath).writeAsBytes(cropBytes);
-
-                  photoObservations[species] = Observation(
-                    imagePath: filePath,
-                    displayPath: cropPath,
-                    fullImageDisplayPath: processedPath,
-                    speciesName: species,
-                    possibleSpecies: speciesList,
-                    exifData: exifData,
-                    count: clusterCrops.length,
-                    boundingBoxes: clusterBoxes,
-                  );
-                }
-              }
-
-              for (final obs in photoObservations.values) {
-                burstGroupsBySpecies
-                    .putIfAbsent(obs.speciesName, () => BurstGroup())
-                    .addObservation(obs);
-              }
-            }
-          } catch (e) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error processing $filePath: $e')),
+          for (final filePath in burstFiles) {
+            if (!newPathSet.contains(filePath)) continue;
+            try {
+              final processedPath =
+                  await ImageConverter.convertToJpegIfNeeded(filePath) ??
+                  filePath;
+              final exifData = await ExifService.extractExif(filePath);
+              List<BirdCrop> detectedBirds = await _detector.detectAndCrop(
+                processedPath,
               );
+
+              if (detectedBirds.isEmpty) {
+                final fallbackBytes = await File(processedPath).readAsBytes();
+                final fallbackImg = await compute(
+                  img.decodeImage,
+                  fallbackBytes,
+                );
+                phase1Results[filePath] = _Phase1Result(
+                  processedPath: processedPath,
+                  exifData: exifData,
+                  clusters: [],
+                  isFallback: true,
+                  fallbackImg: fallbackImg,
+                );
+              } else {
+                final clusters = _clusterer.cluster(detectedBirds);
+                phase1Results[filePath] = _Phase1Result(
+                  processedPath: processedPath,
+                  exifData: exifData,
+                  clusters: clusters,
+                  isFallback: false,
+                  fallbackImg: null,
+                );
+              }
+            } catch (e) {
+              debugPrint("Error in phase 1 for $filePath: $e");
+            } finally {
+              processedBytesPhase1 += File(filePath).lengthSync();
+              if (mounted) {
+                setState(() {
+                  double p1 = totalBytesPhase1 > 0
+                      ? processedBytesPhase1 / totalBytesPhase1
+                      : 1.0;
+                  double p2 = totalBursts > 0
+                      ? completedBurstsPhase2 / totalBursts
+                      : 1.0;
+                  _progress = (p1 * 0.5) + (p2 * 0.5);
+                });
+              }
             }
           }
+          burstCompleters[i].complete();
+        }
+      });
 
-          processedCount++;
-          setState(() {
-            _processingFiles.remove(filePath);
-            _progress = processedCount / totalNewFiles;
-          });
-        } // end for filePath in burstFiles
+      // --- PHASE 2 WORKER ---
+      Future<void> phase2Worker = Future(() async {
+        for (int i = 0; i < bursts.length; i++) {
+          await burstCompleters[i].future;
 
-        if (mounted) {
-          setState(() {
-            for (var bg in burstGroupsBySpecies.values) {
-              if (bg.observations.isNotEmpty) {
-                _observations.add(bg.toObservation(burstId: "burst_$i"));
+          final burstFiles = bursts[i];
+          final burstHasNew = burstFiles.any((p) => newPathSet.contains(p));
+          if (!burstHasNew) {
+            completedBurstsPhase2++;
+            continue; // Skip bursts that are fully already processed
+          }
+
+          int burstIdentifications = 0;
+          for (final filePath in burstFiles) {
+            if (!newPathSet.contains(filePath)) continue;
+            final res = phase1Results[filePath];
+            if (res == null) continue;
+            if (res.isFallback) {
+              if (res.fallbackImg != null) burstIdentifications++;
+            } else {
+              burstIdentifications += res.clusters.length;
+            }
+          }
+          totalIdentifications += burstIdentifications;
+
+          if (mounted && totalIdentifications > 0) {
+            setState(() {
+              _progressMessage =
+                  "Classifying... ($completedIdentifications of $totalIdentifications birds)";
+            });
+          }
+
+          Map<String, BurstGroup> burstGroupsBySpecies = {};
+
+          for (String filePath in burstFiles) {
+            final isNew = newPathSet.contains(filePath);
+            if (!isNew) continue; // Only process new files within the burst
+
+            final res = phase1Results[filePath];
+            if (res == null) {
+              if (mounted) {
+                setState(() {
+                  _processingFiles.remove(filePath);
+                });
+              }
+              continue;
+            }
+
+            try {
+              if (res.isFallback) {
+                if (res.fallbackImg != null) {
+                  final speciesList = await _classifier.classifyFile(
+                    res.processedPath,
+                    latitude: res.exifData.latitude,
+                    longitude: res.exifData.longitude,
+                    photoDate: res.exifData.dateTime,
+                  );
+                  final species = speciesList.isNotEmpty
+                      ? speciesList.first
+                      : "Unknown";
+                  final fullImageBox = Rectangle<int>(
+                    0,
+                    0,
+                    res.fallbackImg!.width,
+                    res.fallbackImg!.height,
+                  );
+                  final obs = Observation(
+                    imagePath: filePath,
+                    displayPath: res.processedPath,
+                    fullImageDisplayPath: res.processedPath,
+                    speciesName: species,
+                    possibleSpecies: speciesList,
+                    exifData: res.exifData,
+                    count: 1,
+                    boundingBoxes: [fullImageBox],
+                  );
+                  burstGroupsBySpecies
+                      .putIfAbsent(species, () => BurstGroup())
+                      .addObservation(obs);
+
+                  completedIdentifications++;
+                  if (mounted) {
+                    setState(() {
+                      _progressMessage =
+                          "Classifying... ($completedIdentifications of $totalIdentifications birds)";
+                    });
+                  }
+                }
+              } else {
+                final Map<String, Observation> photoObservations = {};
+
+                for (int ci = 0; ci < res.clusters.length; ci++) {
+                  final clusterCrops = res.clusters[ci];
+                  final clusterBoxes = clusterCrops.map((c) => c.box).toList();
+
+                  final speciesList = await _classifier.classifyCluster(
+                    res.processedPath,
+                    boxes: clusterBoxes,
+                    latitude: res.exifData.latitude,
+                    longitude: res.exifData.longitude,
+                    photoDate: res.exifData.dateTime,
+                  );
+
+                  final species = speciesList.isNotEmpty
+                      ? speciesList.first
+                      : 'Unknown';
+
+                  if (photoObservations.containsKey(species)) {
+                    photoObservations[species]!.count += clusterCrops.length;
+                    photoObservations[species]!.boundingBoxes.addAll(
+                      clusterBoxes,
+                    );
+                    photoObservations[species]!.boxesByImagePath
+                        .putIfAbsent(filePath, () => [])
+                        .addAll(clusterBoxes);
+                  } else {
+                    final cropBytes = clusterCrops.first.croppedJpgBytes;
+                    final tempDir = await Directory.systemTemp.createTemp();
+                    final filename = filePath.split('/').last;
+                    final cropPath = '${tempDir.path}/cluster_${ci}_$filename';
+                    await File(cropPath).writeAsBytes(cropBytes);
+
+                    photoObservations[species] = Observation(
+                      imagePath: filePath,
+                      displayPath: cropPath,
+                      fullImageDisplayPath: res.processedPath,
+                      speciesName: species,
+                      possibleSpecies: speciesList,
+                      exifData: res.exifData,
+                      count: clusterCrops.length,
+                      boundingBoxes: clusterBoxes,
+                    );
+                  }
+
+                  completedIdentifications++;
+                  if (mounted) {
+                    setState(() {
+                      _progressMessage =
+                          "Classifying... ($completedIdentifications of $totalIdentifications birds)";
+                    });
+                  }
+                }
+
+                for (final obs in photoObservations.values) {
+                  burstGroupsBySpecies
+                      .putIfAbsent(obs.speciesName, () => BurstGroup())
+                      .addObservation(obs);
+                }
+              }
+            } catch (e) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error processing $filePath: $e')),
+                );
               }
             }
-          });
-        }
 
-        // Isolate Ollama memory state between bursts to prevent context hallucination bleeding
-        await _classifier.unloadModel();
-      } // end for burst
+            if (mounted) {
+              setState(() {
+                _processingFiles.remove(filePath);
+              });
+            }
+          } // end for filePath in burstFiles
+
+          if (mounted) {
+            setState(() {
+              for (var bg in burstGroupsBySpecies.values) {
+                if (bg.observations.isNotEmpty) {
+                  _observations.add(bg.toObservation(burstId: "burst_$i"));
+                }
+              }
+            });
+          }
+
+          // Isolate Ollama memory state between bursts to prevent context hallucination bleeding
+          await _classifier.unloadModel();
+
+          completedBurstsPhase2++;
+          if (mounted) {
+            setState(() {
+              double p1 = totalBytesPhase1 > 0
+                  ? processedBytesPhase1 / totalBytesPhase1
+                  : 1.0;
+              double p2 = totalBursts > 0
+                  ? completedBurstsPhase2 / totalBursts
+                  : 1.0;
+              _progress = (p1 * 0.5) + (p2 * 0.5);
+            });
+          }
+        } // end for burst
+      });
+
+      await Future.wait([phase1Worker, phase2Worker]);
 
       setState(() {
         _isProcessing = false;
@@ -391,6 +529,7 @@ class _MainScreenState extends State<MainScreen> {
       _imageExifData.clear();
       _expandedObservations.clear();
       _progress = 0.0;
+      _progressMessage = "";
       _isProcessing = false;
     });
     if (_pageController.hasClients) _pageController.jumpToPage(0);
@@ -862,7 +1001,11 @@ class _MainScreenState extends State<MainScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Processing images..."),
+                        Text(
+                          _progressMessage.isNotEmpty
+                              ? _progressMessage
+                              : "Processing images...",
+                        ),
                         const SizedBox(height: 8),
                         SineWaveProgressIndicator(value: _progress),
                       ],
@@ -1120,9 +1263,10 @@ class _MainScreenState extends State<MainScreen> {
                                                 i,
                                               );
                                               if (_lastSelectedIndividualIndex ==
-                                                  i)
+                                                  i) {
                                                 _lastSelectedIndividualIndex =
                                                     null;
+                                              }
                                             } else {
                                               _selectedIndividualIndices.add(i);
                                               _lastSelectedIndividualIndex = i;
@@ -1290,8 +1434,10 @@ class _MainScreenState extends State<MainScreen> {
                             if (details.data.indIndices == null) return false;
                             final srcObs = _observations[details.data.obsIndex];
                             // Must be from the same burst
-                            if (srcObs.burstId != _observations[index].burstId)
+                            if (srcObs.burstId !=
+                                _observations[index].burstId) {
                               return false;
+                            }
 
                             return true;
                           },
@@ -1754,4 +1900,20 @@ class SuperellipseBorder extends ShapeBorder {
   ShapeBorder scale(double t) {
     return SuperellipseBorder(m: m, n: n);
   }
+}
+
+class _Phase1Result {
+  final String processedPath;
+  final ExifData exifData;
+  final List<List<BirdCrop>> clusters;
+  final bool isFallback;
+  final img.Image? fallbackImg;
+
+  _Phase1Result({
+    required this.processedPath,
+    required this.exifData,
+    required this.clusters,
+    required this.isFallback,
+    this.fallbackImg,
+  });
 }

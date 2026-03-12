@@ -100,8 +100,9 @@ class BurstGroup {
   }
 
   Observation toObservation({String burstId = ""}) {
-    if (observations.isEmpty)
+    if (observations.isEmpty) {
       throw Exception("Cannot convert empty BurstGroup");
+    }
 
     // Start with the first observation as the base
     final base = observations.first;
