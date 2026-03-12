@@ -100,7 +100,8 @@ class BurstGroup {
   }
 
   Observation toObservation({String burstId = ""}) {
-    if (observations.isEmpty) throw Exception("Cannot convert empty BurstGroup");
+    if (observations.isEmpty)
+      throw Exception("Cannot convert empty BurstGroup");
 
     // Start with the first observation as the base
     final base = observations.first;
@@ -109,7 +110,6 @@ class BurstGroup {
     Map<String, List<Rectangle<int>>> boxesByImagePath = {};
     List<Rectangle<int>> boxes = [];
     List<String> possibleSpecies = [];
-
 
     for (var obs in observations) {
       sourceImages.addAll(obs.sourceImages);

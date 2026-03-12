@@ -23,13 +23,15 @@ void _drawBoxes(img.Image image, List<Rectangle<int>> boxes) {
 }
 
 void main() async {
-  final interpreter = await Interpreter.fromFile(File('assets/efficientdet_lite4.tflite'));
+  final interpreter = await Interpreter.fromFile(
+    File('assets/efficientdet_lite4.tflite'),
+  );
   final tempPath = '/tmp/IMG_3835.jpg';
-  
+
   final fileBytes = await File(tempPath).readAsBytes();
   final originalImage = img.decodeImage(fileBytes);
   if (originalImage == null) return;
-  
+
   final inputShape = interpreter.getInputTensor(0).shape;
   final int targetW = inputShape[1];
   final int targetH = inputShape[2];
@@ -69,21 +71,21 @@ void main() async {
   int count = counts[0].toInt();
   Rectangle<int>? bestBox;
   for (int i = 0; i < count; i++) {
-      double score = scores[0][i];
-      int detectedClass = classes[0][i].toInt();
-      if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
-        List<double> box = locations[0][i];
-        double ymin = box[0].clamp(0.0, 1.0);
-        double xmin = box[1].clamp(0.0, 1.0);
-        double ymax = box[2].clamp(0.0, 1.0);
-        double xmax = box[3].clamp(0.0, 1.0);
-        int localX = (xmin * originalImage.width).toInt();
-        int localY = (ymin * originalImage.height).toInt();
-        int localW = ((xmax - xmin) * originalImage.width).toInt();
-        int localH = ((ymax - ymin) * originalImage.height).toInt();
-        bestBox = Rectangle<int>(localX, localY, localW, localH);
-        break;
-      }
+    double score = scores[0][i];
+    int detectedClass = classes[0][i].toInt();
+    if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
+      List<double> box = locations[0][i];
+      double ymin = box[0].clamp(0.0, 1.0);
+      double xmin = box[1].clamp(0.0, 1.0);
+      double ymax = box[2].clamp(0.0, 1.0);
+      double xmax = box[3].clamp(0.0, 1.0);
+      int localX = (xmin * originalImage.width).toInt();
+      int localY = (ymin * originalImage.height).toInt();
+      int localW = ((xmax - xmin) * originalImage.width).toInt();
+      int localH = ((ymax - ymin) * originalImage.height).toInt();
+      bestBox = Rectangle<int>(localX, localY, localW, localH);
+      break;
+    }
   }
 
   if (bestBox == null) return;
@@ -93,8 +95,14 @@ void main() async {
 
   final cropX1 = (bestBox.left - padX).clamp(0, originalImage.width - 1);
   final cropY1 = (bestBox.top - padY).clamp(0, originalImage.height - 1);
-  final cropX2 = (bestBox.left + bestBox.width + padX).clamp(1, originalImage.width);
-  final cropY2 = (bestBox.top + bestBox.height + padY).clamp(1, originalImage.height);
+  final cropX2 = (bestBox.left + bestBox.width + padX).clamp(
+    1,
+    originalImage.width,
+  );
+  final cropY2 = (bestBox.top + bestBox.height + padY).clamp(
+    1,
+    originalImage.height,
+  );
 
   img.Image region = img.copyCrop(
     originalImage,

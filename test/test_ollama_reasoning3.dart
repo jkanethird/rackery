@@ -23,11 +23,11 @@ void _drawBoxes(img.Image image, List<Rectangle<int>> boxes) {
 
 void main() async {
   final tempPath = '/tmp/converted_IMG_3835.HEIC.jpg';
-  
+
   final fileBytes = await File(tempPath).readAsBytes();
   final originalImage = img.decodeImage(fileBytes);
   if (originalImage == null) return;
-  
+
   final bestBox = Rectangle<int>(1993, 1332, 457, 507);
 
   final padX = (bestBox.width * 0.8).round();
@@ -35,8 +35,14 @@ void main() async {
 
   final cropX1 = (bestBox.left - padX).clamp(0, originalImage.width - 1);
   final cropY1 = (bestBox.top - padY).clamp(0, originalImage.height - 1);
-  final cropX2 = (bestBox.left + bestBox.width + padX).clamp(1, originalImage.width);
-  final cropY2 = (bestBox.top + bestBox.height + padY).clamp(1, originalImage.height);
+  final cropX2 = (bestBox.left + bestBox.width + padX).clamp(
+    1,
+    originalImage.width,
+  );
+  final cropY2 = (bestBox.top + bestBox.height + padY).clamp(
+    1,
+    originalImage.height,
+  );
 
   img.Image region = img.copyCrop(
     originalImage,

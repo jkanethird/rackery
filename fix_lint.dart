@@ -17,7 +17,8 @@ void main() {
     '/home/jkane/ebird_generator/bin/test_turnstone.dart',
   ];
 
-  final ignoreLine = '// ignore_for_file: avoid_print, unused_local_variable, await_only_futures, unused_element, unused_import';
+  final ignoreLine =
+      '// ignore_for_file: avoid_print, unused_local_variable, await_only_futures, unused_element, unused_import';
 
   for (var path in files) {
     var file = File(path);

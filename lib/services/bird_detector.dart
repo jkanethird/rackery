@@ -5,11 +5,12 @@ import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 class BirdCrop {
-  final img.Image croppedImage;
+  final Uint8List croppedJpgBytes;
+  final List<double> centerColor;
   final double confidence;
   final Rectangle<int> box;
 
-  BirdCrop(this.croppedImage, this.confidence, this.box);
+  BirdCrop(this.croppedJpgBytes, this.centerColor, this.confidence, this.box);
 }
 
 class _RawDetection {
@@ -19,67 +20,82 @@ class _RawDetection {
   _RawDetection(this.box, this.score);
 }
 
-class _TensorPrepData {
-  final img.Image image;
+class _DetectorRequest {
+  final Uint8List fileBytes;
+  final int interpreterAddress;
   final int targetW;
   final int targetH;
-  _TensorPrepData(this.image, this.targetW, this.targetH);
-}
 
-// Prepares the entire image as a single tensor for EfficientDet-Lite4
-List<List<List<List<int>>>> _prepareSingleTensor(_TensorPrepData data) {
-  img.Image imageInput = img.copyResize(
-    data.image,
-    width: data.targetW,
-    height: data.targetH,
-    interpolation: img.Interpolation.linear,
-  );
-
-  return List.generate(
-    1,
-    (_) => List.generate(
-      data.targetH,
-      (y) => List.generate(data.targetW, (x) {
-        final pixel = imageInput.getPixel(x, y);
-        return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
-      }),
-    ),
+  _DetectorRequest(
+    this.fileBytes,
+    this.interpreterAddress,
+    this.targetW,
+    this.targetH,
   );
 }
 
-class BirdDetector {
-  Interpreter? _interpreter;
+List<BirdCrop> _detectorWorker(_DetectorRequest data) {
+  final originalImage = img.decodeImage(data.fileBytes);
+  if (originalImage == null) return [];
 
-  Future<void> init() async {
-    _interpreter = await Interpreter.fromAsset(
-      'assets/efficientdet_lite4.tflite',
-    );
+  final interpreter = Interpreter.fromAddress(data.interpreterAddress);
+
+  final int origW = originalImage.width;
+  final int origH = originalImage.height;
+
+  int tileSize = 1536;
+  int stride = tileSize ~/ 2;
+
+  List<Rectangle<int>> tiles = [];
+  tiles.add(Rectangle<int>(0, 0, origW, origH));
+
+  if (origW > tileSize || origH > tileSize) {
+    for (int y = 0; y < origH; y += stride) {
+      for (int x = 0; x < origW; x += stride) {
+        int cropX = x;
+        int cropY = y;
+
+        if (cropX + tileSize > origW) cropX = max(0, origW - tileSize);
+        if (cropY + tileSize > origH) cropY = max(0, origH - tileSize);
+
+        int cropW = min(tileSize, origW - cropX);
+        int cropH = min(tileSize, origH - cropY);
+
+        tiles.add(Rectangle<int>(cropX, cropY, cropW, cropH));
+      }
+    }
   }
 
-  Future<List<BirdCrop>> detectAndCrop(String imagePath) async {
-    if (_interpreter == null) {
-      throw Exception('Detector not initialized');
-    }
+  tiles = tiles.toSet().toList();
+  List<_RawDetection> rawDetections = [];
 
-    final fileBytes = await File(imagePath).readAsBytes();
-    final originalImage = await compute(img.decodeImage, fileBytes);
-    if (originalImage == null) return [];
-
-    // EfficientDet-Lite4 expects 512x512 RGB input
-    final inputShape = _interpreter!.getInputTensor(0).shape;
-    final int targetW = inputShape[1];
-    final int targetH = inputShape[2];
-
-    final tensor = await compute(
-      _prepareSingleTensor,
-      _TensorPrepData(originalImage, targetW, targetH),
+  for (var tile in tiles) {
+    img.Image tileImage = img.copyCrop(
+      originalImage,
+      x: tile.left,
+      y: tile.top,
+      width: tile.width,
+      height: tile.height,
     );
 
-    // EfficientDet-Lite4 output map:
-    // 0: Locations [1, 25, 4]
-    // 1: Classes [1, 25]
-    // 2: Scores [1, 25]
-    // 3: Count [1]
+    img.Image imageInput = img.copyResize(
+      tileImage,
+      width: data.targetW,
+      height: data.targetH,
+      interpolation: img.Interpolation.linear,
+    );
+
+    var tensor = List.generate(
+      1,
+      (_) => List.generate(
+        data.targetH,
+        (y) => List.generate(data.targetW, (x) {
+          final pixel = imageInput.getPixel(x, y);
+          return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
+        }),
+      ),
+    );
+
     Map<int, Object> dynamicOutputs = {
       0: List<List<List<double>>>.filled(
         1,
@@ -90,7 +106,7 @@ class BirdDetector {
       3: List<double>.filled(1, 0.0),
     };
 
-    _interpreter!.runForMultipleInputs([tensor], dynamicOutputs);
+    interpreter.runForMultipleInputs([tensor], dynamicOutputs);
 
     var locations = dynamicOutputs[0] as List<List<List<double>>>;
     var classes = dynamicOutputs[1] as List<List<double>>;
@@ -98,34 +114,42 @@ class BirdDetector {
     var counts = dynamicOutputs[3] as List<double>;
 
     int count = counts[0].toInt();
-    List<_RawDetection> rawDetections = [];
 
     for (int i = 0; i < count; i++) {
       double score = scores[0][i];
       int detectedClass = classes[0][i].toInt();
 
-      // Bird class is 16 in COCO.
-      // Lite4 is very accurate, we can trust 0.20 score securely.
       if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
         List<double> box = locations[0][i];
 
-        // EfficientDet outputs coordinates normalized to [0, 1] as [ymin, xmin, ymax, xmax]
         double ymin = box[0].clamp(0.0, 1.0);
         double xmin = box[1].clamp(0.0, 1.0);
         double ymax = box[2].clamp(0.0, 1.0);
         double xmax = box[3].clamp(0.0, 1.0);
 
-        int localX = (xmin * originalImage.width).toInt();
-        int localY = (ymin * originalImage.height).toInt();
-        int localW = ((xmax - xmin) * originalImage.width).toInt();
-        int localH = ((ymax - ymin) * originalImage.height).toInt();
+        bool touchesLeftSeam = (xmin <= 0.02 && tile.left > 0);
+        bool touchesTopSeam = (ymin <= 0.02 && tile.top > 0);
+        bool touchesRightSeam = (xmax >= 0.98 && tile.right < origW);
+        bool touchesBottomSeam = (ymax >= 0.98 && tile.bottom < origH);
 
-        localX = localX.clamp(0, originalImage.width - 1);
-        localY = localY.clamp(0, originalImage.height - 1);
-        localW = localW.clamp(1, originalImage.width - localX);
-        localH = localH.clamp(1, originalImage.height - localY);
+        if (touchesLeftSeam ||
+            touchesTopSeam ||
+            touchesRightSeam ||
+            touchesBottomSeam) {
+          continue;
+        }
 
-        // Sanity checks
+        int localW = ((xmax - xmin) * tile.width).toInt();
+        int localH = ((ymax - ymin) * tile.height).toInt();
+
+        int globalX = ((xmin * tile.width) + tile.left).toInt();
+        int globalY = ((ymin * tile.height) + tile.top).toInt();
+
+        globalX = globalX.clamp(0, origW - 1);
+        globalY = globalY.clamp(0, origH - 1);
+        localW = localW.clamp(1, origW - globalX);
+        localH = localH.clamp(1, origH - globalY);
+
         double aspectRatio = localW / localH;
         if (localW < 10 ||
             localH < 10 ||
@@ -135,58 +159,138 @@ class BirdDetector {
         }
 
         Rectangle<int> birdRect = Rectangle<int>(
-          localX,
-          localY,
+          globalX,
+          globalY,
           localW,
           localH,
         );
         rawDetections.add(_RawDetection(birdRect, score));
       }
     }
+  }
 
-    // Sort by confidence descending for proper NMS
-    rawDetections.sort((a, b) => b.score.compareTo(a.score));
+  rawDetections.sort((a, b) => b.score.compareTo(a.score));
 
-    List<_RawDetection> finalDetections = [];
-    for (var current in rawDetections) {
-      bool isDuplicate = false;
-      for (var existing in finalDetections) {
-        var intersect = existing.box.intersection(current.box);
-        if (intersect != null && intersect.width > 0 && intersect.height > 0) {
-          double intersectArea = (intersect.width * intersect.height)
-              .toDouble();
-          double area1 = (current.box.width * current.box.height).toDouble();
-          double area2 = (existing.box.width * existing.box.height).toDouble();
-          double iou = intersectArea / (area1 + area2 - intersectArea);
-          double ioMin = intersectArea / min(area1, area2);
+  List<_RawDetection> finalDetections = [];
+  for (var current in rawDetections) {
+    bool isDuplicate = false;
+    for (var existing in finalDetections) {
+      var intersect = existing.box.intersection(current.box);
+      if (intersect != null && intersect.width > 0 && intersect.height > 0) {
+        double intersectArea = (intersect.width * intersect.height).toDouble();
+        double area1 = (current.box.width * current.box.height).toDouble();
+        double area2 = (existing.box.width * existing.box.height).toDouble();
+        double iou = intersectArea / (area1 + area2 - intersectArea);
+        double ioMin = intersectArea / min(area1, area2);
 
-          // Since we process the whole image at once, we don't have tile-split fragmentation anymore.
-          // Standard IoU / ioMin check is now extremely robust.
-          if (iou > 0.30 || ioMin > 0.50) {
-            isDuplicate = true;
-            break;
-          }
+        double cx1 = current.box.left + current.box.width / 2;
+        double cy1 = current.box.top + current.box.height / 2;
+        double cx2 = existing.box.left + existing.box.width / 2;
+        double cy2 = existing.box.top + existing.box.height / 2;
+
+        double centerDist = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
+        double distThreshold =
+            (current.box.width +
+                existing.box.width +
+                current.box.height +
+                existing.box.height) /
+            8;
+
+        if (iou > 0.30 ||
+            ioMin > 0.50 ||
+            (intersectArea > 0 && centerDist < distThreshold)) {
+          isDuplicate = true;
+          break;
         }
       }
+    }
 
-      if (!isDuplicate) {
-        finalDetections.add(current);
+    if (!isDuplicate) {
+      finalDetections.add(current);
+    }
+  }
+
+  List<BirdCrop> allCrops = [];
+  for (var det in finalDetections) {
+    final cropped = img.copyCrop(
+      originalImage,
+      x: det.box.left,
+      y: det.box.top,
+      width: det.box.width,
+      height: det.box.height,
+    );
+
+    // Extract center color for clustering
+    final w = cropped.width;
+    final h = cropped.height;
+    final int startX = (w * 0.4).toInt();
+    final int startY = (h * 0.4).toInt();
+    final int endX = (w * 0.6).toInt();
+    final int endY = (h * 0.6).toInt();
+
+    List<double> color = [0.0, 0.0, 0.0];
+    if (startX < endX && startY < endY) {
+      double sumR = 0, sumG = 0, sumB = 0;
+      int count = 0;
+      for (int y = startY; y < endY; y++) {
+        for (int x = startX; x < endX; x++) {
+          final pixel = cropped.getPixel(x, y);
+          sumR += pixel.r.toDouble();
+          sumG += pixel.g.toDouble();
+          sumB += pixel.b.toDouble();
+          count++;
+        }
       }
+      if (count > 0) {
+        color = [sumR / count, sumG / count, sumB / count];
+      }
+    } else if (w > 0 && h > 0) {
+      final centerPixel = cropped.getPixel(w ~/ 2, h ~/ 2);
+      color = [
+        centerPixel.r.toDouble(),
+        centerPixel.g.toDouble(),
+        centerPixel.b.toDouble(),
+      ];
     }
 
-    List<BirdCrop> allCrops = [];
-    for (var det in finalDetections) {
-      final cropped = img.copyCrop(
-        originalImage,
-        x: det.box.left,
-        y: det.box.top,
-        width: det.box.width,
-        height: det.box.height,
-      );
-      allCrops.add(BirdCrop(cropped, det.score, det.box));
+    final jpgBytes = Uint8List.fromList(img.encodeJpg(cropped, quality: 90));
+    allCrops.add(BirdCrop(jpgBytes, color, det.score, det.box));
+  }
+
+  return allCrops;
+}
+
+class BirdDetector {
+  Interpreter? _interpreter;
+
+  Future<void> init() async {
+    final options = InterpreterOptions()
+      ..threads = min(4, Platform.numberOfProcessors);
+    _interpreter = await Interpreter.fromAsset(
+      'assets/efficientdet_lite4.tflite',
+      options: options,
+    );
+  }
+
+  Future<List<BirdCrop>> detectAndCrop(String imagePath) async {
+    if (_interpreter == null) {
+      throw Exception('Detector not initialized');
     }
 
-    return allCrops;
+    final fileBytes = await File(imagePath).readAsBytes();
+
+    final inputShape = _interpreter!.getInputTensor(0).shape;
+    final int targetW = inputShape[1];
+    final int targetH = inputShape[2];
+
+    final request = _DetectorRequest(
+      fileBytes,
+      _interpreter!.address,
+      targetW,
+      targetH,
+    );
+
+    return await compute(_detectorWorker, request);
   }
 
   void dispose() {

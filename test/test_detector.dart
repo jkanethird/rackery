@@ -6,14 +6,18 @@ import 'package:image/image.dart' as img;
 
 void main() {
   test('Detect Turnstone', () async {
-    final interpreter = await Interpreter.fromFile(File('assets/efficientdet_lite4.tflite'));
-    final fileBytes = await File('/home/jkane/test photos/IMG_3835.HEIC').readAsBytes();
+    final interpreter = await Interpreter.fromFile(
+      File('assets/efficientdet_lite4.tflite'),
+    );
+    final fileBytes = await File(
+      '/home/jkane/test photos/IMG_3835.HEIC',
+    ).readAsBytes();
     final originalImage = img.decodeImage(fileBytes);
     if (originalImage == null) {
       print("Could not decode image");
       return;
     }
-  
+
     final inputShape = interpreter.getInputTensor(0).shape;
     final int targetW = inputShape[1];
     final int targetH = inputShape[2];
@@ -37,7 +41,10 @@ void main() {
     );
 
     Map<int, Object> dynamicOutputs = {
-      0: List<List<List<double>>>.filled(1, List.filled(25, List.filled(4, 0.0))),
+      0: List<List<List<double>>>.filled(
+        1,
+        List.filled(25, List.filled(4, 0.0)),
+      ),
       1: List<List<double>>.filled(1, List.filled(25, 0.0)),
       2: List<List<double>>.filled(1, List.filled(25, 0.0)),
       3: List<double>.filled(1, 0.0),
@@ -52,7 +59,7 @@ void main() {
     int count = counts[0].toInt();
     print("Count: \$count");
     for (int i = 0; i < count; i++) {
-       print("Class: \${classes[0][i]}, Score: \${scores[0][i]}");
+      print("Class: \${classes[0][i]}, Score: \${scores[0][i]}");
     }
   });
 }

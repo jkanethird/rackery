@@ -4,14 +4,18 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 
 void main() async {
-  final interpreter = await Interpreter.fromAsset('assets/efficientdet_lite4.tflite');
-  final fileBytes = await File('/home/jkane/Downloads/IMG_3835.HEIC').readAsBytes();
+  final interpreter = await Interpreter.fromAsset(
+    'assets/efficientdet_lite4.tflite',
+  );
+  final fileBytes = await File(
+    '/home/jkane/Downloads/IMG_3835.HEIC',
+  ).readAsBytes();
   final originalImage = img.decodeImage(fileBytes);
   if (originalImage == null) {
-      print("Could not decode image");
-      return;
+    print("Could not decode image");
+    return;
   }
-  
+
   final inputShape = interpreter.getInputTensor(0).shape;
   final int targetW = inputShape[1];
   final int targetH = inputShape[2];

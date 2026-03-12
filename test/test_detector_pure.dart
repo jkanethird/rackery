@@ -4,17 +4,18 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 
 void main() async {
-  
-  final interpreter = await Interpreter.fromFile(File('assets/efficientdet_lite4.tflite'));
+  final interpreter = await Interpreter.fromFile(
+    File('assets/efficientdet_lite4.tflite'),
+  );
   final tempPath = '/tmp/IMG_3835.jpg';
-  
+
   final fileBytes = await File(tempPath).readAsBytes();
   final originalImage = img.decodeImage(fileBytes);
   if (originalImage == null) {
-      print("Could not decode converted image");
-      return;
+    print("Could not decode converted image");
+    return;
   }
-  
+
   final inputShape = interpreter.getInputTensor(0).shape;
   final int targetW = inputShape[1];
   final int targetH = inputShape[2];
@@ -53,21 +54,23 @@ void main() async {
 
   int count = counts[0].toInt();
   for (int i = 0; i < count; i++) {
-      double score = scores[0][i];
-      int detectedClass = classes[0][i].toInt();
-      if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
-        List<double> box = locations[0][i];
-        double ymin = box[0].clamp(0.0, 1.0);
-        double xmin = box[1].clamp(0.0, 1.0);
-        double ymax = box[2].clamp(0.0, 1.0);
-        double xmax = box[3].clamp(0.0, 1.0);
-        int localX = (xmin * originalImage.width).toInt();
-        int localY = (ymin * originalImage.height).toInt();
-        int localW = ((xmax - xmin) * originalImage.width).toInt();
-        int localH = ((ymax - ymin) * originalImage.height).toInt();
-        
-        double aspectRatio = localW / localH;
-        print("Detected at X: $localX, Y: $localY, W: $localW, H: $localH, Ratio: $aspectRatio (Class $detectedClass, Score $score)");
-      }
+    double score = scores[0][i];
+    int detectedClass = classes[0][i].toInt();
+    if (score > 0.20 && (detectedClass == 16 || detectedClass == 15)) {
+      List<double> box = locations[0][i];
+      double ymin = box[0].clamp(0.0, 1.0);
+      double xmin = box[1].clamp(0.0, 1.0);
+      double ymax = box[2].clamp(0.0, 1.0);
+      double xmax = box[3].clamp(0.0, 1.0);
+      int localX = (xmin * originalImage.width).toInt();
+      int localY = (ymin * originalImage.height).toInt();
+      int localW = ((xmax - xmin) * originalImage.width).toInt();
+      int localH = ((ymax - ymin) * originalImage.height).toInt();
+
+      double aspectRatio = localW / localH;
+      print(
+        "Detected at X: $localX, Y: $localY, W: $localW, H: $localH, Ratio: $aspectRatio (Class $detectedClass, Score $score)",
+      );
+    }
   }
 }

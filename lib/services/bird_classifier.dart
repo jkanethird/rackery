@@ -235,7 +235,7 @@ class BirdClassifier {
           'prompt': prompt,
           'images': [base64Image],
           'stream': false,
-          'options': {'temperature': 0, 'num_predict': 192},
+          'options': {'temperature': 0.1, 'num_predict': 96},
         }),
       );
 
@@ -291,7 +291,6 @@ class BirdClassifier {
         if (responseText.toLowerCase().contains("unknown bird")) {
           return ["Unknown Bird"];
         }
-        debugPrint('Failed to extract any species from response text.');
         return ["Unknown Bird"];
       }
 
@@ -301,16 +300,18 @@ class BirdClassifier {
       for (String raw in rawSpeciesList) {
         if (raw.isEmpty) continue;
         final lowerRaw = raw.toLowerCase();
+
         if (lowerRaw.contains('unknown') && !lowerRaw.contains('(')) continue;
 
-        // Try to find the exact common name in our eBird dictionary
+        // Try to find the common name in our eBird dictionary using multiple passes
         String? bestCommon;
         String? bestSci;
 
+        // Pass 1: Check if LLM output CONTAINS a full eBird name
+        // Example: LLM outputs "1. Mute Swan", eBird contains "Mute Swan".
+        // We want the longest match to avoid matching "Swan sp." instead of "Mute Swan".
         for (final entry in scientificToCommon.entries) {
-          if (entry.value.trim().isEmpty) {
-            continue; // Skip empty generic common names to prevent matching everything
-          }
+          if (entry.value.trim().isEmpty) continue;
           if (lowerRaw.contains(entry.value.toLowerCase())) {
             if (bestCommon == null || entry.value.length > bestCommon.length) {
               bestCommon = entry.value;
@@ -319,9 +320,40 @@ class BirdClassifier {
           }
         }
 
-        if (bestCommon != null && bestSci != null) {
+        // Pass 2: Maybe the LLM gave a generic name (e.g. "Swan")
+        // Check if there is an exact generic "sp." match in eBird (e.g. "swan sp.")
+        if (bestCommon == null) {
+          for (final entry in scientificToCommon.entries) {
+            final ebirdLower = entry.value.toLowerCase();
+            if (ebirdLower == '$lowerRaw sp.' || ebirdLower == '$lowerRaw sp') {
+              bestCommon = entry.value;
+              bestSci = entry.key;
+              break;
+            }
+          }
+        }
+
+        // Pass 3: Look for the shortest eBird name that CONTAINS the LLM guess as a whole word.
+        // Example: LLM outputs "Pigeon". Shortest eBird match containing "Pigeon" might be "Feral Pigeon".
+        if (bestCommon == null) {
+          final escapedRaw = RegExp.escape(lowerRaw);
+          final wordRegex = RegExp(r'\b' + escapedRaw + r'\b');
+          for (final entry in scientificToCommon.entries) {
+            if (wordRegex.hasMatch(entry.value.toLowerCase())) {
+              if (bestCommon == null ||
+                  entry.value.length < bestCommon.length) {
+                bestCommon = entry.value;
+                bestSci = entry.key;
+              }
+            }
+          }
+        }
+
+        if (bestCommon == null) {
+          debugPrint('FAILED to find dictionary match for: "$raw"');
+        } else {
           if (!seenScientifics.contains(bestSci)) {
-            seenScientifics.add(bestSci);
+            seenScientifics.add(bestSci!);
             processedSpecies.add("$bestCommon ($bestSci)");
           }
         }
@@ -332,6 +364,21 @@ class BirdClassifier {
     } catch (e) {
       debugPrint('Failed to parse LLM JSON response: $e');
       return ["Unknown Bird"];
+    }
+  }
+
+  Future<void> unloadModel() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:11434/api/generate'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'model': 'llama3.2-vision', 'keep_alive': 0}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Failed to unload Ollama model: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error unloading Ollama model: $e');
     }
   }
 

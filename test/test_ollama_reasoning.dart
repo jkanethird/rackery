@@ -5,10 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 
 void main() async {
-  final fileBytes = await File('/tmp/converted_IMG_3835.HEIC.jpg').readAsBytes();
+  final fileBytes = await File(
+    '/tmp/converted_IMG_3835.HEIC.jpg',
+  ).readAsBytes();
   final originalImage = img.decodeImage(fileBytes);
   if (originalImage == null) return;
-  
+
   final jpgBytes = img.encodeJpg(originalImage, quality: 90);
   final base64Image = base64Encode(jpgBytes);
 

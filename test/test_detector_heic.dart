@@ -7,10 +7,14 @@ import 'package:ebird_generator/services/image_converter.dart';
 
 void main() {
   test('Detect Turnstone with Converter', () async {
-    final interpreter = await Interpreter.fromFile(File('assets/efficientdet_lite4.tflite'));
-    
+    final interpreter = await Interpreter.fromFile(
+      File('assets/efficientdet_lite4.tflite'),
+    );
+
     // First convert it so the image lib can parse it
-    final convertedPath = await ImageConverter.convertToJpegIfNeeded('/home/jkane/test photos/IMG_3835.HEIC');
+    final convertedPath = await ImageConverter.convertToJpegIfNeeded(
+      '/home/jkane/test photos/IMG_3835.HEIC',
+    );
     if (convertedPath == null) {
       print("Conversion failed");
       return;
@@ -23,7 +27,7 @@ void main() {
       print("Could not decode image");
       return;
     }
-  
+
     final inputShape = interpreter.getInputTensor(0).shape;
     final int targetW = inputShape[1];
     final int targetH = inputShape[2];
@@ -47,7 +51,10 @@ void main() {
     );
 
     Map<int, Object> dynamicOutputs = {
-      0: List<List<List<double>>>.filled(1, List.filled(25, List.filled(4, 0.0))),
+      0: List<List<List<double>>>.filled(
+        1,
+        List.filled(25, List.filled(4, 0.0)),
+      ),
       1: List<List<double>>.filled(1, List.filled(25, 0.0)),
       2: List<List<double>>.filled(1, List.filled(25, 0.0)),
       3: List<double>.filled(1, 0.0),
@@ -62,7 +69,7 @@ void main() {
     int count = counts[0].toInt();
     print("Count: \$count");
     for (int i = 0; i < count; i++) {
-       print("Class: \${classes[0][i]}, Score: \${scores[0][i]}");
+      print("Class: \${classes[0][i]}, Score: \${scores[0][i]}");
     }
   });
 }

@@ -14,25 +14,25 @@ Based on these characteristics, my top 5 species guesses are:
 ''';
 
   List<String> extractedLines = [];
-  
+
   // Try to grab numbered list items
   final listRegex = RegExp(r'^\s*\d+\.\s*(.+)$', multiLine: true);
   for (final match in listRegex.allMatches(responseText)) {
     extractedLines.add(match.group(1)!.trim());
   }
-  
+
   print("Extracted lines: $extractedLines");
-  
+
   List<String> finalGuesses = [];
   Set<String> seenSci = {};
-  
+
   for (String line in extractedLines) {
     if (line.toLowerCase().contains("unknown")) continue;
-    
+
     // Find the longest common name from our global list that exists in this line
     String? bestCommon;
     String? bestSci;
-    
+
     for (final entry in scientificToCommon.entries) {
       if (line.toLowerCase().contains(entry.value.toLowerCase())) {
         if (bestCommon == null || entry.value.length > bestCommon.length) {
@@ -41,14 +41,14 @@ Based on these characteristics, my top 5 species guesses are:
         }
       }
     }
-    
+
     if (bestCommon != null && bestSci != null) {
-       if (!seenSci.contains(bestSci)) {
-          seenSci.add(bestSci);
-          finalGuesses.add("$bestCommon ($bestSci)");
-       }
+      if (!seenSci.contains(bestSci)) {
+        seenSci.add(bestSci);
+        finalGuesses.add("$bestCommon ($bestSci)");
+      }
     }
   }
-  
+
   print("Final Guesses: $finalGuesses");
 }

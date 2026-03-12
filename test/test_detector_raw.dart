@@ -4,23 +4,28 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 
 void main() async {
-  final interpreter = await Interpreter.fromFile(File('assets/efficientdet_lite4.tflite'));
-  
+  final interpreter = await Interpreter.fromFile(
+    File('assets/efficientdet_lite4.tflite'),
+  );
+
   // Directly point to the system ImageMagick without using Flutter plugins since we're in a raw Dart script
   final tempPath = '/tmp/IMG_3835.jpg';
-  final result = await Process.run('magick', ['/home/jkane/test photos/IMG_3835.HEIC', tempPath]);
+  final result = await Process.run('magick', [
+    '/home/jkane/test photos/IMG_3835.HEIC',
+    tempPath,
+  ]);
   if (result.exitCode != 0) {
-     print("Magick failed");
-     return;
+    print("Magick failed");
+    return;
   }
-  
+
   final fileBytes = await File(tempPath).readAsBytes();
   final originalImage = img.decodeImage(fileBytes);
   if (originalImage == null) {
-      print("Could not decode converted image");
-      return;
+    print("Could not decode converted image");
+    return;
   }
-  
+
   final inputShape = interpreter.getInputTensor(0).shape;
   final int targetW = inputShape[1];
   final int targetH = inputShape[2];

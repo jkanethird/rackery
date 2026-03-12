@@ -14,7 +14,8 @@ const Map<String, String> scientificToCommon = {
   'Apteryx australis lawryi': 'Southern Brown Kiwi (Stewart I.)',
   'Apteryx rowi': 'Okarito Brown Kiwi',
   'Apteryx mantelli': 'North Island Brown Kiwi',
-  'Apteryx australis x mantelli': 'Southern Brown x North Island Brown Kiwi (hybrid)',
+  'Apteryx australis x mantelli':
+      'Southern Brown x North Island Brown Kiwi (hybrid)',
   'Apteryx owenii': 'Little Spotted Kiwi',
   'Apteryx rowi x owenii': 'Okarito Brown x Little Spotted Kiwi (hybrid)',
   'Apteryx maxima': 'Great Spotted Kiwi',
@@ -52,7 +53,8 @@ const Map<String, String> scientificToCommon = {
   'Nothocercus nigrocapillus': 'Hooded Tinamou',
   'Nothocercus bonapartei': 'Highland Tinamou',
   'Nothocercus bonapartei frantzii': 'Highland Tinamou (Costa Rican)',
-  'Nothocercus bonapartei [bonapartei Group]': 'Highland Tinamou (South American)',
+  'Nothocercus bonapartei [bonapartei Group]':
+      'Highland Tinamou (South American)',
   'Tinamus major': 'Great Tinamou',
   'Tinamus solitarius': 'Solitary Tinamou',
   'Tinamus tao': 'Gray Tinamou',
@@ -85,13 +87,15 @@ const Map<String, String> scientificToCommon = {
   'Crypturellus transfasciatus': 'Pale-browed Tinamou',
   'Crypturellus cinnamomeus': 'Thicket Tinamou',
   'Crypturellus cinnamomeus occidentalis': 'Thicket Tinamou (occidentalis)',
-  'Crypturellus cinnamomeus [cinnamomeus Group]': 'Thicket Tinamou (cinnamomeus Group)',
+  'Crypturellus cinnamomeus [cinnamomeus Group]':
+      'Thicket Tinamou (cinnamomeus Group)',
   'Crypturellus boucardi': 'Slaty-breasted Tinamou',
   'Crypturellus kerriae': 'Choco Tinamou',
   'Crypturellus erythropus': 'Red-legged Tinamou',
   'Crypturellus duidae': 'Gray-legged Tinamou',
   'Crypturellus strigulosus': 'Brazilian Tinamou',
-  'Crypturellus [undescribed form]': 'Serra do Divisor Tinamou (undescribed form)',
+  'Crypturellus [undescribed form]':
+      'Serra do Divisor Tinamou (undescribed form)',
   'Crypturellus sp.': 'Crypturellus sp.',
   'Tinamidae sp.': 'tinamou sp.',
   'Anhima cornuta': 'Horned Screamer',
@@ -101,23 +105,31 @@ const Map<String, String> scientificToCommon = {
   'Dendrocygna guttata': 'Spotted Whistling-Duck',
   'Dendrocygna eytoni': 'Plumed Whistling-Duck',
   'Dendrocygna viduata': 'White-faced Whistling-Duck',
-  'Dendrocygna guttata x viduata': 'Spotted x White-faced Whistling-Duck (hybrid)',
-  'Dendrocygna eytoni x viduata': 'Plumed x White-faced Whistling-Duck (hybrid)',
+  'Dendrocygna guttata x viduata':
+      'Spotted x White-faced Whistling-Duck (hybrid)',
+  'Dendrocygna eytoni x viduata':
+      'Plumed x White-faced Whistling-Duck (hybrid)',
   'Dendrocygna autumnalis': 'Black-bellied Whistling-Duck',
   'Dendrocygna autumnalis fulgens': 'Black-bellied Whistling-Duck (Northern)',
-  'Dendrocygna autumnalis autumnalis': 'Black-bellied Whistling-Duck (Southern)',
-  'Dendrocygna viduata x autumnalis': 'White-faced x Black-bellied Whistling-Duck (hybrid)',
+  'Dendrocygna autumnalis autumnalis':
+      'Black-bellied Whistling-Duck (Southern)',
+  'Dendrocygna viduata x autumnalis':
+      'White-faced x Black-bellied Whistling-Duck (hybrid)',
   'Dendrocygna arborea': 'West Indian Whistling-Duck',
-  'Dendrocygna autumnalis x arborea': 'Black-bellied x West Indian Whistling-Duck (hybrid)',
+  'Dendrocygna autumnalis x arborea':
+      'Black-bellied x West Indian Whistling-Duck (hybrid)',
   'Dendrocygna bicolor': 'Fulvous Whistling-Duck',
-  'Dendrocygna viduata x bicolor': 'White-faced x Fulvous Whistling-Duck (hybrid)',
-  'Dendrocygna autumnalis x bicolor': 'Black-bellied x Fulvous Whistling-Duck (hybrid)',
+  'Dendrocygna viduata x bicolor':
+      'White-faced x Fulvous Whistling-Duck (hybrid)',
+  'Dendrocygna autumnalis x bicolor':
+      'Black-bellied x Fulvous Whistling-Duck (hybrid)',
   'Dendrocygna arcuata': 'Wandering Whistling-Duck',
   'Dendrocygna eytoni x arcuata': 'Plumed x Wandering Whistling-Duck (hybrid)',
   'Dendrocygna eytoni/arcuata': 'Plumed/Wandering Whistling-Duck',
   'Dendrocygna javanica': 'Lesser Whistling-Duck',
   'Dendrocygna bicolor/javanica': 'Fulvous/Lesser Whistling-Duck',
-  'Dendrocygna arcuata x javanica': 'Wandering x Lesser Whistling-Duck (hybrid)',
+  'Dendrocygna arcuata x javanica':
+      'Wandering x Lesser Whistling-Duck (hybrid)',
   'Dendrocygna sp.': 'whistling-duck sp.',
   'Thalassornis leuconotus': 'White-backed Duck',
   'Anser indicus': 'Bar-headed Goose',
@@ -138,16 +150,20 @@ const Map<String, String> scientificToCommon = {
   'Anser cygnoides (Domestic type)': 'Swan Goose (Domestic type)',
   'Anser indicus x cygnoides': 'Bar-headed x Swan Goose (hybrid)',
   'Anser caerulescens x cygnoides': 'Snow x Swan Goose (hybrid)',
-  'Anser indicus x caerulescens x cygnoides': 'Bar-headed x Snow x Swan Goose (hybrid)',
+  'Anser indicus x caerulescens x cygnoides':
+      'Bar-headed x Snow x Swan Goose (hybrid)',
   'Anser anser x cygnoides': 'Graylag x Swan Goose (hybrid)',
   'Anser albifrons': 'Greater White-fronted Goose',
   'Anser albifrons flavirostris': 'Greater White-fronted Goose (Greenland)',
   'Anser albifrons albifrons': 'Greater White-fronted Goose (Eurasian)',
   'Anser albifrons gambelli/sponsa': 'Greater White-fronted Goose (Western)',
   'Anser albifrons elgasi': 'Greater White-fronted Goose (Tule)',
-  'Anser indicus x albifrons': 'Bar-headed x Greater White-fronted Goose (hybrid)',
-  'Anser canagicus x albifrons': 'Emperor x Greater White-fronted Goose (hybrid)',
-  'Anser caerulescens x albifrons': 'Snow x Greater White-fronted Goose (hybrid)',
+  'Anser indicus x albifrons':
+      'Bar-headed x Greater White-fronted Goose (hybrid)',
+  'Anser canagicus x albifrons':
+      'Emperor x Greater White-fronted Goose (hybrid)',
+  'Anser caerulescens x albifrons':
+      'Snow x Greater White-fronted Goose (hybrid)',
   'Anser rossii x albifrons': 'Ross\'s x Greater White-fronted Goose (hybrid)',
   'Anser anser x albifrons': 'Graylag x Greater White-fronted Goose (hybrid)',
   'Anser erythropus': 'Lesser White-fronted Goose',
@@ -156,7 +172,8 @@ const Map<String, String> scientificToCommon = {
   'Anser fabalis fabalis/johanseni': 'Taiga Bean-Goose (Western)',
   'Anser fabalis middendorffii': 'Taiga Bean-Goose (Eastern)',
   'Anser serrirostris': 'Tundra Bean-Goose',
-  'Anser albifrons x serrirostris': 'Greater White-fronted Goose x Tundra Bean-Goose (hybrid)',
+  'Anser albifrons x serrirostris':
+      'Greater White-fronted Goose x Tundra Bean-Goose (hybrid)',
   'Anser fabalis/serrirostris': 'Taiga/Tundra Bean-Goose',
   'Anser brachyrhynchus': 'Pink-footed Goose',
   'Anser sp. (Domestic type)': 'Domestic goose sp. (Domestic type)',
@@ -175,9 +192,12 @@ const Map<String, String> scientificToCommon = {
   'Anser caerulescens x Branta leucopsis': 'Snow x Barnacle Goose (hybrid)',
   'Anser rossii x Branta leucopsis': 'Ross\'s x Barnacle Goose (hybrid)',
   'Anser anser x Branta leucopsis': 'Graylag x Barnacle Goose (hybrid)',
-  'Anser albifrons x Branta leucopsis': 'Greater White-fronted x Barnacle Goose (hybrid)',
-  'Anser erythropus x Branta leucopsis': 'Lesser White-fronted x Barnacle Goose (hybrid)',
-  'Anser brachyrhynchus x Branta leucopsis': 'Pink-footed x Barnacle Goose (hybrid)',
+  'Anser albifrons x Branta leucopsis':
+      'Greater White-fronted x Barnacle Goose (hybrid)',
+  'Anser erythropus x Branta leucopsis':
+      'Lesser White-fronted x Barnacle Goose (hybrid)',
+  'Anser brachyrhynchus x Branta leucopsis':
+      'Pink-footed x Barnacle Goose (hybrid)',
   'Branta hutchinsii': 'Cackling Goose',
   'Branta hutchinsii leucopareia': 'Cackling Goose (Aleutian)',
   'Branta hutchinsii hutchinsii': 'Cackling Goose (Richardson\'s)',
@@ -187,7 +207,8 @@ const Map<String, String> scientificToCommon = {
   'Anser caerulescens x Branta hutchinsii': 'Snow x Cackling Goose (hybrid)',
   'Anser rossii x Branta hutchinsii': 'Ross\'s x Cackling Goose (hybrid)',
   'Branta bernicla x hutchinsii': 'Brant x Cackling Goose (hybrid)',
-  'Anser albifrons x Branta hutchinsii': 'Greater White-fronted x Cackling Goose (hybrid)',
+  'Anser albifrons x Branta hutchinsii':
+      'Greater White-fronted x Cackling Goose (hybrid)',
   'Branta leucopsis x hutchinsii': 'Barnacle x Cackling Goose (hybrid)',
   'Branta canadensis': 'Canada Goose',
   'Branta canadensis moffitti/maxima': 'Canada Goose (moffitti/maxima)',
@@ -195,20 +216,26 @@ const Map<String, String> scientificToCommon = {
   'Branta canadensis [canadensis Group]': 'Canada Goose (canadensis Group)',
   'Anser indicus x Branta canadensis': 'Bar-headed x Canada Goose (hybrid)',
   'Anser cygnoides x Branta canadensis': 'Swan x Canada Goose (hybrid)',
-  'Anser brachyrhynchus x Branta canadensis': 'Pink-footed x Canada Goose (hybrid)',
-  'Anser albifrons x Branta canadensis': 'Greater White-fronted x Canada Goose (hybrid)',
-  'Anser albifrons x Branta hutchinsii/canadensis': 'Greater White-fronted x Cackling/Canada Goose (hybrid)',
+  'Anser brachyrhynchus x Branta canadensis':
+      'Pink-footed x Canada Goose (hybrid)',
+  'Anser albifrons x Branta canadensis':
+      'Greater White-fronted x Canada Goose (hybrid)',
+  'Anser albifrons x Branta hutchinsii/canadensis':
+      'Greater White-fronted x Cackling/Canada Goose (hybrid)',
   'Anser anser x Branta canadensis': 'Graylag x Canada Goose (hybrid)',
-  'Anser sp. (Domestic type) x Branta canadensis': 'Domestic goose sp. x Canada Goose (hybrid)',
+  'Anser sp. (Domestic type) x Branta canadensis':
+      'Domestic goose sp. x Canada Goose (hybrid)',
   'Anser caerulescens x Branta canadensis': 'Snow x Canada Goose (hybrid)',
   'Anser rossii x Branta canadensis': 'Ross\'s x Canada Goose (hybrid)',
   'Branta leucopsis x canadensis': 'Barnacle x Canada Goose (hybrid)',
   'Branta hutchinsii/canadensis': 'Cackling/Canada Goose',
-  'Anser caerulescens/rossii x Branta hutchinsii/canadensis': 'Snow/Ross\'s x Cackling/Canada Goose (hybrid)',
+  'Anser caerulescens/rossii x Branta hutchinsii/canadensis':
+      'Snow/Ross\'s x Cackling/Canada Goose (hybrid)',
   'Branta sandvicensis': 'Hawaiian Goose',
   'Branta leucopsis x sandvicensis': 'Barnacle x Hawaiian Goose (hybrid)',
   'Branta ruficollis': 'Red-breasted Goose',
-  'Anser albifrons x Branta ruficollis': 'Greater White-fronted x Red-breasted Goose (hybrid)',
+  'Anser albifrons x Branta ruficollis':
+      'Greater White-fronted x Red-breasted Goose (hybrid)',
   'Branta bernicla x ruficollis': 'Brant x Red-breasted Goose (hybrid)',
   'Branta leucopsis x ruficollis': 'Barnacle x Red-breasted Goose (hybrid)',
   'Branta sp.': 'Branta sp.',
@@ -225,7 +252,8 @@ const Map<String, String> scientificToCommon = {
   'Cygnus columbianus': 'Tundra Swan',
   'Cygnus columbianus columbianus': 'Tundra Swan (Whistling)',
   'Cygnus columbianus bewickii': 'Tundra Swan (Bewick\'s)',
-  'Cygnus columbianus columbianus x bewickii': 'Tundra Swan (Whistling x Bewick\'s)',
+  'Cygnus columbianus columbianus x bewickii':
+      'Tundra Swan (Whistling x Bewick\'s)',
   'Cygnus buccinator x columbianus': 'Trumpeter x Tundra Swan (hybrid)',
   'Cygnus buccinator/columbianus': 'Trumpeter/Tundra Swan',
   'Cygnus cygnus': 'Whooper Swan',
@@ -245,16 +273,19 @@ const Map<String, String> scientificToCommon = {
   'Chloephaga hybrida': 'Kelp Goose',
   'Chloephaga poliocephala': 'Ashy-headed Goose',
   'Chloephaga rubidiceps': 'Ruddy-headed Goose',
-  'Chloephaga poliocephala x rubidiceps': 'Ashy-headed x Ruddy-headed Goose (hybrid)',
+  'Chloephaga poliocephala x rubidiceps':
+      'Ashy-headed x Ruddy-headed Goose (hybrid)',
   'Chloephaga sp.': 'Chloephaga sp.',
   'Anatidae (goose sp.)': 'goose sp.',
   'Radjah radjah': 'Radjah Shelduck',
   'Alopochen aegyptiaca': 'Egyptian Goose',
-  'Sarkidiornis melanotos x Alopochen aegyptiaca': 'Knob-billed Duck x Egyptian Goose (hybrid)',
+  'Sarkidiornis melanotos x Alopochen aegyptiaca':
+      'Knob-billed Duck x Egyptian Goose (hybrid)',
   'Alopochen mauritiana': 'Mauritius Shelduck',
   'Alopochen kervazoi': 'Reunion Shelduck',
   'Tadorna ferruginea': 'Ruddy Shelduck',
-  'Alopochen aegyptiaca x Tadorna ferruginea': 'Egyptian Goose x Ruddy Shelduck (hybrid)',
+  'Alopochen aegyptiaca x Tadorna ferruginea':
+      'Egyptian Goose x Ruddy Shelduck (hybrid)',
   'Tadorna cana': 'South African Shelduck',
   'Tadorna tadornoides': 'Australian Shelduck',
   'Tadorna variegata': 'Paradise Shelduck',
@@ -266,7 +297,8 @@ const Map<String, String> scientificToCommon = {
   'Plectropterus gambensis niger': 'Spur-winged Goose (Southern)',
   'Tachyeres patachonicus': 'Flying Steamer-Duck',
   'Tachyeres pteneres': 'Flightless Steamer-Duck',
-  'Tachyeres pteneres [undescribed form]': 'Flightless Steamer-Duck (Chiloe form)',
+  'Tachyeres pteneres [undescribed form]':
+      'Flightless Steamer-Duck (Chiloe form)',
   'Tachyeres brachypterus': 'Falkland Steamer-Duck',
   'Tachyeres brachypterus (Flightless)': 'Falkland Steamer-Duck (Flightless)',
   'Tachyeres brachypterus (Flying)': 'Falkland Steamer-Duck (Flying)',
@@ -277,7 +309,8 @@ const Map<String, String> scientificToCommon = {
   'Speculanas specularis': 'Spectacled Duck',
   'Cairina moschata': 'Muscovy Duck',
   'Cairina moschata (Domestic type)': 'Muscovy Duck (Domestic type)',
-  'Alopochen aegyptiaca x Cairina moschata': 'Egyptian Goose x Muscovy Duck (hybrid)',
+  'Alopochen aegyptiaca x Cairina moschata':
+      'Egyptian Goose x Muscovy Duck (hybrid)',
   'Nettapus pulchellus': 'Green Pygmy-Goose',
   'Nettapus coromandelianus': 'Cotton Pygmy-Goose',
   'Nettapus pulchellus/coromandelianus': 'Green/Cotton Pygmy-Goose',
@@ -304,7 +337,8 @@ const Map<String, String> scientificToCommon = {
   'Spatula versicolor': 'Silver Teal',
   'Spatula puna': 'Puna Teal',
   'Spatula discors': 'Blue-winged Teal',
-  'Sibirionetta formosa x Spatula discors': 'Baikal x Blue-winged Teal (hybrid)',
+  'Sibirionetta formosa x Spatula discors':
+      'Baikal x Blue-winged Teal (hybrid)',
   'Spatula cyanoptera': 'Cinnamon Teal',
   'Spatula cyanoptera septentrionalium': 'Cinnamon Teal (Northern)',
   'Spatula cyanoptera [orinoma Group]': 'Cinnamon Teal (Andean)',
@@ -323,17 +357,22 @@ const Map<String, String> scientificToCommon = {
   'Mareca strepera couesi': 'Gadwall (Coues\'s)',
   'Spatula clypeata x Mareca strepera': 'Northern Shoveler x Gadwall (hybrid)',
   'Mareca falcata': 'Falcated Duck',
-  'Sibirionetta formosa x Mareca falcata': 'Baikal Teal x Falcated Duck (hybrid)',
+  'Sibirionetta formosa x Mareca falcata':
+      'Baikal Teal x Falcated Duck (hybrid)',
   'Mareca strepera x falcata': 'Gadwall x Falcated Duck (hybrid)',
   'Mareca penelope': 'Eurasian Wigeon',
-  'Sibirionetta formosa x Mareca penelope': 'Baikal Teal x Eurasian Wigeon (hybrid)',
-  'Spatula clypeata x Mareca penelope': 'Northern Shoveler x Eurasian Wigeon (hybrid)',
+  'Sibirionetta formosa x Mareca penelope':
+      'Baikal Teal x Eurasian Wigeon (hybrid)',
+  'Spatula clypeata x Mareca penelope':
+      'Northern Shoveler x Eurasian Wigeon (hybrid)',
   'Mareca strepera x penelope': 'Gadwall x Eurasian Wigeon (hybrid)',
   'Mareca falcata x penelope': 'Falcated Duck x Eurasian Wigeon (hybrid)',
   'Mareca americana': 'American Wigeon',
   'Aix sponsa x Mareca americana': 'Wood Duck x American Wigeon (hybrid)',
-  'Spatula discors x Mareca americana': 'Blue-winged Teal x American Wigeon (hybrid)',
-  'Spatula clypeata x Mareca americana': 'Northern Shoveler x American Wigeon (hybrid)',
+  'Spatula discors x Mareca americana':
+      'Blue-winged Teal x American Wigeon (hybrid)',
+  'Spatula clypeata x Mareca americana':
+      'Northern Shoveler x American Wigeon (hybrid)',
   'Mareca strepera x americana': 'Gadwall x American Wigeon (hybrid)',
   'Mareca penelope x americana': 'Eurasian x American Wigeon (hybrid)',
   'Mareca penelope/americana': 'Eurasian/American Wigeon',
@@ -352,11 +391,14 @@ const Map<String, String> scientificToCommon = {
   'Anas poecilorhyncha/zonorhyncha': 'Indian/Eastern Spot-billed Duck',
   'Anas platyrhynchos': 'Mallard',
   'Anas platyrhynchos (Domestic type)': 'Mallard (Domestic type)',
-  'Alopochen aegyptiaca x Anas platyrhynchos': 'Egyptian Goose x Mallard (hybrid)',
-  'Tadorna ferruginea x Anas platyrhynchos': 'Ruddy Shelduck x Mallard (hybrid)',
+  'Alopochen aegyptiaca x Anas platyrhynchos':
+      'Egyptian Goose x Mallard (hybrid)',
+  'Tadorna ferruginea x Anas platyrhynchos':
+      'Ruddy Shelduck x Mallard (hybrid)',
   'Cairina moschata x Anas platyrhynchos': 'Muscovy Duck x Mallard (hybrid)',
   'Aix sponsa x Anas platyrhynchos': 'Wood Duck x Mallard (hybrid)',
-  'Spatula clypeata x Anas platyrhynchos': 'Northern Shoveler x Mallard (hybrid)',
+  'Spatula clypeata x Anas platyrhynchos':
+      'Northern Shoveler x Mallard (hybrid)',
   'Mareca strepera x Anas platyrhynchos': 'Gadwall x Mallard (hybrid)',
   'Mareca falcata x Anas platyrhynchos': 'Falcated Duck x Mallard (hybrid)',
   'Mareca penelope x Anas platyrhynchos': 'Eurasian Wigeon x Mallard (hybrid)',
@@ -365,8 +407,10 @@ const Map<String, String> scientificToCommon = {
   'Anas undulata x platyrhynchos': 'Yellow-billed Duck x Mallard (hybrid)',
   'Anas superciliosa x platyrhynchos': 'Pacific Black Duck x Mallard (hybrid)',
   'Anas wyvilliana x platyrhynchos': 'Hawaiian Duck x Mallard (hybrid)',
-  'Anas poecilorhyncha x platyrhynchos': 'Indian Spot-billed Duck x Mallard (hybrid)',
-  'Anas zonorhyncha x platyrhynchos': 'Eastern Spot-billed Duck x Mallard (hybrid)',
+  'Anas poecilorhyncha x platyrhynchos':
+      'Indian Spot-billed Duck x Mallard (hybrid)',
+  'Anas zonorhyncha x platyrhynchos':
+      'Eastern Spot-billed Duck x Mallard (hybrid)',
   'Anas superciliosa/platyrhynchos': 'Pacific Black Duck/Mallard',
   'Anas wyvilliana/platyrhynchos': 'Hawaiian Duck/Mallard',
   'Anas poecilorhyncha/platyrhynchos': 'Indian Spot-billed Duck/Mallard',
@@ -375,51 +419,62 @@ const Map<String, String> scientificToCommon = {
   'Anas platyrhynchos x diazi': 'Mallard x Mexican Duck (hybrid)',
   'Anas platyrhynchos/diazi': 'Mallard/Mexican Duck',
   'Anas rubripes': 'American Black Duck',
-  'Mareca americana x Anas rubripes': 'American Wigeon x American Black Duck (hybrid)',
+  'Mareca americana x Anas rubripes':
+      'American Wigeon x American Black Duck (hybrid)',
   'Anas platyrhynchos x rubripes': 'Mallard x American Black Duck (hybrid)',
   'Anas platyrhynchos/rubripes': 'Mallard/American Black Duck',
   'Anas fulvigula': 'Mottled Duck',
   'Anas fulvigula fulvigula': 'Mottled Duck (Florida)',
   'Anas fulvigula maculosa': 'Mottled Duck (Gulf Coast)',
   'Anas platyrhynchos x fulvigula': 'Mallard x Mottled Duck (hybrid)',
-  'Anas platyrhynchos x diazi/fulvigula': 'Mallard x Mexican/Mottled Duck (hybrid)',
+  'Anas platyrhynchos x diazi/fulvigula':
+      'Mallard x Mexican/Mottled Duck (hybrid)',
   'Anas diazi x fulvigula': 'Mexican x Mottled Duck (hybrid)',
   'Anas platyrhynchos/fulvigula': 'Mallard/Mottled Duck',
   'Anas diazi/fulvigula': 'Mexican/Mottled Duck',
   'Anas rubripes/fulvigula': 'American Black/Mottled Duck',
   'Anas capensis': 'Cape Teal',
   'Anas bahamensis': 'White-cheeked Pintail',
-  'Anas bahamensis bahamensis/rubrirostris': 'White-cheeked Pintail (White-cheeked)',
+  'Anas bahamensis bahamensis/rubrirostris':
+      'White-cheeked Pintail (White-cheeked)',
   'Anas bahamensis galapagensis': 'White-cheeked Pintail (Galapagos)',
   'Anas platyrhynchos x bahamensis': 'Mallard x White-cheeked Pintail (hybrid)',
   'Anas erythrorhyncha': 'Red-billed Duck',
   'Anas undulata x erythrorhyncha': 'Yellow-billed x Red-billed Duck (hybrid)',
   'Anas capensis x erythrorhyncha': 'Cape Teal x Red-billed Duck (hybrid)',
   'Anas acuta': 'Northern Pintail',
-  'Sibirionetta formosa x Anas acuta': 'Baikal Teal x Northern Pintail (hybrid)',
-  'Spatula clypeata x Anas acuta': 'Northern Shoveler x Northern Pintail (hybrid)',
+  'Sibirionetta formosa x Anas acuta':
+      'Baikal Teal x Northern Pintail (hybrid)',
+  'Spatula clypeata x Anas acuta':
+      'Northern Shoveler x Northern Pintail (hybrid)',
   'Mareca strepera x Anas acuta': 'Gadwall x Northern Pintail (hybrid)',
   'Mareca penelope x Anas acuta': 'Eurasian Wigeon x Northern Pintail (hybrid)',
-  'Mareca americana x Anas acuta': 'American Wigeon x Northern Pintail (hybrid)',
+  'Mareca americana x Anas acuta':
+      'American Wigeon x Northern Pintail (hybrid)',
   'Anas superciliosa x acuta': 'Pacific Black Duck x Northern Pintail (hybrid)',
   'Anas platyrhynchos x acuta': 'Mallard x Northern Pintail (hybrid)',
   'Anas rubripes x acuta': 'American Black Duck x Northern Pintail (hybrid)',
   'Anas eatoni': 'Eaton\'s Pintail',
   'Anas georgica': 'Yellow-billed Pintail',
   'Anas georgica georgica': 'Yellow-billed Pintail (South Georgia)',
-  'Anas georgica spinicauda/niceforoi': 'Yellow-billed Pintail (South American)',
-  'Anas bahamensis x georgica': 'White-cheeked x Yellow-billed Pintail (hybrid)',
+  'Anas georgica spinicauda/niceforoi':
+      'Yellow-billed Pintail (South American)',
+  'Anas bahamensis x georgica':
+      'White-cheeked x Yellow-billed Pintail (hybrid)',
   'Anas crecca': 'Green-winged Teal',
   'Anas crecca crecca': 'Green-winged Teal (Eurasian)',
   'Anas crecca carolinensis': 'Green-winged Teal (American)',
-  'Anas crecca crecca x carolinensis': 'Green-winged Teal (Eurasian x American)',
+  'Anas crecca crecca x carolinensis':
+      'Green-winged Teal (Eurasian x American)',
   'Sibirionetta formosa x Anas crecca': 'Baikal x Green-winged Teal (hybrid)',
   'Spatula querquedula x Anas crecca': 'Garganey x Green-winged Teal (hybrid)',
   'Spatula discors x Anas crecca': 'Blue-winged x Green-winged Teal (hybrid)',
   'Spatula cyanoptera x Anas crecca': 'Cinnamon x Green-winged Teal (hybrid)',
   'Mareca strepera x Anas crecca': 'Gadwall x Green-winged Teal (hybrid)',
-  'Mareca penelope x Anas crecca': 'Eurasian Wigeon x Green-winged Teal (hybrid)',
-  'Mareca americana x Anas crecca': 'American Wigeon x Green-winged Teal (hybrid)',
+  'Mareca penelope x Anas crecca':
+      'Eurasian Wigeon x Green-winged Teal (hybrid)',
+  'Mareca americana x Anas crecca':
+      'American Wigeon x Green-winged Teal (hybrid)',
   'Anas platyrhynchos x crecca': 'Mallard x Green-winged Teal (hybrid)',
   'Anas acuta x crecca': 'Northern Pintail x Green-winged Teal (hybrid)',
   'Spatula querquedula/Anas crecca': 'Garganey/Green-winged Teal',
@@ -469,7 +524,8 @@ const Map<String, String> scientificToCommon = {
   'Aythya valisineria x collaris': 'Canvasback x Ring-necked Duck (hybrid)',
   'Aythya americana x collaris': 'Redhead x Ring-necked Duck (hybrid)',
   'Aythya nyroca': 'Ferruginous Duck',
-  'Netta rufina x Aythya nyroca': 'Red-crested Pochard x Ferruginous Duck (hybrid)',
+  'Netta rufina x Aythya nyroca':
+      'Red-crested Pochard x Ferruginous Duck (hybrid)',
   'Aythya ferina x nyroca': 'Common Pochard x Ferruginous Duck (hybrid)',
   'Aythya innotata': 'Madagascar Pochard',
   'Aythya baeri': 'Baer\'s Pochard',
@@ -480,7 +536,8 @@ const Map<String, String> scientificToCommon = {
   'Anas gracilis x Aythya australis': 'Gray Teal x Hardhead (hybrid)',
   'Aythya fuligula': 'Tufted Duck',
   'Anas platyrhynchos x Aythya fuligula': 'Mallard x Tufted Duck (hybrid)',
-  'Netta rufina x Aythya fuligula': 'Red-crested Pochard x Tufted Duck (hybrid)',
+  'Netta rufina x Aythya fuligula':
+      'Red-crested Pochard x Tufted Duck (hybrid)',
   'Aythya ferina x fuligula': 'Common Pochard x Tufted Duck (hybrid)',
   'Aythya collaris x fuligula': 'Ring-necked x Tufted Duck (hybrid)',
   'Aythya nyroca x fuligula': 'Ferruginous x Tufted Duck (hybrid)',
@@ -511,8 +568,10 @@ const Map<String, String> scientificToCommon = {
   'Somateria mollissima dresseri': 'Common Eider (Dresser\'s)',
   'Somateria mollissima borealis': 'Common Eider (Northern)',
   'Somateria mollissima sedentaria': 'Common Eider (Hudson Bay)',
-  'Tadorna tadorna x Somateria mollissima': 'Common Shelduck x Common Eider (hybrid)',
-  'Anas platyrhynchos x Somateria mollissima': 'Mallard x Common Eider (hybrid)',
+  'Tadorna tadorna x Somateria mollissima':
+      'Common Shelduck x Common Eider (hybrid)',
+  'Anas platyrhynchos x Somateria mollissima':
+      'Mallard x Common Eider (hybrid)',
   'Somateria spectabilis x mollissima': 'King x Common Eider (hybrid)',
   'Somateria spectabilis/mollissima': 'King/Common Eider',
   'Polysticta/Somateria sp.': 'eider sp.',
@@ -522,8 +581,10 @@ const Map<String, String> scientificToCommon = {
   'Melanitta deglandi': 'White-winged Scoter',
   'Melanitta stejnegeri': 'Stejneger\'s Scoter',
   'Melanitta perspicillata x deglandi': 'Surf x White-winged Scoter (hybrid)',
-  'Melanitta deglandi x stejnegeri': 'White-winged x Stejneger\'s Scoter (hybrid)',
-  'Melanitta fusca/deglandi/stejnegeri': 'Velvet/White-winged/Stejneger\'s Scoter',
+  'Melanitta deglandi x stejnegeri':
+      'White-winged x Stejneger\'s Scoter (hybrid)',
+  'Melanitta fusca/deglandi/stejnegeri':
+      'Velvet/White-winged/Stejneger\'s Scoter',
   'Melanitta deglandi/stejnegeri': 'White-winged/Stejneger\'s Scoter',
   'Melanitta nigra': 'Common Scoter',
   'Melanitta americana': 'Black Scoter',
@@ -534,7 +595,8 @@ const Map<String, String> scientificToCommon = {
   'Bucephala albeola': 'Bufflehead',
   'Bucephala clangula': 'Common Goldeneye',
   'Bucephala albeola x clangula': 'Bufflehead x Common Goldeneye (hybrid)',
-  'Bucephala albeola x clangula/islandica': 'Bufflehead x goldeneye sp. (hybrid)',
+  'Bucephala albeola x clangula/islandica':
+      'Bufflehead x goldeneye sp. (hybrid)',
   'Bucephala islandica': 'Barrow\'s Goldeneye',
   'Bucephala albeola x islandica': 'Bufflehead x Barrow\'s Goldeneye (hybrid)',
   'Bucephala clangula x islandica': 'Common x Barrow\'s Goldeneye (hybrid)',
@@ -543,20 +605,28 @@ const Map<String, String> scientificToCommon = {
   'Bucephala clangula x Mergellus albellus': 'Common Goldeneye x Smew (hybrid)',
   'Lophodytes cucullatus': 'Hooded Merganser',
   'Aix sponsa x Lophodytes cucullatus': 'Wood Duck x Hooded Merganser (hybrid)',
-  'Bucephala albeola x Lophodytes cucullatus': 'Bufflehead x Hooded Merganser (hybrid)',
-  'Bucephala clangula x Lophodytes cucullatus': 'Common Goldeneye x Hooded Merganser (hybrid)',
-  'Bucephala islandica x Lophodytes cucullatus': 'Barrow\'s Goldeneye x Hooded Merganser (hybrid)',
-  'Bucephala clangula/islandica x Lophodytes cucullatus': 'goldeneye sp. x Hooded Merganser (hybrid)',
-  'Mergellus albellus x Lophodytes cucullatus': 'Smew x Hooded Merganser (hybrid)',
+  'Bucephala albeola x Lophodytes cucullatus':
+      'Bufflehead x Hooded Merganser (hybrid)',
+  'Bucephala clangula x Lophodytes cucullatus':
+      'Common Goldeneye x Hooded Merganser (hybrid)',
+  'Bucephala islandica x Lophodytes cucullatus':
+      'Barrow\'s Goldeneye x Hooded Merganser (hybrid)',
+  'Bucephala clangula/islandica x Lophodytes cucullatus':
+      'goldeneye sp. x Hooded Merganser (hybrid)',
+  'Mergellus albellus x Lophodytes cucullatus':
+      'Smew x Hooded Merganser (hybrid)',
   'Mergus australis': 'Auckland Islands Merganser',
   'Mergus merganser': 'Common Merganser',
   'Mergus merganser merganser/orientalis': 'Common Merganser (Eurasian)',
   'Mergus merganser americanus': 'Common Merganser (North American)',
-  'Somateria mollissima x Mergus merganser': 'Common Eider x Common Merganser (hybrid)',
-  'Lophodytes cucullatus x Mergus merganser': 'Hooded x Common Merganser (hybrid)',
+  'Somateria mollissima x Mergus merganser':
+      'Common Eider x Common Merganser (hybrid)',
+  'Lophodytes cucullatus x Mergus merganser':
+      'Hooded x Common Merganser (hybrid)',
   'Mergus octosetaceus': 'Brazilian Merganser',
   'Mergus serrator': 'Red-breasted Merganser',
-  'Aythya collaris x Mergus serrator': 'Ring-necked Duck x Red-breasted Merganser (hybrid)',
+  'Aythya collaris x Mergus serrator':
+      'Ring-necked Duck x Red-breasted Merganser (hybrid)',
   'Mergus merganser x serrator': 'Common x Red-breasted Merganser (hybrid)',
   'Mergus merganser/serrator': 'Common/Red-breasted Merganser',
   'Mergus squamatus': 'Scaly-sided Merganser',
@@ -633,7 +703,8 @@ const Map<String, String> scientificToCommon = {
   'Penelope purpurascens': 'Crested Guan',
   'Penelope superciliaris': 'Rusty-margined Guan',
   'Penelope superciliaris pseudonyma': 'Rusty-margined Guan (Blue-faced)',
-  'Penelope superciliaris [superciliaris Group]': 'Rusty-margined Guan (Gray-faced)',
+  'Penelope superciliaris [superciliaris Group]':
+      'Rusty-margined Guan (Gray-faced)',
   'Penelope obscura/superciliaris': 'Dusky-legged/Rusty-margined Guan',
   'Penelope marail': 'Marail Guan',
   'Penelope albipennis': 'White-winged Guan',
@@ -671,7 +742,8 @@ const Map<String, String> scientificToCommon = {
   'Ortalis leucogastra': 'White-bellied Chachalaca',
   'Ortalis poliocephala': 'West Mexican Chachalaca',
   'Ortalis wagleri': 'Rufous-bellied Chachalaca',
-  'Ortalis poliocephala x wagleri': 'West Mexican x Rufous-bellied Chachalaca (hybrid)',
+  'Ortalis poliocephala x wagleri':
+      'West Mexican x Rufous-bellied Chachalaca (hybrid)',
   'Ortalis cinereiceps': 'Gray-headed Chachalaca',
   'Ortalis erythroptera': 'Rufous-headed Chachalaca',
   'Ortalis motmot': 'Variable Chachalaca',
@@ -717,22 +789,27 @@ const Map<String, String> scientificToCommon = {
   'Philortyx fasciatus': 'Banded Quail',
   'Colinus virginianus': 'Northern Bobwhite',
   'Colinus virginianus [virginianus Group]': 'Northern Bobwhite (Eastern)',
-  'Colinus virginianus graysoni/nigripectus': 'Northern Bobwhite (graysoni/nigripectus)',
-  'Colinus virginianus [pectoralis Group]': 'Northern Bobwhite (pectoralis Group)',
+  'Colinus virginianus graysoni/nigripectus':
+      'Northern Bobwhite (graysoni/nigripectus)',
+  'Colinus virginianus [pectoralis Group]':
+      'Northern Bobwhite (pectoralis Group)',
   'Colinus virginianus [coyoleos Group]': 'Northern Bobwhite (Masked)',
   'Colinus nigrogularis': 'Black-throated Bobwhite',
   'Colinus leucopogon': 'Spot-bellied Bobwhite',
-  'Colinus leucopogon hypoleucus/incanus': 'Spot-bellied Bobwhite (White-breasted)',
+  'Colinus leucopogon hypoleucus/incanus':
+      'Spot-bellied Bobwhite (White-breasted)',
   'Colinus leucopogon leucopogon': 'Spot-bellied Bobwhite (White-faced)',
   'Colinus leucopogon [sclateri Group]': 'Spot-bellied Bobwhite (Dark-chinned)',
   'Colinus cristatus': 'Crested Bobwhite',
   'Colinus cristatus [cristatus Group]': 'Crested Bobwhite (Colombian)',
   'Colinus cristatus [parvicristatus Group]': 'Crested Bobwhite (Venezuelan)',
   'Callipepla squamata': 'Scaled Quail',
-  'Colinus virginianus x Callipepla squamata': 'Northern Bobwhite x Scaled Quail (hybrid)',
+  'Colinus virginianus x Callipepla squamata':
+      'Northern Bobwhite x Scaled Quail (hybrid)',
   'Callipepla douglasii': 'Elegant Quail',
   'Callipepla californica': 'California Quail',
-  'Colinus virginianus x Callipepla californica': 'Northern Bobwhite x California Quail (hybrid)',
+  'Colinus virginianus x Callipepla californica':
+      'Northern Bobwhite x California Quail (hybrid)',
   'Callipepla squamata x californica': 'Scaled x California Quail (hybrid)',
   'Callipepla gambelii': 'Gambel\'s Quail',
   'Callipepla squamata x gambelii': 'Scaled x Gambel\'s Quail (hybrid)',
@@ -775,7 +852,8 @@ const Map<String, String> scientificToCommon = {
   'Arborophila rubrirostris': 'Red-billed Partridge',
   'Arborophila cambodiana': 'Chestnut-headed Partridge',
   'Arborophila cambodiana diversa': 'Chestnut-headed Partridge (Siamese)',
-  'Arborophila cambodiana cambodiana/chandamonyi': 'Chestnut-headed Partridge (Chestnut-headed)',
+  'Arborophila cambodiana cambodiana/chandamonyi':
+      'Chestnut-headed Partridge (Chestnut-headed)',
   'Arborophila ardens': 'Hainan Partridge',
   'Arborophila crudigularis': 'Taiwan Partridge',
   'Arborophila atrogularis': 'White-cheeked Partridge',
@@ -817,15 +895,19 @@ const Map<String, String> scientificToCommon = {
   'Dendragapus obscurus x fuliginosus': 'Dusky x Sooty Grouse (hybrid)',
   'Dendragapus obscurus/fuliginosus': 'Dusky/Sooty Grouse',
   'Tympanuchus phasianellus': 'Sharp-tailed Grouse',
-  'Centrocercus urophasianus x Tympanuchus phasianellus': 'Greater Sage-Grouse x Sharp-tailed Grouse (hybrid)',
-  'Dendragapus obscurus x Tympanuchus phasianellus': 'Dusky x Sharp-tailed Grouse (hybrid)',
+  'Centrocercus urophasianus x Tympanuchus phasianellus':
+      'Greater Sage-Grouse x Sharp-tailed Grouse (hybrid)',
+  'Dendragapus obscurus x Tympanuchus phasianellus':
+      'Dusky x Sharp-tailed Grouse (hybrid)',
   'Tympanuchus cupido': 'Greater Prairie-Chicken',
   'Tympanuchus cupido pinnatus': 'Greater Prairie-Chicken (pinnatus)',
   'Tympanuchus cupido cupido': 'Greater Prairie-Chicken (Heath Hen)',
   'Tympanuchus cupido attwateri': 'Greater Prairie-Chicken (Attwater\'s)',
-  'Tympanuchus phasianellus x cupido': 'Sharp-tailed Grouse x Greater Prairie-Chicken (hybrid)',
+  'Tympanuchus phasianellus x cupido':
+      'Sharp-tailed Grouse x Greater Prairie-Chicken (hybrid)',
   'Tympanuchus pallidicinctus': 'Lesser Prairie-Chicken',
-  'Tympanuchus cupido x pallidicinctus': 'Greater x Lesser Prairie-Chicken (hybrid)',
+  'Tympanuchus cupido x pallidicinctus':
+      'Greater x Lesser Prairie-Chicken (hybrid)',
   'Tympanuchus cupido/pallidicinctus': 'Greater/Lesser Prairie-Chicken',
   'Lagopus leucura': 'White-tailed Ptarmigan',
   'Lagopus scotica': 'Red Grouse',
@@ -836,14 +918,17 @@ const Map<String, String> scientificToCommon = {
   'Canachites canadensis': 'Spruce Grouse',
   'Canachites canadensis [canadensis Group]': 'Spruce Grouse (Spruce)',
   'Canachites canadensis franklinii/isleibi': 'Spruce Grouse (Franklin\'s)',
-  'Canachites canadensis [canadensis Group] x franklinii/isleibi': 'Spruce Grouse (Spruce x Franklin\'s)',
+  'Canachites canadensis [canadensis Group] x franklinii/isleibi':
+      'Spruce Grouse (Spruce x Franklin\'s)',
   'Bonasa umbellus/Canachites canadensis': 'Ruffed/Spruce Grouse',
   'Tetrao urogallus': 'Western Capercaillie',
   'Tetrao urogalloides': 'Black-billed Capercaillie',
-  'Tetrao urogallus x urogalloides': 'Western x Black-billed Capercaillie (hybrid)',
+  'Tetrao urogallus x urogalloides':
+      'Western x Black-billed Capercaillie (hybrid)',
   'Tetrao urogallus/urogalloides': 'Western/Black-billed Capercaillie',
   'Lyrurus tetrix': 'Black Grouse',
-  'Tetrao urogallus x Lyrurus tetrix': 'Western Capercaillie x Black Grouse (hybrid)',
+  'Tetrao urogallus x Lyrurus tetrix':
+      'Western Capercaillie x Black Grouse (hybrid)',
   'Lyrurus mlokosiewiczi': 'Caucasian Grouse',
   'Tetraoninae sp.': 'grouse sp.',
   'Rhizothera longirostris': 'Long-billed Partridge',
@@ -859,7 +944,8 @@ const Map<String, String> scientificToCommon = {
   'Chrysolophus pictus': 'Golden Pheasant',
   'Chrysolophus pictus (Domestic type)': 'Golden Pheasant (Domestic type)',
   'Chrysolophus amherstiae': 'Lady Amherst\'s Pheasant',
-  'Chrysolophus pictus x amherstiae': 'Golden x Lady Amherst\'s Pheasant (hybrid)',
+  'Chrysolophus pictus x amherstiae':
+      'Golden x Lady Amherst\'s Pheasant (hybrid)',
   'Phasianus colchicus': 'Ring-necked Pheasant',
   'Phasianus colchicus (Domestic type)': 'Ring-necked Pheasant (Domestic type)',
   'Phasianus versicolor': 'Green Pheasant',
@@ -868,7 +954,8 @@ const Map<String, String> scientificToCommon = {
   'Catreus wallichii': 'Cheer Pheasant',
   'Crossoptilon harmani': 'Tibetan Eared-Pheasant',
   'Crossoptilon crossoptilon': 'White Eared-Pheasant',
-  'Crossoptilon harmani x crossoptilon': 'Tibetan x White Eared-Pheasant (hybrid)',
+  'Crossoptilon harmani x crossoptilon':
+      'Tibetan x White Eared-Pheasant (hybrid)',
   'Crossoptilon harmani/crossoptilon': 'Tibetan/White Eared-Pheasant',
   'Crossoptilon mantchuricum': 'Brown Eared-Pheasant',
   'Crossoptilon auritum': 'Blue Eared-Pheasant',
@@ -897,7 +984,8 @@ const Map<String, String> scientificToCommon = {
   'Pavo cristatus x muticus': 'Indian x Green Peafowl (hybrid)',
   'Tropicoperdix chloropus': 'Scaly-breasted Partridge',
   'Tropicoperdix chloropus tonkinensis': 'Scaly-breasted Partridge (Tonkin)',
-  'Tropicoperdix chloropus [chloropus Group]': 'Scaly-breasted Partridge (Green-legged)',
+  'Tropicoperdix chloropus [chloropus Group]':
+      'Scaly-breasted Partridge (Green-legged)',
   'Tropicoperdix charltonii': 'Chestnut-necklaced Partridge',
   'Tropicoperdix graydoni': 'Sabah Partridge',
   'Arborophila/Tropicoperdix sp.': 'Arborophila/Tropicoperdix sp.',
@@ -932,15 +1020,18 @@ const Map<String, String> scientificToCommon = {
   'Ortygornis gularis': 'Swamp Francolin',
   'Francolinus pintadeanus': 'Chinese Francolin',
   'Francolinus francolinus': 'Black Francolin',
-  'Francolinus francolinus francolinus/arabistanicus': 'Black Francolin (Western)',
+  'Francolinus francolinus francolinus/arabistanicus':
+      'Black Francolin (Western)',
   'Francolinus francolinus [henrici Group]': 'Black Francolin (Eastern)',
   'Francolinus pictus': 'Painted Francolin',
   'Campocolinus coqui': 'Coqui Francolin',
   'Campocolinus coqui [hubbardi Group]': 'Coqui Francolin (Plain-breasted)',
   'Campocolinus coqui coqui': 'Coqui Francolin (Bar-breasted)',
   'Campocolinus albogularis': 'White-throated Francolin',
-  'Campocolinus albogularis albogularis/buckleyi': 'White-throated Francolin (White-throated)',
-  'Campocolinus albogularis dewittei': 'White-throated Francolin (Chestnut-breasted)',
+  'Campocolinus albogularis albogularis/buckleyi':
+      'White-throated Francolin (White-throated)',
+  'Campocolinus albogularis dewittei':
+      'White-throated Francolin (Chestnut-breasted)',
   'Campocolinus schlegelii': 'Schlegel\'s Francolin',
   'Scleroptila streptophora': 'Ring-necked Francolin',
   'Scleroptila levaillantii': 'Red-winged Francolin',
@@ -949,9 +1040,11 @@ const Map<String, String> scientificToCommon = {
   'Scleroptila elgonensis': 'Elgon Francolin',
   'Scleroptila afra': 'Gray-winged Francolin',
   'Scleroptila gutturalis': 'Orange River Francolin',
-  'Scleroptila gutturalis gutturalis/lorti': 'Orange River Francolin (Archer\'s)',
+  'Scleroptila gutturalis gutturalis/lorti':
+      'Orange River Francolin (Archer\'s)',
   'Scleroptila gutturalis jugularis': 'Orange River Francolin (Kunene)',
-  'Scleroptila gutturalis levalliantoides': 'Orange River Francolin (Orange River)',
+  'Scleroptila gutturalis levalliantoides':
+      'Orange River Francolin (Orange River)',
   'Scleroptila shelleyi': 'Shelley\'s Francolin',
   'Scleroptila whytei': 'Whyte\'s Francolin',
   'Scleroptila shelleyi/whytei': 'Shelley\'s/Whyte\'s Francolin',
@@ -1001,8 +1094,10 @@ const Map<String, String> scientificToCommon = {
   'Pternistis camerunensis': 'Mount Cameroon Spurfowl',
   'Pternistis nobilis': 'Handsome Spurfowl',
   'Pternistis castaneicollis': 'Chestnut-naped Spurfowl',
-  'Pternistis castaneicollis castaneicollis': 'Chestnut-naped Spurfowl (Northern)',
-  'Pternistis castaneicollis atrifrons': 'Chestnut-naped Spurfowl (Black-fronted)',
+  'Pternistis castaneicollis castaneicollis':
+      'Chestnut-naped Spurfowl (Northern)',
+  'Pternistis castaneicollis atrifrons':
+      'Chestnut-naped Spurfowl (Black-fronted)',
   'Pternistis erckelii': 'Erckel\'s Spurfowl',
   'Pternistis ochropectus': 'Djibouti Spurfowl',
   'Pternistis swierstrai': 'Swierstra\'s Spurfowl',
@@ -1117,13 +1212,17 @@ const Map<String, String> scientificToCommon = {
   'Streptopelia bitorquata': 'Sunda Collared-Dove',
   'Streptopelia dusumieri': 'Philippine Collared-Dove',
   'Streptopelia decaocto': 'Eurasian Collared-Dove',
-  'Streptopelia turtur x decaocto': 'European Turtle-Dove x Eurasian Collared-Dove (hybrid)',
-  'Streptopelia orientalis x decaocto': 'Oriental Turtle-Dove x Eurasian Collared-Dove (hybrid)',
+  'Streptopelia turtur x decaocto':
+      'European Turtle-Dove x Eurasian Collared-Dove (hybrid)',
+  'Streptopelia orientalis x decaocto':
+      'Oriental Turtle-Dove x Eurasian Collared-Dove (hybrid)',
   'Streptopelia xanthocycla': 'Burmese Collared-Dove',
   'Streptopelia decaocto/xanthocycla': 'Eurasian/Burmese Collared-Dove',
   'Streptopelia roseogrisea': 'African Collared-Dove',
-  'Streptopelia roseogrisea (Domestic type)': 'African Collared-Dove (Domestic type or Ringed Turtle-Dove)',
-  'Streptopelia decaocto x roseogrisea': 'Eurasian x African Collared-Dove (hybrid)',
+  'Streptopelia roseogrisea (Domestic type)':
+      'African Collared-Dove (Domestic type or Ringed Turtle-Dove)',
+  'Streptopelia decaocto x roseogrisea':
+      'Eurasian x African Collared-Dove (hybrid)',
   'Streptopelia decaocto/roseogrisea': 'Eurasian/African Collared-Dove',
   'Streptopelia reichenowi': 'White-winged Collared-Dove',
   'Streptopelia decipiens': 'Mourning Collared-Dove',
@@ -1252,7 +1351,8 @@ const Map<String, String> scientificToCommon = {
   'Leptotila verreauxi': 'White-tipped Dove',
   'Leptotila verreauxi [verreauxi Group]': 'White-tipped Dove (White-tipped)',
   'Leptotila verreauxi decolor': 'White-tipped Dove (decolor)',
-  'Leptotila verreauxi [brasiliensis Group]': 'White-tipped Dove (brasiliensis Group)',
+  'Leptotila verreauxi [brasiliensis Group]':
+      'White-tipped Dove (brasiliensis Group)',
   'Leptotila jamaicensis': 'Caribbean Dove',
   'Leptotila cassinii': 'Gray-chested Dove',
   'Leptotila cassinii cerviniventris': 'Gray-chested Dove (cerviniventris)',
@@ -1285,7 +1385,8 @@ const Map<String, String> scientificToCommon = {
   'Zenaida galapagoensis': 'Galapagos Dove',
   'Zenaida auriculata': 'Eared Dove',
   'Zenaida macroura': 'Mourning Dove',
-  'Streptopelia decaocto x Zenaida macroura': 'Eurasian Collared-Dove x Mourning Dove (hybrid)',
+  'Streptopelia decaocto x Zenaida macroura':
+      'Eurasian Collared-Dove x Mourning Dove (hybrid)',
   'Zenaida asiatica x macroura': 'White-winged x Mourning Dove (hybrid)',
   'Zenaida aurita/macroura': 'Zenaida/Mourning Dove',
   'Zenaida auriculata/macroura': 'Eared/Mourning Dove',
@@ -1317,10 +1418,13 @@ const Map<String, String> scientificToCommon = {
   'Phapitreron leucotis': 'White-eared Brown-Dove',
   'Phapitreron leucotis leucotis': 'White-eared Brown-Dove (White-eared)',
   'Phapitreron leucotis nigrorum': 'White-eared Brown-Dove (Buff-eared)',
-  'Phapitreron leucotis brevirostris/occipitalis': 'White-eared Brown-Dove (Short-billed)',
+  'Phapitreron leucotis brevirostris/occipitalis':
+      'White-eared Brown-Dove (Short-billed)',
   'Phapitreron amethystinus': 'Amethyst Brown-Dove',
-  'Phapitreron amethystinus amethystinus/imeldae': 'Amethyst Brown-Dove (Amethyst)',
-  'Phapitreron amethystinus maculipectus': 'Amethyst Brown-Dove (Gray-breasted)',
+  'Phapitreron amethystinus amethystinus/imeldae':
+      'Amethyst Brown-Dove (Amethyst)',
+  'Phapitreron amethystinus maculipectus':
+      'Amethyst Brown-Dove (Gray-breasted)',
   'Phapitreron amethystinus frontalis': 'Amethyst Brown-Dove (Cebu)',
   'Phapitreron brunneiceps': 'Mindanao Brown-Dove',
   'Phapitreron cinereiceps': 'Tawitawi Brown-Dove',
@@ -1336,16 +1440,20 @@ const Map<String, String> scientificToCommon = {
   'Treron axillaris': 'Philippine Green-Pigeon',
   'Treron aromaticus': 'Buru Green-Pigeon',
   'Treron curvirostra': 'Thick-billed Green-Pigeon',
-  'Treron curvirostra [curvirostra Group]': 'Thick-billed Green-Pigeon (Thick-billed)',
-  'Treron curvirostra hypothapsinus/smicrus': 'Thick-billed Green-Pigeon (Barusan)',
+  'Treron curvirostra [curvirostra Group]':
+      'Thick-billed Green-Pigeon (Thick-billed)',
+  'Treron curvirostra hypothapsinus/smicrus':
+      'Thick-billed Green-Pigeon (Barusan)',
   'Treron griseicauda': 'Gray-cheeked Green-Pigeon',
   'Treron teysmannii': 'Sumba Green-Pigeon',
   'Treron floris': 'Flores Green-Pigeon',
   'Treron psittaceus': 'Timor Green-Pigeon',
   'Treron capellei': 'Large Green-Pigeon',
   'Treron phoenicopterus': 'Yellow-footed Green-Pigeon',
-  'Treron phoenicopterus chlorigaster/phillipsi': 'Yellow-footed Green-Pigeon (Yellow-bellied)',
-  'Treron phoenicopterus [phoenicopterus Group]': 'Yellow-footed Green-Pigeon (Gray-bellied)',
+  'Treron phoenicopterus chlorigaster/phillipsi':
+      'Yellow-footed Green-Pigeon (Yellow-bellied)',
+  'Treron phoenicopterus [phoenicopterus Group]':
+      'Yellow-footed Green-Pigeon (Gray-bellied)',
   'Treron waalia': 'Bruce\'s Green-Pigeon',
   'Treron griveaudi': 'Comoro Green-Pigeon',
   'Treron australis': 'Madagascar Green-Pigeon',
@@ -1398,7 +1506,8 @@ const Map<String, String> scientificToCommon = {
   'Ptilinopus rivoli': 'White-breasted Fruit-Dove',
   'Ptilinopus rivoli prasinorrhous': 'White-breasted Fruit-Dove (Moluccan)',
   'Ptilinopus rivoli bellus': 'White-breasted Fruit-Dove (Mountain)',
-  'Ptilinopus rivoli [rivoli Group]': 'White-breasted Fruit-Dove (White-bibbed)',
+  'Ptilinopus rivoli [rivoli Group]':
+      'White-breasted Fruit-Dove (White-bibbed)',
   'Ptilinopus speciosus': 'Geelvink Fruit-Dove',
   'Ptilinopus solomonensis': 'Yellow-bibbed Fruit-Dove',
   'Ptilinopus tannensis': 'Tanna Fruit-Dove',
@@ -1406,7 +1515,8 @@ const Map<String, String> scientificToCommon = {
   'Ptilinopus eugeniae': 'White-headed Fruit-Dove',
   'Ptilinopus viridis': 'Claret-breasted Fruit-Dove',
   'Ptilinopus viridis viridis': 'Claret-breasted Fruit-Dove (Moluccan)',
-  'Ptilinopus viridis pectoralis/salvadorii': 'Claret-breasted Fruit-Dove (Northern)',
+  'Ptilinopus viridis pectoralis/salvadorii':
+      'Claret-breasted Fruit-Dove (Northern)',
   'Ptilinopus viridis geelvinkianus': 'Claret-breasted Fruit-Dove (Geelvink)',
   'Ptilinopus viridis vicinus': 'Claret-breasted Fruit-Dove (D\'Entrecasteaux)',
   'Ptilinopus viridis lewisii': 'Claret-breasted Fruit-Dove (Solomons)',
@@ -1423,7 +1533,8 @@ const Map<String, String> scientificToCommon = {
   'Ptilinopus monacha': 'Blue-capped Fruit-Dove',
   'Ptilinopus coronulatus': 'Coroneted Fruit-Dove',
   'Ptilinopus regina': 'Rose-crowned Fruit-Dove',
-  'Ptilinopus regina xanthogaster/roseipileum': 'Rose-crowned Fruit-Dove (Gray-crowned)',
+  'Ptilinopus regina xanthogaster/roseipileum':
+      'Rose-crowned Fruit-Dove (Gray-crowned)',
   'Ptilinopus regina [regina Group]': 'Rose-crowned Fruit-Dove (Rosy-crowned)',
   'Ptilinopus mercierii': 'Red-moustached Fruit-Dove',
   'Ptilinopus dupetithouarsii': 'White-capped Fruit-Dove',
@@ -1507,7 +1618,8 @@ const Map<String, String> scientificToCommon = {
   'Lopholaimus antarcticus': 'Topknot Pigeon',
   'Hemiphaga novaeseelandiae': 'New Zealand Pigeon',
   'Hemiphaga novaeseelandiae spadicea': 'New Zealand Pigeon (Norfolk I.)',
-  'Hemiphaga novaeseelandiae novaeseelandiae': 'New Zealand Pigeon (New Zealand)',
+  'Hemiphaga novaeseelandiae novaeseelandiae':
+      'New Zealand Pigeon (New Zealand)',
   'Hemiphaga chathamensis': 'Chatham Islands Pigeon',
   'Cryptophaps poecilorrhoa': 'Sombre Pigeon',
   'Gymnophaps albertisii': 'Papuan Mountain-Pigeon',
@@ -1535,8 +1647,10 @@ const Map<String, String> scientificToCommon = {
   'Pterocles decoratus': 'Black-faced Sandgrouse',
   'Pterocles personatus': 'Madagascar Sandgrouse',
   'Pterocles lichtensteinii': 'Lichtenstein\'s Sandgrouse',
-  'Pterocles lichtensteinii [lichtensteinii Group]': 'Lichtenstein\'s Sandgrouse (Lichtenstein\'s)',
-  'Pterocles lichtensteinii arabicus': 'Lichtenstein\'s Sandgrouse (Close-barred)',
+  'Pterocles lichtensteinii [lichtensteinii Group]':
+      'Lichtenstein\'s Sandgrouse (Lichtenstein\'s)',
+  'Pterocles lichtensteinii arabicus':
+      'Lichtenstein\'s Sandgrouse (Close-barred)',
   'Pterocles bicinctus': 'Double-banded Sandgrouse',
   'Pterocles quadricinctus': 'Four-banded Sandgrouse',
   'Pterocles indicus': 'Painted Sandgrouse',
@@ -1559,8 +1673,10 @@ const Map<String, String> scientificToCommon = {
   'Neotis heuglinii': 'Heuglin\'s Bustard',
   'Neotis nuba': 'Nubian Bustard',
   'Eupodotis senegalensis': 'White-bellied Bustard',
-  'Eupodotis senegalensis [senegalensis Group]': 'White-bellied Bustard (White-bellied)',
-  'Eupodotis senegalensis barrowii/mackenziei': 'White-bellied Bustard (Barrow\'s)',
+  'Eupodotis senegalensis [senegalensis Group]':
+      'White-bellied Bustard (White-bellied)',
+  'Eupodotis senegalensis barrowii/mackenziei':
+      'White-bellied Bustard (Barrow\'s)',
   'Eupodotis caerulescens': 'Blue Bustard',
   'Heterotetrax vigorsii': 'Karoo Bustard',
   'Heterotetrax rueppelii': 'Rüppell\'s Bustard',
@@ -1593,7 +1709,8 @@ const Map<String, String> scientificToCommon = {
   'Menelikornis leucotis leucotis': 'White-cheeked Turaco (White-cheeked)',
   'Menelikornis leucotis donaldsoni': 'White-cheeked Turaco (Donaldson\'s)',
   'Menelikornis ruspolii': 'Prince Ruspoli\'s Turaco',
-  'Menelikornis leucotis x ruspolii': 'White-cheeked x Prince Ruspoli\'s Turaco (hybrid)',
+  'Menelikornis leucotis x ruspolii':
+      'White-cheeked x Prince Ruspoli\'s Turaco (hybrid)',
   'Tauraco violaceus': 'Violet Turaco',
   'Tauraco rossae': 'Ross\'s Turaco',
   'Tauraco macrorhynchus': 'Yellow-billed Turaco',
@@ -1632,8 +1749,10 @@ const Map<String, String> scientificToCommon = {
   'Geococcyx californianus': 'Greater Roadrunner',
   'Geococcyx velox/californianus': 'Lesser/Greater Roadrunner',
   'Neomorphus geoffroyi': 'Rufous-vented Ground-Cuckoo',
-  'Neomorphus geoffroyi [salvini Group]': 'Rufous-vented Ground-Cuckoo (Western)',
-  'Neomorphus geoffroyi geoffroyi/amazonicus': 'Rufous-vented Ground-Cuckoo (Amazonian)',
+  'Neomorphus geoffroyi [salvini Group]':
+      'Rufous-vented Ground-Cuckoo (Western)',
+  'Neomorphus geoffroyi geoffroyi/amazonicus':
+      'Rufous-vented Ground-Cuckoo (Amazonian)',
   'Neomorphus geoffroyi dulcis': 'Rufous-vented Ground-Cuckoo (Atlantic)',
   'Neomorphus squamiger': 'Scaled Ground-Cuckoo',
   'Neomorphus radiolosus': 'Banded Ground-Cuckoo',
@@ -1673,7 +1792,8 @@ const Map<String, String> scientificToCommon = {
   'Centropus cupreicaudus': 'Coppery-tailed Coucal',
   'Centropus superciliosus': 'White-browed Coucal',
   'Centropus burchellii': 'Burchell\'s Coucal',
-  'Centropus superciliosus x burchellii': 'White-browed x Burchell\'s Coucal (hybrid)',
+  'Centropus superciliosus x burchellii':
+      'White-browed x Burchell\'s Coucal (hybrid)',
   'Centropus superciliosus/burchellii': 'White-browed/Burchell\'s Coucal',
   'Centropus nigrorufus': 'Sunda Coucal',
   'Centropus andamanensis': 'Andaman Coucal',
@@ -1752,7 +1872,8 @@ const Map<String, String> scientificToCommon = {
   'Eudynamys melanorhynchus': 'Black-billed Koel',
   'Eudynamys orientalis': 'Pacific Koel',
   'Eudynamys orientalis [orientalis Group]': 'Pacific Koel (Oriental)',
-  'Eudynamys orientalis cyanocephalus/subcyanocephalus': 'Pacific Koel (Australian)',
+  'Eudynamys orientalis cyanocephalus/subcyanocephalus':
+      'Pacific Koel (Australian)',
   'Eudynamys scolopaceus/orientalis': 'Asian/Pacific Koel',
   'Eudynamys melanorhynchus/orientalis': 'Black-billed/Pacific Koel',
   'Eudynamys sp.': 'Eudynamys sp.',
@@ -1793,11 +1914,13 @@ const Map<String, String> scientificToCommon = {
   'Caliechthrus leucolophus': 'White-crowned Cuckoo',
   'Cacomantis castaneiventris': 'Chestnut-breasted Cuckoo',
   'Cacomantis flabelliformis': 'Fan-tailed Cuckoo',
-  'Cacomantis flabelliformis [flabelliformis Group]': 'Fan-tailed Cuckoo (Sahul)',
+  'Cacomantis flabelliformis [flabelliformis Group]':
+      'Fan-tailed Cuckoo (Sahul)',
   'Cacomantis flabelliformis pyrrophanus': 'Fan-tailed Cuckoo (New Caledonian)',
   'Cacomantis flabelliformis schistaceigularis': 'Fan-tailed Cuckoo (Vanuatu)',
   'Cacomantis flabelliformis simus': 'Fan-tailed Cuckoo (Fiji)',
-  'Cacomantis castaneiventris/flabelliformis': 'Chestnut-breasted/Fan-tailed Cuckoo',
+  'Cacomantis castaneiventris/flabelliformis':
+      'Chestnut-breasted/Fan-tailed Cuckoo',
   'Cacomantis sonneratii': 'Banded Bay Cuckoo',
   'Cacomantis merulinus': 'Plaintive Cuckoo',
   'Cacomantis passerinus': 'Gray-bellied Cuckoo',
@@ -1877,11 +2000,13 @@ const Map<String, String> scientificToCommon = {
   'Chordeiles minor/gundlachii': 'Common/Antillean Nighthawk',
   'Chordeiles sp.': 'nighthawk sp.',
   'Lurocalis semitorquatus': 'Short-tailed Nighthawk',
-  'Lurocalis semitorquatus [semitorquatus Group]': 'Short-tailed Nighthawk (Short-tailed)',
+  'Lurocalis semitorquatus [semitorquatus Group]':
+      'Short-tailed Nighthawk (Short-tailed)',
   'Lurocalis semitorquatus nattereri': 'Short-tailed Nighthawk (nattereri)',
   'Lurocalis rufiventris': 'Rufous-bellied Nighthawk',
   'Nyctiprogne leucopyga': 'Band-tailed Nighthawk',
-  'Nyctiprogne leucopyga [leucopyga Group]': 'Band-tailed Nighthawk (Band-tailed)',
+  'Nyctiprogne leucopyga [leucopyga Group]':
+      'Band-tailed Nighthawk (Band-tailed)',
   'Nyctiprogne leucopyga latifascia': 'Band-tailed Nighthawk (latifascia)',
   'Nyctiprogne vielliardi': 'Bahian Nighthawk',
   'Nyctipolus nigrescens': 'Blackish Nightjar',
@@ -1900,7 +2025,8 @@ const Map<String, String> scientificToCommon = {
   'Systellura longirostris roraimae': 'Band-winged Nightjar (Tepui)',
   'Systellura longirostris ruficervix': 'Band-winged Nightjar (Rufous-naped)',
   'Systellura longirostris atripunctata': 'Band-winged Nightjar (atripunctata)',
-  'Systellura longirostris bifasciata/patagonica': 'Band-winged Nightjar (Austral)',
+  'Systellura longirostris bifasciata/patagonica':
+      'Band-winged Nightjar (Austral)',
   'Systellura longirostris longirostris': 'Band-winged Nightjar (longirostris)',
   'Systellura longirostris mochaensis': 'Band-winged Nightjar (Mocha)',
   'Eleothreptus candicans': 'White-winged Nightjar',
@@ -1962,8 +2088,10 @@ const Map<String, String> scientificToCommon = {
   'Caprimulgus celebensis': 'Sulawesi Nightjar',
   'Caprimulgus donaldsoni': 'Donaldson Smith\'s Nightjar',
   'Caprimulgus pectoralis': 'Fiery-necked Nightjar',
-  'Caprimulgus pectoralis nigriscapularis': 'Fiery-necked Nightjar (Black-shouldered)',
-  'Caprimulgus pectoralis [pectoralis Group]': 'Fiery-necked Nightjar (Fiery-necked)',
+  'Caprimulgus pectoralis nigriscapularis':
+      'Fiery-necked Nightjar (Black-shouldered)',
+  'Caprimulgus pectoralis [pectoralis Group]':
+      'Fiery-necked Nightjar (Fiery-necked)',
   'Caprimulgus poliocephalus': 'Montane Nightjar',
   'Caprimulgus poliocephalus poliocephalus': 'Montane Nightjar (Abyssinian)',
   'Caprimulgus poliocephalus [ruwenzorii Group]': 'Montane Nightjar (Rwenzori)',
@@ -2029,7 +2157,8 @@ const Map<String, String> scientificToCommon = {
   'Aegotheles cristatus': 'Australian Owlet-nightjar',
   'Aegotheles affinis': 'Vogelkop Owlet-nightjar',
   'Aegotheles bennettii': 'Barred Owlet-nightjar',
-  'Aegotheles bennettii bennettii/wiedenfeldi': 'Barred Owlet-nightjar (Barred)',
+  'Aegotheles bennettii bennettii/wiedenfeldi':
+      'Barred Owlet-nightjar (Barred)',
   'Aegotheles bennettii plumifer': 'Barred Owlet-nightjar (Dwarf)',
   'Aegotheles terborghi': 'Karimui Owlet-nightjar',
   'Aegotheles sp.': 'owlet-nightjar sp.',
@@ -2121,7 +2250,8 @@ const Map<String, String> scientificToCommon = {
   'Aerodramus spodiopygius': 'White-rumped Swiftlet',
   'Aerodramus terraereginae': 'Australian Swiftlet',
   'Aerodramus brevirostris': 'Himalayan Swiftlet',
-  'Aerodramus brevirostris brevirostris/innominatus': 'Himalayan Swiftlet (Himalayan)',
+  'Aerodramus brevirostris brevirostris/innominatus':
+      'Himalayan Swiftlet (Himalayan)',
   'Aerodramus brevirostris rogersi': 'Himalayan Swiftlet (Indochinese)',
   'Aerodramus vulcanorum': 'Volcano Swiftlet',
   'Aerodramus whiteheadi': 'Whitehead\'s Swiftlet',
@@ -2139,7 +2269,8 @@ const Map<String, String> scientificToCommon = {
   'Aerodramus maximus': 'Black-nest Swiftlet',
   'Aerodramus fuciphagus': 'White-nest Swiftlet',
   'Aerodramus fuciphagus germani/amechanus': 'White-nest Swiftlet (Germain\'s)',
-  'Aerodramus fuciphagus [fuciphagus Group]': 'White-nest Swiftlet (White-nest)',
+  'Aerodramus fuciphagus [fuciphagus Group]':
+      'White-nest Swiftlet (White-nest)',
   'Aerodramus papuensis': 'Three-toed Swiftlet',
   'Aerodramus sp.': 'dark swiftlet sp.',
   'Collocalia/Aerodramus sp.': 'swiftlet sp.',
@@ -2232,7 +2363,8 @@ const Map<String, String> scientificToCommon = {
   'Phaethornis bourcieri bourcieri': 'Straight-billed Hermit (bourcieri)',
   'Phaethornis bourcieri major': 'Straight-billed Hermit (major)',
   'Phaethornis longirostris': 'Long-billed Hermit',
-  'Phaethornis longirostris [longirostris Group]': 'Long-billed Hermit (Central American)',
+  'Phaethornis longirostris [longirostris Group]':
+      'Long-billed Hermit (Central American)',
   'Phaethornis longirostris baroni': 'Long-billed Hermit (Baron\'s)',
   'Phaethornis mexicanus': 'Mexican Hermit',
   'Phaethornis mexicanus griseoventer': 'Mexican Hermit (Jalisco)',
@@ -2245,7 +2377,8 @@ const Map<String, String> scientificToCommon = {
   'Phaethornis malaris margarettae': 'Great-billed Hermit (Margaretta\'s)',
   'Phaethornis anthophilus': 'Pale-bellied Hermit',
   'Phaethornis squalidus': 'Dusky-throated Hermit',
-  'Phaethornis maranhaoensis [unrecognized species]': 'Maranhao Hermit (unrecognized species)',
+  'Phaethornis maranhaoensis [unrecognized species]':
+      'Maranhao Hermit (unrecognized species)',
   'Phaethornis rupurumii': 'Streak-throated Hermit',
   'Phaethornis longuemareus': 'Little Hermit',
   'Phaethornis aethopygus': 'Tapajos Hermit',
@@ -2255,7 +2388,8 @@ const Map<String, String> scientificToCommon = {
   'Phaethornis striigularis': 'Stripe-throated Hermit',
   'Phaethornis griseogularis': 'Gray-chinned Hermit',
   'Phaethornis griseogularis porcullae': 'Gray-chinned Hermit (Porculla)',
-  'Phaethornis griseogularis griseogularis/zonura': 'Gray-chinned Hermit (Gray-chinned)',
+  'Phaethornis griseogularis griseogularis/zonura':
+      'Gray-chinned Hermit (Gray-chinned)',
   'Phaethornis ruber': 'Reddish Hermit',
   'Phaethornis stuarti': 'White-browed Hermit',
   'Phaethornis ruber/stuarti': 'Reddish/White-browed Hermit',
@@ -2291,7 +2425,8 @@ const Map<String, String> scientificToCommon = {
   'Chrysolampis mosquitus': 'Ruby-topaz Hummingbird',
   'Anthracothorax mango': 'Jamaican Mango',
   'Anthracothorax nigricollis': 'Black-throated Mango',
-  'Anthracothorax nigricollis nigricollis': 'Black-throated Mango (Black-throated)',
+  'Anthracothorax nigricollis nigricollis':
+      'Black-throated Mango (Black-throated)',
   'Anthracothorax nigricollis iridescens': 'Black-throated Mango (Ecuadorian)',
   'Anthracothorax viridigula': 'Green-throated Mango',
   'Anthracothorax prevostii': 'Green-breasted Mango',
@@ -2312,13 +2447,16 @@ const Map<String, String> scientificToCommon = {
   'Heliangelus micraster': 'Little Sunangel',
   'Heliangelus viola': 'Purple-throated Sunangel',
   'Heliangelus viola viola': 'Purple-throated Sunangel (Purple-throated)',
-  'Heliangelus viola splendidus/pyropus': 'Purple-throated Sunangel (Brilliant)',
-  'Heliangelus amethysticollis x viola': 'Amethyst-throated x Purple-throated Sunangel (hybrid)',
+  'Heliangelus viola splendidus/pyropus':
+      'Purple-throated Sunangel (Brilliant)',
+  'Heliangelus amethysticollis x viola':
+      'Amethyst-throated x Purple-throated Sunangel (hybrid)',
   'Heliangelus regalis': 'Royal Sunangel',
   'Heliangelus sp.': 'Heliangelus sp.',
   'Sephanoides sephaniodes': 'Green-backed Firecrown',
   'Sephanoides fernandensis': 'Juan Fernandez Firecrown',
-  'Sephanoides sephaniodes/fernandensis': 'Green-backed/Juan Fernandez Firecrown',
+  'Sephanoides sephaniodes/fernandensis':
+      'Green-backed/Juan Fernandez Firecrown',
   'Discosura popelairii': 'Wire-crested Thorntail',
   'Discosura langsdorffi': 'Black-bellied Thorntail',
   'Discosura letitiae': 'Coppery Thorntail',
@@ -2339,7 +2477,8 @@ const Map<String, String> scientificToCommon = {
   'Phlogophilus hemileucurus': 'Ecuadorian Piedtail',
   'Phlogophilus harterti': 'Peruvian Piedtail',
   'Adelomyia melanogenys': 'Speckled Hummingbird',
-  'Adelomyia melanogenys [melanogenys Group]': 'Speckled Hummingbird (melanogenys Group)',
+  'Adelomyia melanogenys [melanogenys Group]':
+      'Speckled Hummingbird (melanogenys Group)',
   'Adelomyia melanogenys maculata': 'Speckled Hummingbird (maculata)',
   'Adelomyia melanogenys inornata': 'Speckled Hummingbird (inornata)',
   'Aglaiocercus kingii': 'Long-tailed Sylph',
@@ -2352,7 +2491,8 @@ const Map<String, String> scientificToCommon = {
   'Oreotrochilus cyanolaemus': 'Blue-throated Hillstar',
   'Oreotrochilus stolzmanni': 'Green-headed Hillstar',
   'Oreotrochilus melanogaster': 'Black-breasted Hillstar',
-  'Oreotrochilus stolzmanni/melanogaster': 'Green-headed/Black-breasted Hillstar',
+  'Oreotrochilus stolzmanni/melanogaster':
+      'Green-headed/Black-breasted Hillstar',
   'Oreotrochilus estella': 'Andean Hillstar',
   'Oreotrochilus leucopleurus': 'White-sided Hillstar',
   'Oreotrochilus estella/leucopleurus': 'Andean/White-sided Hillstar',
@@ -2384,8 +2524,10 @@ const Map<String, String> scientificToCommon = {
   'Metallura tyrianthina oreopola': 'Tyrian Metaltail (Merida)',
   'Metallura tyrianthina tyrianthina/quitensis': 'Tyrian Metaltail (Tyrian)',
   'Metallura tyrianthina septentrionalis': 'Tyrian Metaltail (septentrionalis)',
-  'Metallura tyrianthina smaragdinicollis': 'Tyrian Metaltail (smaragdinicollis)',
-  'Aglaiocercus kingii x Metallura tyrianthina': 'Long-tailed Sylph x Tyrian Metaltail (hybrid)',
+  'Metallura tyrianthina smaragdinicollis':
+      'Tyrian Metaltail (smaragdinicollis)',
+  'Aglaiocercus kingii x Metallura tyrianthina':
+      'Long-tailed Sylph x Tyrian Metaltail (hybrid)',
   'Metallura williami': 'Viridian Metaltail',
   'Metallura williami recisa': 'Viridian Metaltail (recisa)',
   'Metallura williami williami': 'Viridian Metaltail (Viridian)',
@@ -2408,8 +2550,10 @@ const Map<String, String> scientificToCommon = {
   'Eriocnemis godini': 'Turquoise-throated Puffleg',
   'Eriocnemis cupreoventris': 'Coppery-bellied Puffleg',
   'Eriocnemis luciani': 'Sapphire-vented Puffleg',
-  'Eriocnemis luciani [luciani Group]': 'Sapphire-vented Puffleg (Sapphire-vented)',
-  'Eriocnemis luciani sapphiropygia/catharina': 'Sapphire-vented Puffleg (Coppery-naped)',
+  'Eriocnemis luciani [luciani Group]':
+      'Sapphire-vented Puffleg (Sapphire-vented)',
+  'Eriocnemis luciani sapphiropygia/catharina':
+      'Sapphire-vented Puffleg (Coppery-naped)',
   'Eriocnemis mosquera': 'Golden-breasted Puffleg',
   'Eriocnemis glaucopoides': 'Blue-capped Puffleg',
   'Eriocnemis mirabilis': 'Colorful Puffleg',
@@ -2417,7 +2561,8 @@ const Map<String, String> scientificToCommon = {
   'Loddigesia mirabilis': 'Marvelous Spatuletail',
   'Aglaeactis cupripennis': 'Shining Sunbeam',
   'Aglaeactis castelnaudii': 'White-tufted Sunbeam',
-  'Aglaeactis cupripennis x castelnaudii': 'Shining x White-tufted Sunbeam (hybrid)',
+  'Aglaeactis cupripennis x castelnaudii':
+      'Shining x White-tufted Sunbeam (hybrid)',
   'Aglaeactis cupripennis/castelnaudii': 'Shining/White-tufted Sunbeam',
   'Aglaeactis aliciae': 'Purple-backed Sunbeam',
   'Aglaeactis pamela': 'Black-hooded Sunbeam',
@@ -2442,7 +2587,8 @@ const Map<String, String> scientificToCommon = {
   'Coeligena bonapartei': 'Golden-bellied Starfrontlet',
   'Coeligena eos': 'Merida Starfrontlet',
   'Coeligena helianthea': 'Blue-throated Starfrontlet',
-  'Coeligena bonapartei x helianthea': 'Golden-bellied x Blue-throated Starfrontlet (hybrid)',
+  'Coeligena bonapartei x helianthea':
+      'Golden-bellied x Blue-throated Starfrontlet (hybrid)',
   'Coeligena sp.': 'Coeligena sp.',
   'Lafresnaya lafresnayi': 'Mountain Velvetbreast',
   'Ensifera ensifera': 'Sword-billed Hummingbird',
@@ -2450,7 +2596,8 @@ const Map<String, String> scientificToCommon = {
   'Boissonneaua flavescens': 'Buff-tailed Coronet',
   'Boissonneaua matthewsii': 'Chestnut-breasted Coronet',
   'Boissonneaua jardini': 'Velvet-purple Coronet',
-  'Boissonneaua flavescens x jardini': 'Buff-tailed x Velvet-purple Coronet (hybrid)',
+  'Boissonneaua flavescens x jardini':
+      'Buff-tailed x Velvet-purple Coronet (hybrid)',
   'Ocreatus underwoodii': 'White-booted Racket-tail',
   'Ocreatus peruanus': 'Peruvian Racket-tail',
   'Ocreatus addae': 'Rufous-booted Racket-tail',
@@ -2465,13 +2612,16 @@ const Map<String, String> scientificToCommon = {
   'Heliodoxa gularis': 'Pink-throated Brilliant',
   'Heliodoxa branickii': 'Rufous-webbed Brilliant',
   'Heliodoxa schreibersii': 'Black-throated Brilliant',
-  'Heliodoxa schreibersii schreibersii': 'Black-throated Brilliant (Black-throated)',
-  'Heliodoxa schreibersii whitelyana': 'Black-throated Brilliant (Black-breasted)',
+  'Heliodoxa schreibersii schreibersii':
+      'Black-throated Brilliant (Black-throated)',
+  'Heliodoxa schreibersii whitelyana':
+      'Black-throated Brilliant (Black-breasted)',
   'Heliodoxa aurescens': 'Gould\'s Jewelfront',
   'Heliodoxa rubinoides': 'Fawn-breasted Brilliant',
   'Heliodoxa jacula': 'Green-crowned Brilliant',
   'Heliodoxa imperatrix': 'Empress Brilliant',
-  'Boissonneaua flavescens x Heliodoxa imperatrix': 'Buff-tailed Coronet x Empress Brilliant (hybrid)',
+  'Boissonneaua flavescens x Heliodoxa imperatrix':
+      'Buff-tailed Coronet x Empress Brilliant (hybrid)',
   'Heliodoxa leadbeateri': 'Violet-fronted Brilliant',
   'Heliodoxa rubricauda': 'Brazilian Ruby',
   'Patagona gigas': 'Giant Hummingbird',
@@ -2490,17 +2640,23 @@ const Map<String, String> scientificToCommon = {
   'Lampornis viridipallens': 'Green-throated Mountain-gem',
   'Lampornis sybillae': 'Green-breasted Mountain-gem',
   'Lampornis amethystinus': 'Amethyst-throated Mountain-gem',
-  'Lampornis amethystinus [amethystinus Group]': 'Amethyst-throated Mountain-gem (Amethyst-throated)',
-  'Lampornis amethystinus margaritae': 'Amethyst-throated Mountain-gem (Violet-throated)',
+  'Lampornis amethystinus [amethystinus Group]':
+      'Amethyst-throated Mountain-gem (Amethyst-throated)',
+  'Lampornis amethystinus margaritae':
+      'Amethyst-throated Mountain-gem (Violet-throated)',
   'Lampornis clemenciae': 'Blue-throated Mountain-gem',
   'Lampornis hemileucus': 'White-bellied Mountain-gem',
   'Lampornis calolaemus': 'Purple-throated Mountain-gem',
   'Lampornis [undescribed form]': 'Azuero Mountain-gem (undescribed form)',
   'Lampornis castaneoventris': 'White-throated Mountain-gem',
-  'Lampornis castaneoventris cinereicauda': 'White-throated Mountain-gem (Gray-tailed)',
-  'Lampornis castaneoventris castaneoventris': 'White-throated Mountain-gem (Blue-tailed)',
-  'Lampornis calolaemus x castaneoventris': 'Purple-throated x White-throated Mountain-gem (hybrid)',
-  'Lampornis calolaemus/castaneoventris': 'Purple-throated/White-throated Mountain-gem',
+  'Lampornis castaneoventris cinereicauda':
+      'White-throated Mountain-gem (Gray-tailed)',
+  'Lampornis castaneoventris castaneoventris':
+      'White-throated Mountain-gem (Blue-tailed)',
+  'Lampornis calolaemus x castaneoventris':
+      'Purple-throated x White-throated Mountain-gem (hybrid)',
+  'Lampornis calolaemus/castaneoventris':
+      'Purple-throated/White-throated Mountain-gem',
   'Lamprolaima rhami': 'Garnet-throated Hummingbird',
   'Tilmatura dupontii': 'Sparkling-tailed Hummingbird',
   'Calliphlox amethystina': 'Amethyst Woodstar',
@@ -2509,7 +2665,8 @@ const Map<String, String> scientificToCommon = {
   'Myrtis fanny': 'Purple-collared Woodstar',
   'Rhodopis vesper': 'Oasis Hummingbird',
   'Eulidia yarrellii': 'Chilean Woodstar',
-  'Thaumastura cora x Eulidia yarrellii': 'Peruvian Sheartail x Chilean Woodstar (hybrid)',
+  'Thaumastura cora x Eulidia yarrellii':
+      'Peruvian Sheartail x Chilean Woodstar (hybrid)',
   'Microstilbon burmeisteri': 'Slender-tailed Woodstar',
   'Chaetocercus mulsant': 'White-bellied Woodstar',
   'Chaetocercus bombus': 'Little Woodstar',
@@ -2528,9 +2685,12 @@ const Map<String, String> scientificToCommon = {
   'Calothorax lucifer/pulcher': 'Lucifer/Beautiful Hummingbird',
   'Archilochus colubris': 'Ruby-throated Hummingbird',
   'Archilochus alexandri': 'Black-chinned Hummingbird',
-  'Eugenes fulgens x Archilochus alexandri': 'Rivoli\'s x Black-chinned Hummingbird (hybrid)',
-  'Calothorax lucifer x Archilochus alexandri': 'Lucifer x Black-chinned Hummingbird (hybrid)',
-  'Archilochus colubris x alexandri': 'Ruby-throated x Black-chinned Hummingbird (hybrid)',
+  'Eugenes fulgens x Archilochus alexandri':
+      'Rivoli\'s x Black-chinned Hummingbird (hybrid)',
+  'Calothorax lucifer x Archilochus alexandri':
+      'Lucifer x Black-chinned Hummingbird (hybrid)',
+  'Archilochus colubris x alexandri':
+      'Ruby-throated x Black-chinned Hummingbird (hybrid)',
   'Archilochus colubris/alexandri': 'Ruby-throated/Black-chinned Hummingbird',
   'Nesophlox evelynae': 'Bahama Woodstar',
   'Nesophlox lyrura': 'Inagua Woodstar',
@@ -2539,33 +2699,48 @@ const Map<String, String> scientificToCommon = {
   'Calypte anna': 'Anna\'s Hummingbird',
   'Eugenes fulgens x Calypte anna': 'Rivoli\'s x Anna\'s Hummingbird (hybrid)',
   'Calothorax lucifer x Calypte anna': 'Lucifer x Anna\'s Hummingbird (hybrid)',
-  'Archilochus alexandri x Calypte anna': 'Black-chinned x Anna\'s Hummingbird (hybrid)',
+  'Archilochus alexandri x Calypte anna':
+      'Black-chinned x Anna\'s Hummingbird (hybrid)',
   'Calypte costae': 'Costa\'s Hummingbird',
-  'Calothorax lucifer x Calypte costae': 'Lucifer x Costa\'s Hummingbird (hybrid)',
-  'Archilochus alexandri x Calypte costae': 'Black-chinned x Costa\'s Hummingbird (hybrid)',
+  'Calothorax lucifer x Calypte costae':
+      'Lucifer x Costa\'s Hummingbird (hybrid)',
+  'Archilochus alexandri x Calypte costae':
+      'Black-chinned x Costa\'s Hummingbird (hybrid)',
   'Calypte anna x costae': 'Anna\'s x Costa\'s Hummingbird (hybrid)',
   'Calypte anna/costae': 'Anna\'s/Costa\'s Hummingbird',
   'Selasphorus calliope': 'Calliope Hummingbird',
-  'Archilochus alexandri x Selasphorus calliope': 'Black-chinned x Calliope Hummingbird (hybrid)',
-  'Calypte anna x Selasphorus calliope': 'Anna\'s x Calliope Hummingbird (hybrid)',
+  'Archilochus alexandri x Selasphorus calliope':
+      'Black-chinned x Calliope Hummingbird (hybrid)',
+  'Calypte anna x Selasphorus calliope':
+      'Anna\'s x Calliope Hummingbird (hybrid)',
   'Selasphorus rufus': 'Rufous Hummingbird',
-  'Archilochus colubris x Selasphorus rufus': 'Ruby-throated x Rufous Hummingbird (hybrid)',
-  'Archilochus alexandri x Selasphorus rufus': 'Black-chinned x Rufous Hummingbird (hybrid)',
+  'Archilochus colubris x Selasphorus rufus':
+      'Ruby-throated x Rufous Hummingbird (hybrid)',
+  'Archilochus alexandri x Selasphorus rufus':
+      'Black-chinned x Rufous Hummingbird (hybrid)',
   'Calypte anna x Selasphorus rufus': 'Anna\'s x Rufous Hummingbird (hybrid)',
   'Selasphorus calliope x rufus': 'Calliope x Rufous Hummingbird (hybrid)',
   'Selasphorus sasin': 'Allen\'s Hummingbird',
-  'Archilochus alexandri x Selasphorus sasin': 'Black-chinned x Allen\'s Hummingbird (hybrid)',
+  'Archilochus alexandri x Selasphorus sasin':
+      'Black-chinned x Allen\'s Hummingbird (hybrid)',
   'Calypte anna x Selasphorus sasin': 'Anna\'s x Allen\'s Hummingbird (hybrid)',
-  'Calypte costae x Selasphorus sasin': 'Costa\'s x Allen\'s Hummingbird (hybrid)',
+  'Calypte costae x Selasphorus sasin':
+      'Costa\'s x Allen\'s Hummingbird (hybrid)',
   'Selasphorus rufus x sasin': 'Rufous x Allen\'s Hummingbird (hybrid)',
   'Selasphorus rufus/sasin': 'Rufous/Allen\'s Hummingbird',
   'Selasphorus platycercus': 'Broad-tailed Hummingbird',
-  'Calothorax lucifer x Selasphorus platycercus': 'Lucifer x Broad-tailed Hummingbird (hybrid)',
-  'Archilochus colubris x Selasphorus platycercus': 'Ruby-throated x Broad-tailed Hummingbird (hybrid)',
-  'Archilochus alexandri x Selasphorus platycercus': 'Black-chinned x Broad-tailed Hummingbird (hybrid)',
-  'Calypte anna x Selasphorus platycercus': 'Anna\'s x Broad-tailed Hummingbird (hybrid)',
-  'Selasphorus calliope x platycercus': 'Calliope x Broad-tailed Hummingbird (hybrid)',
-  'Selasphorus rufus x platycercus': 'Rufous x Broad-tailed Hummingbird (hybrid)',
+  'Calothorax lucifer x Selasphorus platycercus':
+      'Lucifer x Broad-tailed Hummingbird (hybrid)',
+  'Archilochus colubris x Selasphorus platycercus':
+      'Ruby-throated x Broad-tailed Hummingbird (hybrid)',
+  'Archilochus alexandri x Selasphorus platycercus':
+      'Black-chinned x Broad-tailed Hummingbird (hybrid)',
+  'Calypte anna x Selasphorus platycercus':
+      'Anna\'s x Broad-tailed Hummingbird (hybrid)',
+  'Selasphorus calliope x platycercus':
+      'Calliope x Broad-tailed Hummingbird (hybrid)',
+  'Selasphorus rufus x platycercus':
+      'Rufous x Broad-tailed Hummingbird (hybrid)',
   'Selasphorus heloisa': 'Bumblebee Hummingbird',
   'Selasphorus ellioti': 'Wine-throated Hummingbird',
   'Selasphorus flammula': 'Volcano Hummingbird',
@@ -2574,26 +2749,34 @@ const Map<String, String> scientificToCommon = {
   'Selasphorus flammula simoni': 'Volcano Hummingbird (Rose-throated)',
   'Selasphorus scintilla': 'Scintillant Hummingbird',
   'Selasphorus ardens': 'Glow-throated Hummingbird',
-  'Calypte anna x Selasphorus sp.': 'Anna\'s Hummingbird x Selasphorus sp. (hybrid)',
+  'Calypte anna x Selasphorus sp.':
+      'Anna\'s Hummingbird x Selasphorus sp. (hybrid)',
   'Selasphorus sp.': 'Selasphorus sp.',
   'Phaeoptila sordida': 'Dusky Hummingbird',
   'Riccordia ricordii': 'Cuban Emerald',
   'Riccordia bracei': 'Brace\'s Emerald',
-  'Riccordia elegans [unrecognized species]': 'Elegant Emerald (unrecognized species)',
+  'Riccordia elegans [unrecognized species]':
+      'Elegant Emerald (unrecognized species)',
   'Riccordia swainsonii': 'Hispaniolan Emerald',
   'Riccordia maugaeus': 'Puerto Rican Emerald',
   'Riccordia bicolor': 'Blue-headed Hummingbird',
   'Cynanthus latirostris': 'Broad-billed Hummingbird',
-  'Archilochus alexandri x Cynanthus latirostris': 'Black-chinned x Broad-billed Hummingbird (hybrid)',
-  'Calypte anna x Cynanthus latirostris': 'Anna\'s x Broad-billed Hummingbird (hybrid)',
-  'Calypte costae x Cynanthus latirostris': 'Costa\'s x Broad-billed Hummingbird (hybrid)',
+  'Archilochus alexandri x Cynanthus latirostris':
+      'Black-chinned x Broad-billed Hummingbird (hybrid)',
+  'Calypte anna x Cynanthus latirostris':
+      'Anna\'s x Broad-billed Hummingbird (hybrid)',
+  'Calypte costae x Cynanthus latirostris':
+      'Costa\'s x Broad-billed Hummingbird (hybrid)',
   'Phaeoptila sordida/Cynanthus latirostris': 'Dusky/Broad-billed Hummingbird',
   'Cynanthus lawrencei': 'Tres Marias Hummingbird',
   'Cynanthus latirostris/lawrencei': 'Broad-billed/Tres Marias Hummingbird',
   'Cynanthus doubledayi': 'Turquoise-crowned Hummingbird',
-  'Cynanthus latirostris x doubledayi': 'Broad-billed x Turquoise-crowned Hummingbird (hybrid)',
-  'Phaeoptila sordida/Cynanthus doubledayi': 'Dusky/Turquoise-crowned Hummingbird',
-  'Cynanthus latirostris/doubledayi': 'Broad-billed/Turquoise-crowned Hummingbird',
+  'Cynanthus latirostris x doubledayi':
+      'Broad-billed x Turquoise-crowned Hummingbird (hybrid)',
+  'Phaeoptila sordida/Cynanthus doubledayi':
+      'Dusky/Turquoise-crowned Hummingbird',
+  'Cynanthus latirostris/doubledayi':
+      'Broad-billed/Turquoise-crowned Hummingbird',
   'Cynanthus auriceps': 'Golden-crowned Emerald',
   'Cynanthus forficatus': 'Cozumel Emerald',
   'Cynanthus canivetii': 'Canivet\'s Emerald',
@@ -2609,11 +2792,15 @@ const Map<String, String> scientificToCommon = {
   'Chlorostilbon russatus': 'Coppery Emerald',
   'Chlorostilbon assimilis': 'Garden Emerald',
   'Chlorostilbon melanorhynchus': 'Western Emerald',
-  'Riccordia/Cynanthus/Chlorostilbon sp.': 'Riccordia/Cynanthus/Chlorostilbon sp.',
+  'Riccordia/Cynanthus/Chlorostilbon sp.':
+      'Riccordia/Cynanthus/Chlorostilbon sp.',
   'Basilinna leucotis': 'White-eared Hummingbird',
-  'Eugenes fulgens x Basilinna leucotis': 'Rivoli\'s x White-eared Hummingbird (hybrid)',
-  'Selasphorus platycercus x Basilinna leucotis': 'Broad-tailed x White-eared Hummingbird (hybrid)',
-  'Cynanthus latirostris x Basilinna leucotis': 'Broad-billed x White-eared Hummingbird (hybrid)',
+  'Eugenes fulgens x Basilinna leucotis':
+      'Rivoli\'s x White-eared Hummingbird (hybrid)',
+  'Selasphorus platycercus x Basilinna leucotis':
+      'Broad-tailed x White-eared Hummingbird (hybrid)',
+  'Cynanthus latirostris x Basilinna leucotis':
+      'Broad-billed x White-eared Hummingbird (hybrid)',
   'Basilinna xantusii': 'Xantus\'s Hummingbird',
   'Pampa curvipennis': 'Wedge-tailed Sabrewing',
   'Pampa curvipennis curvipennis': 'Wedge-tailed Sabrewing (Curve-winged)',
@@ -2623,16 +2810,21 @@ const Map<String, String> scientificToCommon = {
   'Klais guimeti': 'Violet-headed Hummingbird',
   'Abeillia abeillei': 'Emerald-chinned Hummingbird',
   'Orthorhyncus cristatus': 'Antillean Crested Hummingbird',
-  'Orthorhyncus cristatus exilis': 'Antillean Crested Hummingbird (Lesser Antilles)',
-  'Orthorhyncus cristatus ornatus': 'Antillean Crested Hummingbird (St. Vincent)',
-  'Orthorhyncus cristatus cristatus': 'Antillean Crested Hummingbird (Barbados)',
-  'Orthorhyncus cristatus emigrans': 'Antillean Crested Hummingbird (Grenadines and Grenada)',
+  'Orthorhyncus cristatus exilis':
+      'Antillean Crested Hummingbird (Lesser Antilles)',
+  'Orthorhyncus cristatus ornatus':
+      'Antillean Crested Hummingbird (St. Vincent)',
+  'Orthorhyncus cristatus cristatus':
+      'Antillean Crested Hummingbird (Barbados)',
+  'Orthorhyncus cristatus emigrans':
+      'Antillean Crested Hummingbird (Grenadines and Grenada)',
   'Stephanoxis lalandi': 'Green-crowned Plovercrest',
   'Stephanoxis loddigesii': 'Purple-crowned Plovercrest',
   'Anthocephala floriceps': 'Santa Marta Blossomcrown',
   'Anthocephala berlepschi': 'Tolima Blossomcrown',
   'Campylopterus largipennis': 'Gray-breasted Sabrewing',
-  'Campylopterus largipennis largipennis': 'Gray-breasted Sabrewing (largipennis)',
+  'Campylopterus largipennis largipennis':
+      'Gray-breasted Sabrewing (largipennis)',
   'Campylopterus largipennis obscurus': 'Gray-breasted Sabrewing (obscurus)',
   'Campylopterus calcirupicola': 'Outcrop Sabrewing',
   'Campylopterus diamantinensis': 'Diamantina Sabrewing',
@@ -2645,16 +2837,22 @@ const Map<String, String> scientificToCommon = {
   'Campylopterus ensipennis': 'White-tailed Sabrewing',
   'Chalybura urochrysia': 'Bronze-tailed Plumeleteer',
   'Chalybura buffonii': 'White-vented Plumeleteer',
-  'Chalybura buffonii [buffonii Group]': 'White-vented Plumeleteer (White-vented)',
-  'Chalybura buffonii caeruleogaster': 'White-vented Plumeleteer (Blue-bellied)',
+  'Chalybura buffonii [buffonii Group]':
+      'White-vented Plumeleteer (White-vented)',
+  'Chalybura buffonii caeruleogaster':
+      'White-vented Plumeleteer (Blue-bellied)',
   'Chalybura buffonii intermedia': 'White-vented Plumeleteer (Ecuadorian)',
   'Thalurania glaucopis': 'Violet-capped Woodnymph',
   'Thalurania watertonii': 'Long-tailed Woodnymph',
   'Thalurania colombica': 'Crowned Woodnymph',
-  'Thalurania colombica (Violet-crowned Woodnymph)': 'Crowned Woodnymph (Northern/Colombian Violet-crowned)',
-  'Thalurania colombica venusta/townsendi': 'Crowned Woodnymph (Northern Violet-crowned)',
-  'Thalurania colombica colombica/rostrifera': 'Crowned Woodnymph (Colombian Violet-crowned)',
-  'Thalurania colombica (Green-crowned Woodnymph)': 'Crowned Woodnymph (Green-crowned/Emerald-bellied)',
+  'Thalurania colombica (Violet-crowned Woodnymph)':
+      'Crowned Woodnymph (Northern/Colombian Violet-crowned)',
+  'Thalurania colombica venusta/townsendi':
+      'Crowned Woodnymph (Northern Violet-crowned)',
+  'Thalurania colombica colombica/rostrifera':
+      'Crowned Woodnymph (Colombian Violet-crowned)',
+  'Thalurania colombica (Green-crowned Woodnymph)':
+      'Crowned Woodnymph (Green-crowned/Emerald-bellied)',
   'Thalurania colombica [fannyae Group]': 'Crowned Woodnymph (Green-crowned)',
   'Thalurania colombica hypochlora': 'Crowned Woodnymph (Emerald-bellied)',
   'Thalurania furcata': 'Fork-tailed Woodnymph',
@@ -2671,7 +2869,8 @@ const Map<String, String> scientificToCommon = {
   'Eupherusa nigriventris': 'Black-bellied Hummingbird',
   'Phaeochroa cuvierii': 'Scaly-breasted Hummingbird',
   'Phaeochroa cuvierii roberti': 'Scaly-breasted Hummingbird (Robert\'s)',
-  'Phaeochroa cuvierii [cuvierii Group]': 'Scaly-breasted Hummingbird (Cuvier\'s)',
+  'Phaeochroa cuvierii [cuvierii Group]':
+      'Scaly-breasted Hummingbird (Cuvier\'s)',
   'Leucippus fallax': 'Buffy Hummingbird',
   'Thaumasius baeri': 'Tumbes Hummingbird',
   'Thaumasius taczanowskii': 'Spot-throated Hummingbird',
@@ -2681,28 +2880,39 @@ const Map<String, String> scientificToCommon = {
   'Talaphorus chlorocercus': 'Olive-spotted Hummingbird',
   'Trochilus polytmus': 'Red-billed Streamertail',
   'Trochilus scitulus': 'Black-billed Streamertail',
-  'Trochilus polytmus x scitulus': 'Red-billed x Black-billed Streamertail (hybrid)',
+  'Trochilus polytmus x scitulus':
+      'Red-billed x Black-billed Streamertail (hybrid)',
   'Trochilus polytmus/scitulus': 'Red-billed/Black-billed Streamertail',
   'Ramosomyia violiceps': 'Violet-crowned Hummingbird',
-  'Cynanthus latirostris x Ramosomyia violiceps': 'Broad-billed x Violet-crowned Hummingbird (hybrid)',
+  'Cynanthus latirostris x Ramosomyia violiceps':
+      'Broad-billed x Violet-crowned Hummingbird (hybrid)',
   'Ramosomyia viridifrons': 'Green-fronted Hummingbird',
-  'Ramosomyia viridifrons viridifrons': 'Green-fronted Hummingbird (Green-fronted)',
-  'Ramosomyia viridifrons wagneri': 'Green-fronted Hummingbird (Cinnamon-sided)',
+  'Ramosomyia viridifrons viridifrons':
+      'Green-fronted Hummingbird (Green-fronted)',
+  'Ramosomyia viridifrons wagneri':
+      'Green-fronted Hummingbird (Cinnamon-sided)',
   'Ramosomyia viridifrons villadai': 'Green-fronted Hummingbird (villadai)',
-  'Ramosomyia violiceps/viridifrons': 'Violet-crowned/Green-fronted Hummingbird',
+  'Ramosomyia violiceps/viridifrons':
+      'Violet-crowned/Green-fronted Hummingbird',
   'Saucerottia cyanocephala': 'Azure-crowned Hummingbird',
-  'Saucerottia cyanocephala cyanocephala': 'Azure-crowned Hummingbird (Azure-crowned)',
-  'Saucerottia cyanocephala chlorostephana': 'Azure-crowned Hummingbird (Mosquitia)',
+  'Saucerottia cyanocephala cyanocephala':
+      'Azure-crowned Hummingbird (Azure-crowned)',
+  'Saucerottia cyanocephala chlorostephana':
+      'Azure-crowned Hummingbird (Mosquitia)',
   'Saucerottia hoffmanni': 'Blue-vented Hummingbird',
   'Saucerottia beryllina': 'Berylline Hummingbird',
   'Saucerottia beryllina beryllina/viola': 'Berylline Hummingbird (Northern)',
-  'Saucerottia beryllina [devillei Group]': 'Berylline Hummingbird (Sumichrast\'s)',
-  'Cynanthus latirostris x Saucerottia beryllina': 'Broad-billed x Berylline Hummingbird (hybrid)',
-  'Eugenes fulgens x Saucerottia beryllina': 'Rivoli\'s x Berylline Hummingbird (hybrid)',
+  'Saucerottia beryllina [devillei Group]':
+      'Berylline Hummingbird (Sumichrast\'s)',
+  'Cynanthus latirostris x Saucerottia beryllina':
+      'Broad-billed x Berylline Hummingbird (hybrid)',
+  'Eugenes fulgens x Saucerottia beryllina':
+      'Rivoli\'s x Berylline Hummingbird (hybrid)',
   'Saucerottia cyanura': 'Blue-tailed Hummingbird',
   'Saucerottia edward': 'Snowy-bellied Hummingbird',
   'Saucerottia saucerottei': 'Steely-vented Hummingbird',
-  'Saucerottia alfaroana [unrecognized species]': 'Guanacaste Hummingbird (unrecognized species)',
+  'Saucerottia alfaroana [unrecognized species]':
+      'Guanacaste Hummingbird (unrecognized species)',
   'Saucerottia cyanifrons': 'Indigo-capped Hummingbird',
   'Saucerottia castaneiventris': 'Chestnut-bellied Hummingbird',
   'Saucerottia viridigaster': 'Green-bellied Hummingbird',
@@ -2714,15 +2924,19 @@ const Map<String, String> scientificToCommon = {
   'Amazilia rutila [rutila Group]': 'Cinnamon Hummingbird (Mainland)',
   'Amazilia yucatanensis': 'Buff-bellied Hummingbird',
   'Amazilia yucatanensis yucatanensis': 'Buff-bellied Hummingbird (Yucatan)',
-  'Amazilia yucatanensis cerviniventris/chalconota': 'Buff-bellied Hummingbird (Northern)',
+  'Amazilia yucatanensis cerviniventris/chalconota':
+      'Buff-bellied Hummingbird (Northern)',
   'Amazilia tzacatl': 'Rufous-tailed Hummingbird',
-  'Amazilia tzacatl [tzacatl Group]': 'Rufous-tailed Hummingbird (Rufous-tailed)',
+  'Amazilia tzacatl [tzacatl Group]':
+      'Rufous-tailed Hummingbird (Rufous-tailed)',
   'Amazilia tzacatl handleyi': 'Rufous-tailed Hummingbird (Escudo)',
   'Amazilia rutila x tzacatl': 'Cinnamon x Rufous-tailed Hummingbird (hybrid)',
   'Amazilia yucatanensis/tzacatl': 'Buff-bellied/Rufous-tailed Hummingbird',
   'Amazilia luciae': 'Honduran Emerald',
-  'Saucerottia cyanocephala x Amazilia luciae': 'Azure-crowned Hummingbird x Honduran Emerald (hybrid)',
-  'Amazilia tzacatl x luciae': 'Rufous-tailed Hummingbird x Honduran Emerald (hybrid)',
+  'Saucerottia cyanocephala x Amazilia luciae':
+      'Azure-crowned Hummingbird x Honduran Emerald (hybrid)',
+  'Amazilia tzacatl x luciae':
+      'Rufous-tailed Hummingbird x Honduran Emerald (hybrid)',
   'Amazilis amazilia': 'Amazilia Hummingbird',
   'Amazilis amazilia dumerilii': 'Amazilia Hummingbird (Green-tailed)',
   'Amazilis amazilia azuay': 'Amazilia Hummingbird (Azuay)',
@@ -2732,14 +2946,16 @@ const Map<String, String> scientificToCommon = {
   'Amazilis amazilia caeruleigularis': 'Amazilia Hummingbird (Blue-throated)',
   'Uranomitra franciae': 'Andean Emerald',
   'Chrysuronia versicolor': 'Versicolored Emerald',
-  'Chrysuronia versicolor [versicolor Group]': 'Versicolored Emerald (Versicolored)',
+  'Chrysuronia versicolor [versicolor Group]':
+      'Versicolored Emerald (Versicolored)',
   'Chrysuronia versicolor rondoniae': 'Versicolored Emerald (Rondonia)',
   'Chrysuronia goudoti': 'Shining-green Hummingbird',
   'Chrysuronia oenone': 'Golden-tailed Sapphire',
   'Chrysuronia boucardi': 'Mangrove Hummingbird',
   'Chrysuronia coeruleogularis': 'Sapphire-throated Hummingbird',
   'Chrysuronia lilliae': 'Sapphire-bellied Hummingbird',
-  'Chrysuronia goudoti/coeruleogularis/lilliae': 'Shining-green/Sapphire-throated/Sapphire-bellied Hummingbird',
+  'Chrysuronia goudoti/coeruleogularis/lilliae':
+      'Shining-green/Sapphire-throated/Sapphire-bellied Hummingbird',
   'Chrysuronia humboldtii': 'Humboldt\'s Sapphire',
   'Chrysuronia grayi': 'Blue-headed Sapphire',
   'Chrysuronia brevirostris': 'White-chested Emerald',
@@ -2747,16 +2963,20 @@ const Map<String, String> scientificToCommon = {
   'Leucochloris albicollis': 'White-throated Hummingbird',
   'Chionomesa fimbriata': 'Glittering-throated Emerald',
   'Chionomesa lactea': 'Sapphire-spangled Emerald',
-  'Chionomesa lactea lactea/zimmeri': 'Sapphire-spangled Emerald (Sapphire-spangled)',
+  'Chionomesa lactea lactea/zimmeri':
+      'Sapphire-spangled Emerald (Sapphire-spangled)',
   'Chionomesa lactea bartletti': 'Sapphire-spangled Emerald (Spot-vented)',
-  'Chionomesa fimbriata/lactea': 'Glittering-throated/Sapphire-spangled Emerald',
+  'Chionomesa fimbriata/lactea':
+      'Glittering-throated/Sapphire-spangled Emerald',
   'Hylocharis sapphirina': 'Rufous-throated Sapphire',
   'Hylocharis chrysura': 'Gilded Hummingbird',
   'Elliotomyia chionogaster': 'White-bellied Hummingbird',
-  'Elliotomyia chionogaster chionogaster': 'White-bellied Hummingbird (chionogaster)',
+  'Elliotomyia chionogaster chionogaster':
+      'White-bellied Hummingbird (chionogaster)',
   'Elliotomyia chionogaster hypoleuca': 'White-bellied Hummingbird (hypoleuca)',
   'Elliotomyia viridicauda': 'Green-and-white Hummingbird',
-  'Elliotomyia chionogaster/viridicauda': 'White-bellied/Green-and-white Hummingbird',
+  'Elliotomyia chionogaster/viridicauda':
+      'White-bellied/Green-and-white Hummingbird',
   'Polyerata rosenbergi': 'Purple-chested Hummingbird',
   'Polyerata amabilis': 'Blue-chested Hummingbird',
   'Polyerata decora': 'Charming Hummingbird',
@@ -2765,7 +2985,8 @@ const Map<String, String> scientificToCommon = {
   'Chlorestes cyanus': 'White-chinned Sapphire',
   'Chlorestes julie': 'Violet-bellied Hummingbird',
   'Chlorestes notata': 'Blue-chinned Sapphire',
-  'Aglaiocercus kingii x Trochilidae sp. (Bogota Sunangel)': 'Bogota Sunangel (hybrid)',
+  'Aglaiocercus kingii x Trochilidae sp. (Bogota Sunangel)':
+      'Bogota Sunangel (hybrid)',
   'Trochilidae sp.': 'hummingbird sp.',
   'Mentocrex kioloides': 'Madagascar Forest Rail',
   'Mentocrex beankaensis': 'Tsingy Forest Rail',
@@ -2904,7 +3125,8 @@ const Map<String, String> scientificToCommon = {
   'Fulica gigantea': 'Giant Coot',
   'Fulica armillata': 'Red-gartered Coot',
   'Fulica atra': 'Eurasian Coot',
-  'Gallinula chloropus x Fulica atra': 'Eurasian Moorhen x Eurasian Coot (hybrid)',
+  'Gallinula chloropus x Fulica atra':
+      'Eurasian Moorhen x Eurasian Coot (hybrid)',
   'Fulica newtonii': 'Mascarene Coot',
   'Fulica cristata': 'Red-knobbed Coot',
   'Fulica atra x cristata': 'Eurasian x Red-knobbed Coot (hybrid)',
@@ -2915,7 +3137,8 @@ const Map<String, String> scientificToCommon = {
   'Fulica americana': 'American Coot',
   'Fulica americana (Red-shielded)': 'American Coot (Red-shielded)',
   'Fulica americana (White-shielded)': 'American Coot (White-shielded)',
-  'Gallinula galeata x Fulica americana': 'Common Gallinule x American Coot (hybrid)',
+  'Gallinula galeata x Fulica americana':
+      'Common Gallinule x American Coot (hybrid)',
   'Fulica ardesiaca': 'Slate-colored Coot',
   'Fulica ardesiaca (White-billed)': 'Slate-colored Coot (White-billed)',
   'Fulica ardesiaca (Yellow-billed)': 'Slate-colored Coot (Yellow-billed)',
@@ -2937,8 +3160,10 @@ const Map<String, String> scientificToCommon = {
   'Porphyrio pulverulentus': 'Philippine Swamphen',
   'Porphyrio albus': 'Lord Howe Swamphen',
   'Porphyrio poliocephalus': 'Gray-headed Swamphen',
-  'Porphyrio indicus x poliocephalus': 'Black-backed x Gray-headed Swamphen (hybrid)',
-  'Porphyrio madagascariensis x poliocephalus': 'African x Gray-headed Swamphen (hybrid)',
+  'Porphyrio indicus x poliocephalus':
+      'Black-backed x Gray-headed Swamphen (hybrid)',
+  'Porphyrio madagascariensis x poliocephalus':
+      'African x Gray-headed Swamphen (hybrid)',
   'Porphyrio indicus/poliocephalus': 'Black-backed/Gray-headed Swamphen',
   'Porphyrio madagascariensis/poliocephalus': 'African/Gray-headed Swamphen',
   'Porphyrio sp. (swamphen sp.)': 'swamphen sp.',
@@ -2995,17 +3220,20 @@ const Map<String, String> scientificToCommon = {
   'Laterallus flaviventer': 'Yellow-breasted Crake',
   'Laterallus levraudi': 'Rusty-flanked Crake',
   'Laterallus melanophaius': 'Rufous-sided Crake',
-  'Rufirallus leucopyrrhus/Laterallus melanophaius': 'Red-and-white/Rufous-sided Crake',
+  'Rufirallus leucopyrrhus/Laterallus melanophaius':
+      'Red-and-white/Rufous-sided Crake',
   'Laterallus ruber': 'Ruddy Crake',
   'Laterallus albigularis': 'White-throated Crake',
-  'Laterallus albigularis albigularis/cerdaleus': 'White-throated Crake (Rufous-faced)',
+  'Laterallus albigularis albigularis/cerdaleus':
+      'White-throated Crake (Rufous-faced)',
   'Laterallus albigularis cinereiceps': 'White-throated Crake (Gray-faced)',
   'Laterallus ruber/albigularis': 'Ruddy/White-throated Crake',
   'Laterallus exilis': 'Gray-breasted Crake',
   'Laterallus spilonota': 'Galapagos Rail',
   'Laterallus jamaicensis': 'Black Rail',
   'Laterallus jamaicensis jamaicensis/coturniculus': 'Black Rail (Northern)',
-  'Laterallus jamaicensis salinasi/murivagans': 'Black Rail (Southern South America)',
+  'Laterallus jamaicensis salinasi/murivagans':
+      'Black Rail (Southern South America)',
   'Laterallus jamaicensis tuerosi': 'Black Rail (Junin)',
   'Laterallus spiloptera': 'Dot-winged Crake',
   'Porzana/Zapornia sp.': 'Porzana/Zapornia sp.',
@@ -3078,27 +3306,34 @@ const Map<String, String> scientificToCommon = {
   'Himantopus mexicanus mexicanus': 'Black-necked Stilt (Black-necked)',
   'Himantopus mexicanus knudseni': 'Black-necked Stilt (Hawaiian)',
   'Himantopus mexicanus melanurus': 'Black-necked Stilt (White-backed)',
-  'Himantopus mexicanus mexicanus x melanurus': 'Black-necked Stilt (Black-necked x White-backed)',
-  'Himantopus himantopus x mexicanus': 'Black-winged x Black-necked Stilt (hybrid)',
+  'Himantopus mexicanus mexicanus x melanurus':
+      'Black-necked Stilt (Black-necked x White-backed)',
+  'Himantopus himantopus x mexicanus':
+      'Black-winged x Black-necked Stilt (hybrid)',
   'Cladorhynchus leucocephalus': 'Banded Stilt',
   'Recurvirostra avosetta': 'Pied Avocet',
   'Recurvirostra novaehollandiae': 'Red-necked Avocet',
   'Recurvirostra andina': 'Andean Avocet',
   'Recurvirostra americana': 'American Avocet',
-  'Himantopus mexicanus x Recurvirostra americana': 'Black-necked Stilt x American Avocet (hybrid)',
+  'Himantopus mexicanus x Recurvirostra americana':
+      'Black-necked Stilt x American Avocet (hybrid)',
   'Recurvirostridae sp.': 'stilt/avocet sp.',
   'Ibidorhyncha struthersii': 'Ibisbill',
   'Haematopus ostralegus': 'Eurasian Oystercatcher',
-  'Haematopus ostralegus ostralegus/longipes': 'Eurasian Oystercatcher (Western)',
+  'Haematopus ostralegus ostralegus/longipes':
+      'Eurasian Oystercatcher (Western)',
   'Haematopus ostralegus osculans': 'Eurasian Oystercatcher (Far Eastern)',
   'Haematopus longirostris': 'Pied Oystercatcher',
   'Haematopus finschi': 'South Island Oystercatcher',
   'Haematopus chathamensis': 'Chatham Islands Oystercatcher',
   'Haematopus unicolor': 'Variable Oystercatcher',
-  'Haematopus finschi x unicolor': 'South Island x Variable Oystercatcher (hybrid)',
+  'Haematopus finschi x unicolor':
+      'South Island x Variable Oystercatcher (hybrid)',
   'Haematopus fuliginosus': 'Sooty Oystercatcher',
-  'Haematopus fuliginosus opthalmicus': 'Sooty Oystercatcher (Yellow-spectacled)',
-  'Haematopus fuliginosus fuliginosus': 'Sooty Oystercatcher (Orange-spectacled)',
+  'Haematopus fuliginosus opthalmicus':
+      'Sooty Oystercatcher (Yellow-spectacled)',
+  'Haematopus fuliginosus fuliginosus':
+      'Sooty Oystercatcher (Orange-spectacled)',
   'Haematopus palliatus': 'American Oystercatcher',
   'Haematopus moquini': 'African Oystercatcher',
   'Haematopus meadewaldoi': 'Canarian Oystercatcher',
@@ -3112,7 +3347,8 @@ const Map<String, String> scientificToCommon = {
   'Pluvialis apricaria': 'European Golden-Plover',
   'Pluvialis dominica': 'American Golden-Plover',
   'Pluvialis fulva': 'Pacific Golden-Plover',
-  'Pluvialis dominica/fulva': 'American/Pacific Golden-Plover (Lesser Golden-Plover)',
+  'Pluvialis dominica/fulva':
+      'American/Pacific Golden-Plover (Lesser Golden-Plover)',
   'Pluvialis dominica/apricaria/fulva': 'golden-plover sp.',
   'Pluvialis sp.': 'Black-bellied Plover/golden-plover sp.',
   'Oreopholus ruficollis': 'Tawny-throated Dotterel',
@@ -3167,7 +3403,8 @@ const Map<String, String> scientificToCommon = {
   'Vanellus chilensis': 'Southern Lapwing',
   'Vanellus chilensis cayennensis': 'Southern Lapwing (cayennensis)',
   'Vanellus chilensis lampronotus': 'Southern Lapwing (lampronotus)',
-  'Vanellus chilensis chilensis/fretensis': 'Southern Lapwing (chilensis/fretensis)',
+  'Vanellus chilensis chilensis/fretensis':
+      'Southern Lapwing (chilensis/fretensis)',
   'Vanellus resplendens': 'Andean Lapwing',
   'Vanellus sp.': 'lapwing sp.',
   'Erythrogonys cinctus': 'Red-kneed Dotterel',
@@ -3201,7 +3438,8 @@ const Map<String, String> scientificToCommon = {
   'Anarhynchus marginatus': 'White-fronted Plover',
   'Anarhynchus javanicus': 'Javan Plover',
   'Anarhynchus alexandrinus': 'Kentish Plover',
-  'Anarhynchus alexandrinus alexandrinus/nihonensis': 'Kentish Plover (Kentish)',
+  'Anarhynchus alexandrinus alexandrinus/nihonensis':
+      'Kentish Plover (Kentish)',
   'Anarhynchus alexandrinus seebohmi': 'Kentish Plover (Hanuman)',
   'Anarhynchus nivosus/alexandrinus': 'Snowy/Kentish Plover',
   'Anarhynchus dealbatus': 'White-faced Plover',
@@ -3378,29 +3616,36 @@ const Map<String, String> scientificToCommon = {
   'Calidris alpina x maritima': 'Dunlin x Purple Sandpiper (hybrid)',
   'Calidris ptilocnemis': 'Rock Sandpiper',
   'Calidris ptilocnemis ptilocnemis': 'Rock Sandpiper (Pribilof Is.)',
-  'Calidris ptilocnemis quarta/tschuktschorum/couesi': 'Rock Sandpiper (quarta/tschuktschorum/couesi)',
+  'Calidris ptilocnemis quarta/tschuktschorum/couesi':
+      'Rock Sandpiper (quarta/tschuktschorum/couesi)',
   'Calidris ptilocnemis quarta': 'Rock Sandpiper (Kuril Is.)',
   'Calidris ptilocnemis tschuktschorum': 'Rock Sandpiper (Bering Strait)',
   'Calidris ptilocnemis couesi': 'Rock Sandpiper (Aleutian)',
   'Calidris alpina x ptilocnemis': 'Dunlin x Rock Sandpiper (hybrid)',
   'Calidris maritima/ptilocnemis': 'Purple/Rock Sandpiper',
   'Calidris bairdii': 'Baird\'s Sandpiper',
-  'Calidris subruficollis x bairdii': 'Buff-breasted x Baird\'s Sandpiper (hybrid)',
+  'Calidris subruficollis x bairdii':
+      'Buff-breasted x Baird\'s Sandpiper (hybrid)',
   'Calidris minuta': 'Little Stint',
   'Calidris ruficollis/minuta': 'Red-necked/Little Stint',
   'Calidris fuscicollis': 'White-rumped Sandpiper',
-  'Arenaria interpres x Calidris fuscicollis': 'Ruddy Turnstone x White-rumped Sandpiper (hybrid)',
-  'Calidris canutus x fuscicollis': 'Red Knot x White-rumped Sandpiper (hybrid)',
-  'Calidris subruficollis x fuscicollis': 'Buff-breasted x White-rumped Sandpiper (hybrid)',
+  'Arenaria interpres x Calidris fuscicollis':
+      'Ruddy Turnstone x White-rumped Sandpiper (hybrid)',
+  'Calidris canutus x fuscicollis':
+      'Red Knot x White-rumped Sandpiper (hybrid)',
+  'Calidris subruficollis x fuscicollis':
+      'Buff-breasted x White-rumped Sandpiper (hybrid)',
   'Calidris alpina x fuscicollis': 'Dunlin x White-rumped Sandpiper (hybrid)',
   'Calidris minutilla': 'Least Sandpiper',
   'Calidris melanotos': 'Pectoral Sandpiper',
   'Calidris ferruginea x melanotos': 'Curlew x Pectoral Sandpiper (hybrid)',
-  'Calidris fuscicollis x melanotos': 'White-rumped x Pectoral Sandpiper (hybrid)',
+  'Calidris fuscicollis x melanotos':
+      'White-rumped x Pectoral Sandpiper (hybrid)',
   'Calidris acuminata/melanotos': 'Sharp-tailed/Pectoral Sandpiper',
   'Calidris mauri': 'Western Sandpiper',
   'Calidris pusilla': 'Semipalmated Sandpiper',
-  'Calidris fuscicollis x pusilla': 'White-rumped x Semipalmated Sandpiper (hybrid)',
+  'Calidris fuscicollis x pusilla':
+      'White-rumped x Semipalmated Sandpiper (hybrid)',
   'Calidris mauri/pusilla': 'Western/Semipalmated Sandpiper',
   'Calidris sp. (peep sp.)': 'peep sp.',
   'Calidris sp.': 'Calidris sp.',
@@ -3501,10 +3746,12 @@ const Map<String, String> scientificToCommon = {
   'Synthliboramphus wumizusume': 'Japanese Murrelet',
   'Synthliboramphus scrippsi': 'Scripps\'s Murrelet',
   'Synthliboramphus hypoleucus': 'Guadalupe Murrelet',
-  'Synthliboramphus scrippsi/hypoleucus': 'Scripps\'s/Guadalupe Murrelet (Xantus\'s Murrelet)',
+  'Synthliboramphus scrippsi/hypoleucus':
+      'Scripps\'s/Guadalupe Murrelet (Xantus\'s Murrelet)',
   'Synthliboramphus craveri': 'Craveri\'s Murrelet',
   'Synthliboramphus scrippsi/craveri': 'Scripps\'s/Craveri\'s Murrelet',
-  'Synthliboramphus scrippsi/hypoleucus/craveri': 'Scripps\'s/Guadalupe/Craveri\'s Murrelet',
+  'Synthliboramphus scrippsi/hypoleucus/craveri':
+      'Scripps\'s/Guadalupe/Craveri\'s Murrelet',
   'Brachyramphus/Synthliboramphus sp.': 'murrelet sp.',
   'Alcidae sp.': 'alcid sp.',
   'Creagrus furcatus': 'Swallow-tailed Gull',
@@ -3521,40 +3768,50 @@ const Map<String, String> scientificToCommon = {
   'Chroicocephalus genei': 'Slender-billed Gull',
   'Chroicocephalus philadelphia': 'Bonaparte\'s Gull',
   'Chroicocephalus novaehollandiae': 'Silver Gull',
-  'Chroicocephalus novaehollandiae novaehollandiae/forsteri': 'Silver Gull (Silver)',
+  'Chroicocephalus novaehollandiae novaehollandiae/forsteri':
+      'Silver Gull (Silver)',
   'Chroicocephalus novaehollandiae scopulinus': 'Silver Gull (Red-billed)',
   'Chroicocephalus bulleri': 'Black-billed Gull',
   'Chroicocephalus novaehollandiae/bulleri': 'Silver/Black-billed Gull',
   'Chroicocephalus serranus': 'Andean Gull',
   'Chroicocephalus maculipennis': 'Brown-hooded Gull',
-  'Chroicocephalus maculipennis (White-winged)': 'Brown-hooded Gull (White-winged)',
-  'Chroicocephalus maculipennis (Dark-winged)': 'Brown-hooded Gull (Dark-winged)',
+  'Chroicocephalus maculipennis (White-winged)':
+      'Brown-hooded Gull (White-winged)',
+  'Chroicocephalus maculipennis (Dark-winged)':
+      'Brown-hooded Gull (Dark-winged)',
   'Chroicocephalus ridibundus': 'Black-headed Gull',
-  'Chroicocephalus genei x ridibundus': 'Slender-billed x Black-headed Gull (hybrid)',
+  'Chroicocephalus genei x ridibundus':
+      'Slender-billed x Black-headed Gull (hybrid)',
   'Chroicocephalus genei/ridibundus': 'Slender-billed/Black-headed Gull',
   'Chroicocephalus brunnicephalus': 'Brown-headed Gull',
-  'Chroicocephalus genei x brunnicephalus': 'Slender-billed x Brown-headed Gull (hybrid)',
+  'Chroicocephalus genei x brunnicephalus':
+      'Slender-billed x Brown-headed Gull (hybrid)',
   'Chroicocephalus ridibundus/brunnicephalus': 'Black-headed/Brown-headed Gull',
   'Chroicocephalus cirrocephalus': 'Gray-hooded Gull',
   'Chroicocephalus maculipennis/cirrocephalus': 'Brown-hooded/Gray-hooded Gull',
   'Chroicocephalus hartlaubii': 'Hartlaub\'s Gull',
-  'Chroicocephalus cirrocephalus x hartlaubii': 'Gray-hooded x Hartlaub\'s Gull (hybrid)',
+  'Chroicocephalus cirrocephalus x hartlaubii':
+      'Gray-hooded x Hartlaub\'s Gull (hybrid)',
   'Chroicocephalus cirrocephalus/hartlaubii': 'Gray-hooded/Hartlaub\'s Gull',
   'Chroicocephalus sp.': 'Chroicocephalus sp.',
   'Leucophaeus modestus': 'Gray Gull',
   'Leucophaeus scoresbii': 'Dolphin Gull',
   'Leucophaeus atricilla': 'Laughing Gull',
-  'Chroicocephalus cirrocephalus x Leucophaeus atricilla': 'Gray-hooded x Laughing Gull (hybrid)',
+  'Chroicocephalus cirrocephalus x Leucophaeus atricilla':
+      'Gray-hooded x Laughing Gull (hybrid)',
   'Leucophaeus pipixcan': 'Franklin\'s Gull',
-  'Chroicocephalus philadelphia x Leucophaeus pipixcan': 'Bonaparte\'s x Franklin\'s Gull (hybrid)',
+  'Chroicocephalus philadelphia x Leucophaeus pipixcan':
+      'Bonaparte\'s x Franklin\'s Gull (hybrid)',
   'Leucophaeus atricilla/pipixcan': 'Laughing/Franklin\'s Gull',
   'Leucophaeus fuliginosus': 'Lava Gull',
   'Ichthyaetus ichthyaetus': 'Pallas\'s Gull',
   'Ichthyaetus relictus': 'Relict Gull',
   'Ichthyaetus audouinii': 'Audouin\'s Gull',
   'Ichthyaetus melanocephalus': 'Mediterranean Gull',
-  'Chroicocephalus ridibundus x Ichthyaetus melanocephalus': 'Black-headed x Mediterranean Gull (hybrid)',
-  'Chroicocephalus ridibundus/Ichthyaetus melanocephalus': 'Black-headed/Mediterranean Gull',
+  'Chroicocephalus ridibundus x Ichthyaetus melanocephalus':
+      'Black-headed x Mediterranean Gull (hybrid)',
+  'Chroicocephalus ridibundus/Ichthyaetus melanocephalus':
+      'Black-headed/Mediterranean Gull',
   'Ichthyaetus hemprichii': 'Sooty Gull',
   'Ichthyaetus leucophthalmus': 'White-eyed Gull',
   'Larus pacificus': 'Pacific Gull',
@@ -3566,16 +3823,22 @@ const Map<String, String> scientificToCommon = {
   'Larus canus canus': 'Common Gull (European)',
   'Larus canus heinei': 'Common Gull (Russian)',
   'Larus canus kamtschatschensis': 'Common Gull (Kamchatka)',
-  'Chroicocephalus ridibundus x Larus canus': 'Black-headed x Common Gull (hybrid)',
-  'Ichthyaetus melanocephalus x Larus canus': 'Mediterranean x Common Gull (hybrid)',
+  'Chroicocephalus ridibundus x Larus canus':
+      'Black-headed x Common Gull (hybrid)',
+  'Ichthyaetus melanocephalus x Larus canus':
+      'Mediterranean x Common Gull (hybrid)',
   'Larus brachyrhynchus': 'Short-billed Gull',
   'Larus canus/brachyrhynchus': 'Common/Short-billed Gull',
   'Larus delawarensis': 'Ring-billed Gull',
-  'Chroicocephalus ridibundus x Larus delawarensis': 'Black-headed x Ring-billed Gull (hybrid)',
-  'Leucophaeus atricilla x Larus delawarensis': 'Laughing x Ring-billed Gull (hybrid)',
-  'Leucophaeus pipixcan x Larus delawarensis': 'Franklin\'s x Ring-billed Gull (hybrid)',
+  'Chroicocephalus ridibundus x Larus delawarensis':
+      'Black-headed x Ring-billed Gull (hybrid)',
+  'Leucophaeus atricilla x Larus delawarensis':
+      'Laughing x Ring-billed Gull (hybrid)',
+  'Leucophaeus pipixcan x Larus delawarensis':
+      'Franklin\'s x Ring-billed Gull (hybrid)',
   'Larus canus x delawarensis': 'Common x Ring-billed Gull (hybrid)',
-  'Larus brachyrhynchus x delawarensis': 'Short-billed x Ring-billed Gull (hybrid)',
+  'Larus brachyrhynchus x delawarensis':
+      'Short-billed x Ring-billed Gull (hybrid)',
   'Larus livens': 'Yellow-footed Gull',
   'Larus occidentalis': 'Western Gull',
   'Larus livens/occidentalis': 'Yellow-footed/Western Gull',
@@ -3587,7 +3850,8 @@ const Map<String, String> scientificToCommon = {
   'Larus dominicanus vetula': 'Kelp Gull (vetula)',
   'Larus dominicanus melisandae': 'Kelp Gull (melisandae)',
   'Larus smithsonianus': 'American Herring Gull',
-  'Larus delawarensis x smithsonianus': 'Ring-billed x American Herring Gull (hybrid)',
+  'Larus delawarensis x smithsonianus':
+      'Ring-billed x American Herring Gull (hybrid)',
   'Larus vegae': 'Vega Gull',
   'Larus smithsonianus/vegae': 'American Herring/Vega Gull',
   'Larus mongolicus': 'Mongolian Gull',
@@ -3601,21 +3865,29 @@ const Map<String, String> scientificToCommon = {
   'Larus michahellis atlantis': 'Yellow-legged Gull (atlantis)',
   'Larus michahellis michahellis': 'Yellow-legged Gull (michahellis)',
   'Larus cachinnans x michahellis': 'Caspian x Yellow-legged Gull (hybrid)',
-  'Larus argentatus x michahellis': 'European Herring x Yellow-legged Gull (hybrid)',
+  'Larus argentatus x michahellis':
+      'European Herring x Yellow-legged Gull (hybrid)',
   'Larus cachinnans/michahellis': 'Caspian/Yellow-legged Gull',
   'Larus argentatus/michahellis': 'European Herring/Yellow-legged Gull',
-  'Larus cachinnans/argentatus/michahellis': 'Caspian/European Herring/Yellow-legged Gull',
+  'Larus cachinnans/argentatus/michahellis':
+      'Caspian/European Herring/Yellow-legged Gull',
   'Larus armenicus': 'Armenian Gull',
-  'Larus cachinnans/michahellis/armenicus': 'Caspian/Yellow-legged/Armenian Gull',
+  'Larus cachinnans/michahellis/armenicus':
+      'Caspian/Yellow-legged/Armenian Gull',
   'Larus marinus': 'Great Black-backed Gull',
-  'Larus smithsonianus x marinus': 'American Herring x Great Black-backed Gull (hybrid)',
-  'Larus argentatus x marinus': 'European Herring x Great Black-backed Gull (hybrid)',
-  'Larus michahellis x marinus': 'Yellow-legged x Great Black-backed Gull (hybrid)',
+  'Larus smithsonianus x marinus':
+      'American Herring x Great Black-backed Gull (hybrid)',
+  'Larus argentatus x marinus':
+      'European Herring x Great Black-backed Gull (hybrid)',
+  'Larus michahellis x marinus':
+      'Yellow-legged x Great Black-backed Gull (hybrid)',
   'Larus hyperboreus': 'Glaucous Gull',
-  'Larus smithsonianus x hyperboreus': 'American Herring x Glaucous Gull (hybrid)',
+  'Larus smithsonianus x hyperboreus':
+      'American Herring x Glaucous Gull (hybrid)',
   'Larus vegae x hyperboreus': 'Vega x Glaucous Gull (hybrid)',
   'Larus argentatus x hyperboreus': 'European Herring x Glaucous Gull (hybrid)',
-  'Larus smithsonianus/vegae/argentatus x hyperboreus': 'American Herring/Vega/European Herring x Glaucous Gull (hybrid)',
+  'Larus smithsonianus/vegae/argentatus x hyperboreus':
+      'American Herring/Vega/European Herring x Glaucous Gull (hybrid)',
   'Larus marinus x hyperboreus': 'Great Black-backed x Glaucous Gull (hybrid)',
   'Larus fuscus': 'Lesser Black-backed Gull',
   'Larus fuscus fuscus': 'Lesser Black-backed Gull (fuscus)',
@@ -3624,28 +3896,37 @@ const Map<String, String> scientificToCommon = {
   'Larus fuscus heuglini': 'Lesser Black-backed Gull (Heuglin\'s)',
   'Larus fuscus barabensis': 'Lesser Black-backed Gull (Steppe)',
   'Larus fuscus taimyrensis': 'Lesser Black-backed Gull (taimyrensis)',
-  'Larus fuscus intermedius/graellsii': 'Lesser Black-backed Gull (intermedius/graellsii)',
+  'Larus fuscus intermedius/graellsii':
+      'Lesser Black-backed Gull (intermedius/graellsii)',
   'Larus canus x fuscus': 'Common x Lesser Black-backed Gull (hybrid)',
-  'Larus delawarensis x fuscus': 'Ring-billed x Lesser Black-backed Gull (hybrid)',
-  'Larus smithsonianus x fuscus': 'American Herring x Lesser Black-backed Gull (hybrid)',
-  'Larus argentatus x fuscus': 'European Herring x Lesser Black-backed Gull (hybrid)',
-  'Larus michahellis x fuscus': 'Yellow-legged x Lesser Black-backed Gull (hybrid)',
-  'Larus smithsonianus/vegae/mongolicus/argentatus/fuscus': 'Herring complex/Lesser Black-backed Gull',
+  'Larus delawarensis x fuscus':
+      'Ring-billed x Lesser Black-backed Gull (hybrid)',
+  'Larus smithsonianus x fuscus':
+      'American Herring x Lesser Black-backed Gull (hybrid)',
+  'Larus argentatus x fuscus':
+      'European Herring x Lesser Black-backed Gull (hybrid)',
+  'Larus michahellis x fuscus':
+      'Yellow-legged x Lesser Black-backed Gull (hybrid)',
+  'Larus smithsonianus/vegae/mongolicus/argentatus/fuscus':
+      'Herring complex/Lesser Black-backed Gull',
   'Larus michahellis/fuscus': 'Yellow-legged/Lesser Black-backed Gull',
   'Larus californicus': 'California Gull',
   'Larus californicus californicus': 'California Gull (californicus)',
   'Larus californicus albertaensis': 'California Gull (albertaensis)',
   'Larus delawarensis x californicus': 'Ring-billed x California Gull (hybrid)',
-  'Larus smithsonianus x californicus': 'American Herring x California Gull (hybrid)',
+  'Larus smithsonianus x californicus':
+      'American Herring x California Gull (hybrid)',
   'Larus glaucescens': 'Glaucous-winged Gull',
   'Larus occidentalis x glaucescens': 'Western x Glaucous-winged Gull (hybrid)',
-  'Larus smithsonianus x glaucescens': 'American Herring x Glaucous-winged Gull (hybrid)',
+  'Larus smithsonianus x glaucescens':
+      'American Herring x Glaucous-winged Gull (hybrid)',
   'Larus hyperboreus x glaucescens': 'Glaucous x Glaucous-winged Gull (hybrid)',
   'Larus smithsonianus/glaucescens': 'American Herring/Glaucous-winged Gull',
   'Larus occidentalis/glaucescens': 'Western/Glaucous-winged Gull',
   'Larus schistisagus': 'Slaty-backed Gull',
   'Larus vegae x schistisagus': 'Vega x Slaty-backed Gull (hybrid)',
-  'Larus glaucescens x schistisagus': 'Glaucous-winged x Slaty-backed Gull (hybrid)',
+  'Larus glaucescens x schistisagus':
+      'Glaucous-winged x Slaty-backed Gull (hybrid)',
   'Larus hyperboreus x schistisagus': 'Glaucous x Slaty-backed Gull (hybrid)',
   'Larus glaucoides': 'Iceland Gull',
   'Larus glaucoides thayeri': 'Iceland Gull (Thayer\'s)',
@@ -3653,8 +3934,10 @@ const Map<String, String> scientificToCommon = {
   'Larus glaucoides thayeri/kumlieni': 'Iceland Gull (thayeri/kumlieni)',
   'Larus glaucoides glaucoides': 'Iceland Gull (glaucoides)',
   'Larus glaucoides kumlieni/glaucoides': 'Iceland Gull (kumlieni/glaucoides)',
-  'Larus glaucoides thayeri x glaucoides/kumlieni': 'Iceland Gull (Thayer\'s x Iceland)',
-  'Larus smithsonianus x glaucoides': 'American Herring x Iceland Gull (hybrid)',
+  'Larus glaucoides thayeri x glaucoides/kumlieni':
+      'Iceland Gull (Thayer\'s x Iceland)',
+  'Larus smithsonianus x glaucoides':
+      'American Herring x Iceland Gull (hybrid)',
   'Larus fuscus x glaucoides': 'Lesser Black-backed x Iceland Gull (hybrid)',
   'Larus smithsonianus/glaucoides': 'American Herring/Iceland Gull',
   'Larus argentatus/glaucoides': 'European Herring/Iceland Gull',
@@ -3731,7 +4014,8 @@ const Map<String, String> scientificToCommon = {
   'Sterna hirundo': 'Common Tern',
   'Sterna hirundo hirundo/tibetana': 'Common Tern (hirundo/tibetana)',
   'Sterna hirundo longipennis': 'Common Tern (longipennis)',
-  'Sterna hirundo hirundo/tibetana x longipennis': 'Common Tern (hirundo/tibetana x longipennis)',
+  'Sterna hirundo hirundo/tibetana x longipennis':
+      'Common Tern (hirundo/tibetana x longipennis)',
   'Sterna hirundo x paradisaea': 'Common x Arctic Tern (hybrid)',
   'Sterna forsteri/hirundo': 'Forster\'s/Common Tern',
   'Sterna hirundo/paradisaea': 'Common/Arctic Tern',
@@ -3747,12 +4031,14 @@ const Map<String, String> scientificToCommon = {
   'Thalasseus sandvicensis sandvicensis': 'Sandwich Tern (Eurasian)',
   'Thalasseus sandvicensis acuflavidus': 'Sandwich Tern (Cabot\'s)',
   'Thalasseus sandvicensis eurygnathus': 'Sandwich Tern (Cayenne)',
-  'Thalasseus sandvicensis acuflavidus x eurygnathus': 'Sandwich Tern (Cabot\'s x Cayenne)',
+  'Thalasseus sandvicensis acuflavidus x eurygnathus':
+      'Sandwich Tern (Cabot\'s x Cayenne)',
   'Thalasseus elegans': 'Elegant Tern',
   'Thalasseus sandvicensis x elegans': 'Sandwich x Elegant Tern (hybrid)',
   'Thalasseus sandvicensis/elegans': 'Sandwich/Elegant Tern',
   'Thalasseus bengalensis': 'Lesser Crested Tern',
-  'Thalasseus sandvicensis x bengalensis': 'Sandwich x Lesser Crested Tern (hybrid)',
+  'Thalasseus sandvicensis x bengalensis':
+      'Sandwich x Lesser Crested Tern (hybrid)',
   'Thalasseus albididorsalis': 'West African Crested Tern',
   'Thalasseus maximus': 'Royal Tern',
   'Thalasseus elegans/maximus': 'Elegant/Royal Tern',
@@ -3791,7 +4077,8 @@ const Map<String, String> scientificToCommon = {
   'Podilymbus podiceps': 'Pied-billed Grebe',
   'Podilymbus gigas': 'Atitlan Grebe',
   'Poliocephalus poliocephalus': 'Hoary-headed Grebe',
-  'Tachybaptus novaehollandiae/Poliocephalus poliocephalus': 'Australasian/Hoary-headed Grebe',
+  'Tachybaptus novaehollandiae/Poliocephalus poliocephalus':
+      'Australasian/Hoary-headed Grebe',
   'Poliocephalus rufopectus': 'New Zealand Grebe',
   'Podiceps major': 'Great Grebe',
   'Podiceps auritus': 'Horned Grebe',
@@ -3847,14 +4134,16 @@ const Map<String, String> scientificToCommon = {
   'Spheniscus humboldti': 'Humboldt Penguin',
   'Spheniscus mendiculus': 'Galapagos Penguin',
   'Spheniscus magellanicus': 'Magellanic Penguin',
-  'Spheniscus humboldti x magellanicus': 'Humboldt x Magellanic Penguin (hybrid)',
+  'Spheniscus humboldti x magellanicus':
+      'Humboldt x Magellanic Penguin (hybrid)',
   'Eudyptes pachyrhynchus': 'Fiordland Penguin',
   'Eudyptes sclateri': 'Erect-crested Penguin',
   'Eudyptes chrysolophus': 'Macaroni Penguin',
   'Eudyptes schlegeli': 'Royal Penguin',
   'Eudyptes chrysocome': 'Western Rockhopper Penguin',
   'Eudyptes filholi': 'Eastern Rockhopper Penguin',
-  'Eudyptes chrysolophus x chrysocome': 'Macaroni x Western Rockhopper Penguin (hybrid)',
+  'Eudyptes chrysolophus x chrysocome':
+      'Macaroni x Western Rockhopper Penguin (hybrid)',
   'Eudyptes moseleyi': 'Moseley\'s Rockhopper Penguin',
   'Eudyptes robustus': 'Snares Penguin',
   'Eudyptes sp.': 'crested penguin sp.',
@@ -3868,20 +4157,23 @@ const Map<String, String> scientificToCommon = {
   'Diomedea antipodensis': 'Antipodean Albatross',
   'Diomedea antipodensis antipodensis': 'Antipodean Albatross (New Zealand)',
   'Diomedea antipodensis gibsoni': 'Antipodean Albatross (Gibson\'s)',
-  'Diomedea exulans/dabbenena/antipodensis': 'Snowy/Tristan/Antipodean Albatross',
+  'Diomedea exulans/dabbenena/antipodensis':
+      'Snowy/Tristan/Antipodean Albatross',
   'Diomedea amsterdamensis': 'Amsterdam Albatross',
   'Diomedea exulans/amsterdamensis': 'Snowy/Amsterdam Albatross',
   'Diomedea sp.': 'large albatross sp.',
   'Phoebastria irrorata': 'Waved Albatross',
   'Phoebastria immutabilis': 'Laysan Albatross',
   'Phoebastria nigripes': 'Black-footed Albatross',
-  'Phoebastria immutabilis x nigripes': 'Laysan x Black-footed Albatross (hybrid)',
+  'Phoebastria immutabilis x nigripes':
+      'Laysan x Black-footed Albatross (hybrid)',
   'Phoebastria albatrus': 'Short-tailed Albatross',
   'Phoebetria fusca': 'Sooty Albatross',
   'Phoebetria palpebrata': 'Light-mantled Albatross',
   'Thalassarche chlororhynchos': 'Atlantic Yellow-nosed Albatross',
   'Thalassarche carteri': 'Indian Yellow-nosed Albatross',
-  'Thalassarche chlororhynchos/carteri': 'Atlantic/Indian Yellow-nosed Albatross',
+  'Thalassarche chlororhynchos/carteri':
+      'Atlantic/Indian Yellow-nosed Albatross',
   'Thalassarche chrysostoma': 'Gray-headed Albatross',
   'Thalassarche bulleri': 'Buller\'s Albatross',
   'Thalassarche cauta': 'White-capped Albatross',
@@ -3889,18 +4181,23 @@ const Map<String, String> scientificToCommon = {
   'Thalassarche cauta steadi': 'White-capped Albatross (steadi)',
   'Thalassarche salvini': 'Salvin\'s Albatross',
   'Thalassarche eremita': 'Chatham Albatross',
-  'Thalassarche cauta/salvini/eremita': 'White-capped/Salvin\'s/Chatham Albatross',
+  'Thalassarche cauta/salvini/eremita':
+      'White-capped/Salvin\'s/Chatham Albatross',
   'Thalassarche melanophris': 'Black-browed Albatross',
-  'Thalassarche melanophris melanophris': 'Black-browed Albatross (Black-browed)',
+  'Thalassarche melanophris melanophris':
+      'Black-browed Albatross (Black-browed)',
   'Thalassarche melanophris impavida': 'Black-browed Albatross (Campbell)',
-  'Thalassarche chrysostoma x melanophris': 'Gray-headed x Black-browed Albatross (hybrid)',
+  'Thalassarche chrysostoma x melanophris':
+      'Gray-headed x Black-browed Albatross (hybrid)',
   'Thalassarche sp.': 'small albatross sp.',
   'Diomedeidae sp.': 'albatross sp.',
   'Oceanites oceanicus': 'Wilson\'s Storm-Petrel',
-  'Oceanites oceanicus oceanicus/exasperatus': 'Wilson\'s Storm-Petrel (Wilson\'s)',
+  'Oceanites oceanicus oceanicus/exasperatus':
+      'Wilson\'s Storm-Petrel (Wilson\'s)',
   'Oceanites oceanicus chilensis': 'Wilson\'s Storm-Petrel (Fuegian)',
   'Oceanites pincoyae': 'Pincoya Storm-Petrel',
-  'Oceanites barrosi [unrecognized species]': 'Andean Storm-Petrel (unrecognized species)',
+  'Oceanites barrosi [unrecognized species]':
+      'Andean Storm-Petrel (unrecognized species)',
   'Oceanites gracilis': 'Elliot\'s Storm-Petrel',
   'Oceanites gracilis galapagoensis': 'Elliot\'s Storm-Petrel (Galapagos)',
   'Oceanites gracilis gracilis': 'Elliot\'s Storm-Petrel (Humboldt)',
@@ -3908,7 +4205,8 @@ const Map<String, String> scientificToCommon = {
   'Garrodia nereis': 'Gray-backed Storm-Petrel',
   'Pelagodroma marina': 'White-faced Storm-Petrel',
   'Fregetta grallaria': 'White-bellied Storm-Petrel',
-  'Fregetta grallaria [grallaria Group]': 'White-bellied Storm-Petrel (White-bellied)',
+  'Fregetta grallaria [grallaria Group]':
+      'White-bellied Storm-Petrel (White-bellied)',
   'Fregetta grallaria titan': 'White-bellied Storm-Petrel (Rapa I.)',
   'Fregetta maoriana': 'New Zealand Storm-Petrel',
   'Fregetta lineata': 'New Caledonian Storm-Petrel',
@@ -3927,10 +4225,13 @@ const Map<String, String> scientificToCommon = {
   'Hydrobates leucorhous chapmani': 'Leach\'s Storm-Petrel (Chapman\'s)',
   'Hydrobates socorroensis': 'Townsend\'s Storm-Petrel',
   'Hydrobates leucorhous/socorroensis': 'Leach\'s/Townsend\'s Storm-Petrel',
-  'Hydrobates leucorhous/socorroensis (dark-rumped)': 'Leach\'s/Townsend\'s Storm-Petrel (dark-rumped)',
-  'Hydrobates leucorhous/socorroensis (white-rumped)': 'Leach\'s/Townsend\'s Storm-Petrel (white-rumped)',
+  'Hydrobates leucorhous/socorroensis (dark-rumped)':
+      'Leach\'s/Townsend\'s Storm-Petrel (dark-rumped)',
+  'Hydrobates leucorhous/socorroensis (white-rumped)':
+      'Leach\'s/Townsend\'s Storm-Petrel (white-rumped)',
   'Hydrobates cheimomnestes': 'Ainley\'s Storm-Petrel',
-  'Hydrobates leucorhous/socorroensis/cheimomnestes': 'Leach\'s/Townsend\'s/Ainley\'s Storm-Petrel',
+  'Hydrobates leucorhous/socorroensis/cheimomnestes':
+      'Leach\'s/Townsend\'s/Ainley\'s Storm-Petrel',
   'Hydrobates monorhis': 'Swinhoe\'s Storm-Petrel',
   'Hydrobates homochroa': 'Ashy Storm-Petrel',
   'Hydrobates castro': 'Band-rumped Storm-Petrel',
@@ -3939,7 +4240,8 @@ const Map<String, String> scientificToCommon = {
   'Hydrobates castro bangsi': 'Band-rumped Storm-Petrel (Darwin\'s)',
   'Hydrobates monteiroi': 'Monteiro\'s Storm-Petrel',
   'Hydrobates jabejabe': 'Cape Verde Storm-Petrel',
-  'Hydrobates sp. (Band-rumped complex)': 'Hydrobates sp. (Band-rumped complex)',
+  'Hydrobates sp. (Band-rumped complex)':
+      'Hydrobates sp. (Band-rumped complex)',
   'Hydrobates tethys': 'Wedge-rumped Storm-Petrel',
   'Hydrobates melania': 'Black Storm-Petrel',
   'Hydrobates macrodactylus': 'Guadalupe Storm-Petrel',
@@ -3950,8 +4252,10 @@ const Map<String, String> scientificToCommon = {
   'Hydrobates tristrami': 'Tristram\'s Storm-Petrel',
   'Hydrobates microsoma': 'Least Storm-Petrel',
   'Hydrobates sp.': 'Hydrobates sp.',
-  'Oceanitidae/Hydrobatidae sp. (dark-rumped)': 'storm-petrel sp. (dark-rumped)',
-  'Oceanitidae/Hydrobatidae sp. (white-rumped)': 'storm-petrel sp. (white-rumped)',
+  'Oceanitidae/Hydrobatidae sp. (dark-rumped)':
+      'storm-petrel sp. (dark-rumped)',
+  'Oceanitidae/Hydrobatidae sp. (white-rumped)':
+      'storm-petrel sp. (white-rumped)',
   'Oceanitidae/Hydrobatidae sp.': 'storm-petrel sp.',
   'Macronectes giganteus': 'Southern Giant-Petrel',
   'Macronectes halli': 'Northern Giant-Petrel',
@@ -3997,7 +4301,8 @@ const Map<String, String> scientificToCommon = {
   'Pterodroma incerta': 'Atlantic Petrel',
   'Pterodroma phaeopygia': 'Galapagos Petrel',
   'Pterodroma sandwichensis': 'Hawaiian Petrel',
-  'Pterodroma phaeopygia/sandwichensis': 'Galapagos/Hawaiian Petrel (Dark-rumped Petrel)',
+  'Pterodroma phaeopygia/sandwichensis':
+      'Galapagos/Hawaiian Petrel (Dark-rumped Petrel)',
   'Pterodroma cervicalis': 'White-necked Petrel',
   'Pterodroma externa/cervicalis': 'Juan Fernandez/White-necked Petrel',
   'Pterodroma hypoleuca': 'Bonin Petrel',
@@ -4024,7 +4329,8 @@ const Map<String, String> scientificToCommon = {
   'Pachyptila macgillivrayi': 'MacGillivray\'s Prion',
   'Pachyptila salvini/macgillivrayi': 'Salvin\'s/MacGillivray\'s Prion',
   'Pachyptila vittata/macgillivrayi': 'Broad-billed/MacGillivray\'s Prion',
-  'Pachyptila vittata/salvini/macgillivrayi': 'Broad-billed/Salvin\'s/MacGillivray\'s Prion',
+  'Pachyptila vittata/salvini/macgillivrayi':
+      'Broad-billed/Salvin\'s/MacGillivray\'s Prion',
   'Pachyptila desolata': 'Antarctic Prion',
   'Pachyptila belcheri': 'Slender-billed Prion',
   'Pachyptila crassirostris': 'Fulmar Prion',
@@ -4052,11 +4358,13 @@ const Map<String, String> scientificToCommon = {
   'Calonectris diomedea': 'Scopoli\'s Shearwater',
   'Calonectris borealis/diomedea': 'Cory\'s/Scopoli\'s Shearwater',
   'Calonectris edwardsii': 'Cape Verde Shearwater',
-  'Calonectris borealis/diomedea/edwardsii': 'Cory\'s/Scopoli\'s/Cape Verde Shearwater',
+  'Calonectris borealis/diomedea/edwardsii':
+      'Cory\'s/Scopoli\'s/Cape Verde Shearwater',
   'Ardenna creatopus': 'Pink-footed Shearwater',
   'Ardenna carneipes': 'Flesh-footed Shearwater',
   'Ardenna gravis': 'Great Shearwater',
-  'Calonectris borealis/diomedea/Ardenna gravis': 'Cory\'s/Scopoli\'s/Great Shearwater',
+  'Calonectris borealis/diomedea/Ardenna gravis':
+      'Cory\'s/Scopoli\'s/Great Shearwater',
   'Ardenna pacifica': 'Wedge-tailed Shearwater',
   'Ardenna bulleri': 'Buller\'s Shearwater',
   'Ardenna grisea': 'Sooty Shearwater',
@@ -4090,7 +4398,8 @@ const Map<String, String> scientificToCommon = {
   'Puffinus assimilis/elegans': 'Little/Subantarctic Shearwater',
   'Puffinus baroli': 'Barolo Shearwater',
   'Puffinus boydi': 'Boyd\'s Shearwater',
-  'Puffinus baroli/boydi': 'Barolo/Boyd\'s Shearwater (Macaronesian Shearwater)',
+  'Puffinus baroli/boydi':
+      'Barolo/Boyd\'s Shearwater (Macaronesian Shearwater)',
   'Puffinus lherminieri': 'Sargasso Shearwater',
   'Puffinus bailloni': 'Tropical Shearwater',
   'Puffinus bailloni bailloni': 'Tropical Shearwater (Mascarene)',
@@ -4214,7 +4523,8 @@ const Map<String, String> scientificToCommon = {
   'Nannopterum auritum': 'Double-crested Cormorant',
   'Phalacrocorax carbo/Nannopterum auritum': 'Great/Double-crested Cormorant',
   'Nannopterum brasilianum': 'Neotropic Cormorant',
-  'Nannopterum auritum x brasilianum': 'Double-crested x Neotropic Cormorant (hybrid)',
+  'Nannopterum auritum x brasilianum':
+      'Double-crested x Neotropic Cormorant (hybrid)',
   'Nannopterum auritum/brasilianum': 'Double-crested/Neotropic Cormorant',
   'Leucocarbo magellanicus': 'Magellanic Cormorant',
   'Leucocarbo bougainvilliorum': 'Guanay Cormorant',
@@ -4229,14 +4539,16 @@ const Map<String, String> scientificToCommon = {
   'Leucocarbo atriceps': 'Imperial Cormorant',
   'Leucocarbo atriceps georgianus': 'Imperial Cormorant (South Georgia)',
   'Leucocarbo atriceps [atriceps Group]': 'Imperial Cormorant (Imperial)',
-  'Leucocarbo atriceps [atriceps Group] (Blue-eyed)': 'Imperial Cormorant (Blue-eyed)',
+  'Leucocarbo atriceps [atriceps Group] (Blue-eyed)':
+      'Imperial Cormorant (Blue-eyed)',
   'Leucocarbo atriceps [atriceps Group] (King)': 'Imperial Cormorant (King)',
   'Leucocarbo atriceps bransfieldensis': 'Imperial Cormorant (Antarctic)',
   'Leucocarbo atriceps melanogenis': 'Imperial Cormorant (Crozet)',
   'Leucocarbo atriceps verrucosus': 'Imperial Cormorant (Kerguelen)',
   'Leucocarbo atriceps nivalis': 'Imperial Cormorant (Heard Island)',
   'Leucocarbo atriceps purpurascens': 'Imperial Cormorant (Macquarie)',
-  'Leucocarbo bougainvilliorum x atriceps': 'Guanay x Imperial Cormorant (hybrid)',
+  'Leucocarbo bougainvilliorum x atriceps':
+      'Guanay x Imperial Cormorant (hybrid)',
   'Leucocarbo bougainvilliorum/atriceps': 'Guanay/Imperial Cormorant',
   'Phalacrocoracidae sp.': 'cormorant sp.',
   'Eudocimus albus': 'White Ibis',
@@ -4266,7 +4578,8 @@ const Map<String, String> scientificToCommon = {
   'Threskiornis melanocephalus': 'Black-headed Ibis',
   'Threskiornis molucca': 'Australian Ibis',
   'Threskiornis spinicollis': 'Straw-necked Ibis',
-  'Threskiornis molucca x spinicollis': 'Australian x Straw-necked Ibis (hybrid)',
+  'Threskiornis molucca x spinicollis':
+      'Australian x Straw-necked Ibis (hybrid)',
   'Pseudibis papillosa': 'Red-naped Ibis',
   'Pseudibis davisoni': 'White-shouldered Ibis',
   'Pseudibis gigantea': 'Giant Ibis',
@@ -4297,7 +4610,8 @@ const Map<String, String> scientificToCommon = {
   'Tigrisoma sp.': 'tiger-heron sp.',
   'Cochlearius cochlearius': 'Boat-billed Heron',
   'Cochlearius cochlearius [zeledoni Group]': 'Boat-billed Heron (Northern)',
-  'Cochlearius cochlearius cochlearius/panamensis': 'Boat-billed Heron (Southern)',
+  'Cochlearius cochlearius cochlearius/panamensis':
+      'Boat-billed Heron (Southern)',
   'Agamia agami': 'Agami Heron',
   'Zebrilus undulatus': 'Zigzag Heron',
   'Botaurus stellaris': 'Eurasian Bittern',
@@ -4323,7 +4637,8 @@ const Map<String, String> scientificToCommon = {
   'Botaurus novaezelandiae': 'New Zealand Bittern',
   'Botaurus sp. (small bittern sp.)': 'small bittern sp.',
   'Nyctanassa violacea': 'Yellow-crowned Night Heron',
-  'Nyctanassa violacea [violacea Group]': 'Yellow-crowned Night Heron (Yellow-crowned)',
+  'Nyctanassa violacea [violacea Group]':
+      'Yellow-crowned Night Heron (Yellow-crowned)',
   'Nyctanassa violacea pauper': 'Yellow-crowned Night Heron (Galapagos)',
   'Nyctanassa carcinocatactes': 'Bermuda Night Heron',
   'Nycticorax nycticorax': 'Black-crowned Night Heron',
@@ -4331,13 +4646,16 @@ const Map<String, String> scientificToCommon = {
   'Nycticorax nycticorax hoactli': 'Black-crowned Night Heron (American)',
   'Nycticorax nycticorax obscurus': 'Black-crowned Night Heron (Dusky)',
   'Nycticorax nycticorax falklandicus': 'Black-crowned Night Heron (Falklands)',
-  'Nyctanassa violacea x Nycticorax nycticorax': 'Yellow-crowned x Black-crowned Night Heron (hybrid)',
-  'Nyctanassa violacea/Nycticorax nycticorax': 'Yellow-crowned/Black-crowned Night Heron',
+  'Nyctanassa violacea x Nycticorax nycticorax':
+      'Yellow-crowned x Black-crowned Night Heron (hybrid)',
+  'Nyctanassa violacea/Nycticorax nycticorax':
+      'Yellow-crowned/Black-crowned Night Heron',
   'Nycticorax duboisi': 'Reunion Night Heron',
   'Nycticorax mauritianus': 'Mauritius Night Heron',
   'Nycticorax megacephalus': 'Rodrigues Night Heron',
   'Nycticorax caledonicus': 'Nankeen Night Heron',
-  'Nycticorax nycticorax x caledonicus': 'Black-crowned x Nankeen Night Heron (hybrid)',
+  'Nycticorax nycticorax x caledonicus':
+      'Black-crowned x Nankeen Night Heron (hybrid)',
   'Nycticorax nycticorax/caledonicus': 'Black-crowned/Nankeen Night Heron',
   'Nycticorax olsoni': 'Ascension Night Heron',
   'Gorsachius melanolophus': 'Malayan Night Heron',
@@ -4385,7 +4703,8 @@ const Map<String, String> scientificToCommon = {
   'Butorides atricapilla [stagnatilis Group]': 'Little Heron (Australasian)',
   'Butorides atricapilla patruelis': 'Little Heron (Tahiti)',
   'Butorides virescens': 'Green Heron',
-  'Butorides virescens virescens/bahamensis': 'Green Heron (virescens/bahamensis)',
+  'Butorides virescens virescens/bahamensis':
+      'Green Heron (virescens/bahamensis)',
   'Butorides virescens anthonyi': 'Green Heron (anthonyi)',
   'Butorides virescens frazari': 'Green Heron (frazari)',
   'Butorides striata x virescens': 'Striated x Green Heron (hybrid)',
@@ -4401,7 +4720,8 @@ const Map<String, String> scientificToCommon = {
   'Ardeola bacchus x speciosa': 'Chinese x Javan Pond-Heron (hybrid)',
   'Ardeola sp.': 'pond-heron sp.',
   'Ardea ibis': 'Western Cattle-Egret',
-  'Egretta garzetta x Ardea ibis': 'Little Egret x Western Cattle-Egret (hybrid)',
+  'Egretta garzetta x Ardea ibis':
+      'Little Egret x Western Cattle-Egret (hybrid)',
   'Ardea coromanda': 'Eastern Cattle-Egret',
   'Ardea ibis/coromanda': 'Western/Eastern Cattle-Egret',
   'Ardea pacifica': 'Pacific Heron',
@@ -4514,9 +4834,12 @@ const Map<String, String> scientificToCommon = {
   'Pernis apivorus': 'European Honey-buzzard',
   'Pernis ptilorhynchus': 'Oriental Honey-buzzard',
   'Pernis ptilorhynchus orientalis': 'Oriental Honey-buzzard (Northern)',
-  'Pernis ptilorhynchus ruficollis/philippensis': 'Oriental Honey-buzzard (Indomalayan)',
-  'Pernis ptilorhynchus [ptilorhynchus Group]': 'Oriental Honey-buzzard (Sunda)',
-  'Pernis apivorus x ptilorhynchus': 'European x Oriental Honey-buzzard (hybrid)',
+  'Pernis ptilorhynchus ruficollis/philippensis':
+      'Oriental Honey-buzzard (Indomalayan)',
+  'Pernis ptilorhynchus [ptilorhynchus Group]':
+      'Oriental Honey-buzzard (Sunda)',
+  'Pernis apivorus x ptilorhynchus':
+      'European x Oriental Honey-buzzard (hybrid)',
   'Pernis apivorus/ptilorhynchus': 'European/Oriental Honey-buzzard',
   'Pernis celebensis': 'Sulawesi Honey-buzzard',
   'Pernis steerei': 'Philippine Honey-buzzard',
@@ -4685,8 +5008,10 @@ const Map<String, String> scientificToCommon = {
   'Accipiter nisus': 'Eurasian Sparrowhawk',
   'Tachyspiza brevipes/Accipiter nisus': 'Levant/Eurasian Sparrowhawk',
   'Accipiter rufiventris': 'Rufous-breasted Sparrowhawk',
-  'Accipiter rufiventris perspicillaris': 'Rufous-breasted Sparrowhawk (Ethiopian)',
-  'Accipiter rufiventris rufiventris': 'Rufous-breasted Sparrowhawk (Rufous-breasted)',
+  'Accipiter rufiventris perspicillaris':
+      'Rufous-breasted Sparrowhawk (Ethiopian)',
+  'Accipiter rufiventris rufiventris':
+      'Rufous-breasted Sparrowhawk (Rufous-breasted)',
   'Accipiter striatus': 'Sharp-shinned Hawk',
   'Accipiter striatus [velox Group]': 'Sharp-shinned Hawk (Northern)',
   'Accipiter striatus [striatus Group]': 'Sharp-shinned Hawk (Caribbean)',
@@ -4711,7 +5036,8 @@ const Map<String, String> scientificToCommon = {
   'Astur meyerianus': 'Meyer\'s Goshawk',
   'Astur melanoleucus': 'Black Goshawk',
   'Astur henstii': 'Henst\'s Goshawk',
-  'Aerospiza/Tachyspiza/Accipiter/Astur sp.': 'Accipitrine hawk sp. (former Accipiter sp.)',
+  'Aerospiza/Tachyspiza/Accipiter/Astur sp.':
+      'Accipitrine hawk sp. (former Accipiter sp.)',
   'Megatriorchis doriae': 'Doria\'s Hawk',
   'Circus aeruginosus': 'Western Marsh Harrier',
   'Circus ranivorus': 'African Marsh Harrier',
@@ -4758,7 +5084,8 @@ const Map<String, String> scientificToCommon = {
   'Haliaeetus leucocephalus': 'Bald Eagle',
   'Haliaeetus leucoryphus': 'Pallas\'s Fish-Eagle',
   'Haliaeetus pelagicus': 'Steller\'s Sea-Eagle',
-  'Haliaeetus leucocephalus x pelagicus': 'Bald Eagle x Steller\'s Sea-Eagle (hybrid)',
+  'Haliaeetus leucocephalus x pelagicus':
+      'Bald Eagle x Steller\'s Sea-Eagle (hybrid)',
   'Aquila chrysaetos/Haliaeetus leucocephalus': 'Golden/Bald Eagle',
   'Icthyophaga vocifer': 'African Fish-Eagle',
   'Icthyophaga vociferoides': 'Madagascar Fish-Eagle',
@@ -4836,7 +5163,8 @@ const Map<String, String> scientificToCommon = {
   'Buteo lineatus [lineatus Group]': 'Red-shouldered Hawk (lineatus Group)',
   'Buteo lineatus extimus': 'Red-shouldered Hawk (extimus)',
   'Buteo lineatus elegans': 'Red-shouldered Hawk (elegans)',
-  'Buteogallus anthracinus x Buteo lineatus': 'Common Black x Red-shouldered Hawk (hybrid)',
+  'Buteogallus anthracinus x Buteo lineatus':
+      'Common Black x Red-shouldered Hawk (hybrid)',
   'Buteo ridgwayi': 'Ridgway\'s Hawk',
   'Buteo platypterus x lineatus': 'Broad-winged x Red-shouldered Hawk (hybrid)',
   'Buteo platypterus/lineatus': 'Broad-winged/Red-shouldered Hawk',
@@ -4849,9 +5177,11 @@ const Map<String, String> scientificToCommon = {
   'Buteo jamaicensis': 'Red-tailed Hawk',
   'Buteo jamaicensis harlani': 'Red-tailed Hawk (Harlan\'s)',
   'Buteo jamaicensis abieticola': 'Red-tailed Hawk (abieticola)',
-  'Buteo jamaicensis calurus/alascensis': 'Red-tailed Hawk (calurus/alascensis)',
+  'Buteo jamaicensis calurus/alascensis':
+      'Red-tailed Hawk (calurus/alascensis)',
   'Buteo jamaicensis borealis': 'Red-tailed Hawk (borealis)',
-  'Buteo jamaicensis calurus/abieticola': 'Red-tailed Hawk (calurus/abieticola)',
+  'Buteo jamaicensis calurus/abieticola':
+      'Red-tailed Hawk (calurus/abieticola)',
   'Buteo jamaicensis kriderii': 'Red-tailed Hawk (Krider\'s)',
   'Buteo jamaicensis fuertesi': 'Red-tailed Hawk (fuertesi)',
   'Buteo jamaicensis suttoni': 'Red-tailed Hawk (Sutton\'s)',
@@ -5036,8 +5366,10 @@ const Map<String, String> scientificToCommon = {
   'Megascops marshalli': 'Cloud-forest Screech-Owl',
   'Megascops hoyi': 'Montane Forest Screech-Owl',
   'Megascops guatemalae': 'Middle American Screech-Owl',
-  'Megascops guatemalae [guatemalae Group]': 'Middle American Screech-Owl (Middle American)',
-  'Megascops guatemalae vermiculatus': 'Middle American Screech-Owl (Vermiculated)',
+  'Megascops guatemalae [guatemalae Group]':
+      'Middle American Screech-Owl (Middle American)',
+  'Megascops guatemalae vermiculatus':
+      'Middle American Screech-Owl (Vermiculated)',
   'Megascops centralis': 'Choco Screech-Owl',
   'Megascops [undescribed form]': 'Puntarenas Screech-Owl (undescribed form)',
   'Megascops roraimae': 'Foothill Screech-Owl',
@@ -5139,7 +5471,8 @@ const Map<String, String> scientificToCommon = {
   'Glaucidium mooreorum': 'Pernambuco Pygmy-Owl',
   'Glaucidium minutissimum': 'Least Pygmy-Owl',
   'Glaucidium brasilianum': 'Ferruginous Pygmy-Owl',
-  'Glaucidium brasilianum [brasilianum Group]': 'Ferruginous Pygmy-Owl (Ferruginous)',
+  'Glaucidium brasilianum [brasilianum Group]':
+      'Ferruginous Pygmy-Owl (Ferruginous)',
   'Glaucidium brasilianum tucumanum': 'Ferruginous Pygmy-Owl (Tucuman)',
   'Glaucidium nana': 'Austral Pygmy-Owl',
   'Glaucidium brasilianum/nana': 'Ferruginous/Austral Pygmy-Owl',
@@ -5181,7 +5514,8 @@ const Map<String, String> scientificToCommon = {
   'Athene cunicularia': 'Burrowing Owl',
   'Athene cunicularia hypugaea/rostrata': 'Burrowing Owl (Western)',
   'Athene cunicularia floridana': 'Burrowing Owl (Florida)',
-  'Athene cunicularia [guadeloupensis Group]': 'Burrowing Owl (guadeloupensis Group)',
+  'Athene cunicularia [guadeloupensis Group]':
+      'Burrowing Owl (guadeloupensis Group)',
   'Athene cunicularia [tolimae Group]': 'Burrowing Owl (Andean)',
   'Athene cunicularia nanodes/juninensis': 'Burrowing Owl (Littoral)',
   'Athene cunicularia grallaria': 'Burrowing Owl (grallaria)',
@@ -5192,7 +5526,8 @@ const Map<String, String> scientificToCommon = {
   'Strix virgata borelliana': 'Mottled Owl (Atlantic Forest)',
   'Strix nigrolineata': 'Black-and-white Owl',
   'Strix huhula': 'Black-banded Owl',
-  'Strix huhula [undescribed cloud-forest form]': 'Black-banded Owl (San Isidro)',
+  'Strix huhula [undescribed cloud-forest form]':
+      'Black-banded Owl (San Isidro)',
   'Strix albitarsis': 'Rufous-banded Owl',
   'Strix sp. (former Ciccaba sp.)': 'neotropical Strix sp.',
   'Strix seloputo': 'Spotted Wood-Owl',
@@ -5255,7 +5590,8 @@ const Map<String, String> scientificToCommon = {
   'Aegolius funereus/acadicus': 'Boreal/Northern Saw-whet Owl',
   'Aegolius gradyi': 'Bermuda Saw-whet Owl',
   'Aegolius ridgwayi': 'Unspotted Saw-whet Owl',
-  'Glaucidium/Aegolius sp. (pygmy-owl/saw-whet owl sp.)': 'pygmy-owl/saw-whet owl sp.',
+  'Glaucidium/Aegolius sp. (pygmy-owl/saw-whet owl sp.)':
+      'pygmy-owl/saw-whet owl sp.',
   'Aegolius harrisii': 'Buff-fronted Owl',
   'Ninox rufa': 'Rufous Owl',
   'Ninox strenua': 'Powerful Owl',
@@ -5340,7 +5676,8 @@ const Map<String, String> scientificToCommon = {
   'Pharomachrus mocinno costaricensis': 'Resplendent Quetzal (Costa Rican)',
   'Pharomachrus fulgidus': 'White-tipped Quetzal',
   'Pharomachrus antisianus': 'Crested Quetzal',
-  'Pharomachrus auriceps x antisianus': 'Golden-headed x Crested Quetzal (hybrid)',
+  'Pharomachrus auriceps x antisianus':
+      'Golden-headed x Crested Quetzal (hybrid)',
   'Pharomachrus auriceps/antisianus': 'Golden-headed/Crested Quetzal',
   'Priotelus temnurus': 'Cuban Trogon',
   'Priotelus roseigaster': 'Hispaniolan Trogon',
@@ -5371,14 +5708,17 @@ const Map<String, String> scientificToCommon = {
   'Trogon cupreicauda': 'Choco Black-throated Trogon',
   'Trogon rufus': 'Amazonian Black-throated Trogon',
   'Trogon chrysochloros': 'Atlantic Black-throated Trogon',
-  'Trogon chrysochloros muriciensis': 'Atlantic Black-throated Trogon (Alagoas)',
-  'Trogon chrysochloros chrysochloros': 'Atlantic Black-throated Trogon (Southern)',
+  'Trogon chrysochloros muriciensis':
+      'Atlantic Black-throated Trogon (Alagoas)',
+  'Trogon chrysochloros chrysochloros':
+      'Atlantic Black-throated Trogon (Southern)',
   'Trogon ambiguus': 'Coppery-tailed Trogon',
   'Trogon elegans': 'Elegant Trogon',
   'Trogon mexicanus': 'Mountain Trogon',
   'Trogon collaris': 'Collared Trogon',
   'Trogon collaris puella': 'Collared Trogon (Xalapa)',
-  'Trogon collaris aurantiiventris/underwoodi': 'Collared Trogon (Orange-bellied)',
+  'Trogon collaris aurantiiventris/underwoodi':
+      'Collared Trogon (Orange-bellied)',
   'Trogon collaris [collaris Group]': 'Collared Trogon (Collared)',
   'Trogon personatus': 'Masked Trogon',
   'Trogon sp.': 'new world trogon sp.',
@@ -5395,7 +5735,8 @@ const Map<String, String> scientificToCommon = {
   'Phoeniculus purpureus/damarensis': 'Green/Violet Woodhoopoe',
   'Phoeniculus somaliensis': 'Black-billed Woodhoopoe',
   'Phoeniculus bollei': 'White-headed Woodhoopoe',
-  'Phoeniculus bollei bollei/jacksoni': 'White-headed Woodhoopoe (bollei/jacksoni)',
+  'Phoeniculus bollei bollei/jacksoni':
+      'White-headed Woodhoopoe (bollei/jacksoni)',
   'Phoeniculus bollei okuensis': 'White-headed Woodhoopoe (Oku)',
   'Phoeniculus sp.': 'woodhoopoe sp.',
   'Rhinopomastus castaneiceps': 'Forest Scimitarbill',
@@ -5424,7 +5765,8 @@ const Map<String, String> scientificToCommon = {
   'Tockus monteiri': 'Monteiro\'s Hornbill',
   'Tockus rufirostris': 'Southern Red-billed Hornbill',
   'Tockus damarensis': 'Damara Red-billed Hornbill',
-  'Tockus rufirostris x damarensis': 'Southern x Damara Red-billed Hornbill (hybrid)',
+  'Tockus rufirostris x damarensis':
+      'Southern x Damara Red-billed Hornbill (hybrid)',
   'Tockus rufirostris/damarensis': 'Southern/Damara Red-billed Hornbill',
   'Tockus ruahae': 'Tanzanian Red-billed Hornbill',
   'Tockus kempi': 'Western Red-billed Hornbill',
@@ -5544,14 +5886,18 @@ const Map<String, String> scientificToCommon = {
   'Momotus momota': 'Amazonian Motmot',
   'Momotus aequatorialis': 'Andean Motmot',
   'Baryphthengus martii': 'Rufous Motmot',
-  'Momotus lessonii x Baryphthengus martii': 'Lesson\'s x Rufous Motmot (hybrid)',
+  'Momotus lessonii x Baryphthengus martii':
+      'Lesson\'s x Rufous Motmot (hybrid)',
   'Momotus momota x Baryphthengus martii': 'Amazonian x Rufous Motmot (hybrid)',
   'Baryphthengus ruficapillus': 'Rufous-capped Motmot',
-  'Momotus momota x Baryphthengus ruficapillus': 'Amazonian x Rufous-capped Motmot (hybrid)',
+  'Momotus momota x Baryphthengus ruficapillus':
+      'Amazonian x Rufous-capped Motmot (hybrid)',
   'Electron carinatum': 'Keel-billed Motmot',
   'Electron platyrhynchum': 'Broad-billed Motmot',
-  'Electron platyrhynchum [platyrhynchum Group]': 'Broad-billed Motmot (Broad-billed)',
-  'Electron platyrhynchum [pyrrholaemum Group]': 'Broad-billed Motmot (Plain-tailed)',
+  'Electron platyrhynchum [platyrhynchum Group]':
+      'Broad-billed Motmot (Broad-billed)',
+  'Electron platyrhynchum [pyrrholaemum Group]':
+      'Broad-billed Motmot (Plain-tailed)',
   'Electron carinatum/platyrhynchum': 'Keel-billed/Broad-billed Motmot',
   'Eumomota superciliosa': 'Turquoise-browed Motmot',
   'Momotidae sp.': 'motmot sp.',
@@ -5599,7 +5945,8 @@ const Map<String, String> scientificToCommon = {
   'Ceyx meeki meeki': 'North Solomons Dwarf-Kingfisher (North Solomons)',
   'Ceyx nigromaxilla': 'Guadalcanal Dwarf-Kingfisher',
   'Ceyx nigromaxilla malaitae': 'Guadalcanal Dwarf-Kingfisher (Malaita)',
-  'Ceyx nigromaxilla nigromaxilla': 'Guadalcanal Dwarf-Kingfisher (Guadalcanal)',
+  'Ceyx nigromaxilla nigromaxilla':
+      'Guadalcanal Dwarf-Kingfisher (Guadalcanal)',
   'Ceyx gentianus': 'Makira Dwarf-Kingfisher',
   'Corythornis cristatus': 'Malachite Kingfisher',
   'Corythornis cristatus [cristatus Group]': 'Malachite Kingfisher (Mainland)',
@@ -5687,10 +6034,12 @@ const Map<String, String> scientificToCommon = {
   'Todiramphus albicilla': 'Mariana Kingfisher',
   'Todiramphus tristrami': 'Melanesian Kingfisher',
   'Todiramphus tristrami matthiae': 'Melanesian Kingfisher (St. Matthias Is.)',
-  'Todiramphus tristrami stresemanni': 'Melanesian Kingfisher (Dampier Straits)',
+  'Todiramphus tristrami stresemanni':
+      'Melanesian Kingfisher (Dampier Straits)',
   'Todiramphus tristrami [nusae Group]': 'Melanesian Kingfisher (New Ireland)',
   'Todiramphus tristrami tristrami': 'Melanesian Kingfisher (New Britain)',
-  'Todiramphus tristrami alberti': 'Melanesian Kingfisher (Bougainville-Guadalcanal)',
+  'Todiramphus tristrami alberti':
+      'Melanesian Kingfisher (Bougainville-Guadalcanal)',
   'Todiramphus funebris': 'Sombre Kingfisher',
   'Todiramphus enigma': 'Talaud Kingfisher',
   'Todiramphus australasia': 'Cinnamon-banded Kingfisher',
@@ -5698,7 +6047,8 @@ const Map<String, String> scientificToCommon = {
   'Caridonax fulgidus': 'White-rumped Kingfisher',
   'Melidora macrorrhina': 'Hook-billed Kingfisher',
   'Actenoides bougainvillei': 'Moustached Kingfisher',
-  'Actenoides bougainvillei bougainvillei': 'Moustached Kingfisher (Bougainville)',
+  'Actenoides bougainvillei bougainvillei':
+      'Moustached Kingfisher (Bougainville)',
   'Actenoides bougainvillei excelsus': 'Moustached Kingfisher (Guadalcanal)',
   'Actenoides concretus': 'Rufous-collared Kingfisher',
   'Actenoides lindsayi': 'Spotted Kingfisher',
@@ -5707,7 +6057,8 @@ const Map<String, String> scientificToCommon = {
   'Actenoides monachus monachus': 'Green-backed Kingfisher (Blue-headed)',
   'Actenoides monachus capucinus': 'Green-backed Kingfisher (Black-headed)',
   'Actenoides princeps': 'Scaly-breasted Kingfisher',
-  'Actenoides princeps princeps/erythrorhamphus': 'Scaly-breasted Kingfisher (Scaly-breasted)',
+  'Actenoides princeps princeps/erythrorhamphus':
+      'Scaly-breasted Kingfisher (Scaly-breasted)',
   'Actenoides princeps regalis': 'Scaly-breasted Kingfisher (Plain-backed)',
   'Syma torotoro': 'Yellow-billed Kingfisher',
   'Syma megarhyncha': 'Mountain Kingfisher',
@@ -5715,7 +6066,8 @@ const Map<String, String> scientificToCommon = {
   'Tanysiptera hydrocharis': 'Little Paradise-Kingfisher',
   'Tanysiptera galatea': 'Common Paradise-Kingfisher',
   'Tanysiptera galatea doris/emiliae': 'Common Paradise-Kingfisher (Morotai)',
-  'Tanysiptera galatea [margarethae Group]': 'Common Paradise-Kingfisher (Halmahera)',
+  'Tanysiptera galatea [margarethae Group]':
+      'Common Paradise-Kingfisher (Halmahera)',
   'Tanysiptera galatea obiensis': 'Common Paradise-Kingfisher (Obi)',
   'Tanysiptera galatea [nais Group]': 'Common Paradise-Kingfisher (Amboyna)',
   'Tanysiptera galatea [galatea Group]': 'Common Paradise-Kingfisher (Papuan)',
@@ -5789,7 +6141,8 @@ const Map<String, String> scientificToCommon = {
   'Nystalus maculatus striatipectus': 'Spot-backed Puffbird (Chaco)',
   'Hypnelus ruficollis': 'Russet-throated Puffbird',
   'Hypnelus bicinctus': 'Two-banded Puffbird',
-  'Hypnelus ruficollis x bicinctus': 'Russet-throated x Two-banded Puffbird (hybrid)',
+  'Hypnelus ruficollis x bicinctus':
+      'Russet-throated x Two-banded Puffbird (hybrid)',
   'Hypnelus ruficollis/bicinctus': 'Russet-throated/Two-banded Puffbird',
   'Malacoptila fusca': 'White-chested Puffbird',
   'Malacoptila semicincta': 'Semicollared Puffbird',
@@ -5834,8 +6187,10 @@ const Map<String, String> scientificToCommon = {
   'Galbula cyanicollis': 'Blue-cheeked Jacamar',
   'Galbula ruficauda': 'Rufous-tailed Jacamar',
   'Galbula ruficauda melanogenia': 'Rufous-tailed Jacamar (Black-chinned)',
-  'Galbula ruficauda [ruficauda Group]': 'Rufous-tailed Jacamar (Rufous-tailed)',
-  'Galbula ruficauda rufoviridis/heterogyna': 'Rufous-tailed Jacamar (Spot-tailed)',
+  'Galbula ruficauda [ruficauda Group]':
+      'Rufous-tailed Jacamar (Rufous-tailed)',
+  'Galbula ruficauda rufoviridis/heterogyna':
+      'Rufous-tailed Jacamar (Spot-tailed)',
   'Galbula galbula': 'Green-tailed Jacamar',
   'Galbula tombacea': 'White-chinned Jacamar',
   'Galbula cyanescens': 'Bluish-fronted Jacamar',
@@ -5854,7 +6209,8 @@ const Map<String, String> scientificToCommon = {
   'Trachyphonus erythrocephalus': 'Red-and-yellow Barbet',
   'Trachyphonus margaritatus': 'Yellow-breasted Barbet',
   'Trachyphonus darnaudii': 'D\'Arnaud\'s Barbet',
-  'Trachyphonus darnaudii darnaudii/boehmi': 'D\'Arnaud\'s Barbet (D\'Arnaud\'s)',
+  'Trachyphonus darnaudii darnaudii/boehmi':
+      'D\'Arnaud\'s Barbet (D\'Arnaud\'s)',
   'Trachyphonus darnaudii usambiro': 'D\'Arnaud\'s Barbet (Usambiro)',
   'Trachyphonus darnaudii emini': 'D\'Arnaud\'s Barbet (Black-capped)',
   'Cryptolybia olivacea': 'Green Barbet',
@@ -5873,7 +6229,8 @@ const Map<String, String> scientificToCommon = {
   'Gymnobucco calvus vernayi': 'Naked-faced Barbet (Pale-throated)',
   'Stactolaema leucotis': 'White-eared Barbet',
   'Stactolaema leucotis leucogrammica': 'White-eared Barbet (White-lined)',
-  'Stactolaema leucotis leucotis/kilimensis': 'White-eared Barbet (White-eared)',
+  'Stactolaema leucotis leucotis/kilimensis':
+      'White-eared Barbet (White-eared)',
   'Stactolaema whytii': 'Whyte\'s Barbet',
   'Stactolaema anchietae': 'Anchieta\'s Barbet',
   'Pogoniulus scolopaceus': 'Speckled Tinkerbird',
@@ -5886,7 +6243,8 @@ const Map<String, String> scientificToCommon = {
   'Pogoniulus atroflavus': 'Red-rumped Tinkerbird',
   'Pogoniulus subsulphureus': 'Yellow-throated Tinkerbird',
   'Pogoniulus bilineatus': 'Yellow-rumped Tinkerbird',
-  'Pogoniulus bilineatus [bilineatus Group]': 'Yellow-rumped Tinkerbird (Yellow-rumped)',
+  'Pogoniulus bilineatus [bilineatus Group]':
+      'Yellow-rumped Tinkerbird (Yellow-rumped)',
   'Pogoniulus bilineatus makawai': 'Yellow-rumped Tinkerbird (White-chested)',
   'Pogoniulus uropygialis': 'Northern Red-fronted Tinkerbird',
   'Pogoniulus pusillus': 'Southern Red-fronted Tinkerbird',
@@ -5895,7 +6253,8 @@ const Map<String, String> scientificToCommon = {
   'Buccanodon duchaillui': 'Yellow-spotted Barbet',
   'Tricholaema hirsuta': 'Hairy-breasted Barbet',
   'Tricholaema hirsuta hirsuta': 'Hairy-breasted Barbet (Hairy-breasted)',
-  'Tricholaema hirsuta [flavipunctata Group]': 'Hairy-breasted Barbet (Streaky-throated)',
+  'Tricholaema hirsuta [flavipunctata Group]':
+      'Hairy-breasted Barbet (Streaky-throated)',
   'Tricholaema diademata': 'Red-fronted Barbet',
   'Tricholaema frontata': 'Miombo Barbet',
   'Tricholaema leucomelas': 'Pied Barbet',
@@ -5905,7 +6264,8 @@ const Map<String, String> scientificToCommon = {
   'Lybius undatus': 'Banded Barbet',
   'Lybius vieilloti': 'Vieillot\'s Barbet',
   'Lybius leucocephalus': 'White-headed Barbet',
-  'Lybius leucocephalus [leucocephalus Group]': 'White-headed Barbet (White-headed)',
+  'Lybius leucocephalus [leucocephalus Group]':
+      'White-headed Barbet (White-headed)',
   'Lybius leucocephalus senex': 'White-headed Barbet (Brown-and-white)',
   'Lybius leucocephalus leucogaster': 'White-headed Barbet (White-bellied)',
   'Lybius chaplini': 'Chaplin\'s Barbet',
@@ -5925,14 +6285,18 @@ const Map<String, String> scientificToCommon = {
   'Psilopogon malabaricus': 'Malabar Barbet',
   'Psilopogon rubricapillus': 'Crimson-fronted Barbet',
   'Psilopogon haemacephalus': 'Coppersmith Barbet',
-  'Psilopogon haemacephalus indicus/delicus': 'Coppersmith Barbet (Western Yellow-faced)',
+  'Psilopogon haemacephalus indicus/delicus':
+      'Coppersmith Barbet (Western Yellow-faced)',
   'Psilopogon haemacephalus roseus': 'Coppersmith Barbet (Javan Red-faced)',
-  'Psilopogon haemacephalus [haemacephalus Group]': 'Coppersmith Barbet (Philippine Yellow-faced)',
-  'Psilopogon haemacephalus [intermedius Group]': 'Coppersmith Barbet (Philippine Red-faced)',
+  'Psilopogon haemacephalus [haemacephalus Group]':
+      'Coppersmith Barbet (Philippine Yellow-faced)',
+  'Psilopogon haemacephalus [intermedius Group]':
+      'Coppersmith Barbet (Philippine Red-faced)',
   'Psilopogon malabaricus/haemacephalus': 'Malabar/Coppersmith Barbet',
   'Psilopogon cyanotis': 'Blue-eared Barbet',
   'Psilopogon duvaucelii': 'Black-eared Barbet',
-  'Psilopogon cyanotis x duvaucelii': 'Blue-eared x Black-eared Barbet (hybrid)',
+  'Psilopogon cyanotis x duvaucelii':
+      'Blue-eared x Black-eared Barbet (hybrid)',
   'Psilopogon cyanotis/duvaucelii': 'Blue-eared/Black-eared Barbet',
   'Psilopogon australis': 'Yellow-eared Barbet',
   'Psilopogon eximius': 'Bornean Barbet',
@@ -5961,7 +6325,8 @@ const Map<String, String> scientificToCommon = {
   'Psilopogon [undescribed Meratus form]': 'Meratus Barbet (undescribed form)',
   'Psilopogon corvinus': 'Brown-throated Barbet',
   'Psilopogon chrysopogon': 'Gold-whiskered Barbet',
-  'Psilopogon chrysopogon chrysopogon/laetus': 'Gold-whiskered Barbet (Gold-whiskered)',
+  'Psilopogon chrysopogon chrysopogon/laetus':
+      'Gold-whiskered Barbet (Gold-whiskered)',
   'Psilopogon chrysopogon chrysopsis': 'Gold-whiskered Barbet (Gold-faced)',
   'Psilopogon incognitus': 'Moustached Barbet',
   'Psilopogon nuchalis': 'Taiwan Barbet',
@@ -5987,8 +6352,10 @@ const Map<String, String> scientificToCommon = {
   'Capito auratus': 'Gilded Barbet',
   'Capito sp.': 'Capito sp.',
   'Eubucco richardsoni': 'Lemon-throated Barbet',
-  'Eubucco richardsoni richardsoni/nigriceps': 'Lemon-throated Barbet (Lemon-throated)',
-  'Eubucco richardsoni aurantiicollis/purusianus': 'Lemon-throated Barbet (Flame-throated)',
+  'Eubucco richardsoni richardsoni/nigriceps':
+      'Lemon-throated Barbet (Lemon-throated)',
+  'Eubucco richardsoni aurantiicollis/purusianus':
+      'Lemon-throated Barbet (Flame-throated)',
   'Eubucco tucinkae': 'Scarlet-hooded Barbet',
   'Eubucco bourcierii': 'Red-headed Barbet',
   'Eubucco versicolor': 'Versicolored Barbet',
@@ -6000,18 +6367,27 @@ const Map<String, String> scientificToCommon = {
   'Semnornis ramphastinus': 'Toucan Barbet',
   'Aulacorhynchus prasinus': 'Northern Emerald-Toucanet',
   'Aulacorhynchus prasinus wagleri': 'Northern Emerald-Toucanet (Wagler\'s)',
-  'Aulacorhynchus prasinus [prasinus Group]': 'Northern Emerald-Toucanet (Emerald)',
-  'Aulacorhynchus prasinus caeruleogularis': 'Northern Emerald-Toucanet (Blue-throated)',
-  'Aulacorhynchus prasinus cognatus': 'Northern Emerald-Toucanet (Violet-throated)',
+  'Aulacorhynchus prasinus [prasinus Group]':
+      'Northern Emerald-Toucanet (Emerald)',
+  'Aulacorhynchus prasinus caeruleogularis':
+      'Northern Emerald-Toucanet (Blue-throated)',
+  'Aulacorhynchus prasinus cognatus':
+      'Northern Emerald-Toucanet (Violet-throated)',
   'Aulacorhynchus albivitta': 'Southern Emerald-Toucanet',
   'Aulacorhynchus albivitta lautus': 'Southern Emerald-Toucanet (Santa Marta)',
-  'Aulacorhynchus albivitta griseigularis': 'Southern Emerald-Toucanet (Gray-throated)',
-  'Aulacorhynchus albivitta albivitta/phaeolaemus': 'Southern Emerald-Toucanet (Andean)',
-  'Aulacorhynchus albivitta cyanolaemus': 'Southern Emerald-Toucanet (Black-billed)',
-  'Aulacorhynchus albivitta atrogularis/dimidiatus': 'Southern Emerald-Toucanet (Black-throated)',
+  'Aulacorhynchus albivitta griseigularis':
+      'Southern Emerald-Toucanet (Gray-throated)',
+  'Aulacorhynchus albivitta albivitta/phaeolaemus':
+      'Southern Emerald-Toucanet (Andean)',
+  'Aulacorhynchus albivitta cyanolaemus':
+      'Southern Emerald-Toucanet (Black-billed)',
+  'Aulacorhynchus albivitta atrogularis/dimidiatus':
+      'Southern Emerald-Toucanet (Black-throated)',
   'Aulacorhynchus sulcatus': 'Groove-billed Toucanet',
-  'Aulacorhynchus sulcatus calorhynchus': 'Groove-billed Toucanet (Yellow-billed)',
-  'Aulacorhynchus sulcatus sulcatus/erythrognathus': 'Groove-billed Toucanet (Groove-billed)',
+  'Aulacorhynchus sulcatus calorhynchus':
+      'Groove-billed Toucanet (Yellow-billed)',
+  'Aulacorhynchus sulcatus sulcatus/erythrognathus':
+      'Groove-billed Toucanet (Groove-billed)',
   'Aulacorhynchus derbianus': 'Chestnut-tipped Toucanet',
   'Aulacorhynchus whitelianus': 'Tepui Toucanet',
   'Aulacorhynchus haematopygus': 'Crimson-rumped Toucanet',
@@ -6029,9 +6405,12 @@ const Map<String, String> scientificToCommon = {
   'Pteroglossus inscriptus inscriptus': 'Lettered Aracari (Lettered)',
   'Pteroglossus torquatus': 'Collared Aracari',
   'Pteroglossus erythropygius': 'Pale-mandibled Aracari',
-  'Pteroglossus erythropygius sanguineus': 'Pale-mandibled Aracari (Stripe-billed)',
-  'Pteroglossus erythropygius erythropygius': 'Pale-mandibled Aracari (Pale-billed)',
-  'Pteroglossus torquatus x erythropygius': 'Collared x Pale-mandibled Aracari (hybrid)',
+  'Pteroglossus erythropygius sanguineus':
+      'Pale-mandibled Aracari (Stripe-billed)',
+  'Pteroglossus erythropygius erythropygius':
+      'Pale-mandibled Aracari (Pale-billed)',
+  'Pteroglossus torquatus x erythropygius':
+      'Collared x Pale-mandibled Aracari (hybrid)',
   'Pteroglossus torquatus/erythropygius': 'Collared/Pale-mandibled Aracari',
   'Pteroglossus frantzii': 'Fiery-billed Aracari',
   'Pteroglossus aracari': 'Black-necked Aracari',
@@ -6044,34 +6423,43 @@ const Map<String, String> scientificToCommon = {
   'Pteroglossus beauharnaisii': 'Curl-crested Aracari',
   'Pteroglossus bitorquatus': 'Red-necked Aracari',
   'Pteroglossus bitorquatus sturmii': 'Red-necked Aracari (Western)',
-  'Pteroglossus bitorquatus bitorquatus/reichenowi': 'Red-necked Aracari (Eastern)',
+  'Pteroglossus bitorquatus bitorquatus/reichenowi':
+      'Red-necked Aracari (Eastern)',
   'Pteroglossus sp.': 'aracari sp.',
   'Selenidera spectabilis': 'Yellow-eared Toucanet',
   'Selenidera piperivora': 'Guianan Toucanet',
   'Selenidera reinwardtii': 'Golden-collared Toucanet',
   'Selenidera reinwardtii reinwardtii': 'Golden-collared Toucanet (Red-billed)',
-  'Selenidera reinwardtii langsdorffii': 'Golden-collared Toucanet (Green-billed)',
+  'Selenidera reinwardtii langsdorffii':
+      'Golden-collared Toucanet (Green-billed)',
   'Selenidera nattereri': 'Tawny-tufted Toucanet',
   'Selenidera gouldii': 'Gould\'s Toucanet',
   'Selenidera maculirostris': 'Spot-billed Toucanet',
   'Ramphastidae (small toucan sp.)': 'small toucan sp.',
   'Ramphastos toco': 'Toco Toucan',
   'Ramphastos ambiguus': 'Yellow-throated Toucan',
-  'Ramphastos ambiguus swainsonii': 'Yellow-throated Toucan (Chestnut-mandibled)',
-  'Ramphastos ambiguus ambiguus/abbreviatus': 'Yellow-throated Toucan (Black-mandibled)',
+  'Ramphastos ambiguus swainsonii':
+      'Yellow-throated Toucan (Chestnut-mandibled)',
+  'Ramphastos ambiguus ambiguus/abbreviatus':
+      'Yellow-throated Toucan (Black-mandibled)',
   'Ramphastos tucanus': 'White-throated Toucan',
   'Ramphastos tucanus tucanus': 'White-throated Toucan (Red-billed)',
   'Ramphastos tucanus cuvieri/inca': 'White-throated Toucan (Cuvier\'s)',
   'Ramphastos sulfuratus': 'Keel-billed Toucan',
   'Ramphastos brevis': 'Choco Toucan',
   'Ramphastos vitellinus': 'Channel-billed Toucan',
-  'Ramphastos vitellinus citreolaemus': 'Channel-billed Toucan (Citron-throated)',
-  'Ramphastos vitellinus culminatus/pintoi': 'Channel-billed Toucan (Yellow-ridged)',
-  'Ramphastos vitellinus citreolaemus x culminatus': 'Channel-billed Toucan (Citron-throated x Yellow-ridged)',
+  'Ramphastos vitellinus citreolaemus':
+      'Channel-billed Toucan (Citron-throated)',
+  'Ramphastos vitellinus culminatus/pintoi':
+      'Channel-billed Toucan (Yellow-ridged)',
+  'Ramphastos vitellinus citreolaemus x culminatus':
+      'Channel-billed Toucan (Citron-throated x Yellow-ridged)',
   'Ramphastos vitellinus vitellinus': 'Channel-billed Toucan (Channel-billed)',
-  'Ramphastos vitellinus culminatus x vitellinus': 'Channel-billed Toucan (Yellow-ridged x Channel-billed)',
+  'Ramphastos vitellinus culminatus x vitellinus':
+      'Channel-billed Toucan (Yellow-ridged x Channel-billed)',
   'Ramphastos vitellinus ariel': 'Channel-billed Toucan (Ariel)',
-  'Ramphastos vitellinus culminatus x ariel': 'Channel-billed Toucan (Yellow-ridged x Ariel)',
+  'Ramphastos vitellinus culminatus x ariel':
+      'Channel-billed Toucan (Yellow-ridged x Ariel)',
   'Ramphastos dicolorus': 'Red-breasted Toucan',
   'Ramphastos sp.': 'large toucan sp.',
   'Prodotiscus insignis': 'Cassin\'s Honeybird',
@@ -6114,10 +6502,12 @@ const Map<String, String> scientificToCommon = {
   'Picumnus squamulatus [squamulatus Group]': 'Scaled Piculet (Scaled)',
   'Picumnus squamulatus obsoletus': 'Scaled Piculet (Black-dotted)',
   'Picumnus spilogaster': 'White-bellied Piculet',
-  'Picumnus spilogaster spilogaster/orinocensis': 'White-bellied Piculet (White-bellied)',
+  'Picumnus spilogaster spilogaster/orinocensis':
+      'White-bellied Piculet (White-bellied)',
   'Picumnus spilogaster pallidus': 'White-bellied Piculet (Mangrove)',
   'Picumnus minutissimus': 'Arrowhead Piculet',
-  'Picumnus minutissimus x cirratus': 'Arrowhead x White-barred Piculet (hybrid)',
+  'Picumnus minutissimus x cirratus':
+      'Arrowhead x White-barred Piculet (hybrid)',
   'Picumnus pygmaeus': 'Spotted Piculet',
   'Picumnus steindachneri': 'Speckle-chested Piculet',
   'Picumnus varzeae': 'Varzea Piculet',
@@ -6127,10 +6517,12 @@ const Map<String, String> scientificToCommon = {
   'Picumnus dorbignyanus': 'Ocellated Piculet',
   'Picumnus cirratus/dorbignyanus': 'White-barred/Ocellated Piculet',
   'Picumnus temminckii': 'Ochre-collared Piculet',
-  'Picumnus cirratus x temminckii': 'White-barred x Ochre-collared Piculet (hybrid)',
+  'Picumnus cirratus x temminckii':
+      'White-barred x Ochre-collared Piculet (hybrid)',
   'Picumnus cirratus/temminckii': 'White-barred/Ochre-collared Piculet',
   'Picumnus albosquamatus': 'White-wedged Piculet',
-  'Picumnus cirratus x albosquamatus': 'White-barred x White-wedged Piculet (hybrid)',
+  'Picumnus cirratus x albosquamatus':
+      'White-barred x White-wedged Piculet (hybrid)',
   'Picumnus cirratus/albosquamatus': 'White-barred/White-wedged Piculet',
   'Picumnus fuscus': 'Rusty-necked Piculet',
   'Picumnus rufiventris': 'Rufous-breasted Piculet',
@@ -6154,14 +6546,17 @@ const Map<String, String> scientificToCommon = {
   'Sphyrapicus thyroideus': 'Williamson\'s Sapsucker',
   'Sphyrapicus varius': 'Yellow-bellied Sapsucker',
   'Sphyrapicus nuchalis': 'Red-naped Sapsucker',
-  'Sphyrapicus varius x nuchalis': 'Yellow-bellied x Red-naped Sapsucker (hybrid)',
+  'Sphyrapicus varius x nuchalis':
+      'Yellow-bellied x Red-naped Sapsucker (hybrid)',
   'Sphyrapicus varius/nuchalis': 'Yellow-bellied/Red-naped Sapsucker',
   'Sphyrapicus ruber': 'Red-breasted Sapsucker',
   'Sphyrapicus ruber ruber': 'Red-breasted Sapsucker (ruber)',
   'Sphyrapicus ruber daggetti': 'Red-breasted Sapsucker (daggetti)',
-  'Sphyrapicus varius x ruber': 'Yellow-bellied x Red-breasted Sapsucker (hybrid)',
+  'Sphyrapicus varius x ruber':
+      'Yellow-bellied x Red-breasted Sapsucker (hybrid)',
   'Sphyrapicus nuchalis x ruber': 'Red-naped x Red-breasted Sapsucker (hybrid)',
-  'Sphyrapicus varius/nuchalis x ruber': 'Yellow-bellied/Red-naped x Red-breasted Sapsucker (hybrid)',
+  'Sphyrapicus varius/nuchalis x ruber':
+      'Yellow-bellied/Red-naped x Red-breasted Sapsucker (hybrid)',
   'Sphyrapicus nuchalis/ruber': 'Red-naped/Red-breasted Sapsucker',
   'Sphyrapicus sp.': 'sapsucker sp.',
   'Xiphidiopicus percussus': 'Cuban Green Woodpecker',
@@ -6187,22 +6582,29 @@ const Map<String, String> scientificToCommon = {
   'Melanerpes rubricapillus': 'Red-crowned Woodpecker',
   'Melanerpes uropygialis': 'Gila Woodpecker',
   'Melanerpes hoffmannii': 'Hoffmann\'s Woodpecker',
-  'Melanerpes pucherani x hoffmannii': 'Black-cheeked x Hoffmann\'s Woodpecker (hybrid)',
-  'Melanerpes rubricapillus x hoffmannii': 'Red-crowned x Hoffmann\'s Woodpecker (hybrid)',
+  'Melanerpes pucherani x hoffmannii':
+      'Black-cheeked x Hoffmann\'s Woodpecker (hybrid)',
+  'Melanerpes rubricapillus x hoffmannii':
+      'Red-crowned x Hoffmann\'s Woodpecker (hybrid)',
   'Melanerpes aurifrons': 'Golden-fronted Woodpecker',
   'Melanerpes aurifrons aurifrons': 'Golden-fronted Woodpecker (Northern)',
-  'Melanerpes aurifrons [santacruzi Group]': 'Golden-fronted Woodpecker (Velasquez\'s)',
+  'Melanerpes aurifrons [santacruzi Group]':
+      'Golden-fronted Woodpecker (Velasquez\'s)',
   'Melanerpes aurifrons polygrammus': 'Golden-fronted Woodpecker (West Mexico)',
-  'Melanerpes hoffmannii x aurifrons': 'Hoffmann\'s x Golden-fronted Woodpecker (hybrid)',
+  'Melanerpes hoffmannii x aurifrons':
+      'Hoffmann\'s x Golden-fronted Woodpecker (hybrid)',
   'Melanerpes hoffmannii/aurifrons': 'Hoffmann\'s/Golden-fronted Woodpecker',
   'Melanerpes carolinus': 'Red-bellied Woodpecker',
-  'Melanerpes aurifrons x carolinus': 'Golden-fronted x Red-bellied Woodpecker (hybrid)',
+  'Melanerpes aurifrons x carolinus':
+      'Golden-fronted x Red-bellied Woodpecker (hybrid)',
   'Melanerpes aurifrons/carolinus': 'Golden-fronted/Red-bellied Woodpecker',
   'Melanerpes superciliaris': 'West Indian Woodpecker',
   'Melanerpes sp.': 'Melanerpes sp.',
   'Picoides tridactylus': 'Eurasian Three-toed Woodpecker',
-  'Picoides tridactylus [tridactylus Group]': 'Eurasian Three-toed Woodpecker (Eurasian)',
-  'Picoides tridactylus funebris': 'Eurasian Three-toed Woodpecker (Dark-bodied)',
+  'Picoides tridactylus [tridactylus Group]':
+      'Eurasian Three-toed Woodpecker (Eurasian)',
+  'Picoides tridactylus funebris':
+      'Eurasian Three-toed Woodpecker (Dark-bodied)',
   'Picoides dorsalis': 'American Three-toed Woodpecker',
   'Picoides dorsalis dorsalis': 'American Three-toed Woodpecker (Rocky Mts.)',
   'Picoides dorsalis fasciatus': 'American Three-toed Woodpecker (Northwest)',
@@ -6250,16 +6652,19 @@ const Map<String, String> scientificToCommon = {
   'Dendrocopos noguchii': 'Okinawa Woodpecker',
   'Dendrocopos leucotos': 'White-backed Woodpecker',
   'Dendrocopos leucotos lilfordi': 'White-backed Woodpecker (Lilford\'s)',
-  'Dendrocopos leucotos [leucotos Group]': 'White-backed Woodpecker (White-backed)',
+  'Dendrocopos leucotos [leucotos Group]':
+      'White-backed Woodpecker (White-backed)',
   'Dendrocopos leucotos owstoni': 'White-backed Woodpecker (Amami)',
   'Dendrocopos darjellensis': 'Darjeeling Woodpecker',
   'Dendrocopos major': 'Great Spotted Woodpecker',
-  'Dendrocopos major canariensis/thanneri': 'Great Spotted Woodpecker (Canarian)',
+  'Dendrocopos major canariensis/thanneri':
+      'Great Spotted Woodpecker (Canarian)',
   'Dendrocopos major numidus/mauritanus': 'Great Spotted Woodpecker (Atlas)',
   'Dendrocopos major [major Group]': 'Great Spotted Woodpecker (Great Spotted)',
   'Dendrocopos major poelzami': 'Great Spotted Woodpecker (poelzami)',
   'Dendrocopos major japonicus': 'Great Spotted Woodpecker (japonicus)',
-  'Dendrocopos major cabanisi/stresemanni': 'Great Spotted Woodpecker (cabanisi/stresemanni)',
+  'Dendrocopos major cabanisi/stresemanni':
+      'Great Spotted Woodpecker (cabanisi/stresemanni)',
   'Dendrocopos leucopterus': 'White-winged Woodpecker',
   'Dendrocopos himalayensis': 'Himalayan Woodpecker',
   'Dendrocopos syriacus': 'Syrian Woodpecker',
@@ -6269,9 +6674,11 @@ const Map<String, String> scientificToCommon = {
   'Dendrocopos sp.': 'Dendrocopos sp.',
   'Dryobates minor': 'Lesser Spotted Woodpecker',
   'Dryobates cathpharius': 'Crimson-naped Woodpecker',
-  'Dendrocopos darjellensis/Dryobates cathpharius': 'Darjeeling/Crimson-naped Woodpecker',
+  'Dendrocopos darjellensis/Dryobates cathpharius':
+      'Darjeeling/Crimson-naped Woodpecker',
   'Dryobates pernyii': 'Necklaced Woodpecker',
-  'Dendrocopos darjellensis/Dryobates pernyii': 'Darjeeling/Necklaced Woodpecker',
+  'Dendrocopos darjellensis/Dryobates pernyii':
+      'Darjeeling/Necklaced Woodpecker',
   'Dryobates cathpharius/pernyii': 'Crimson-naped/Necklaced Woodpecker',
   'Dryobates pubescens': 'Downy Woodpecker',
   'Dryobates pubescens pubescens/medianus': 'Downy Woodpecker (Eastern)',
@@ -6281,7 +6688,8 @@ const Map<String, String> scientificToCommon = {
   'Dryobates pubescens x nuttallii': 'Downy x Nuttall\'s Woodpecker (hybrid)',
   'Dryobates scalaris': 'Ladder-backed Woodpecker',
   'Dryobates pubescens x scalaris': 'Downy x Ladder-backed Woodpecker (hybrid)',
-  'Dryobates nuttallii x scalaris': 'Nuttall\'s x Ladder-backed Woodpecker (hybrid)',
+  'Dryobates nuttallii x scalaris':
+      'Nuttall\'s x Ladder-backed Woodpecker (hybrid)',
   'Dryobates pubescens/scalaris': 'Downy/Ladder-backed Woodpecker',
   'Dryobates nuttallii/scalaris': 'Nuttall\'s/Ladder-backed Woodpecker',
   'Leuconotopicus borealis': 'Red-cockaded Woodpecker',
@@ -6289,14 +6697,19 @@ const Map<String, String> scientificToCommon = {
   'Leuconotopicus villosus [villosus Group]': 'Hairy Woodpecker (Eastern)',
   'Leuconotopicus villosus [harrisi Group]': 'Hairy Woodpecker (Pacific)',
   'Leuconotopicus villosus orius/icastus': 'Hairy Woodpecker (Rocky Mts.)',
-  'Leuconotopicus villosus jardinii/sanctorum': 'Hairy Woodpecker (South Mexican)',
+  'Leuconotopicus villosus jardinii/sanctorum':
+      'Hairy Woodpecker (South Mexican)',
   'Leuconotopicus villosus extimus': 'Hairy Woodpecker (Costa Rican)',
-  'Dryobates pubescens x Leuconotopicus villosus': 'Downy x Hairy Woodpecker (hybrid)',
-  'Dryobates nuttallii x Leuconotopicus villosus': 'Nuttall\'s x Hairy Woodpecker (hybrid)',
-  'Dryobates scalaris x Leuconotopicus villosus': 'Ladder-backed x Hairy Woodpecker (hybrid)',
+  'Dryobates pubescens x Leuconotopicus villosus':
+      'Downy x Hairy Woodpecker (hybrid)',
+  'Dryobates nuttallii x Leuconotopicus villosus':
+      'Nuttall\'s x Hairy Woodpecker (hybrid)',
+  'Dryobates scalaris x Leuconotopicus villosus':
+      'Ladder-backed x Hairy Woodpecker (hybrid)',
   'Dryobates pubescens/Leuconotopicus villosus': 'Downy/Hairy Woodpecker',
   'Leuconotopicus albolarvatus': 'White-headed Woodpecker',
-  'Leuconotopicus villosus x albolarvatus': 'Hairy x White-headed Woodpecker (hybrid)',
+  'Leuconotopicus villosus x albolarvatus':
+      'Hairy x White-headed Woodpecker (hybrid)',
   'Leuconotopicus fumigatus': 'Smoky-brown Woodpecker',
   'Leuconotopicus stricklandi': 'Strickland\'s Woodpecker',
   'Leuconotopicus villosus/stricklandi': 'Hairy/Strickland\'s Woodpecker',
@@ -6311,7 +6724,8 @@ const Map<String, String> scientificToCommon = {
   'Veniliornis lignarius lignarius': 'Striped Woodpecker (Striped)',
   'Veniliornis sanguineus': 'Blood-colored Woodpecker',
   'Veniliornis passerinus': 'Little Woodpecker',
-  'Veniliornis sanguineus x passerinus': 'Blood-colored x Little Woodpecker (hybrid)',
+  'Veniliornis sanguineus x passerinus':
+      'Blood-colored x Little Woodpecker (hybrid)',
   'Veniliornis frontalis': 'Dot-fronted Woodpecker',
   'Veniliornis callonotus': 'Scarlet-backed Woodpecker',
   'Veniliornis dignus': 'Yellow-vented Woodpecker',
@@ -6336,15 +6750,18 @@ const Map<String, String> scientificToCommon = {
   'Chrysocolaptes festivus': 'White-naped Woodpecker',
   'Campephilus pollens': 'Powerful Woodpecker',
   'Campephilus haematogaster': 'Crimson-bellied Woodpecker',
-  'Campephilus haematogaster splendens': 'Crimson-bellied Woodpecker (Splendid)',
-  'Campephilus haematogaster haematogaster': 'Crimson-bellied Woodpecker (Crimson-bellied)',
+  'Campephilus haematogaster splendens':
+      'Crimson-bellied Woodpecker (Splendid)',
+  'Campephilus haematogaster haematogaster':
+      'Crimson-bellied Woodpecker (Crimson-bellied)',
   'Campephilus rubricollis': 'Red-necked Woodpecker',
   'Campephilus robustus': 'Robust Woodpecker',
   'Campephilus melanoleucos': 'Crimson-crested Woodpecker',
   'Campephilus guatemalensis': 'Pale-billed Woodpecker',
   'Campephilus gayaquilensis': 'Guayaquil Woodpecker',
   'Campephilus leucopogon': 'Cream-backed Woodpecker',
-  'Campephilus melanoleucos x leucopogon': 'Crimson-crested x Cream-backed Woodpecker (hybrid)',
+  'Campephilus melanoleucos x leucopogon':
+      'Crimson-crested x Cream-backed Woodpecker (hybrid)',
   'Campephilus magellanicus': 'Magellanic Woodpecker',
   'Campephilus principalis': 'Ivory-billed Woodpecker',
   'Campephilus principalis principalis': 'Ivory-billed Woodpecker (Northern)',
@@ -6362,19 +6779,22 @@ const Map<String, String> scientificToCommon = {
   'Gecinulus rafflesii': 'Olive-backed Woodpecker',
   'Dinopium shorii': 'Himalayan Flameback',
   'Dinopium javanense': 'Common Flameback',
-  'Chrysocolaptes guttacristatus/Dinopium javanense': 'Greater/Common Flameback',
+  'Chrysocolaptes guttacristatus/Dinopium javanense':
+      'Greater/Common Flameback',
   'Chrysocolaptes socialis/Dinopium javanense': 'Malabar/Common Flameback',
   'Dinopium shorii/javanense': 'Himalayan/Common Flameback',
   'Dinopium everetti': 'Spot-throated Flameback',
   'Dinopium benghalense': 'Black-rumped Flameback',
   'Dinopium psarodes': 'Red-backed Flameback',
-  'Dinopium benghalense x psarodes': 'Black-rumped x Red-backed Flameback (hybrid)',
+  'Dinopium benghalense x psarodes':
+      'Black-rumped x Red-backed Flameback (hybrid)',
   'Dinopium benghalense/psarodes': 'Black-rumped/Red-backed Flameback',
   'Chrysocolaptes/Dinopium sp.': 'flameback sp.',
   'Picus chlorolophus': 'Lesser Yellownape',
   'Picus chlorolophus [chlorolophus Group]': 'Lesser Yellownape (Himalayan)',
   'Picus chlorolophus chlorigaster/wellsi': 'Lesser Yellownape (Indian)',
-  'Picus chlorolophus citrinocristatus/longipennis': 'Lesser Yellownape (Chinese)',
+  'Picus chlorolophus citrinocristatus/longipennis':
+      'Lesser Yellownape (Chinese)',
   'Picus chlorolophus rodgeri/vanheysti': 'Lesser Yellownape (Sunda)',
   'Picus puniceus': 'Crimson-winged Woodpecker',
   'Picus xanthopygaeus': 'Streak-throated Woodpecker',
@@ -6403,7 +6823,8 @@ const Map<String, String> scientificToCommon = {
   'Chrysophlegma flavinucha': 'Greater Yellownape',
   'Picus chlorolophus/Chrysophlegma flavinucha': 'Lesser/Greater Yellownape',
   'Chrysophlegma mentale': 'Checker-throated Woodpecker',
-  'Chrysophlegma mentale humii': 'Checker-throated Woodpecker (Checker-throated)',
+  'Chrysophlegma mentale humii':
+      'Checker-throated Woodpecker (Checker-throated)',
   'Chrysophlegma mentale mentale': 'Checker-throated Woodpecker (Javan)',
   'Geocolaptes olivaceus': 'Ground Woodpecker',
   'Pardipicus caroli': 'Brown-eared Woodpecker',
@@ -6415,7 +6836,8 @@ const Map<String, String> scientificToCommon = {
   'Campethera maculosa': 'Green-backed Woodpecker',
   'Campethera maculosa maculosa': 'Green-backed Woodpecker (Little Green)',
   'Campethera maculosa permista': 'Green-backed Woodpecker (Plain-backed)',
-  'Campethera maculosa [cailliautii Group]': 'Green-backed Woodpecker (Spot-backed)',
+  'Campethera maculosa [cailliautii Group]':
+      'Green-backed Woodpecker (Spot-backed)',
   'Campethera nubica': 'Nubian Woodpecker',
   'Campethera punctuligera': 'Fine-spotted Woodpecker',
   'Campethera bennettii': 'Bennett\'s Woodpecker',
@@ -6425,7 +6847,8 @@ const Map<String, String> scientificToCommon = {
   'Campethera notata': 'Knysna Woodpecker',
   'Campethera abingoni': 'Golden-tailed Woodpecker',
   'Campethera abingoni chrysura': 'Golden-tailed Woodpecker (Streak-backed)',
-  'Campethera abingoni [abingoni Group]': 'Golden-tailed Woodpecker (Golden-tailed)',
+  'Campethera abingoni [abingoni Group]':
+      'Golden-tailed Woodpecker (Golden-tailed)',
   'Campethera mombassica': 'Mombasa Woodpecker',
   'Mulleripicus fulvus': 'Ashy Woodpecker',
   'Mulleripicus funebris': 'Northern Sooty-Woodpecker',
@@ -6437,7 +6860,8 @@ const Map<String, String> scientificToCommon = {
   'Campephilus sp./Dryocopus lineatus': 'Campephilus sp./Lineated Woodpecker',
   'Dryocopus pileatus': 'Pileated Woodpecker',
   'Dryocopus schulzii': 'Black-bodied Woodpecker',
-  'Dryocopus lineatus x schulzii': 'Lineated x Black-bodied Woodpecker (hybrid)',
+  'Dryocopus lineatus x schulzii':
+      'Lineated x Black-bodied Woodpecker (hybrid)',
   'Dryocopus javensis': 'White-bellied Woodpecker',
   'Dryocopus hodgei': 'Andaman Woodpecker',
   'Dryocopus martius': 'Black Woodpecker',
@@ -6445,7 +6869,8 @@ const Map<String, String> scientificToCommon = {
   'Celeus loricatus': 'Cinnamon Woodpecker',
   'Celeus torquatus': 'Ringed Woodpecker',
   'Celeus torquatus torquatus': 'Ringed Woodpecker (Ringed)',
-  'Celeus torquatus occidentalis': 'Ringed Woodpecker (Amazonian Black-breasted)',
+  'Celeus torquatus occidentalis':
+      'Ringed Woodpecker (Amazonian Black-breasted)',
   'Celeus torquatus tinnunculus': 'Ringed Woodpecker (Atlantic Black-breasted)',
   'Celeus galeatus': 'Helmeted Woodpecker',
   'Celeus castaneus': 'Chestnut-colored Woodpecker',
@@ -6470,33 +6895,41 @@ const Map<String, String> scientificToCommon = {
   'Piculus flavigula magnus': 'Yellow-throated Woodpecker (Yellow-faced)',
   'Piculus flavigula erythropis': 'Yellow-throated Woodpecker (Red-throated)',
   'Piculus chrysochloros': 'Golden-green Woodpecker',
-  'Piculus chrysochloros xanthochlorus': 'Golden-green Woodpecker (Gold-throated)',
+  'Piculus chrysochloros xanthochlorus':
+      'Golden-green Woodpecker (Gold-throated)',
   'Piculus chrysochloros capistratus': 'Golden-green Woodpecker (Bar-throated)',
   'Piculus chrysochloros paraensis': 'Golden-green Woodpecker (Belem)',
-  'Piculus chrysochloros laemostictus': 'Golden-green Woodpecker (Spot-throated)',
-  'Piculus chrysochloros chrysochloros': 'Golden-green Woodpecker (Golden-green)',
+  'Piculus chrysochloros laemostictus':
+      'Golden-green Woodpecker (Spot-throated)',
+  'Piculus chrysochloros chrysochloros':
+      'Golden-green Woodpecker (Golden-green)',
   'Piculus chrysochloros polyzonus': 'Golden-green Woodpecker (Atlantic)',
   'Piculus aurulentus': 'White-browed Woodpecker',
   'Piculus sp.': 'Piculus sp.',
   'Colaptes rubiginosus': 'Golden-olive Woodpecker',
   'Colaptes rubiginosus aeruginosus': 'Golden-olive Woodpecker (Bronze-winged)',
-  'Colaptes rubiginosus [rubiginosus Group]': 'Golden-olive Woodpecker (Golden-olive)',
+  'Colaptes rubiginosus [rubiginosus Group]':
+      'Golden-olive Woodpecker (Golden-olive)',
   'Colaptes rubiginosus rubripileus': 'Golden-olive Woodpecker (rubripileus)',
   'Colaptes auricularis': 'Gray-crowned Woodpecker',
   'Colaptes rivolii': 'Crimson-mantled Woodpecker',
-  'Colaptes rivolii [rivolii Group]': 'Crimson-mantled Woodpecker (Crimson-mantled)',
+  'Colaptes rivolii [rivolii Group]':
+      'Crimson-mantled Woodpecker (Crimson-mantled)',
   'Colaptes rivolii atriceps': 'Crimson-mantled Woodpecker (Black-crowned)',
   'Colaptes atricollis': 'Black-necked Woodpecker',
   'Colaptes punctigula': 'Spot-breasted Woodpecker',
   'Colaptes melanochloros': 'Green-barred Woodpecker',
-  'Colaptes melanochloros melanochloros/nattereri': 'Green-barred Woodpecker (Green-barred)',
-  'Colaptes melanochloros [melanolaimus Group]': 'Green-barred Woodpecker (Golden-breasted)',
+  'Colaptes melanochloros melanochloros/nattereri':
+      'Green-barred Woodpecker (Green-barred)',
+  'Colaptes melanochloros [melanolaimus Group]':
+      'Green-barred Woodpecker (Golden-breasted)',
   'Colaptes auratus': 'Northern Flicker',
   'Colaptes auratus chrysocaulosus': 'Northern Flicker (Cuban)',
   'Colaptes auratus gundlachi': 'Northern Flicker (Grand Cayman I.)',
   'Colaptes auratus auratus/luteus': 'Northern Flicker (Yellow-shafted)',
   'Colaptes auratus [cafer Group]': 'Northern Flicker (Red-shafted)',
-  'Colaptes auratus luteus x cafer': 'Northern Flicker (Yellow-shafted x Red-shafted)',
+  'Colaptes auratus luteus x cafer':
+      'Northern Flicker (Yellow-shafted x Red-shafted)',
   'Colaptes mexicanoides': 'Guatemalan Flicker',
   'Colaptes chrysoides': 'Gilded Flicker',
   'Colaptes auratus x chrysoides': 'Northern x Gilded Flicker (hybrid)',
@@ -6510,7 +6943,8 @@ const Map<String, String> scientificToCommon = {
   'Colaptes campestris': 'Campo Flicker',
   'Colaptes campestris campestris': 'Campo Flicker (Campo)',
   'Colaptes campestris campestroides': 'Campo Flicker (Field)',
-  'Colaptes campestris campestris x campestroides': 'Campo Flicker (Campo x Field)',
+  'Colaptes campestris campestris x campestroides':
+      'Campo Flicker (Campo x Field)',
   'Colaptes sp.': 'Colaptes sp.',
   'Picidae sp.': 'woodpecker sp.',
   'Cariama cristata': 'Red-legged Seriema',
@@ -6651,7 +7085,8 @@ const Map<String, String> scientificToCommon = {
   'Cacatua ducorpsii': 'Solomons Corella',
   'Cacatua pastinator': 'Western Corella',
   'Cacatua sanguinea': 'Little Corella',
-  'Eolophus roseicapilla x Cacatua sanguinea': 'Galah x Little Corella (hybrid)',
+  'Eolophus roseicapilla x Cacatua sanguinea':
+      'Galah x Little Corella (hybrid)',
   'Cacatua tenuirostris': 'Long-billed Corella',
   'Cacatua sanguinea x tenuirostris': 'Little x Long-billed Corella (hybrid)',
   'Cacatua sp. (corella sp.)': 'corella sp.',
@@ -6660,11 +7095,14 @@ const Map<String, String> scientificToCommon = {
   'Cacatua moluccensis': 'Salmon-crested Cockatoo',
   'Cacatua alba x moluccensis': 'White x Salmon-crested Cockatoo (hybrid)',
   'Cacatua sulphurea': 'Yellow-crested Cockatoo',
-  'Cacatua goffiniana x sulphurea': 'Tanimbar Corella x Yellow-crested Cockatoo (hybrid)',
+  'Cacatua goffiniana x sulphurea':
+      'Tanimbar Corella x Yellow-crested Cockatoo (hybrid)',
   'Cacatua citrinocristata': 'Citron-crested Cockatoo',
   'Cacatua galerita': 'Sulphur-crested Cockatoo',
-  'Cacatua sanguinea x galerita': 'Little Corella x Sulphur-crested Cockatoo (hybrid)',
-  'Cacatua tenuirostris x galerita': 'Long-billed Corella x Sulphur-crested Cockatoo (hybrid)',
+  'Cacatua sanguinea x galerita':
+      'Little Corella x Sulphur-crested Cockatoo (hybrid)',
+  'Cacatua tenuirostris x galerita':
+      'Long-billed Corella x Sulphur-crested Cockatoo (hybrid)',
   'Cacatua sp.': 'corella/white cockatoo sp.',
   'Psittrichas fulgidus': 'Pesquet\'s Parrot',
   'Coracopsis vasa': 'Greater Vasa Parrot',
@@ -6688,7 +7126,8 @@ const Map<String, String> scientificToCommon = {
   'Alisterus chloropterus': 'Papuan King-Parrot',
   'Aprosmictus jonquillaceus': 'Olive-shouldered Parrot',
   'Aprosmictus erythropterus': 'Red-winged Parrot',
-  'Alisterus scapularis x Aprosmictus erythropterus': 'Australian King-Parrot x Red-winged Parrot (hybrid)',
+  'Alisterus scapularis x Aprosmictus erythropterus':
+      'Australian King-Parrot x Red-winged Parrot (hybrid)',
   'Prioniturus mada': 'Buru Racquet-tail',
   'Prioniturus platurus': 'Golden-mantled Racquet-tail',
   'Prioniturus waterstradti': 'Mindanao Racquet-tail',
@@ -6724,8 +7163,10 @@ const Map<String, String> scientificToCommon = {
   'Psittacula himalayana': 'Slaty-headed Parakeet',
   'Psittacula finschii': 'Gray-headed Parakeet',
   'Psittacula cyanocephala': 'Plum-headed Parakeet',
-  'Psittacula krameri x cyanocephala': 'Rose-ringed x Plum-headed Parakeet (hybrid)',
-  'Psittacula himalayana x cyanocephala': 'Slaty-headed x Plum-headed Parakeet (hybrid)',
+  'Psittacula krameri x cyanocephala':
+      'Rose-ringed x Plum-headed Parakeet (hybrid)',
+  'Psittacula himalayana x cyanocephala':
+      'Slaty-headed x Plum-headed Parakeet (hybrid)',
   'Psittacula roseata': 'Blossom-headed Parakeet',
   'Psittacula columboides': 'Malabar Parakeet',
   'Psittacula calthrapae': 'Layard\'s Parakeet',
@@ -6736,7 +7177,8 @@ const Map<String, String> scientificToCommon = {
   'Psittacula longicauda': 'Long-tailed Parakeet',
   'Psittacula longicauda tytleri': 'Long-tailed Parakeet (Andaman)',
   'Psittacula longicauda nicobarica': 'Long-tailed Parakeet (Nicobar)',
-  'Psittacula longicauda longicauda/defontainei': 'Long-tailed Parakeet (Long-tailed)',
+  'Psittacula longicauda longicauda/defontainei':
+      'Long-tailed Parakeet (Long-tailed)',
   'Psittacula longicauda modesta': 'Long-tailed Parakeet (Enggano)',
   'Psittacula bensoni': 'Mauritius Gray Parrot',
   'Psittacula sp.': 'Psittacula sp.',
@@ -6783,9 +7225,11 @@ const Map<String, String> scientificToCommon = {
   'Cyanoramphus cookii cookii': 'Norfolk Island Parakeet (Norfolk I.)',
   'Cyanoramphus cookii subflavescens': 'Norfolk Island Parakeet (Lord Howe I.)',
   'Cyanoramphus auriceps': 'Yellow-crowned Parakeet',
-  'Cyanoramphus novaezelandiae x auriceps': 'Red-crowned x Yellow-crowned Parakeet (hybrid)',
+  'Cyanoramphus novaezelandiae x auriceps':
+      'Red-crowned x Yellow-crowned Parakeet (hybrid)',
   'Cyanoramphus forbesi': 'Chatham Islands Parakeet',
-  'Cyanoramphus novaezelandiae x forbesi': 'Red-crowned x Chatham Islands Parakeet (hybrid)',
+  'Cyanoramphus novaezelandiae x forbesi':
+      'Red-crowned x Chatham Islands Parakeet (hybrid)',
   'Cyanoramphus malherbi': 'Malherbe\'s Parakeet',
   'Cyanoramphus sp.': 'Cyanoramphus sp.',
   'Barnardius zonarius': 'Australian Ringneck',
@@ -6793,13 +7237,16 @@ const Map<String, String> scientificToCommon = {
   'Barnardius zonarius zonarius': 'Australian Ringneck (Port Lincoln)',
   'Barnardius zonarius barnardi': 'Australian Ringneck (Mallee)',
   'Barnardius zonarius macgillivrayi': 'Australian Ringneck (Cloncurry)',
-  'Barnardius zonarius semitorquatus x zonarius': 'Australian Ringneck (Twenty-eight x Port Lincoln)',
-  'Barnardius zonarius zonarius x barnardi': 'Australian Ringneck (Port Lincoln x Mallee)',
+  'Barnardius zonarius semitorquatus x zonarius':
+      'Australian Ringneck (Twenty-eight x Port Lincoln)',
+  'Barnardius zonarius zonarius x barnardi':
+      'Australian Ringneck (Port Lincoln x Mallee)',
   'Platycercus caledonicus': 'Green Rosella',
   'Platycercus elegans': 'Crimson Rosella',
   'Platycercus elegans [elegans Group]': 'Crimson Rosella (Crimson)',
   'Platycercus elegans flaveolus': 'Crimson Rosella (Yellow)',
-  'Platycercus elegans [elegans Group] x flaveolus': 'Crimson Rosella (Crimson x Yellow)',
+  'Platycercus elegans [elegans Group] x flaveolus':
+      'Crimson Rosella (Crimson x Yellow)',
   'Platycercus elegans adelaidae/subadelaidae': 'Crimson Rosella (Adelaide)',
   'Platycercus venustus': 'Northern Rosella',
   'Platycercus eximius': 'Eastern Rosella',
@@ -6812,7 +7259,8 @@ const Map<String, String> scientificToCommon = {
   'Platycercus icterotis': 'Western Rosella',
   'Platycercus sp.': 'rosella sp.',
   'Northiella haematogaster': 'Greater Bluebonnet',
-  'Northiella haematogaster haematogaster/pallescens': 'Greater Bluebonnet (Yellow-vented)',
+  'Northiella haematogaster haematogaster/pallescens':
+      'Greater Bluebonnet (Yellow-vented)',
   'Northiella haematogaster haematorrhoa': 'Greater Bluebonnet (Red-vented)',
   'Northiella narethae': 'Naretha Bluebonnet',
   'Psephotus haematonotus': 'Red-rumped Parrot',
@@ -6824,10 +7272,13 @@ const Map<String, String> scientificToCommon = {
   'Nannopsittacus melanogenia': 'Dusky-cheeked Fig-Parrot',
   'Nannopsittacus gulielmitertii': 'Blue-fronted Fig-Parrot',
   'Nannopsittacus nigrifrons': 'Black-fronted Fig-Parrot',
-  'Nannopsittacus nigrifrons nigrifrons': 'Black-fronted Fig-Parrot (Black-fronted)',
-  'Nannopsittacus nigrifrons amabilis/ramuensis': 'Black-fronted Fig-Parrot (Creamy-breasted)',
+  'Nannopsittacus nigrifrons nigrifrons':
+      'Black-fronted Fig-Parrot (Black-fronted)',
+  'Nannopsittacus nigrifrons amabilis/ramuensis':
+      'Black-fronted Fig-Parrot (Creamy-breasted)',
   'Cyclopsitta diophthalma': 'Double-eyed Fig-Parrot',
-  'Cyclopsitta diophthalma [diophthalma Group]': 'Double-eyed Fig-Parrot (Double-eyed)',
+  'Cyclopsitta diophthalma [diophthalma Group]':
+      'Double-eyed Fig-Parrot (Double-eyed)',
   'Cyclopsitta diophthalma coxeni': 'Double-eyed Fig-Parrot (Coxen\'s)',
   'Cyclopsitta desmarestii': 'Large Fig-Parrot',
   'Cyclopsitta desmarestii [desmarestii Group]': 'Large Fig-Parrot (Large)',
@@ -6863,7 +7314,8 @@ const Map<String, String> scientificToCommon = {
   'Vini peruviana': 'Blue Lorikeet',
   'Neopsittacus musschenbroekii': 'Yellow-billed Lorikeet',
   'Neopsittacus pullicauda': 'Orange-billed Lorikeet',
-  'Neopsittacus musschenbroekii/pullicauda': 'Yellow-billed/Orange-billed Lorikeet',
+  'Neopsittacus musschenbroekii/pullicauda':
+      'Yellow-billed/Orange-billed Lorikeet',
   'Lorius albidinucha': 'White-naped Lory',
   'Lorius chlorocercus': 'Yellow-bibbed Lory',
   'Lorius garrulus': 'Chattering Lory',
@@ -6902,11 +7354,14 @@ const Map<String, String> scientificToCommon = {
   'Trichoglossus rosenbergii': 'Biak Lorikeet',
   'Trichoglossus moluccanus': 'Rainbow Lorikeet',
   'Trichoglossus concinnus x moluccanus': 'Musk x Rainbow Lorikeet (hybrid)',
-  'Trichoglossus chlorolepidotus x moluccanus': 'Scaly-breasted x Rainbow Lorikeet (hybrid)',
+  'Trichoglossus chlorolepidotus x moluccanus':
+      'Scaly-breasted x Rainbow Lorikeet (hybrid)',
   'Trichoglossus chlorolepidotus/moluccanus': 'Scaly-breasted/Rainbow Lorikeet',
-  'Trichoglossus sp. (Musk/Rainbow/Scaly-breasted Lorikeet hybrid)': 'lorikeet sp. (Musk/Rainbow/Scaly-breasted Lorikeet hybrid)',
+  'Trichoglossus sp. (Musk/Rainbow/Scaly-breasted Lorikeet hybrid)':
+      'lorikeet sp. (Musk/Rainbow/Scaly-breasted Lorikeet hybrid)',
   'Trichoglossus rubritorquis': 'Red-collared Lorikeet',
-  'Trichoglossus moluccanus x rubritorquis': 'Rainbow x Red-collared Lorikeet (hybrid)',
+  'Trichoglossus moluccanus x rubritorquis':
+      'Rainbow x Red-collared Lorikeet (hybrid)',
   'Trichoglossus moluccanus/rubritorquis': 'Rainbow/Red-collared Lorikeet',
   'Trichoglossus euteles': 'Olive-headed Lorikeet',
   'Trichoglossus capistratus': 'Marigold Lorikeet',
@@ -6935,12 +7390,15 @@ const Map<String, String> scientificToCommon = {
   'Agapornis pullarius': 'Red-headed Lovebird',
   'Agapornis taranta': 'Black-winged Lovebird',
   'Agapornis roseicollis': 'Rosy-faced Lovebird',
-  'Agapornis roseicollis (Domestic type)': 'Rosy-faced Lovebird (Domestic type)',
+  'Agapornis roseicollis (Domestic type)':
+      'Rosy-faced Lovebird (Domestic type)',
   'Agapornis fischeri': 'Fischer\'s Lovebird',
   'Agapornis fischeri (Domestic type)': 'Fischer\'s Lovebird (Domestic type)',
   'Agapornis personatus': 'Yellow-collared Lovebird',
-  'Agapornis personatus (Domestic type)': 'Yellow-collared Lovebird (Domestic type)',
-  'Agapornis fischeri x personatus': 'Fischer\'s x Yellow-collared Lovebird (hybrid)',
+  'Agapornis personatus (Domestic type)':
+      'Yellow-collared Lovebird (Domestic type)',
+  'Agapornis fischeri x personatus':
+      'Fischer\'s x Yellow-collared Lovebird (hybrid)',
   'Agapornis fischeri/personatus': 'Fischer\'s/Yellow-collared Lovebird',
   'Agapornis lilianae': 'Lilian\'s Lovebird',
   'Agapornis nigrigenis': 'Black-cheeked Lovebird',
@@ -6961,7 +7419,8 @@ const Map<String, String> scientificToCommon = {
   'Poicephalus meyeri': 'Meyer\'s Parrot',
   'Poicephalus rueppellii': 'Rüppell\'s Parrot',
   'Poicephalus cryptoxanthus': 'Brown-headed Parrot',
-  'Poicephalus meyeri x cryptoxanthus': 'Meyer\'s x Brown-headed Parrot (hybrid)',
+  'Poicephalus meyeri x cryptoxanthus':
+      'Meyer\'s x Brown-headed Parrot (hybrid)',
   'Poicephalus crassus': 'Niam-Niam Parrot',
   'Poicephalus rufiventris': 'Red-bellied Parrot',
   'Poicephalus senegalus': 'Senegal Parrot',
@@ -6991,7 +7450,8 @@ const Map<String, String> scientificToCommon = {
   'Brotogeris tirica': 'Plain Parakeet',
   'Brotogeris versicolurus': 'White-winged Parakeet',
   'Brotogeris chiriri': 'Yellow-chevroned Parakeet',
-  'Brotogeris versicolurus x chiriri': 'White-winged x Yellow-chevroned Parakeet (hybrid)',
+  'Brotogeris versicolurus x chiriri':
+      'White-winged x Yellow-chevroned Parakeet (hybrid)',
   'Brotogeris versicolurus/chiriri': 'White-winged/Yellow-chevroned Parakeet',
   'Brotogeris pyrrhoptera': 'Gray-cheeked Parakeet',
   'Brotogeris jugularis': 'Orange-chinned Parakeet',
@@ -7034,12 +7494,14 @@ const Map<String, String> scientificToCommon = {
   'Amazona pretrei': 'Red-spectacled Amazon',
   'Amazona viridigenalis': 'Red-crowned Amazon',
   'Amazona finschi': 'Lilac-crowned Amazon',
-  'Amazona viridigenalis x finschi': 'Red-crowned x Lilac-crowned Amazon (hybrid)',
+  'Amazona viridigenalis x finschi':
+      'Red-crowned x Lilac-crowned Amazon (hybrid)',
   'Amazona viridigenalis/finschi': 'Red-crowned/Lilac-crowned Amazon',
   'Amazona autumnalis': 'Red-lored Amazon',
   'Amazona autumnalis autumnalis': 'Red-lored Amazon (Red-lored)',
   'Amazona autumnalis salvini': 'Red-lored Amazon (Salvin\'s)',
-  'Amazona viridigenalis x autumnalis': 'Red-crowned x Red-lored Amazon (hybrid)',
+  'Amazona viridigenalis x autumnalis':
+      'Red-crowned x Red-lored Amazon (hybrid)',
   'Amazona lilacina': 'Lilacine Amazon',
   'Amazona autumnalis/lilacina': 'Red-lored/Lilacine Amazon',
   'Amazona diadema': 'Diademed Amazon',
@@ -7052,7 +7514,8 @@ const Map<String, String> scientificToCommon = {
   'Amazona oratrix': 'Yellow-headed Amazon',
   'Amazona oratrix tresmariae': 'Yellow-headed Amazon (Tres Marias Is.)',
   'Amazona oratrix [oratrix Group]': 'Yellow-headed Amazon (Mainland)',
-  'Amazona auropalliata x oratrix': 'Yellow-naped x Yellow-headed Amazon (hybrid)',
+  'Amazona auropalliata x oratrix':
+      'Yellow-naped x Yellow-headed Amazon (hybrid)',
   'Amazona auropalliata/oratrix': 'Yellow-naped/Yellow-headed Amazon',
   'Amazona ochrocephala': 'Yellow-crowned Amazon',
   'Amazona barbadensis': 'Yellow-shouldered Amazon',
@@ -7077,7 +7540,8 @@ const Map<String, String> scientificToCommon = {
   'Amazona brasiliensis': 'Red-tailed Amazon',
   'Amazona guildingii': 'St. Vincent Amazon',
   'Amazona amazonica': 'Orange-winged Amazon',
-  'Amazona viridigenalis x amazonica': 'Red-crowned x Orange-winged Amazon (hybrid)',
+  'Amazona viridigenalis x amazonica':
+      'Red-crowned x Orange-winged Amazon (hybrid)',
   'Amazona mercenarius': 'Scaly-naped Amazon',
   'Amazona sp.': 'amazon sp.',
   'Forpus modestus': 'Dusky-billed Parrotlet',
@@ -7127,7 +7591,8 @@ const Map<String, String> scientificToCommon = {
   'Pyrrhura amazonum lucida': 'Santarem Parakeet (Cristalino)',
   'Pyrrhura lucianii': 'Bonaparte\'s Parakeet',
   'Pyrrhura roseifrons': 'Rose-fronted Parakeet',
-  'Pyrrhura roseifrons peruviana/dilutissima': 'Rose-fronted Parakeet (Wavy-breasted)',
+  'Pyrrhura roseifrons peruviana/dilutissima':
+      'Rose-fronted Parakeet (Wavy-breasted)',
   'Pyrrhura roseifrons parvifrons': 'Rose-fronted Parakeet (Garlepp\'s)',
   'Pyrrhura roseifrons roseifrons': 'Rose-fronted Parakeet (Rose-fronted)',
   'Pyrrhura viridicata': 'Santa Marta Parakeet',
@@ -7135,7 +7600,8 @@ const Map<String, String> scientificToCommon = {
   'Pyrrhura melanura': 'Maroon-tailed Parakeet',
   'Pyrrhura melanura pacifica': 'Maroon-tailed Parakeet (Choco)',
   'Pyrrhura melanura chapmani': 'Maroon-tailed Parakeet (Huila)',
-  'Pyrrhura melanura [melanura Group]': 'Maroon-tailed Parakeet (Maroon-tailed)',
+  'Pyrrhura melanura [melanura Group]':
+      'Maroon-tailed Parakeet (Maroon-tailed)',
   'Pyrrhura orcesi': 'El Oro Parakeet',
   'Pyrrhura rupicola': 'Black-capped Parakeet',
   'Pyrrhura albipectus': 'White-necked Parakeet',
@@ -7163,10 +7629,14 @@ const Map<String, String> scientificToCommon = {
   'Eupsittula aurea': 'Peach-fronted Parakeet',
   'Eupsittula pertinax': 'Brown-throated Parakeet',
   'Eupsittula pertinax ocularis': 'Brown-throated Parakeet (Veraguas)',
-  'Eupsittula pertinax [aeruginosa Group]': 'Brown-throated Parakeet (Colombian)',
-  'Eupsittula pertinax pertinax/xanthogenia': 'Brown-throated Parakeet (Gold-faced)',
-  'Eupsittula pertinax [chrysophrys Group]': 'Brown-throated Parakeet (Venezuelan)',
-  'Eupsittula pertinax chrysogenys/paraensis': 'Brown-throated Parakeet (Amazonian)',
+  'Eupsittula pertinax [aeruginosa Group]':
+      'Brown-throated Parakeet (Colombian)',
+  'Eupsittula pertinax pertinax/xanthogenia':
+      'Brown-throated Parakeet (Gold-faced)',
+  'Eupsittula pertinax [chrysophrys Group]':
+      'Brown-throated Parakeet (Venezuelan)',
+  'Eupsittula pertinax chrysogenys/paraensis':
+      'Brown-throated Parakeet (Amazonian)',
   'Eupsittula cactorum': 'Cactus Parakeet',
   'Conuropsis carolinensis': 'Carolina Parakeet',
   'Aratinga weddellii': 'Dusky-headed Parakeet',
@@ -7191,18 +7661,22 @@ const Map<String, String> scientificToCommon = {
   'Ara ararauna x macao': 'Blue-and-yellow x Scarlet Macaw (hybrid)',
   'Ara ambiguus x macao': 'Great Green x Scarlet Macaw (hybrid)',
   'Ara chloropterus': 'Red-and-green Macaw',
-  'Ara ararauna x chloropterus': 'Blue-and-yellow x Red-and-green Macaw (hybrid)',
+  'Ara ararauna x chloropterus':
+      'Blue-and-yellow x Red-and-green Macaw (hybrid)',
   'Ara macao/chloropterus': 'Scarlet/Red-and-green Macaw',
   'Ara sp.': 'large macaw sp.',
   'Leptosittaca branickii': 'Golden-plumed Parakeet',
   'Ognorhynchus icterotis': 'Yellow-eared Parrot',
   'Guaruba guarouba': 'Golden Parakeet',
   'Thectocercus acuticaudatus': 'Blue-crowned Parakeet',
-  'Thectocercus acuticaudatus [haemorrhous Group]': 'Blue-crowned Parakeet (Blue-crowned)',
-  'Thectocercus acuticaudatus acuticaudatus/neumanni': 'Blue-crowned Parakeet (Blue-headed)',
+  'Thectocercus acuticaudatus [haemorrhous Group]':
+      'Blue-crowned Parakeet (Blue-crowned)',
+  'Thectocercus acuticaudatus acuticaudatus/neumanni':
+      'Blue-crowned Parakeet (Blue-headed)',
   'Diopsittaca nobilis': 'Red-shouldered Macaw',
   'Diopsittaca nobilis nobilis': 'Red-shouldered Macaw (Northern)',
-  'Diopsittaca nobilis cumanensis/longipennis': 'Red-shouldered Macaw (Southern)',
+  'Diopsittaca nobilis cumanensis/longipennis':
+      'Red-shouldered Macaw (Southern)',
   'Orthopsittaca/Primolius/Diopsittaca sp.': 'small macaw sp.',
   'Psittacara holochlorus': 'Green Parakeet',
   'Psittacara holochlorus holochlorus/brewsteri': 'Green Parakeet (Green)',
@@ -7212,7 +7686,8 @@ const Map<String, String> scientificToCommon = {
   'Psittacara holochlorus x strenuus': 'Green x Pacific Parakeet (hybrid)',
   'Psittacara holochlorus/strenuus': 'Green/Pacific Parakeet',
   'Psittacara finschi': 'Crimson-fronted Parakeet',
-  'Psittacara holochlorus x finschi': 'Green x Crimson-fronted Parakeet (hybrid)',
+  'Psittacara holochlorus x finschi':
+      'Green x Crimson-fronted Parakeet (hybrid)',
   'Psittacara wagleri': 'Scarlet-fronted Parakeet',
   'Psittacara frontatus': 'Cordilleran Parakeet',
   'Psittacara wagleri/frontatus': 'Scarlet-fronted/Cordilleran Parakeet',
@@ -7228,7 +7703,8 @@ const Map<String, String> scientificToCommon = {
   'Psittacara maugei': 'Puerto Rican Parakeet',
   'Psittacara labati': 'Guadeloupe Parakeet',
   'Psittacara sp.': 'Psittacara sp.',
-  'Eupsittula/Aratinga/Thectocercus/Psittacara sp.': 'large parakeet sp. (former Aratinga sp.)',
+  'Eupsittula/Aratinga/Thectocercus/Psittacara sp.':
+      'large parakeet sp. (former Aratinga sp.)',
   'Psittaciformes sp. (parakeet sp.)': 'parakeet sp.',
   'Psittaciformes sp. (parrot sp.)': 'parrot sp.',
   'Traversia lyalli': 'Stephens Island Wren',
@@ -7255,7 +7731,8 @@ const Map<String, String> scientificToCommon = {
   'Serilophus lunatus/rubropygius': 'Silver-breasted/Gray-lored Broadbill',
   'Cymbirhynchus macrorhynchos': 'Black-and-red Broadbill',
   'Cymbirhynchus macrorhynchos affinis': 'Black-and-red Broadbill (Irrawaddy)',
-  'Cymbirhynchus macrorhynchos [macrorhynchos Group]': 'Black-and-red Broadbill (Black-and-red)',
+  'Cymbirhynchus macrorhynchos [macrorhynchos Group]':
+      'Black-and-red Broadbill (Black-and-red)',
   'Eurylaimus javanicus': 'Banded Broadbill',
   'Eurylaimus javanicus [harterti Group]': 'Banded Broadbill (Banded)',
   'Eurylaimus javanicus javanicus': 'Banded Broadbill (Javan)',
@@ -7270,7 +7747,8 @@ const Map<String, String> scientificToCommon = {
   'Neodrepanis coruscans/hypoxantha': 'Common/Yellow-bellied Sunbird-Asity',
   'Erythropitta kochi': 'Whiskered Pitta',
   'Erythropitta erythrogaster': 'Philippine Pitta',
-  'Erythropitta erythrogaster [erythrogaster Group]': 'Philippine Pitta (Philippine)',
+  'Erythropitta erythrogaster [erythrogaster Group]':
+      'Philippine Pitta (Philippine)',
   'Erythropitta erythrogaster inspeculata': 'Philippine Pitta (Talaud)',
   'Erythropitta dohertyi': 'Sula Pitta',
   'Erythropitta celebensis': 'Sulawesi Pitta',
@@ -7284,7 +7762,8 @@ const Map<String, String> scientificToCommon = {
   'Erythropitta macklotii [macklotii Group]': 'Papuan Pitta (Southern)',
   'Erythropitta macklotii finschii': 'Papuan Pitta (D\'Entrecasteaux)',
   'Erythropitta novaehibernicae': 'Bismarck Pitta',
-  'Erythropitta novaehibernicae novaehibernicae/extima': 'Bismarck Pitta (New Ireland)',
+  'Erythropitta novaehibernicae novaehibernicae/extima':
+      'Bismarck Pitta (New Ireland)',
   'Erythropitta novaehibernicae splendida': 'Bismarck Pitta (Tabar)',
   'Erythropitta novaehibernicae gazellae': 'Bismarck Pitta (New Britain)',
   'Erythropitta meeki': 'Louisiade Pitta',
@@ -7321,7 +7800,8 @@ const Map<String, String> scientificToCommon = {
   'Pitta abbotti/sordida': 'Nicobar/Western Hooded Pitta',
   'Pitta forsteni': 'Minahasa Hooded Pitta',
   'Pitta novaeguineae': 'Eastern Hooded Pitta',
-  'Pitta novaeguineae novaeguineae/goodfellowi': 'Eastern Hooded Pitta (Papuan)',
+  'Pitta novaeguineae novaeguineae/goodfellowi':
+      'Eastern Hooded Pitta (Papuan)',
   'Pitta novaeguineae mefoorana': 'Eastern Hooded Pitta (Numfor)',
   'Pitta rosenbergii': 'Biak Hooded Pitta',
   'Pitta steerii': 'Azure-breasted Pitta',
@@ -7335,7 +7815,8 @@ const Map<String, String> scientificToCommon = {
   'Pitta concinna/elegans/vigorsii': 'Ornate/Elegant/Banda Sea Pitta',
   'Pitta anerythra': 'Black-faced Pitta',
   'Pitta anerythra pallida': 'Black-faced Pitta (Bougainville)',
-  'Pitta anerythra anerythra/nigrifrons': 'Black-faced Pitta (Central Solomons)',
+  'Pitta anerythra anerythra/nigrifrons':
+      'Black-faced Pitta (Central Solomons)',
   'Pitta megarhyncha': 'Mangrove Pitta',
   'Pitta superba': 'Superb Pitta',
   'Pitta iris': 'Rainbow Pitta',
@@ -7358,11 +7839,14 @@ const Map<String, String> scientificToCommon = {
   'Frederickena unduliger/fulva': 'Undulated/Fulvous Antshrike',
   'Taraba major': 'Great Antshrike',
   'Sakesphorus canadensis': 'Black-crested Antshrike',
-  'Sakesphorus canadensis pulchellus': 'Black-crested Antshrike (Streak-fronted)',
-  'Sakesphorus canadensis [canadensis Group]': 'Black-crested Antshrike (Black-crested)',
+  'Sakesphorus canadensis pulchellus':
+      'Black-crested Antshrike (Streak-fronted)',
+  'Sakesphorus canadensis [canadensis Group]':
+      'Black-crested Antshrike (Black-crested)',
   'Sakesphorus luctuosus': 'Glossy Antshrike',
   'Sakesphoroides cristatus': 'Silvery-cheeked Antshrike',
-  'Sakesphoroides cristatus niedeguidonae': 'Silvery-cheeked Antshrike (Northern)',
+  'Sakesphoroides cristatus niedeguidonae':
+      'Silvery-cheeked Antshrike (Northern)',
   'Sakesphoroides cristatus cristatus': 'Silvery-cheeked Antshrike (Southern)',
   'Radinopsyche sellowi': 'Caatinga Antwren',
   'Biatas nigropectus': 'White-bearded Antshrike',
@@ -7370,10 +7854,13 @@ const Map<String, String> scientificToCommon = {
   'Thamnophilus doliatus [doliatus Group]': 'Barred Antshrike (Barred)',
   'Thamnophilus doliatus capistratus': 'Barred Antshrike (Caatinga)',
   'Thamnophilus ruficapillus': 'Rufous-capped Antshrike',
-  'Thamnophilus ruficapillus [subfasciatus Group]': 'Rufous-capped Antshrike (Northern)',
-  'Thamnophilus ruficapillus ruficapillus/cochabambae': 'Rufous-capped Antshrike (Southern)',
+  'Thamnophilus ruficapillus [subfasciatus Group]':
+      'Rufous-capped Antshrike (Northern)',
+  'Thamnophilus ruficapillus ruficapillus/cochabambae':
+      'Rufous-capped Antshrike (Southern)',
   'Thamnophilus torquatus': 'Rufous-winged Antshrike',
-  'Thamnophilus ruficapillus/torquatus': 'Rufous-capped/Rufous-winged Antshrike',
+  'Thamnophilus ruficapillus/torquatus':
+      'Rufous-capped/Rufous-winged Antshrike',
   'Thamnophilus zarumae': 'Chapman\'s Antshrike',
   'Thamnophilus multistriatus': 'Bar-crested Antshrike',
   'Thamnophilus tenuepunctatus': 'Lined Antshrike',
@@ -7392,8 +7879,10 @@ const Map<String, String> scientificToCommon = {
   'Thamnophilus cryptoleucus': 'Castelnau\'s Antshrike',
   'Thamnophilus nigrocinereus': 'Blackish-gray Antshrike',
   'Thamnophilus punctatus': 'Northern Slaty-Antshrike',
-  'Thamnophilus punctatus punctatus/interpositus': 'Northern Slaty-Antshrike (Guianan)',
-  'Thamnophilus punctatus leucogaster/huallagae': 'Northern Slaty-Antshrike (Peruvian)',
+  'Thamnophilus punctatus punctatus/interpositus':
+      'Northern Slaty-Antshrike (Guianan)',
+  'Thamnophilus punctatus leucogaster/huallagae':
+      'Northern Slaty-Antshrike (Peruvian)',
   'Thamnophilus stictocephalus': 'Natterer\'s Slaty-Antshrike',
   'Thamnophilus sticturus': 'Bolivian Slaty-Antshrike',
   'Thamnophilus pelzelni': 'Planalto Slaty-Antshrike',
@@ -7427,7 +7916,8 @@ const Map<String, String> scientificToCommon = {
   'Dysithamnus occidentalis': 'Bicolored Antvireo',
   'Dysithamnus plumbeus': 'Plumbeous Antvireo',
   'Dysithamnus leucostictus': 'White-streaked Antvireo',
-  'Dysithamnus leucostictus leucostictus': 'White-streaked Antvireo (White-streaked)',
+  'Dysithamnus leucostictus leucostictus':
+      'White-streaked Antvireo (White-streaked)',
   'Dysithamnus leucostictus tucuyensis': 'White-streaked Antvireo (Venezuelan)',
   'Dysithamnus sp.': 'antvireo sp.',
   'Thamnomanes ardesiacus': 'Dusky-throated Antshrike',
@@ -7444,14 +7934,19 @@ const Map<String, String> scientificToCommon = {
   'Epinecrophylla gutturalis': 'Brown-bellied Stipplethroat',
   'Epinecrophylla leucophthalma': 'White-eyed Stipplethroat',
   'Epinecrophylla haematonota': 'Rufous-backed Stipplethroat',
-  'Epinecrophylla haematonota pyrrhonota': 'Rufous-backed Stipplethroat (Rio Negro)',
-  'Epinecrophylla haematonota fjeldsaai': 'Rufous-backed Stipplethroat (Yasuni)',
-  'Epinecrophylla haematonota haematonota': 'Rufous-backed Stipplethroat (Rufous-backed)',
-  'Epinecrophylla haematonota fjeldsaai x haematonota': 'Rufous-backed Stipplethroat (Yasuni x Rufous-backed)',
+  'Epinecrophylla haematonota pyrrhonota':
+      'Rufous-backed Stipplethroat (Rio Negro)',
+  'Epinecrophylla haematonota fjeldsaai':
+      'Rufous-backed Stipplethroat (Yasuni)',
+  'Epinecrophylla haematonota haematonota':
+      'Rufous-backed Stipplethroat (Rufous-backed)',
+  'Epinecrophylla haematonota fjeldsaai x haematonota':
+      'Rufous-backed Stipplethroat (Yasuni x Rufous-backed)',
   'Epinecrophylla amazonica': 'Rio Madeira Stipplethroat',
   'Epinecrophylla amazonica amazonica': 'Rio Madeira Stipplethroat (Madeira)',
   'Epinecrophylla amazonica dentei': 'Rio Madeira Stipplethroat (Roosevelt)',
-  'Epinecrophylla haematonota/amazonica': 'Rufous-backed/Rio Madeira Stipplethroat',
+  'Epinecrophylla haematonota/amazonica':
+      'Rufous-backed/Rio Madeira Stipplethroat',
   'Epinecrophylla spodionota': 'Foothill Stipplethroat',
   'Epinecrophylla ornata': 'Ornate Stipplethroat',
   'Epinecrophylla ornata [ornata Group]': 'Ornate Stipplethroat (Western)',
@@ -7472,8 +7967,10 @@ const Map<String, String> scientificToCommon = {
   'Myrmotherula klagesi': 'Klages\'s Antwren',
   'Myrmotherula longicauda': 'Stripe-chested Antwren',
   'Myrmotherula axillaris': 'White-flanked Antwren',
-  'Myrmotherula axillaris melaena/albigula': 'White-flanked Antwren (Black-backed)',
-  'Myrmotherula axillaris [axillaris Group]': 'White-flanked Antwren (Gray-backed)',
+  'Myrmotherula axillaris melaena/albigula':
+      'White-flanked Antwren (Black-backed)',
+  'Myrmotherula axillaris [axillaris Group]':
+      'White-flanked Antwren (Gray-backed)',
   'Myrmotherula axillaris luctuosa': 'White-flanked Antwren (Silvery-flanked)',
   'Myrmotherula schisticolor': 'Slaty Antwren',
   'Myrmotherula schisticolor schisticolor': 'Slaty Antwren (Western)',
@@ -7483,7 +7980,8 @@ const Map<String, String> scientificToCommon = {
   'Myrmotherula longipennis': 'Long-winged Antwren',
   'Myrmotherula longipennis longipennis': 'Long-winged Antwren (Northern)',
   'Myrmotherula longipennis garbei/zimmeri': 'Long-winged Antwren (Western)',
-  'Myrmotherula longipennis [paraensis Group]': 'Long-winged Antwren (Southern)',
+  'Myrmotherula longipennis [paraensis Group]':
+      'Long-winged Antwren (Southern)',
   'Myrmotherula urosticta': 'Band-tailed Antwren',
   'Myrmotherula iheringi': 'Ihering\'s Antwren',
   'Myrmotherula iheringi heteroptera': 'Ihering\'s Antwren (Purus)',
@@ -7497,8 +7995,10 @@ const Map<String, String> scientificToCommon = {
   'Myrmotherula behni [inornata Group]': 'Plain-winged Antwren (Tepui)',
   'Myrmotherula behni behni': 'Plain-winged Antwren (Ecuadorian)',
   'Myrmotherula menetriesii': 'Gray Antwren',
-  'Myrmotherula menetriesii cinereiventris/pallida': 'Gray Antwren (North Amazonian)',
-  'Myrmotherula menetriesii menetriesii/berlepschi': 'Gray Antwren (West Amazonian)',
+  'Myrmotherula menetriesii cinereiventris/pallida':
+      'Gray Antwren (North Amazonian)',
+  'Myrmotherula menetriesii menetriesii/berlepschi':
+      'Gray Antwren (West Amazonian)',
   'Myrmotherula menetriesii omissa': 'Gray Antwren (Northeastern)',
   'Myrmotherula assimilis': 'Leaden Antwren',
   'Myrmotherula sp.': 'Myrmotherula sp.',
@@ -7510,8 +8010,10 @@ const Map<String, String> scientificToCommon = {
   'Herpsilochmus stotzi': 'Aripuana Antwren',
   'Herpsilochmus motacilloides': 'Creamy-bellied Antwren',
   'Herpsilochmus parkeri': 'Ash-throated Antwren',
-  'Herpsilochmus [undescribed Inambari-Tambopata form]': 'Inambari-Tambopata Antwren (undescribed form)',
-  'Herpsilochmus [undescribed Loreto form]': 'Loreto Antwren (undescribed form)',
+  'Herpsilochmus [undescribed Inambari-Tambopata form]':
+      'Inambari-Tambopata Antwren (undescribed form)',
+  'Herpsilochmus [undescribed Loreto form]':
+      'Loreto Antwren (undescribed form)',
   'Herpsilochmus sticturus': 'Spot-tailed Antwren',
   'Herpsilochmus dugandi': 'Dugand\'s Antwren',
   'Herpsilochmus stictocephalus': 'Todd\'s Antwren',
@@ -7529,7 +8031,8 @@ const Map<String, String> scientificToCommon = {
   'Microrhopias quixensis microstictus': 'Dot-winged Antwren (microstictus)',
   'Microrhopias quixensis quixensis': 'Dot-winged Antwren (quixensis)',
   'Microrhopias quixensis nigriventris': 'Dot-winged Antwren (nigriventris)',
-  'Microrhopias quixensis albicauda/intercedens': 'Dot-winged Antwren (White-tailed)',
+  'Microrhopias quixensis albicauda/intercedens':
+      'Dot-winged Antwren (White-tailed)',
   'Microrhopias quixensis bicolor': 'Dot-winged Antwren (bicolor)',
   'Microrhopias quixensis emiliae': 'Dot-winged Antwren (emiliae)',
   'Formicivora iheringi': 'Narrow-billed Antwren',
@@ -7567,7 +8070,8 @@ const Map<String, String> scientificToCommon = {
   'Hypocnemis subflava': 'Yellow-breasted Warbling-Antbird',
   'Hypocnemis ochrogyna': 'Rondonia Warbling-Antbird',
   'Hypocnemis striata': 'Spix\'s Warbling-Antbird',
-  'Hypocnemis ochrogyna x striata': 'Rondonia x Spix\'s Warbling-Antbird (hybrid)',
+  'Hypocnemis ochrogyna x striata':
+      'Rondonia x Spix\'s Warbling-Antbird (hybrid)',
   'Hypocnemis rondoni': 'Manicore Warbling-Antbird',
   'Hypocnemis sp. (warbling-antbird sp.)': 'warbling-antbird sp.',
   'Hypocnemis hypoxantha': 'Yellow-browed Antbird',
@@ -7576,13 +8080,16 @@ const Map<String, String> scientificToCommon = {
   'Cercomacroides laeta': 'Willis\'s Antbird',
   'Cercomacroides parkeri': 'Parker\'s Antbird',
   'Cercomacroides tyrannina': 'Dusky Antbird',
-  'Cercomacroides tyrannina tyrannina/crepera': 'Dusky Antbird (tyrannina/crepera)',
-  'Cercomacroides tyrannina saturatior/vicina': 'Dusky Antbird (saturatior/vicina)',
+  'Cercomacroides tyrannina tyrannina/crepera':
+      'Dusky Antbird (tyrannina/crepera)',
+  'Cercomacroides tyrannina saturatior/vicina':
+      'Dusky Antbird (saturatior/vicina)',
   'Cercomacroides serva': 'Black Antbird',
   'Cercomacroides nigrescens': 'Blackish Antbird',
   'Cercomacroides nigrescens nigrescens': 'Blackish Antbird (Guianan)',
   'Cercomacroides nigrescens notata/aequatorialis': 'Blackish Antbird (Andean)',
-  'Cercomacroides nigrescens approximans/ochrogyna': 'Blackish Antbird (Amazonian)',
+  'Cercomacroides nigrescens approximans/ochrogyna':
+      'Blackish Antbird (Amazonian)',
   'Cercomacroides fuscicauda': 'Riparian Antbird',
   'Cercomacroides nigrescens/fuscicauda': 'Blackish/Riparian Antbird',
   'Cercomacroides sp.': 'Cercomacroides sp.',
@@ -7619,7 +8126,8 @@ const Map<String, String> scientificToCommon = {
   'Sclateria naevia argentata': 'Silvered Antbird (Western)',
   'Percnostola rufifrons': 'Black-headed Antbird',
   'Percnostola rufifrons minor/jensoni': 'Black-headed Antbird (Amazonas)',
-  'Percnostola rufifrons rufifrons/subcristata': 'Black-headed Antbird (Hellmayr\'s)',
+  'Percnostola rufifrons rufifrons/subcristata':
+      'Black-headed Antbird (Hellmayr\'s)',
   'Percnostola arenarum': 'Allpahuayo Antbird',
   'Myrmelastes schistaceus': 'Slate-colored Antbird',
   'Myrmelastes saturatus': 'Roraiman Antbird',
@@ -7632,8 +8140,10 @@ const Map<String, String> scientificToCommon = {
   'Myrmelastes sp.': 'Myrmelastes sp.',
   'Myrmeciza longipes': 'White-bellied Antbird',
   'Poliocrania exsul': 'Chestnut-backed Antbird',
-  'Poliocrania exsul [exsul Group]': 'Chestnut-backed Antbird (Chestnut-backed)',
-  'Poliocrania exsul maculifer/cassini': 'Chestnut-backed Antbird (Short-tailed)',
+  'Poliocrania exsul [exsul Group]':
+      'Chestnut-backed Antbird (Chestnut-backed)',
+  'Poliocrania exsul maculifer/cassini':
+      'Chestnut-backed Antbird (Short-tailed)',
   'Ampelornis griseiceps': 'Gray-headed Antbird',
   'Sipia laemosticta': 'Dull-mantled Antbird',
   'Sipia palliata': 'Magdalena Antbird',
@@ -7675,34 +8185,46 @@ const Map<String, String> scientificToCommon = {
   'Rhegmatorhina gymnops': 'Bare-eyed Antbird',
   'Rhegmatorhina berlepschi': 'Harlequin Antbird',
   'Rhegmatorhina hoffmannsi': 'White-breasted Antbird',
-  'Rhegmatorhina gymnops x hoffmannsi': 'Bare-eyed x White-breasted Antbird (hybrid)',
-  'Rhegmatorhina berlepschi x hoffmannsi': 'Harlequin x White-breasted Antbird (hybrid)',
+  'Rhegmatorhina gymnops x hoffmannsi':
+      'Bare-eyed x White-breasted Antbird (hybrid)',
+  'Rhegmatorhina berlepschi x hoffmannsi':
+      'Harlequin x White-breasted Antbird (hybrid)',
   'Rhegmatorhina cristata': 'Chestnut-crested Antbird',
   'Rhegmatorhina melanosticta': 'Hairy-crested Antbird',
-  'Rhegmatorhina melanosticta melanosticta': 'Hairy-crested Antbird (Gray-crested)',
-  'Rhegmatorhina melanosticta purusiana/brunneiceps': 'Hairy-crested Antbird (Rufous-crested)',
+  'Rhegmatorhina melanosticta melanosticta':
+      'Hairy-crested Antbird (Gray-crested)',
+  'Rhegmatorhina melanosticta purusiana/brunneiceps':
+      'Hairy-crested Antbird (Rufous-crested)',
   'Hylophylax naevioides': 'Spotted Antbird',
   'Hylophylax naevius': 'Spot-backed Antbird',
   'Hylophylax punctulatus': 'Dot-backed Antbird',
   'Willisornis poecilinotus': 'Common Scale-backed Antbird',
-  'Willisornis poecilinotus poecilinotus': 'Common Scale-backed Antbird (Common Scale-backed)',
-  'Willisornis poecilinotus lepidonota/duidae': 'Common Scale-backed Antbird (Buff-breasted)',
-  'Willisornis poecilinotus gutturalis': 'Common Scale-backed Antbird (Black-bibbed)',
-  'Willisornis poecilinotus griseiventris': 'Common Scale-backed Antbird (Gray-breasted)',
+  'Willisornis poecilinotus poecilinotus':
+      'Common Scale-backed Antbird (Common Scale-backed)',
+  'Willisornis poecilinotus lepidonota/duidae':
+      'Common Scale-backed Antbird (Buff-breasted)',
+  'Willisornis poecilinotus gutturalis':
+      'Common Scale-backed Antbird (Black-bibbed)',
+  'Willisornis poecilinotus griseiventris':
+      'Common Scale-backed Antbird (Gray-breasted)',
   'Willisornis vidua': 'Xingu Scale-backed Antbird',
   'Willisornis vidua nigrigula': 'Xingu Scale-backed Antbird (Tapajos)',
   'Willisornis vidua vidua': 'Xingu Scale-backed Antbird (Xingu)',
-  'Willisornis poecilinotus x vidua': 'Common x Xingu Scale-backed Antbird (hybrid)',
+  'Willisornis poecilinotus x vidua':
+      'Common x Xingu Scale-backed Antbird (hybrid)',
   'Thamnophilidae sp. (antbird sp.)': 'antbird sp.',
   'Phlegopsis nigromaculata': 'Black-spotted Bare-eye',
   'Phlegopsis erythroptera': 'Reddish-winged Bare-eye',
   'Phlegopsis borbae': 'Pale-faced Bare-eye',
   'Phaenostictus mcleannani': 'Ocellated Antbird',
   'Melanopareia torquata': 'Collared Crescentchest',
-  'Melanopareia torquata bitorquata': 'Collared Crescentchest (Double-collared)',
-  'Melanopareia torquata torquata/rufescens': 'Collared Crescentchest (Collared)',
+  'Melanopareia torquata bitorquata':
+      'Collared Crescentchest (Double-collared)',
+  'Melanopareia torquata torquata/rufescens':
+      'Collared Crescentchest (Collared)',
   'Melanopareia maximiliani': 'Olive-crowned Crescentchest',
-  'Melanopareia maximiliani maximiliani/argentina': 'Olive-crowned Crescentchest (Sierran)',
+  'Melanopareia maximiliani maximiliani/argentina':
+      'Olive-crowned Crescentchest (Sierran)',
   'Melanopareia maximiliani pallida': 'Olive-crowned Crescentchest (Chaco)',
   'Melanopareia maranonica': 'Marañon Crescentchest',
   'Melanopareia elegans': 'Elegant Crescentchest',
@@ -7728,11 +8250,14 @@ const Map<String, String> scientificToCommon = {
   'Grallaria varia imperator/intercedens': 'Variegated Antpitta (Atlantic)',
   'Grallaria alleni': 'Moustached Antpitta',
   'Grallaria guatimalensis': 'Scaled Antpitta',
-  'Grallaria guatimalensis [guatimalensis Group]': 'Scaled Antpitta (guatimalensis Group)',
-  'Grallaria guatimalensis princeps/chocoensis': 'Scaled Antpitta (princeps/chocoensis)',
+  'Grallaria guatimalensis [guatimalensis Group]':
+      'Scaled Antpitta (guatimalensis Group)',
+  'Grallaria guatimalensis princeps/chocoensis':
+      'Scaled Antpitta (princeps/chocoensis)',
   'Grallaria guatimalensis aripoensis': 'Scaled Antpitta (aripoensis)',
   'Grallaria guatimalensis roraimae': 'Scaled Antpitta (roraimae)',
-  'Grallaria guatimalensis regulus/carmelitae': 'Scaled Antpitta (regulus/carmelitae)',
+  'Grallaria guatimalensis regulus/carmelitae':
+      'Scaled Antpitta (regulus/carmelitae)',
   'Grallaria guatimalensis sororia': 'Scaled Antpitta (sororia)',
   'Grallaria chthonia': 'Tachira Antpitta',
   'Grallaria haplonota': 'Plain-backed Antpitta',
@@ -7770,7 +8295,8 @@ const Map<String, String> scientificToCommon = {
   'Grallaria gravesi': 'Chachapoyas Antpitta',
   'Grallaria oneilli': 'Panao Antpitta',
   'Grallaria obscura': 'Junin Antpitta',
-  'Grallaria sp. (rufula/blakei complex)': 'antpitta sp. (Rufous/Chestnut Antpitta complex)',
+  'Grallaria sp. (rufula/blakei complex)':
+      'antpitta sp. (Rufous/Chestnut Antpitta complex)',
   'Grallaria alticola': 'Boyaca Antpitta',
   'Grallaria quitensis': 'Tawny Antpitta',
   'Grallaria [undescribed form]': 'Paisa Antpitta (undescribed form)',
@@ -7781,11 +8307,15 @@ const Map<String, String> scientificToCommon = {
   'Grallaria sp.': 'Grallaria sp.',
   'Cryptopezus nattereri': 'Speckle-breasted Antpitta',
   'Hylopezus perspicillatus': 'Streak-chested Antpitta',
-  'Hylopezus perspicillatus intermedius': 'Streak-chested Antpitta (Atlantic Slope)',
+  'Hylopezus perspicillatus intermedius':
+      'Streak-chested Antpitta (Atlantic Slope)',
   'Hylopezus perspicillatus lizanoi': 'Streak-chested Antpitta (Pacific Slope)',
-  'Hylopezus perspicillatus perspicillatus': 'Streak-chested Antpitta (Eastern Panama)',
-  'Hylopezus perspicillatus periophthalmicus': 'Streak-chested Antpitta (Baudo)',
-  'Hylopezus perspicillatus pallidior': 'Streak-chested Antpitta (Colombian Valleys)',
+  'Hylopezus perspicillatus perspicillatus':
+      'Streak-chested Antpitta (Eastern Panama)',
+  'Hylopezus perspicillatus periophthalmicus':
+      'Streak-chested Antpitta (Baudo)',
+  'Hylopezus perspicillatus pallidior':
+      'Streak-chested Antpitta (Colombian Valleys)',
   'Hylopezus macularius': 'Spotted Antpitta',
   'Hylopezus macularius macularius': 'Spotted Antpitta (Spotted)',
   'Hylopezus macularius dilutus': 'Spotted Antpitta (Zimmer\'s)',
@@ -7808,7 +8338,8 @@ const Map<String, String> scientificToCommon = {
   'Grallaricula ochraceifrons': 'Ochre-fronted Antpitta',
   'Grallaricula ferrugineipectus': 'Rusty-breasted Antpitta',
   'Grallaricula ferrugineipectus rara': 'Rusty-breasted Antpitta (rara)',
-  'Grallaricula ferrugineipectus ferrugineipectus': 'Rusty-breasted Antpitta (Rusty-breasted)',
+  'Grallaricula ferrugineipectus ferrugineipectus':
+      'Rusty-breasted Antpitta (Rusty-breasted)',
   'Grallaricula leymebambae': 'Leymebamba Antpitta',
   'Grallaricula nana': 'Slate-crowned Antpitta',
   'Grallaricula nana [nana Group]': 'Slate-crowned Antpitta (Slate-crowned)',
@@ -7852,7 +8383,8 @@ const Map<String, String> scientificToCommon = {
   'Scytalopus urubambae': 'Vilcabamba Tapaculo',
   'Scytalopus whitneyi': 'Ampay Tapaculo',
   'Scytalopus whitneyi [Apurimac form]': 'Ampay Tapaculo (Apurimac)',
-  'Scytalopus whitneyi [undescribed Ayacucho form]': 'Ampay Tapaculo (Ayacucho)',
+  'Scytalopus whitneyi [undescribed Ayacucho form]':
+      'Ampay Tapaculo (Ayacucho)',
   'Scytalopus frankeae': 'Jalca Tapaculo',
   'Scytalopus altirostris': 'Neblina Tapaculo',
   'Scytalopus parvirostris': 'Trilling Tapaculo',
@@ -7869,9 +8401,11 @@ const Map<String, String> scientificToCommon = {
   'Scytalopus latrans': 'Blackish Tapaculo',
   'Scytalopus latrans latrans': 'Blackish Tapaculo (Blackish)',
   'Scytalopus latrans subcinereus': 'Blackish Tapaculo (Pacific)',
-  'Scytalopus [undescribed Lambayeque form]': 'Lambayeque Tapaculo (undescribed form)',
+  'Scytalopus [undescribed Lambayeque form]':
+      'Lambayeque Tapaculo (undescribed form)',
   'Scytalopus argentifrons': 'Silvery-fronted Tapaculo',
-  'Scytalopus argentifrons argentifrons': 'Silvery-fronted Tapaculo (Silvery-fronted)',
+  'Scytalopus argentifrons argentifrons':
+      'Silvery-fronted Tapaculo (Silvery-fronted)',
   'Scytalopus argentifrons chiriquensis': 'Silvery-fronted Tapaculo (Chiriqui)',
   'Scytalopus vicinior': 'Nariño Tapaculo',
   'Scytalopus panamensis': 'Tacarcuna Tapaculo',
@@ -7883,7 +8417,8 @@ const Map<String, String> scientificToCommon = {
   'Scytalopus alvarezlopezi': 'Tatama Tapaculo',
   'Scytalopus robbinsi': 'Ecuadorian Tapaculo',
   'Scytalopus caracae': 'Caracas Tapaculo',
-  'Scytalopus [undescribed Turimiquire form]': 'Turimiquire Tapaculo (undescribed form)',
+  'Scytalopus [undescribed Turimiquire form]':
+      'Turimiquire Tapaculo (undescribed form)',
   'Scytalopus griseicollis': 'Pale-bellied Tapaculo',
   'Scytalopus latebricola': 'Brown-rumped Tapaculo',
   'Scytalopus perijanus': 'Perija Tapaculo',
@@ -7899,20 +8434,25 @@ const Map<String, String> scientificToCommon = {
   'Formicarius colma ruficeps': 'Rufous-capped Antthrush (Rufous-fronted)',
   'Formicarius moniliger': 'Mayan Antthrush',
   'Formicarius analis': 'Black-faced Antthrush',
-  'Formicarius analis [hoffmanni Group]': 'Black-faced Antthrush (Central American)',
+  'Formicarius analis [hoffmanni Group]':
+      'Black-faced Antthrush (Central American)',
   'Formicarius analis [analis Group]': 'Black-faced Antthrush (Black-faced)',
   'Formicarius rufifrons': 'Rufous-fronted Antthrush',
   'Formicarius nigricapillus': 'Black-capped Antthrush',
   'Formicarius destructus': 'Black-hooded Antthrush',
   'Formicarius rufipectus': 'Rufous-breasted Antthrush',
-  'Formicarius rufipectus [rufipectus Group]': 'Rufous-breasted Antthrush (Rufous-breasted)',
+  'Formicarius rufipectus [rufipectus Group]':
+      'Rufous-breasted Antthrush (Rufous-breasted)',
   'Formicarius rufipectus thoracicus': 'Rufous-breasted Antthrush (Southern)',
   'Formicarius sp.': 'Formicarius sp.',
   'Chamaeza campanisona': 'Short-tailed Antthrush',
   'Chamaeza campanisona [fulvescens Group]': 'Short-tailed Antthrush (Tepui)',
-  'Chamaeza campanisona [columbiana Group]': 'Short-tailed Antthrush (North Andean)',
-  'Chamaeza campanisona [olivacea Group]': 'Short-tailed Antthrush (South Andean)',
-  'Chamaeza campanisona campanisona/tshororo': 'Short-tailed Antthrush (Atlantic)',
+  'Chamaeza campanisona [columbiana Group]':
+      'Short-tailed Antthrush (North Andean)',
+  'Chamaeza campanisona [olivacea Group]':
+      'Short-tailed Antthrush (South Andean)',
+  'Chamaeza campanisona campanisona/tshororo':
+      'Short-tailed Antthrush (Atlantic)',
   'Chamaeza nobilis': 'Striated Antthrush',
   'Chamaeza nobilis nobilis/rubida': 'Striated Antthrush (Striated)',
   'Chamaeza nobilis fulvipectus': 'Striated Antthrush (Ochre-breasted)',
@@ -7938,8 +8478,10 @@ const Map<String, String> scientificToCommon = {
   'Sclerurus guatemalensis': 'Scaly-throated Leaftosser',
   'Sclerurus caudacutus': 'Black-tailed Leaftosser',
   'Sclerurus albigularis': 'Gray-throated Leaftosser',
-  'Sclerurus albigularis canigularis': 'Gray-throated Leaftosser (Central American)',
-  'Sclerurus albigularis [albigularis Group]': 'Gray-throated Leaftosser (South American)',
+  'Sclerurus albigularis canigularis':
+      'Gray-throated Leaftosser (Central American)',
+  'Sclerurus albigularis [albigularis Group]':
+      'Gray-throated Leaftosser (South American)',
   'Sclerurus scansor': 'Rufous-breasted Leaftosser',
   'Sclerurus scansor cearensis': 'Rufous-breasted Leaftosser (Ceara)',
   'Sclerurus scansor scansor': 'Rufous-breasted Leaftosser (Rufous-breasted)',
@@ -7964,59 +8506,84 @@ const Map<String, String> scientificToCommon = {
   'Geositta sp.': 'miner sp. (Geositta sp.)',
   'Certhiasomus stictolaemus': 'Spot-throated Woodcreeper',
   'Sittasomus griseicapillus': 'Olivaceous Woodcreeper',
-  'Sittasomus griseicapillus [griseus Group]': 'Olivaceous Woodcreeper (Grayish)',
+  'Sittasomus griseicapillus [griseus Group]':
+      'Olivaceous Woodcreeper (Grayish)',
   'Sittasomus griseicapillus aequatorialis': 'Olivaceous Woodcreeper (Pacific)',
-  'Sittasomus griseicapillus [griseicapillus Group]': 'Olivaceous Woodcreeper (Amazonian)',
+  'Sittasomus griseicapillus [griseicapillus Group]':
+      'Olivaceous Woodcreeper (Amazonian)',
   'Sittasomus griseicapillus reiseri': 'Olivaceous Woodcreeper (Reiser\'s)',
-  'Sittasomus griseicapillus sylviellus/olivaceus': 'Olivaceous Woodcreeper (Olivaceous)',
+  'Sittasomus griseicapillus sylviellus/olivaceus':
+      'Olivaceous Woodcreeper (Olivaceous)',
   'Deconychura typica': 'Piping Long-tailed Woodcreeper',
   'Deconychura longicauda': 'Whistling Long-tailed Woodcreeper',
   'Deconychura pallida': 'Mournful Long-tailed Woodcreeper',
-  'Deconychura [undescribed form]': 'Yungas Long-tailed Woodcreeper (undescribed form)',
+  'Deconychura [undescribed form]':
+      'Yungas Long-tailed Woodcreeper (undescribed form)',
   'Dendrocincla tyrannina': 'Tyrannine Woodcreeper',
   'Dendrocincla merula': 'White-chinned Woodcreeper',
-  'Dendrocincla merula merula/obidensis': 'White-chinned Woodcreeper (Northern)',
-  'Dendrocincla merula [castanoptera Group]': 'White-chinned Woodcreeper (Southern)',
+  'Dendrocincla merula merula/obidensis':
+      'White-chinned Woodcreeper (Northern)',
+  'Dendrocincla merula [castanoptera Group]':
+      'White-chinned Woodcreeper (Southern)',
   'Dendrocincla homochroa': 'Ruddy Woodcreeper',
   'Dendrocincla anabatina': 'Tawny-winged Woodcreeper',
   'Dendrocincla fuliginosa': 'Plain-brown Woodcreeper',
-  'Dendrocincla fuliginosa [meruloides Group]': 'Plain-brown Woodcreeper (Plain-brown)',
-  'Dendrocincla fuliginosa fuliginosa/rufoolivacea': 'Plain-brown Woodcreeper (Line-throated)',
-  'Dendrocincla fuliginosa atrirostris/trumaii': 'Plain-brown Woodcreeper (atrirostris/trumaii)',
+  'Dendrocincla fuliginosa [meruloides Group]':
+      'Plain-brown Woodcreeper (Plain-brown)',
+  'Dendrocincla fuliginosa fuliginosa/rufoolivacea':
+      'Plain-brown Woodcreeper (Line-throated)',
+  'Dendrocincla fuliginosa atrirostris/trumaii':
+      'Plain-brown Woodcreeper (atrirostris/trumaii)',
   'Dendrocincla turdina': 'Plain-winged Woodcreeper',
   'Dendrocincla turdina taunayi': 'Plain-winged Woodcreeper (Pernambuco)',
   'Dendrocincla turdina turdina': 'Plain-winged Woodcreeper (Plain-winged)',
   'Dendrocincla sp.': 'Dendrocincla sp.',
   'Glyphorynchus spirurus': 'Wedge-billed Woodcreeper',
-  'Glyphorynchus spirurus [pectoralis Group]': 'Wedge-billed Woodcreeper (pectoralis Group)',
-  'Glyphorynchus spirurus [spirurus Group]': 'Wedge-billed Woodcreeper (spirurus Group)',
-  'Glyphorynchus spirurus albigularis': 'Wedge-billed Woodcreeper (albigularis)',
-  'Glyphorynchus spirurus [cuneatus Group]': 'Wedge-billed Woodcreeper (cuneatus Group)',
+  'Glyphorynchus spirurus [pectoralis Group]':
+      'Wedge-billed Woodcreeper (pectoralis Group)',
+  'Glyphorynchus spirurus [spirurus Group]':
+      'Wedge-billed Woodcreeper (spirurus Group)',
+  'Glyphorynchus spirurus albigularis':
+      'Wedge-billed Woodcreeper (albigularis)',
+  'Glyphorynchus spirurus [cuneatus Group]':
+      'Wedge-billed Woodcreeper (cuneatus Group)',
   'Dendrexetastes rufigula': 'Cinnamon-throated Woodcreeper',
-  'Dendrexetastes rufigula devillei': 'Cinnamon-throated Woodcreeper (devillei)',
-  'Dendrexetastes rufigula rufigula': 'Cinnamon-throated Woodcreeper (rufigula)',
-  'Dendrexetastes rufigula paraensis/moniliger': 'Cinnamon-throated Woodcreeper (paraensis/moniliger)',
+  'Dendrexetastes rufigula devillei':
+      'Cinnamon-throated Woodcreeper (devillei)',
+  'Dendrexetastes rufigula rufigula':
+      'Cinnamon-throated Woodcreeper (rufigula)',
+  'Dendrexetastes rufigula paraensis/moniliger':
+      'Cinnamon-throated Woodcreeper (paraensis/moniliger)',
   'Nasica longirostris': 'Long-billed Woodcreeper',
   'Dendrocolaptes sanctithomae': 'Northern Barred-Woodcreeper',
-  'Dendrocolaptes sanctithomae [sanctithomae Group]': 'Northern Barred-Woodcreeper (Western)',
-  'Dendrocolaptes sanctithomae punctipectus': 'Northern Barred-Woodcreeper (Eastern)',
+  'Dendrocolaptes sanctithomae [sanctithomae Group]':
+      'Northern Barred-Woodcreeper (Western)',
+  'Dendrocolaptes sanctithomae punctipectus':
+      'Northern Barred-Woodcreeper (Eastern)',
   'Dendrocolaptes certhia': 'Amazonian Barred-Woodcreeper',
   'Dendrocolaptes certhia radiolatus': 'Amazonian Barred-Woodcreeper (Napo)',
   'Dendrocolaptes certhia certhia': 'Amazonian Barred-Woodcreeper (Amazonian)',
-  'Dendrocolaptes certhia juruanus/polyzonus': 'Amazonian Barred-Woodcreeper (Jurua)',
-  'Dendrocolaptes certhia concolor': 'Amazonian Barred-Woodcreeper (Plain-colored)',
-  'Dendrocolaptes certhia ridgwayi': 'Amazonian Barred-Woodcreeper (Ridgway\'s)',
+  'Dendrocolaptes certhia juruanus/polyzonus':
+      'Amazonian Barred-Woodcreeper (Jurua)',
+  'Dendrocolaptes certhia concolor':
+      'Amazonian Barred-Woodcreeper (Plain-colored)',
+  'Dendrocolaptes certhia ridgwayi':
+      'Amazonian Barred-Woodcreeper (Ridgway\'s)',
   'Dendrocolaptes certhia retentus': 'Amazonian Barred-Woodcreeper (Xingu)',
   'Dendrocolaptes certhia medius': 'Amazonian Barred-Woodcreeper (Todd\'s)',
   'Dendrocolaptes picumnus': 'Black-banded Woodcreeper',
   'Dendrocolaptes picumnus puncticollis': 'Black-banded Woodcreeper (Mexican)',
-  'Dendrocolaptes picumnus costaricensis': 'Black-banded Woodcreeper (Costa Rican)',
+  'Dendrocolaptes picumnus costaricensis':
+      'Black-banded Woodcreeper (Costa Rican)',
   'Dendrocolaptes picumnus seilerni': 'Black-banded Woodcreeper (Caribbean)',
   'Dendrocolaptes picumnus multistrigatus': 'Black-banded Woodcreeper (Andean)',
-  'Dendrocolaptes picumnus picumnus/validus': 'Black-banded Woodcreeper (Amazonian)',
-  'Dendrocolaptes picumnus transfasciatus': 'Black-banded Woodcreeper (Tapajos)',
+  'Dendrocolaptes picumnus picumnus/validus':
+      'Black-banded Woodcreeper (Amazonian)',
+  'Dendrocolaptes picumnus transfasciatus':
+      'Black-banded Woodcreeper (Tapajos)',
   'Dendrocolaptes picumnus olivaceus': 'Black-banded Woodcreeper (Bolivian)',
-  'Dendrocolaptes picumnus pallescens/casaresi': 'Black-banded Woodcreeper (Southern)',
+  'Dendrocolaptes picumnus pallescens/casaresi':
+      'Black-banded Woodcreeper (Southern)',
   'Dendrocolaptes hoffmannsi': 'Hoffmanns\'s Woodcreeper',
   'Dendrocolaptes platyrostris': 'Planalto Woodcreeper',
   'Dendrocolaptes sp.': 'Dendrocolaptes sp.',
@@ -8026,10 +8593,14 @@ const Map<String, String> scientificToCommon = {
   'Hylexetastes uniformis uniformis': 'Uniform Woodcreeper (Uniform)',
   'Hylexetastes uniformis brigidai': 'Uniform Woodcreeper (Brigida\'s)',
   'Xiphocolaptes promeropirhynchus': 'Strong-billed Woodcreeper',
-  'Xiphocolaptes promeropirhynchus [emigrans Group]': 'Strong-billed Woodcreeper (Central American)',
-  'Xiphocolaptes promeropirhynchus [promeropirhynchus Group]': 'Strong-billed Woodcreeper (Andean/Northern)',
-  'Xiphocolaptes promeropirhynchus [orenocensis Group]': 'Strong-billed Woodcreeper (Amazonian)',
-  'Xiphocolaptes promeropirhynchus carajaensis': 'Strong-billed Woodcreeper (Carajas)',
+  'Xiphocolaptes promeropirhynchus [emigrans Group]':
+      'Strong-billed Woodcreeper (Central American)',
+  'Xiphocolaptes promeropirhynchus [promeropirhynchus Group]':
+      'Strong-billed Woodcreeper (Andean/Northern)',
+  'Xiphocolaptes promeropirhynchus [orenocensis Group]':
+      'Strong-billed Woodcreeper (Amazonian)',
+  'Xiphocolaptes promeropirhynchus carajaensis':
+      'Strong-billed Woodcreeper (Carajas)',
   'Xiphocolaptes falcirostris': 'Moustached Woodcreeper',
   'Xiphocolaptes albicollis': 'White-throated Woodcreeper',
   'Xiphocolaptes major': 'Great Rufous Woodcreeper',
@@ -8038,37 +8609,50 @@ const Map<String, String> scientificToCommon = {
   'Xiphorhynchus fuscus': 'Lesser Woodcreeper',
   'Xiphorhynchus pardalotus': 'Chestnut-rumped Woodcreeper',
   'Xiphorhynchus ocellatus': 'Ocellated Woodcreeper',
-  'Xiphorhynchus ocellatus [chunchotambo Group]': 'Ocellated Woodcreeper (Tschudi\'s)',
-  'Xiphorhynchus ocellatus beauperthuysii/lineatocapilla': 'Ocellated Woodcreeper (Line-crowned)',
-  'Xiphorhynchus ocellatus ocellatus/perplexus': 'Ocellated Woodcreeper (Ocellated)',
+  'Xiphorhynchus ocellatus [chunchotambo Group]':
+      'Ocellated Woodcreeper (Tschudi\'s)',
+  'Xiphorhynchus ocellatus beauperthuysii/lineatocapilla':
+      'Ocellated Woodcreeper (Line-crowned)',
+  'Xiphorhynchus ocellatus ocellatus/perplexus':
+      'Ocellated Woodcreeper (Ocellated)',
   'Xiphorhynchus elegans': 'Elegant Woodcreeper',
   'Xiphorhynchus spixii': 'Spix\'s Woodcreeper',
   'Xiphorhynchus susurrans': 'Cocoa Woodcreeper',
   'Xiphorhynchus susurrans [nana Group]': 'Cocoa Woodcreeper (Lawrence\'s)',
   'Xiphorhynchus susurrans [susurrans Group]': 'Cocoa Woodcreeper (Cocoa)',
   'Xiphorhynchus guttatus': 'Buff-throated Woodcreeper',
-  'Xiphorhynchus guttatus [guttatus Group]': 'Buff-throated Woodcreeper (Buff-throated)',
-  'Xiphorhynchus guttatus guttatoides/dorbignyanus': 'Buff-throated Woodcreeper (Lafresnaye\'s)',
-  'Xiphorhynchus guttatus [eytoni Group]': 'Buff-throated Woodcreeper (Dusky-billed)',
+  'Xiphorhynchus guttatus [guttatus Group]':
+      'Buff-throated Woodcreeper (Buff-throated)',
+  'Xiphorhynchus guttatus guttatoides/dorbignyanus':
+      'Buff-throated Woodcreeper (Lafresnaye\'s)',
+  'Xiphorhynchus guttatus [eytoni Group]':
+      'Buff-throated Woodcreeper (Dusky-billed)',
   'Xiphorhynchus flavigaster': 'Ivory-billed Woodcreeper',
   'Xiphorhynchus lachrymosus': 'Black-striped Woodcreeper',
   'Xiphorhynchus erythropygius': 'Spotted Woodcreeper',
-  'Xiphorhynchus erythropygius erythropygius/parvus': 'Spotted Woodcreeper (Spotted)',
-  'Xiphorhynchus erythropygius [aequatorialis Group]': 'Spotted Woodcreeper (Berlepsch\'s)',
+  'Xiphorhynchus erythropygius erythropygius/parvus':
+      'Spotted Woodcreeper (Spotted)',
+  'Xiphorhynchus erythropygius [aequatorialis Group]':
+      'Spotted Woodcreeper (Berlepsch\'s)',
   'Xiphorhynchus triangularis': 'Olive-backed Woodcreeper',
   'Xiphorhynchus sp.': 'Xiphorhynchus sp.',
   'Dendroplex picus': 'Straight-billed Woodcreeper',
   'Dendroplex kienerii': 'Zimmer\'s Woodcreeper',
   'Dendroplex picus/kienerii': 'Straight-billed/Zimmer\'s Woodcreeper',
   'Campylorhamphus trochilirostris': 'Red-billed Scythebill',
-  'Campylorhamphus trochilirostris venezuelensis/brevipennis': 'Red-billed Scythebill (Northern)',
-  'Campylorhamphus trochilirostris thoracicus/zarumillanus': 'Red-billed Scythebill (Trans-Andean)',
-  'Campylorhamphus trochilirostris [trochilirostris Group]': 'Red-billed Scythebill (Amazonian)',
+  'Campylorhamphus trochilirostris venezuelensis/brevipennis':
+      'Red-billed Scythebill (Northern)',
+  'Campylorhamphus trochilirostris thoracicus/zarumillanus':
+      'Red-billed Scythebill (Trans-Andean)',
+  'Campylorhamphus trochilirostris [trochilirostris Group]':
+      'Red-billed Scythebill (Amazonian)',
   'Campylorhamphus falcularius': 'Black-billed Scythebill',
   'Campylorhamphus procurvoides': 'Curve-billed Scythebill',
   'Campylorhamphus procurvoides sanus': 'Curve-billed Scythebill (Zimmer\'s)',
-  'Campylorhamphus procurvoides procurvoides': 'Curve-billed Scythebill (Curve-billed)',
-  'Campylorhamphus procurvoides gyldenstolpei': 'Curve-billed Scythebill (Tupana)',
+  'Campylorhamphus procurvoides procurvoides':
+      'Curve-billed Scythebill (Curve-billed)',
+  'Campylorhamphus procurvoides gyldenstolpei':
+      'Curve-billed Scythebill (Tupana)',
   'Campylorhamphus probatus': 'Tapajos Scythebill',
   'Campylorhamphus probatus probatus': 'Tapajos Scythebill (Rondonia)',
   'Campylorhamphus probatus cardosoi': 'Tapajos Scythebill (Tapajos)',
@@ -8081,7 +8665,8 @@ const Map<String, String> scientificToCommon = {
   'Lepidocolaptes angustirostris': 'Narrow-billed Woodcreeper',
   'Lepidocolaptes leucogaster': 'White-striped Woodcreeper',
   'Lepidocolaptes affinis': 'Spot-crowned Woodcreeper',
-  'Lepidocolaptes affinis affinis/lignicida': 'Spot-crowned Woodcreeper (Northern)',
+  'Lepidocolaptes affinis affinis/lignicida':
+      'Spot-crowned Woodcreeper (Northern)',
   'Lepidocolaptes affinis neglectus': 'Spot-crowned Woodcreeper (Southern)',
   'Lepidocolaptes lacrymiger': 'Montane Woodcreeper',
   'Lepidocolaptes squamatus': 'Scaled Woodcreeper',
@@ -8093,8 +8678,10 @@ const Map<String, String> scientificToCommon = {
   'Lepidocolaptes fatimalimae': 'Inambari Woodcreeper',
   'Lepidocolaptes duidae/fatimalimae': 'Duida/Inambari Woodcreeper',
   'Lepidocolaptes fuscicapillus': 'Dusky-capped Woodcreeper',
-  'Lepidocolaptes fuscicapillus fuscicapillus': 'Dusky-capped Woodcreeper (Rondonia)',
-  'Lepidocolaptes fuscicapillus layardi': 'Dusky-capped Woodcreeper (Layard\'s)',
+  'Lepidocolaptes fuscicapillus fuscicapillus':
+      'Dusky-capped Woodcreeper (Rondonia)',
+  'Lepidocolaptes fuscicapillus layardi':
+      'Dusky-capped Woodcreeper (Layard\'s)',
   'Lepidocolaptes sp.': 'Lepidocolaptes sp.',
   'Dendrocolaptinae sp.': 'woodcreeper sp.',
   'Xenops tenuirostris': 'Slender-billed Xenops',
@@ -8132,11 +8719,14 @@ const Map<String, String> scientificToCommon = {
   'Geocerthia serrana': 'Striated Earthcreeper',
   'Upucerthia saturatior': 'Patagonian Forest Earthcreeper',
   'Upucerthia dumetaria': 'Scale-throated Earthcreeper',
-  'Upucerthia saturatior/dumetaria': 'Patagonian Forest/Scale-throated Earthcreeper',
+  'Upucerthia saturatior/dumetaria':
+      'Patagonian Forest/Scale-throated Earthcreeper',
   'Upucerthia albigula': 'White-throated Earthcreeper',
   'Upucerthia validirostris': 'Buff-breasted Earthcreeper',
-  'Upucerthia validirostris jelskii/saturata': 'Buff-breasted Earthcreeper (Plain-breasted)',
-  'Upucerthia validirostris validirostris': 'Buff-breasted Earthcreeper (Buff-breasted)',
+  'Upucerthia validirostris jelskii/saturata':
+      'Buff-breasted Earthcreeper (Plain-breasted)',
+  'Upucerthia validirostris validirostris':
+      'Buff-breasted Earthcreeper (Buff-breasted)',
   'Upucerthia sp.': 'Upucerthia sp.',
   'Cinclodes pabsti': 'Long-tailed Cinclodes',
   'Cinclodes pabsti espinhacensis': 'Long-tailed Cinclodes (Cipo)',
@@ -8163,23 +8753,29 @@ const Map<String, String> scientificToCommon = {
   'Anabazenops fuscus': 'White-collared Foliage-gleaner',
   'Megaxenops parnaguae': 'Great Xenops',
   'Cichlocolaptes leucophrus': 'Pale-browed Treehunter',
-  'Cichlocolaptes leucophrus leucophrus': 'Pale-browed Treehunter (Pale-tailed)',
+  'Cichlocolaptes leucophrus leucophrus':
+      'Pale-browed Treehunter (Pale-tailed)',
   'Cichlocolaptes leucophrus holti': 'Pale-browed Treehunter (Rufous-tailed)',
   'Cichlocolaptes mazarbarnetti': 'Cryptic Treehunter',
   'Heliobletus contaminatus': 'Sharp-billed Treehunter',
   'Heliobletus [undescribed form]': 'Bahia Treehunter (undescribed form)',
   'Neophilydor fuscipenne': 'Slaty-winged Foliage-gleaner',
-  'Neophilydor fuscipenne fuscipenne': 'Slaty-winged Foliage-gleaner (Dusky-winged)',
-  'Neophilydor fuscipenne erythronotum': 'Slaty-winged Foliage-gleaner (Rufous-backed)',
+  'Neophilydor fuscipenne fuscipenne':
+      'Slaty-winged Foliage-gleaner (Dusky-winged)',
+  'Neophilydor fuscipenne erythronotum':
+      'Slaty-winged Foliage-gleaner (Rufous-backed)',
   'Neophilydor erythrocercum': 'Rufous-rumped Foliage-gleaner',
   'Philydor novaesi': 'Alagoas Foliage-gleaner',
-  'Cichlocolaptes mazarbarnetti/Philydor novaesi': 'Cryptic Treehunter/Alagoas Foliage-gleaner',
+  'Cichlocolaptes mazarbarnetti/Philydor novaesi':
+      'Cryptic Treehunter/Alagoas Foliage-gleaner',
   'Philydor atricapillus': 'Black-capped Foliage-gleaner',
   'Philydor pyrrhodes': 'Cinnamon-rumped Foliage-gleaner',
   'Philydor sp.': 'Philydor sp.',
   'Anabacerthia variegaticeps': 'Scaly-throated Foliage-gleaner',
-  'Anabacerthia variegaticeps variegaticeps': 'Scaly-throated Foliage-gleaner (Scaly-throated)',
-  'Anabacerthia variegaticeps temporalis': 'Scaly-throated Foliage-gleaner (Spot-breasted)',
+  'Anabacerthia variegaticeps variegaticeps':
+      'Scaly-throated Foliage-gleaner (Scaly-throated)',
+  'Anabacerthia variegaticeps temporalis':
+      'Scaly-throated Foliage-gleaner (Spot-breasted)',
   'Anabacerthia striaticollis': 'Montane Foliage-gleaner',
   'Anabacerthia ruficaudata': 'Rufous-tailed Foliage-gleaner',
   'Anabacerthia amaurotis': 'White-browed Foliage-gleaner',
@@ -8201,9 +8797,12 @@ const Map<String, String> scientificToCommon = {
   'Clibanornis dendrocolaptoides': 'Canebrake Groundcreeper',
   'Clibanornis erythrocephalus': 'Henna-hooded Foliage-gleaner',
   'Clibanornis rubiginosus': 'Ruddy Foliage-gleaner',
-  'Clibanornis rubiginosus [rubiginosus Group]': 'Ruddy Foliage-gleaner (Rusty)',
-  'Clibanornis rubiginosus [nigricauda Group]': 'Ruddy Foliage-gleaner (Black-tailed)',
-  'Clibanornis rubiginosus cinnamomeigula': 'Ruddy Foliage-gleaner (Cinnamon-throated)',
+  'Clibanornis rubiginosus [rubiginosus Group]':
+      'Ruddy Foliage-gleaner (Rusty)',
+  'Clibanornis rubiginosus [nigricauda Group]':
+      'Ruddy Foliage-gleaner (Black-tailed)',
+  'Clibanornis rubiginosus cinnamomeigula':
+      'Ruddy Foliage-gleaner (Cinnamon-throated)',
   'Clibanornis rubiginosus [obscurus Group]': 'Ruddy Foliage-gleaner (Dusky)',
   'Clibanornis rubiginosus watkinsi': 'Ruddy Foliage-gleaner (Watkins\'s)',
   'Clibanornis rufipectus': 'Santa Marta Foliage-gleaner',
@@ -8217,20 +8816,28 @@ const Map<String, String> scientificToCommon = {
   'Automolus rufipileatus': 'Chestnut-crowned Foliage-gleaner',
   'Automolus melanopezus': 'Brown-rumped Foliage-gleaner',
   'Automolus cervinigularis': 'Fawn-throated Foliage-gleaner',
-  'Automolus cervinigularis cervinigularis': 'Fawn-throated Foliage-gleaner (Mexican)',
-  'Automolus cervinigularis hypophaeus': 'Fawn-throated Foliage-gleaner (hypophaeus)',
+  'Automolus cervinigularis cervinigularis':
+      'Fawn-throated Foliage-gleaner (Mexican)',
+  'Automolus cervinigularis hypophaeus':
+      'Fawn-throated Foliage-gleaner (hypophaeus)',
   'Automolus exsertus': 'Chiriqui Foliage-gleaner',
   'Automolus ochrolaemus': 'Ochre-throated Foliage-gleaner',
-  'Automolus ochrolaemus pallidigularis': 'Ochre-throated Foliage-gleaner (pallidigularis)',
+  'Automolus ochrolaemus pallidigularis':
+      'Ochre-throated Foliage-gleaner (pallidigularis)',
   'Automolus ochrolaemus turdinus': 'Ochre-throated Foliage-gleaner (turdinus)',
-  'Automolus ochrolaemus ochrolaemus': 'Ochre-throated Foliage-gleaner (ochrolaemus)',
-  'Automolus ochrolaemus auricularis': 'Ochre-throated Foliage-gleaner (auricularis)',
-  'Automolus cervinigularis/ochrolaemus': 'Fawn-throated/Ochre-throated Foliage-gleaner',
+  'Automolus ochrolaemus ochrolaemus':
+      'Ochre-throated Foliage-gleaner (ochrolaemus)',
+  'Automolus ochrolaemus auricularis':
+      'Ochre-throated Foliage-gleaner (auricularis)',
+  'Automolus cervinigularis/ochrolaemus':
+      'Fawn-throated/Ochre-throated Foliage-gleaner',
   'Automolus virgatus': 'Western Woodhaunter',
   'Automolus subulatus': 'Eastern Woodhaunter',
   'Automolus infuscatus': 'Olive-backed Foliage-gleaner',
-  'Automolus infuscatus cervicalis/badius': 'Olive-backed Foliage-gleaner (Olive-capped)',
-  'Automolus infuscatus infuscatus/purusianus': 'Olive-backed Foliage-gleaner (Olive-backed)',
+  'Automolus infuscatus cervicalis/badius':
+      'Olive-backed Foliage-gleaner (Olive-capped)',
+  'Automolus infuscatus infuscatus/purusianus':
+      'Olive-backed Foliage-gleaner (Olive-backed)',
   'Automolus paraensis': 'Para Foliage-gleaner',
   'Automolus lammi': 'Pernambuco Foliage-gleaner',
   'Automolus leucophthalmus': 'White-eyed Foliage-gleaner',
@@ -8251,23 +8858,31 @@ const Map<String, String> scientificToCommon = {
   'Leptasthenura fuliginiceps': 'Brown-capped Tit-Spinetail',
   'Leptasthenura platensis': 'Tufted Tit-Spinetail',
   'Leptasthenura aegithaloides': 'Plain-mantled Tit-Spinetail',
-  'Leptasthenura aegithaloides grisescens': 'Plain-mantled Tit-Spinetail (grisescens)',
-  'Leptasthenura aegithaloides berlepschi': 'Plain-mantled Tit-Spinetail (berlepschi)',
-  'Leptasthenura aegithaloides aegithaloides': 'Plain-mantled Tit-Spinetail (aegithaloides)',
-  'Leptasthenura aegithaloides pallida': 'Plain-mantled Tit-Spinetail (pallida)',
+  'Leptasthenura aegithaloides grisescens':
+      'Plain-mantled Tit-Spinetail (grisescens)',
+  'Leptasthenura aegithaloides berlepschi':
+      'Plain-mantled Tit-Spinetail (berlepschi)',
+  'Leptasthenura aegithaloides aegithaloides':
+      'Plain-mantled Tit-Spinetail (aegithaloides)',
+  'Leptasthenura aegithaloides pallida':
+      'Plain-mantled Tit-Spinetail (pallida)',
   'Leptasthenura striolata': 'Striolated Tit-Spinetail',
   'Leptasthenura pileata': 'Rusty-crowned Tit-Spinetail',
   'Leptasthenura xenothorax': 'White-browed Tit-Spinetail',
   'Leptasthenura striata': 'Streaked Tit-Spinetail',
-  'Leptasthenura striata striata/superciliaris': 'Streaked Tit-Spinetail (Streak-throated)',
-  'Leptasthenura striata albigularis': 'Streaked Tit-Spinetail (White-throated)',
+  'Leptasthenura striata striata/superciliaris':
+      'Streaked Tit-Spinetail (Streak-throated)',
+  'Leptasthenura striata albigularis':
+      'Streaked Tit-Spinetail (White-throated)',
   'Leptasthenura andicola': 'Andean Tit-Spinetail',
   'Leptasthenura setaria': 'Araucaria Tit-Spinetail',
   'Leptasthenura sp.': 'tit-spinetail sp.',
   'Phacellodomus inornatus': 'Plain Thornbird',
   'Phacellodomus rufifrons': 'Rufous-fronted Thornbird',
-  'Phacellodomus rufifrons [rufifrons Group]': 'Rufous-fronted Thornbird (Rufous-fronted)',
-  'Phacellodomus rufifrons specularis': 'Rufous-fronted Thornbird (Rufous-winged)',
+  'Phacellodomus rufifrons [rufifrons Group]':
+      'Rufous-fronted Thornbird (Rufous-fronted)',
+  'Phacellodomus rufifrons specularis':
+      'Rufous-fronted Thornbird (Rufous-winged)',
   'Phacellodomus [undescribed form]': 'Mantaro Thornbird (undescribed form)',
   'Phacellodomus striaticeps': 'Streak-fronted Thornbird',
   'Phacellodomus sibilatrix': 'Little Thornbird',
@@ -8277,21 +8892,27 @@ const Map<String, String> scientificToCommon = {
   'Phacellodomus ruber': 'Greater Thornbird',
   'Phacellodomus erythrophthalmus': 'Orange-eyed Thornbird',
   'Phacellodomus ferrugineigula': 'Orange-breasted Thornbird',
-  'Phacellodomus erythrophthalmus/ferrugineigula': 'Orange-eyed/Orange-breasted Thornbird',
+  'Phacellodomus erythrophthalmus/ferrugineigula':
+      'Orange-eyed/Orange-breasted Thornbird',
   'Phacellodomus sp.': 'thornbird sp.',
   'Hellmayrea gularis': 'White-browed Spinetail',
   'Hellmayrea gularis gularis': 'White-browed Spinetail (gularis)',
-  'Hellmayrea gularis brunneidorsalis': 'White-browed Spinetail (brunneidorsalis)',
-  'Hellmayrea gularis cinereiventris': 'White-browed Spinetail (cinereiventris)',
+  'Hellmayrea gularis brunneidorsalis':
+      'White-browed Spinetail (brunneidorsalis)',
+  'Hellmayrea gularis cinereiventris':
+      'White-browed Spinetail (cinereiventris)',
   'Hellmayrea gularis rufiventris': 'White-browed Spinetail (rufiventris)',
   'Anumbius annumbi': 'Firewood-gatherer',
   'Coryphistera alaudina': 'Lark-like Brushrunner',
   'Asthenes huancavelicae': 'Pale-tailed Canastero',
-  'Asthenes huancavelicae [undescribed Ancash form]': 'Pale-tailed Canastero (Santa Valley)',
-  'Asthenes huancavelicae huancavelicae': 'Pale-tailed Canastero (Huancavelica)',
+  'Asthenes huancavelicae [undescribed Ancash form]':
+      'Pale-tailed Canastero (Santa Valley)',
+  'Asthenes huancavelicae huancavelicae':
+      'Pale-tailed Canastero (Huancavelica)',
   'Asthenes huancavelicae usheri': 'Pale-tailed Canastero (Pale-tailed)',
   'Asthenes arequipae': 'Dark-winged Canastero',
-  'Asthenes arequipae [undescribed Ayacucho form]': 'Dark-winged Canastero (Ayacucho)',
+  'Asthenes arequipae [undescribed Ayacucho form]':
+      'Dark-winged Canastero (Ayacucho)',
   'Asthenes arequipae [Southern form]': 'Dark-winged Canastero (Southern)',
   'Asthenes dorbignyi': 'Rusty-vented Canastero',
   'Asthenes berlepschi': 'Berlepsch\'s Canastero',
@@ -8323,7 +8944,8 @@ const Map<String, String> scientificToCommon = {
   'Asthenes fuliginosa': 'White-chinned Thistletail',
   'Asthenes fuliginosa fumigata': 'White-chinned Thistletail (fumigata)',
   'Asthenes fuliginosa fuliginosa': 'White-chinned Thistletail (fuliginosa)',
-  'Asthenes fuliginosa peruviana/plengei': 'White-chinned Thistletail (peruviana/plengei)',
+  'Asthenes fuliginosa peruviana/plengei':
+      'White-chinned Thistletail (peruviana/plengei)',
   'Asthenes griseomurina': 'Mouse-colored Thistletail',
   'Asthenes sp.': 'canastero sp.',
   'Acrobatornis fonsecai': 'Pink-legged Graveteiro',
@@ -8342,7 +8964,8 @@ const Map<String, String> scientificToCommon = {
   'Thripophaga fusciceps fusciceps': 'Plain Softtail (fusciceps)',
   'Thripophaga sp.': 'softtail sp.',
   'Limnoctites rectirostris': 'Straight-billed Reedhaunter',
-  'Limnornis curvirostris/Limnoctites rectirostris': 'Curve-billed/Straight-billed Reedhaunter',
+  'Limnornis curvirostris/Limnoctites rectirostris':
+      'Curve-billed/Straight-billed Reedhaunter',
   'Limnoctites sulphuriferus': 'Sulphur-bearded Reedhaunter',
   'Cranioleuca berlepschi': 'Russet-mantled Softtail',
   'Cranioleuca weskei': 'Vilcabamba Spinetail',
@@ -8357,7 +8980,8 @@ const Map<String, String> scientificToCommon = {
   'Cranioleuca pyrrhophia': 'Stripe-crowned Spinetail',
   'Cranioleuca henricae': 'Bolivian Spinetail',
   'Cranioleuca obsoleta': 'Olive Spinetail',
-  'Cranioleuca pyrrhophia x obsoleta': 'Stripe-crowned x Olive Spinetail (hybrid)',
+  'Cranioleuca pyrrhophia x obsoleta':
+      'Stripe-crowned x Olive Spinetail (hybrid)',
   'Cranioleuca pallida': 'Pallid Spinetail',
   'Cranioleuca semicinerea': 'Gray-headed Spinetail',
   'Cranioleuca albicapilla': 'Creamy-crested Spinetail',
@@ -8366,7 +8990,8 @@ const Map<String, String> scientificToCommon = {
   'Cranioleuca hellmayri': 'Streak-capped Spinetail',
   'Cranioleuca curtata': 'Ash-browed Spinetail',
   'Cranioleuca antisiensis': 'Line-cheeked Spinetail',
-  'Cranioleuca antisiensis antisiensis/palamblae': 'Line-cheeked Spinetail (Line-cheeked)',
+  'Cranioleuca antisiensis antisiensis/palamblae':
+      'Line-cheeked Spinetail (Line-cheeked)',
   'Cranioleuca antisiensis [baroni Group]': 'Line-cheeked Spinetail (Baron\'s)',
   'Cranioleuca muelleri': 'Scaled Spinetail',
   'Cranioleuca sp.': 'Cranioleuca sp.',
@@ -8393,7 +9018,8 @@ const Map<String, String> scientificToCommon = {
   'Synallaxis maranonica': 'Marañon Spinetail',
   'Synallaxis hypochondriaca': 'Great Spinetail',
   'Synallaxis stictothorax': 'Necklaced Spinetail',
-  'Synallaxis stictothorax [undescribed La Libertad form]': 'Necklaced Spinetail (La Libertad)',
+  'Synallaxis stictothorax [undescribed La Libertad form]':
+      'Necklaced Spinetail (La Libertad)',
   'Synallaxis chinchipensis': 'Chinchipe Spinetail',
   'Synallaxis zimmeri': 'Russet-bellied Spinetail',
   'Synallaxis brachyura': 'Slaty Spinetail',
@@ -8402,7 +9028,8 @@ const Map<String, String> scientificToCommon = {
   'Synallaxis ruficapilla': 'Rufous-capped Spinetail',
   'Synallaxis cinerea': 'Bahia Spinetail',
   'Synallaxis infuscata': 'Pinto\'s Spinetail',
-  'Synallaxis [undescribed Amazonian form]': 'Amazonian Spinetail (undescribed form)',
+  'Synallaxis [undescribed Amazonian form]':
+      'Amazonian Spinetail (undescribed form)',
   'Synallaxis moesta': 'Dusky Spinetail',
   'Synallaxis macconnelli': 'McConnell\'s Spinetail',
   'Synallaxis cabanisi': 'Cabanis\'s Spinetail',
@@ -8411,11 +9038,13 @@ const Map<String, String> scientificToCommon = {
   'Synallaxis albigularis': 'Dark-breasted Spinetail',
   'Synallaxis beverlyae': 'Rio Orinoco Spinetail',
   'Synallaxis albescens': 'Pale-breasted Spinetail',
-  'Synallaxis albescens [albescens Group]': 'Pale-breasted Spinetail (Pale-breasted)',
+  'Synallaxis albescens [albescens Group]':
+      'Pale-breasted Spinetail (Pale-breasted)',
   'Synallaxis albescens australis': 'Pale-breasted Spinetail (Austral)',
   'Synallaxis frontalis': 'Sooty-fronted Spinetail',
   'Synallaxis azarae': 'Azara\'s Spinetail',
-  'Synallaxis [undescribed Mantaro form]': 'Mantaro Spinetail (undescribed form)',
+  'Synallaxis [undescribed Mantaro form]':
+      'Mantaro Spinetail (undescribed form)',
   'Synallaxis courseni': 'Apurimac Spinetail',
   'Synallaxis azarae/courseni': 'Azara\'s/Apurimac Spinetail',
   'Synallaxis kollari': 'Hoary-throated Spinetail',
@@ -8451,7 +9080,8 @@ const Map<String, String> scientificToCommon = {
   'Chiroxiphia lanceolata': 'Lance-tailed Manakin',
   'Chiroxiphia linearis': 'Long-tailed Manakin',
   'Chiroxiphia pareola': 'Blue-backed Manakin',
-  'Chiroxiphia pareola pareola/atlantica': 'Blue-backed Manakin (pareola/atlantica)',
+  'Chiroxiphia pareola pareola/atlantica':
+      'Blue-backed Manakin (pareola/atlantica)',
   'Chiroxiphia pareola napensis': 'Blue-backed Manakin (napensis)',
   'Chiroxiphia pareola regina': 'Blue-backed Manakin (regina)',
   'Chiroxiphia galeata x pareola': 'Helmeted x Blue-backed Manakin (hybrid)',
@@ -8487,16 +9117,19 @@ const Map<String, String> scientificToCommon = {
   'Manacus candei': 'White-collared Manakin',
   'Manacus aurantiacus': 'Orange-collared Manakin',
   'Manacus vitellinus': 'Golden-collared Manakin',
-  'Manacus candei x vitellinus': 'White-collared x Golden-collared Manakin (hybrid)',
+  'Manacus candei x vitellinus':
+      'White-collared x Golden-collared Manakin (hybrid)',
   'Manacus manacus': 'White-bearded Manakin',
-  'Manacus vitellinus x manacus': 'Golden-collared x White-bearded Manakin (hybrid)',
+  'Manacus vitellinus x manacus':
+      'Golden-collared x White-bearded Manakin (hybrid)',
   'Manacus vitellinus/manacus': 'Golden-collared/White-bearded Manakin',
   'Pipra aureola': 'Crimson-hooded Manakin',
   'Pipra filicauda': 'Wire-tailed Manakin',
   'Pipra fasciicauda': 'Band-tailed Manakin',
   'Machaeropterus deliciosus': 'Club-winged Manakin',
   'Machaeropterus striolatus': 'Striolated Manakin',
-  'Machaeropterus striolatus [striolatus Group]': 'Striolated Manakin (Striolated)',
+  'Machaeropterus striolatus [striolatus Group]':
+      'Striolated Manakin (Striolated)',
   'Machaeropterus striolatus aureopectus': 'Striolated Manakin (aureopectus)',
   'Machaeropterus eckelberryi': 'Painted Manakin',
   'Machaeropterus striolatus/eckelberryi': 'Striolated/Painted Manakin',
@@ -8520,7 +9153,8 @@ const Map<String, String> scientificToCommon = {
   'Carpornis cucullata': 'Hooded Berryeater',
   'Carpornis melanocephala': 'Black-headed Berryeater',
   'Pipreola riefferii': 'Green-and-black Fruiteater',
-  'Pipreola riefferii [riefferii Group]': 'Green-and-black Fruiteater (Green-and-black)',
+  'Pipreola riefferii [riefferii Group]':
+      'Green-and-black Fruiteater (Green-and-black)',
   'Pipreola riefferii tallmanorum': 'Green-and-black Fruiteater (Sira)',
   'Pipreola intermedia': 'Band-tailed Fruiteater',
   'Pipreola intermedia intermedia': 'Band-tailed Fruiteater (intermedia)',
@@ -8531,7 +9165,8 @@ const Map<String, String> scientificToCommon = {
   'Pipreola lubomirskii': 'Black-chested Fruiteater',
   'Pipreola pulchra': 'Masked Fruiteater',
   'Pipreola frontalis': 'Scarlet-breasted Fruiteater',
-  'Pipreola frontalis squamipectus': 'Scarlet-breasted Fruiteater (squamipectus)',
+  'Pipreola frontalis squamipectus':
+      'Scarlet-breasted Fruiteater (squamipectus)',
   'Pipreola frontalis frontalis': 'Scarlet-breasted Fruiteater (frontalis)',
   'Pipreola chlorolepidota': 'Fiery-throated Fruiteater',
   'Pipreola formosa': 'Handsome Fruiteater',
@@ -8544,7 +9179,8 @@ const Map<String, String> scientificToCommon = {
   'Phytotoma rara': 'Rufous-tailed Plantcutter',
   'Phibalura flavirostris': 'Swallow-tailed Cotinga',
   'Phibalura flavirostris boliviana': 'Swallow-tailed Cotinga (Palkachupa)',
-  'Phibalura flavirostris flavirostris': 'Swallow-tailed Cotinga (Swallow-tailed)',
+  'Phibalura flavirostris flavirostris':
+      'Swallow-tailed Cotinga (Swallow-tailed)',
   'Doliornis remseni': 'Chestnut-bellied Cotinga',
   'Doliornis sclateri': 'Bay-vented Cotinga',
   'Ampelion rubrocristatus': 'Red-crested Cotinga',
@@ -8602,7 +9238,8 @@ const Map<String, String> scientificToCommon = {
   'Schiffornis major': 'Varzea Schiffornis',
   'Schiffornis olivacea': 'Olivaceous Schiffornis',
   'Schiffornis veraepacis': 'Northern Schiffornis',
-  'Schiffornis veraepacis [veraepacis Group]': 'Northern Schiffornis (Northern)',
+  'Schiffornis veraepacis [veraepacis Group]':
+      'Northern Schiffornis (Northern)',
   'Schiffornis veraepacis rosenbergi': 'Northern Schiffornis (Ecuadorian)',
   'Schiffornis aenea': 'Foothill Schiffornis',
   'Schiffornis stenorhyncha': 'Russet-winged Schiffornis',
@@ -8610,7 +9247,8 @@ const Map<String, String> scientificToCommon = {
   'Schiffornis turdina amazonum': 'Brown-winged Schiffornis (West Amazonian)',
   'Schiffornis turdina wallacii': 'Brown-winged Schiffornis (East Amazonian)',
   'Schiffornis turdina steinbachi': 'Brown-winged Schiffornis (Peruvian)',
-  'Schiffornis turdina turdina/intermedia': 'Brown-winged Schiffornis (Atlantic)',
+  'Schiffornis turdina turdina/intermedia':
+      'Brown-winged Schiffornis (Atlantic)',
   'Schiffornis virescens': 'Greenish Schiffornis',
   'Schiffornis sp.': 'schiffornis sp.',
   'Laniocera hypopyrra': 'Cinereous Mourner',
@@ -8624,7 +9262,8 @@ const Map<String, String> scientificToCommon = {
   'Laniisoma elegans': 'Brazilian Laniisoma',
   'Xenopsaris albinucha': 'White-naped Xenopsaris',
   'Pachyramphus viridis': 'Green-backed Becard',
-  'Pachyramphus viridis xanthogenys/peruanus': 'Green-backed Becard (Yellow-cheeked)',
+  'Pachyramphus viridis xanthogenys/peruanus':
+      'Green-backed Becard (Yellow-cheeked)',
   'Pachyramphus viridis griseigularis': 'Green-backed Becard (Green-cheeked)',
   'Pachyramphus viridis viridis': 'Green-backed Becard (Green-backed)',
   'Pachyramphus versicolor': 'Barred Becard',
@@ -8649,9 +9288,12 @@ const Map<String, String> scientificToCommon = {
   'Pachyramphus sp.': 'becard sp.',
   'Oxyruncus cristatus': 'Sharpbill',
   'Onychorhynchus coronatus': 'Tropical Royal Flycatcher',
-  'Onychorhynchus coronatus mexicanus/fraterculus': 'Tropical Royal Flycatcher (Northern)',
-  'Onychorhynchus coronatus occidentalis': 'Tropical Royal Flycatcher (Pacific)',
-  'Onychorhynchus coronatus coronatus/castelnaui': 'Tropical Royal Flycatcher (Amazonian)',
+  'Onychorhynchus coronatus mexicanus/fraterculus':
+      'Tropical Royal Flycatcher (Northern)',
+  'Onychorhynchus coronatus occidentalis':
+      'Tropical Royal Flycatcher (Pacific)',
+  'Onychorhynchus coronatus coronatus/castelnaui':
+      'Tropical Royal Flycatcher (Amazonian)',
   'Onychorhynchus swainsoni': 'Atlantic Royal Flycatcher',
   'Terenotriccus erythrurus': 'Ruddy-tailed Flycatcher',
   'Myiobius villosus': 'Tawny-breasted Flycatcher',
@@ -8660,9 +9302,11 @@ const Map<String, String> scientificToCommon = {
   'Myiobius barbatus [barbatus Group]': 'Whiskered Flycatcher (Whiskered)',
   'Myiobius barbatus mastacalis': 'Whiskered Flycatcher (Yellow-rumped)',
   'Myiobius atricaudus': 'Black-tailed Flycatcher',
-  'Myiobius atricaudus [atricaudus Group]': 'Black-tailed Flycatcher (Black-tailed)',
+  'Myiobius atricaudus [atricaudus Group]':
+      'Black-tailed Flycatcher (Black-tailed)',
   'Myiobius atricaudus ridgwayi': 'Black-tailed Flycatcher (Buff-rumped)',
-  'Myiobius sulphureipygius/atricaudus': 'Sulphur-rumped/Black-tailed Flycatcher',
+  'Myiobius sulphureipygius/atricaudus':
+      'Sulphur-rumped/Black-tailed Flycatcher',
   'Myiobius barbatus/atricaudus': 'Whiskered/Black-tailed Flycatcher',
   'Myiobius sp.': 'Myiobius sp.',
   'Piprites chloris': 'Wing-barred Piprites',
@@ -8673,8 +9317,10 @@ const Map<String, String> scientificToCommon = {
   'Platyrinchus saturatus': 'Cinnamon-crested Spadebill',
   'Platyrinchus cancrominus': 'Stub-tailed Spadebill',
   'Platyrinchus mystaceus': 'White-throated Spadebill',
-  'Platyrinchus mystaceus [albogularis Group]': 'White-throated Spadebill (Western)',
-  'Platyrinchus mystaceus [mystaceus Group]': 'White-throated Spadebill (Eastern)',
+  'Platyrinchus mystaceus [albogularis Group]':
+      'White-throated Spadebill (Western)',
+  'Platyrinchus mystaceus [mystaceus Group]':
+      'White-throated Spadebill (Eastern)',
   'Platyrinchus coronatus': 'Golden-crowned Spadebill',
   'Platyrinchus flavigularis': 'Yellow-throated Spadebill',
   'Platyrinchus platyrhynchos': 'White-crested Spadebill',
@@ -8690,10 +9336,12 @@ const Map<String, String> scientificToCommon = {
   'Mionectes oleagineus assimilis': 'Ochre-bellied Flycatcher (assimilis)',
   'Mionectes oleagineus parcus': 'Ochre-bellied Flycatcher (parcus)',
   'Mionectes oleagineus pacificus': 'Ochre-bellied Flycatcher (pacificus)',
-  'Mionectes oleagineus [oleagineus Group]': 'Ochre-bellied Flycatcher (oleagineus Group)',
+  'Mionectes oleagineus [oleagineus Group]':
+      'Ochre-bellied Flycatcher (oleagineus Group)',
   'Mionectes macconnelli': 'McConnell\'s Flycatcher',
   'Mionectes macconnelli macconnelli': 'McConnell\'s Flycatcher (Guianan)',
-  'Mionectes macconnelli amazonus/peruanus': 'McConnell\'s Flycatcher (Inambari)',
+  'Mionectes macconnelli amazonus/peruanus':
+      'McConnell\'s Flycatcher (Inambari)',
   'Mionectes oleagineus/macconnelli': 'Ochre-bellied/McConnell\'s Flycatcher',
   'Mionectes roraimae': 'Sierra de Lema Flycatcher',
   'Mionectes macconnelli/roraimae': 'McConnell\'s/Sierra de Lema Flycatcher',
@@ -8701,9 +9349,12 @@ const Map<String, String> scientificToCommon = {
   'Mionectes sp.': 'Mionectes sp.',
   'Leptopogon amaurocephalus': 'Sepia-capped Flycatcher',
   'Leptopogon superciliaris': 'Slaty-capped Flycatcher',
-  'Leptopogon superciliaris transandinus': 'Slaty-capped Flycatcher (transandinus)',
-  'Leptopogon superciliaris superciliaris': 'Slaty-capped Flycatcher (superciliaris)',
-  'Leptopogon superciliaris albidiventer': 'Slaty-capped Flycatcher (albidiventer)',
+  'Leptopogon superciliaris transandinus':
+      'Slaty-capped Flycatcher (transandinus)',
+  'Leptopogon superciliaris superciliaris':
+      'Slaty-capped Flycatcher (superciliaris)',
+  'Leptopogon superciliaris albidiventer':
+      'Slaty-capped Flycatcher (albidiventer)',
   'Leptopogon rufipectus': 'Rufous-breasted Flycatcher',
   'Leptopogon taczanowskii': 'Inca Flycatcher',
   'Pogonotriccus difficilis': 'Serra do Mar Bristle-Tyrant',
@@ -8731,15 +9382,18 @@ const Map<String, String> scientificToCommon = {
   'Phylloscartes parkeri': 'Cinnamon-faced Tyrannulet',
   'Phylloscartes sp.': 'Phylloscartes sp.',
   'Pseudotriccus pelzelni': 'Bronze-olive Pygmy-Tyrant',
-  'Pseudotriccus pelzelni annectens/berlepschi': 'Bronze-olive Pygmy-Tyrant (annectens/berlepschi)',
-  'Pseudotriccus pelzelni pelzelni/peruvianus': 'Bronze-olive Pygmy-Tyrant (pelzelni/peruvianus)',
+  'Pseudotriccus pelzelni annectens/berlepschi':
+      'Bronze-olive Pygmy-Tyrant (annectens/berlepschi)',
+  'Pseudotriccus pelzelni pelzelni/peruvianus':
+      'Bronze-olive Pygmy-Tyrant (pelzelni/peruvianus)',
   'Pseudotriccus simplex': 'Hazel-fronted Pygmy-Tyrant',
   'Pseudotriccus ruficeps': 'Rufous-headed Pygmy-Tyrant',
   'Corythopis torquatus': 'Ringed Antpipit',
   'Corythopis delalandi': 'Southern Antpipit',
   'Myiornis auricularis': 'Eared Pygmy-Tyrant',
   'Myiornis auricularis [undescribed form]': 'Eared Pygmy-Tyrant (Pernambuco)',
-  'Myiornis [undescribed form]': 'Maranhao-Piaui Pygmy-Tyrant (undescribed form)',
+  'Myiornis [undescribed form]':
+      'Maranhao-Piaui Pygmy-Tyrant (undescribed form)',
   'Myiornis albiventris': 'White-bellied Pygmy-Tyrant',
   'Myiornis atricapillus': 'Black-capped Pygmy-Tyrant',
   'Myiornis ecaudatus': 'Short-tailed Pygmy-Tyrant',
@@ -8753,8 +9407,10 @@ const Map<String, String> scientificToCommon = {
   'Oncostoma olivaceum': 'Southern Bentbill',
   'Hemitriccus minor': 'Snethlage\'s Tody-Tyrant',
   'Hemitriccus minor pallens': 'Snethlage\'s Tody-Tyrant (Igapo)',
-  'Hemitriccus minor minor/snethlageae': 'Snethlage\'s Tody-Tyrant (E of Madeira)',
-  'Hemitriccus minor [undescribed form]': 'Snethlage\'s Tody-Tyrant (W of Madeira)',
+  'Hemitriccus minor minor/snethlageae':
+      'Snethlage\'s Tody-Tyrant (E of Madeira)',
+  'Hemitriccus minor [undescribed form]':
+      'Snethlage\'s Tody-Tyrant (W of Madeira)',
   'Hemitriccus spodiops': 'Yungas Tody-Tyrant',
   'Hemitriccus cohnhafti': 'Acre Tody-Tyrant',
   'Hemitriccus flammulatus': 'Flammulated Pygmy-Tyrant',
@@ -8762,11 +9418,15 @@ const Map<String, String> scientificToCommon = {
   'Hemitriccus obsoletus': 'Brown-breasted Pygmy-Tyrant',
   'Hemitriccus josephinae': 'Boat-billed Tody-Tyrant',
   'Hemitriccus zosterops': 'White-eyed Tody-Tyrant',
-  'Hemitriccus zosterops zosterops/flaviviridis': 'White-eyed Tody-Tyrant (White-eyed)',
-  'Hemitriccus zosterops [undescribed form]': 'White-eyed Tody-Tyrant (Guianan)',
+  'Hemitriccus zosterops zosterops/flaviviridis':
+      'White-eyed Tody-Tyrant (White-eyed)',
+  'Hemitriccus zosterops [undescribed form]':
+      'White-eyed Tody-Tyrant (Guianan)',
   'Hemitriccus griseipectus': 'White-bellied Tody-Tyrant',
-  'Hemitriccus griseipectus griseipectus': 'White-bellied Tody-Tyrant (White-bellied)',
-  'Hemitriccus griseipectus naumburgae': 'White-bellied Tody-Tyrant (Pernambuco)',
+  'Hemitriccus griseipectus griseipectus':
+      'White-bellied Tody-Tyrant (White-bellied)',
+  'Hemitriccus griseipectus naumburgae':
+      'White-bellied Tody-Tyrant (Pernambuco)',
   'Hemitriccus orbitatus': 'Eye-ringed Tody-Tyrant',
   'Hemitriccus iohannis': 'Johannes\'s Tody-Tyrant',
   'Hemitriccus striaticollis': 'Stripe-necked Tody-Tyrant',
@@ -8798,7 +9458,8 @@ const Map<String, String> scientificToCommon = {
   'Todirostrum maculatum': 'Spotted Tody-Flycatcher',
   'Todirostrum poliocephalum': 'Gray-headed Tody-Flycatcher',
   'Todirostrum cinereum': 'Common Tody-Flycatcher',
-  'Todirostrum cinereum [cinereum Group]': 'Common Tody-Flycatcher (cinereum Group)',
+  'Todirostrum cinereum [cinereum Group]':
+      'Common Tody-Flycatcher (cinereum Group)',
   'Todirostrum cinereum sclateri': 'Common Tody-Flycatcher (sclateri)',
   'Todirostrum viridanum': 'Maracaibo Tody-Flycatcher',
   'Todirostrum nigriceps': 'Black-headed Tody-Flycatcher',
@@ -8809,24 +9470,31 @@ const Map<String, String> scientificToCommon = {
   'Cnipodectes superrufus': 'Rufous Twistwing',
   'Rhynchocyclus brevirostris': 'Eye-ringed Flatbill',
   'Rhynchocyclus aequinoctialis': 'Western Olivaceous Flatbill',
-  'Rhynchocyclus aequinoctialis [aequinoctialis Group]': 'Western Olivaceous Flatbill (Western)',
-  'Rhynchocyclus aequinoctialis cryptus': 'Western Olivaceous Flatbill (Cryptic)',
+  'Rhynchocyclus aequinoctialis [aequinoctialis Group]':
+      'Western Olivaceous Flatbill (Western)',
+  'Rhynchocyclus aequinoctialis cryptus':
+      'Western Olivaceous Flatbill (Cryptic)',
   'Rhynchocyclus olivaceus': 'Eastern Olivaceous Flatbill',
-  'Rhynchocyclus olivaceus guianensis/sordidus': 'Eastern Olivaceous Flatbill (Guianan)',
-  'Rhynchocyclus olivaceus olivaceus': 'Eastern Olivaceous Flatbill (Olivaceous)',
-  'Rhynchocyclus aequinoctialis/olivaceus': 'Western/Eastern Olivaceous Flatbill',
+  'Rhynchocyclus olivaceus guianensis/sordidus':
+      'Eastern Olivaceous Flatbill (Guianan)',
+  'Rhynchocyclus olivaceus olivaceus':
+      'Eastern Olivaceous Flatbill (Olivaceous)',
+  'Rhynchocyclus aequinoctialis/olivaceus':
+      'Western/Eastern Olivaceous Flatbill',
   'Rhynchocyclus pacificus': 'Pacific Flatbill',
   'Rhynchocyclus fulvipectus': 'Fulvous-breasted Flatbill',
   'Rhynchocyclus sp.': 'Rhynchocyclus sp.',
   'Tolmomyias sulphurescens': 'Yellow-olive Flatbill',
   'Tolmomyias sulphurescens cinereiceps': 'Yellow-olive Flatbill (Gray-headed)',
-  'Tolmomyias sulphurescens flavoolivaceus': 'Yellow-olive Flatbill (Yellow-olive)',
+  'Tolmomyias sulphurescens flavoolivaceus':
+      'Yellow-olive Flatbill (Yellow-olive)',
   'Tolmomyias sulphurescens asemus': 'Yellow-olive Flatbill (asemus)',
   'Tolmomyias sulphurescens confusus': 'Yellow-olive Flatbill (confusus)',
   'Tolmomyias sulphurescens exortivus': 'Yellow-olive Flatbill (exortivus)',
   'Tolmomyias sulphurescens berlepschi': 'Yellow-olive Flatbill (Trinidad)',
   'Tolmomyias sulphurescens cherriei/duidae': 'Yellow-olive Flatbill (Guianan)',
-  'Tolmomyias sulphurescens aequatorialis': 'Yellow-olive Flatbill (Equatorial)',
+  'Tolmomyias sulphurescens aequatorialis':
+      'Yellow-olive Flatbill (Equatorial)',
   'Tolmomyias sulphurescens peruvianus': 'Yellow-olive Flatbill (Andes)',
   'Tolmomyias sulphurescens insignis': 'Yellow-olive Flatbill (Riverine)',
   'Tolmomyias sulphurescens mixtus': 'Yellow-olive Flatbill (Para)',
@@ -8840,7 +9508,8 @@ const Map<String, String> scientificToCommon = {
   'Tolmomyias assimilis neglectus': 'Yellow-margined Flatbill (neglectus)',
   'Tolmomyias assimilis examinatus': 'Yellow-margined Flatbill (examinatus)',
   'Tolmomyias assimilis obscuriceps': 'Yellow-margined Flatbill (obscuriceps)',
-  'Tolmomyias assimilis [assimilis Group]': 'Yellow-margined Flatbill (assimilis Group)',
+  'Tolmomyias assimilis [assimilis Group]':
+      'Yellow-margined Flatbill (assimilis Group)',
   'Tolmomyias assimilis sucunduri': 'Yellow-margined Flatbill (Sucunduri)',
   'Tolmomyias assimilis paraensis': 'Yellow-margined Flatbill (paraensis)',
   'Tolmomyias poliocephalus': 'Gray-crowned Flatbill',
@@ -8850,8 +9519,10 @@ const Map<String, String> scientificToCommon = {
   'Tolmomyias sp.': 'Tolmomyias sp.',
   'Pyrrhomyias cinnamomeus': 'Cinnamon Flycatcher',
   'Pyrrhomyias cinnamomeus assimilis': 'Cinnamon Flycatcher (Santa Marta)',
-  'Pyrrhomyias cinnamomeus [vieillotioides Group]': 'Cinnamon Flycatcher (Venezuelan)',
-  'Pyrrhomyias cinnamomeus cinnamomeus/pyrrhopterus': 'Cinnamon Flycatcher (Andean)',
+  'Pyrrhomyias cinnamomeus [vieillotioides Group]':
+      'Cinnamon Flycatcher (Venezuelan)',
+  'Pyrrhomyias cinnamomeus cinnamomeus/pyrrhopterus':
+      'Cinnamon Flycatcher (Andean)',
   'Hirundinea ferruginea': 'Cliff Flycatcher',
   'Hirundinea ferruginea ferruginea/sclateri': 'Cliff Flycatcher (Cliff)',
   'Hirundinea ferruginea bellicosa/pallidior': 'Cliff Flycatcher (Swallow)',
@@ -8866,14 +9537,19 @@ const Map<String, String> scientificToCommon = {
   'Ornithion inerme': 'White-lored Tyrannulet',
   'Camptostoma imberbe': 'Northern Beardless-Tyrannulet',
   'Camptostoma imberbe imberbe': 'Northern Beardless-Tyrannulet (Northern)',
-  'Camptostoma imberbe thyellophilum': 'Northern Beardless-Tyrannulet (Yucatan)',
+  'Camptostoma imberbe thyellophilum':
+      'Northern Beardless-Tyrannulet (Yucatan)',
   'Camptostoma obsoletum': 'Southern Beardless-Tyrannulet',
-  'Camptostoma obsoletum [flaviventre Group]': 'Southern Beardless-Tyrannulet (Central American)',
+  'Camptostoma obsoletum [flaviventre Group]':
+      'Southern Beardless-Tyrannulet (Central American)',
   'Camptostoma obsoletum caucae': 'Southern Beardless-Tyrannulet (Colombian)',
   'Camptostoma obsoletum pusillum': 'Southern Beardless-Tyrannulet (Caribbean)',
-  'Camptostoma obsoletum napaeum/olivaceum': 'Southern Beardless-Tyrannulet (Amazonian)',
-  'Camptostoma obsoletum [sclateri Group]': 'Southern Beardless-Tyrannulet (Peruvian)',
-  'Camptostoma obsoletum [obsoletum Group]': 'Southern Beardless-Tyrannulet (Southern)',
+  'Camptostoma obsoletum napaeum/olivaceum':
+      'Southern Beardless-Tyrannulet (Amazonian)',
+  'Camptostoma obsoletum [sclateri Group]':
+      'Southern Beardless-Tyrannulet (Peruvian)',
+  'Camptostoma obsoletum [obsoletum Group]':
+      'Southern Beardless-Tyrannulet (Southern)',
   'Suiriri suiriri': 'Suiriri Flycatcher',
   'Mecocerculus poecilocercus': 'White-tailed Tyrannulet',
   'Mecocerculus hellmayri': 'Buff-banded Tyrannulet',
@@ -8896,7 +9572,8 @@ const Map<String, String> scientificToCommon = {
   'Nesotriccus tumbezanus/maranonicus': 'Tumbesian/Marañon Tyrannulet',
   'Nesotriccus ridgwayi': 'Cocos Tyrannulet',
   'Nesotriccus murinus': 'Mouse-colored Tyrannulet',
-  'Nesotriccus murinus incomtus/eremonomus': 'Mouse-colored Tyrannulet (Northern)',
+  'Nesotriccus murinus incomtus/eremonomus':
+      'Mouse-colored Tyrannulet (Northern)',
   'Nesotriccus murinus murinus/wagae': 'Mouse-colored Tyrannulet (Southern)',
   'Nesotriccus sp.': 'Nesotriccus sp.',
   'Capsiempis flaveola': 'Yellow Tyrannulet',
@@ -8959,10 +9636,12 @@ const Map<String, String> scientificToCommon = {
   'Serpophaga hypoleuca': 'River Tyrannulet',
   'Serpophaga nigricans': 'Sooty Tyrannulet',
   'Serpophaga subcristata': 'White-crested Tyrannulet',
-  'Serpophaga subcristata subcristata/straminea': 'White-crested Tyrannulet (Sulphur-bellied)',
+  'Serpophaga subcristata subcristata/straminea':
+      'White-crested Tyrannulet (Sulphur-bellied)',
   'Serpophaga subcristata munda': 'White-crested Tyrannulet (White-bellied)',
   'Serpophaga griseicapilla': 'Straneck\'s Tyrannulet',
-  'Serpophaga subcristata/griseicapilla': 'White-crested/Straneck\'s Tyrannulet',
+  'Serpophaga subcristata/griseicapilla':
+      'White-crested/Straneck\'s Tyrannulet',
   'Serpophaga sp.': 'Serpophaga sp.',
   'Phyllomyias virescens': 'Greenish Tyrannulet',
   'Phyllomyias reiseri': 'Reiser\'s Tyrannulet',
@@ -8980,7 +9659,8 @@ const Map<String, String> scientificToCommon = {
   'Phyllomyias sp.': 'Phyllomyias sp.',
   'Acrochordopus zeledoni': 'White-fronted Tyrannulet',
   'Acrochordopus zeledoni zeledoni': 'White-fronted Tyrannulet (Zeledon\'s)',
-  'Acrochordopus zeledoni [leucogonys Group]': 'White-fronted Tyrannulet (White-fronted)',
+  'Acrochordopus zeledoni [leucogonys Group]':
+      'White-fronted Tyrannulet (White-fronted)',
   'Acrochordopus burmeisteri': 'Rough-legged Tyrannulet',
   'Tyranniscus nigrocapillus': 'Black-capped Tyrannulet',
   'Tyranniscus cinereiceps': 'Ashy-headed Tyrannulet',
@@ -8995,7 +9675,8 @@ const Map<String, String> scientificToCommon = {
   'Zimmerius albigularis': 'Choco Tyrannulet',
   'Zimmerius improbus': 'Spectacled Tyrannulet',
   'Zimmerius chrysops': 'Golden-faced Tyrannulet',
-  'Zimmerius chrysops minimus/cumanensis': 'Golden-faced Tyrannulet (Coopmans\'s)',
+  'Zimmerius chrysops minimus/cumanensis':
+      'Golden-faced Tyrannulet (Coopmans\'s)',
   'Zimmerius chrysops chrysops': 'Golden-faced Tyrannulet (Golden-faced)',
   'Zimmerius viridiflavus': 'Peruvian Tyrannulet',
   'Zimmerius viridiflavus flavidifrons': 'Peruvian Tyrannulet (Loja)',
@@ -9013,7 +9694,8 @@ const Map<String, String> scientificToCommon = {
   'Stigmatura bahiae': 'Bahia Wagtail-Tyrant',
   'Stigmatura [undescribed form]': 'Orinoco Wagtail-Tyrant (undescribed form)',
   'Stigmatura budytoides': 'Greater Wagtail-Tyrant',
-  'Stigmatura budytoides [budytoides Group]': 'Greater Wagtail-Tyrant (Greater)',
+  'Stigmatura budytoides [budytoides Group]':
+      'Greater Wagtail-Tyrant (Greater)',
   'Stigmatura budytoides gracilis': 'Greater Wagtail-Tyrant (Caatinga)',
   'Inezia tenuirostris': 'Slender-billed Tyrannulet',
   'Inezia inornata': 'Plain Tyrannulet',
@@ -9031,7 +9713,8 @@ const Map<String, String> scientificToCommon = {
   'Myiophobus crypterythrus/rufescens': 'Mouse-gray/Rufescent Flycatcher',
   'Myiophobus sp.': 'Myiophobus sp.',
   'Lathrotriccus euleri': 'Euler\'s Flycatcher',
-  'Lathrotriccus euleri [flaviventris Group]': 'Euler\'s Flycatcher (Lawrence\'s)',
+  'Lathrotriccus euleri [flaviventris Group]':
+      'Euler\'s Flycatcher (Lawrence\'s)',
   'Lathrotriccus euleri euleri/argentinus': 'Euler\'s Flycatcher (Euler\'s)',
   'Lathrotriccus griseipectus': 'Gray-breasted Flycatcher',
   'Aphanotriccus capitalis': 'Tawny-chested Flycatcher',
@@ -9039,7 +9722,8 @@ const Map<String, String> scientificToCommon = {
   'Xenotriccus callizonus': 'Belted Flycatcher',
   'Xenotriccus mexicanus': 'Pileated Flycatcher',
   'Mitrephanes phaeocercus': 'Tufted Flycatcher',
-  'Mitrephanes phaeocercus phaeocercus/tenuirostris': 'Tufted Flycatcher (Mexican)',
+  'Mitrephanes phaeocercus phaeocercus/tenuirostris':
+      'Tufted Flycatcher (Mexican)',
   'Mitrephanes phaeocercus aurantiiventris': 'Tufted Flycatcher (Costa Rican)',
   'Mitrephanes phaeocercus berlepschi': 'Tufted Flycatcher (South American)',
   'Mitrephanes olivaceus': 'Olive Flycatcher',
@@ -9064,7 +9748,8 @@ const Map<String, String> scientificToCommon = {
   'Contopus caribaeus': 'Cuban Pewee',
   'Contopus hispaniolensis': 'Hispaniolan Pewee',
   'Contopus latirostris': 'Lesser Antillean Pewee',
-  'Contopus latirostris brunneicapillus': 'Lesser Antillean Pewee (Lesser Antilles)',
+  'Contopus latirostris brunneicapillus':
+      'Lesser Antillean Pewee (Lesser Antilles)',
   'Contopus latirostris blancoi': 'Lesser Antillean Pewee (Puerto Rico)',
   'Contopus latirostris latirostris': 'Lesser Antillean Pewee (St. Lucia)',
   'Contopus sp.': 'pewee sp. (Contopus sp.)',
@@ -9078,7 +9763,8 @@ const Map<String, String> scientificToCommon = {
   'Empidonax traillii traillii': 'Willow Flycatcher (Eastern)',
   'Empidonax traillii brewsteri/adastus': 'Willow Flycatcher (Northwestern)',
   'Empidonax traillii extimus': 'Willow Flycatcher (Southwestern)',
-  'Empidonax alnorum/traillii': 'Alder/Willow Flycatcher (Traill\'s Flycatcher)',
+  'Empidonax alnorum/traillii':
+      'Alder/Willow Flycatcher (Traill\'s Flycatcher)',
   'Empidonax albigularis': 'White-throated Flycatcher',
   'Empidonax minimus': 'Least Flycatcher',
   'Empidonax hammondii': 'Hammond\'s Flycatcher',
@@ -9088,18 +9774,23 @@ const Map<String, String> scientificToCommon = {
   'Empidonax wrightii/oberholseri': 'Gray/Dusky Flycatcher',
   'Empidonax affinis': 'Pine Flycatcher',
   'Empidonax difficilis': 'Western Flycatcher',
-  'Empidonax difficilis [difficilis Group]': 'Western Flycatcher (Pacific-slope)',
-  'Empidonax difficilis occidentalis/hellmayri': 'Western Flycatcher (Cordilleran)',
-  'Empidonax difficilis difficilis x hellmayri': 'Western Flycatcher (Pacific-slope x Cordilleran Flycatcher)',
+  'Empidonax difficilis [difficilis Group]':
+      'Western Flycatcher (Pacific-slope)',
+  'Empidonax difficilis occidentalis/hellmayri':
+      'Western Flycatcher (Cordilleran)',
+  'Empidonax difficilis difficilis x hellmayri':
+      'Western Flycatcher (Pacific-slope x Cordilleran Flycatcher)',
   'Empidonax flavescens': 'Yellowish Flycatcher',
-  'Empidonax flavescens imperturbatus/salvini': 'Yellowish Flycatcher (Northern)',
+  'Empidonax flavescens imperturbatus/salvini':
+      'Yellowish Flycatcher (Northern)',
   'Empidonax flavescens flavescens': 'Yellowish Flycatcher (Southern)',
   'Empidonax fulvifrons': 'Buff-breasted Flycatcher',
   'Empidonax atriceps': 'Black-capped Flycatcher',
   'Empidonax sp.': 'Empidonax sp.',
   'Sayornis nigricans': 'Black Phoebe',
   'Sayornis nigricans [nigricans Group]': 'Black Phoebe (Northern)',
-  'Sayornis nigricans latirostris/angustirostris': 'Black Phoebe (White-winged)',
+  'Sayornis nigricans latirostris/angustirostris':
+      'Black Phoebe (White-winged)',
   'Sayornis phoebe': 'Eastern Phoebe',
   'Sayornis nigricans x phoebe': 'Black x Eastern Phoebe (hybrid)',
   'Sayornis nigricans/phoebe': 'Black/Eastern Phoebe',
@@ -9115,7 +9806,8 @@ const Map<String, String> scientificToCommon = {
   'Pyrocephalus rubinus': 'Vermilion Flycatcher',
   'Pyrocephalus rubinus [mexicanus Group]': 'Vermilion Flycatcher (Northern)',
   'Pyrocephalus rubinus saturatus': 'Vermilion Flycatcher (saturatus)',
-  'Pyrocephalus rubinus [obscurus Group]': 'Vermilion Flycatcher (obscurus Group)',
+  'Pyrocephalus rubinus [obscurus Group]':
+      'Vermilion Flycatcher (obscurus Group)',
   'Pyrocephalus rubinus rubinus': 'Vermilion Flycatcher (Austral)',
   'Pyrocephalus nanus': 'Brujo Flycatcher',
   'Pyrocephalus nanus nanus': 'Brujo Flycatcher (Galapagos)',
@@ -9139,7 +9831,8 @@ const Map<String, String> scientificToCommon = {
   'Knipolegus striaticeps': 'Cinereous Tyrant',
   'Knipolegus aterrimus': 'White-winged Black-Tyrant',
   'Knipolegus aterrimus heterogyna': 'White-winged Black-Tyrant (White-rumped)',
-  'Knipolegus aterrimus aterrimus/anthracinus': 'White-winged Black-Tyrant (White-winged)',
+  'Knipolegus aterrimus aterrimus/anthracinus':
+      'White-winged Black-Tyrant (White-winged)',
   'Knipolegus hudsoni': 'Hudson\'s Black-Tyrant',
   'Knipolegus aterrimus/hudsoni': 'White-winged/Hudson\'s Black-Tyrant',
   'Knipolegus sp.': 'black-tyrant sp.',
@@ -9154,12 +9847,16 @@ const Map<String, String> scientificToCommon = {
   'Muscisaxicola albifrons': 'White-fronted Ground-Tyrant',
   'Muscisaxicola flavinucha': 'Ochre-naped Ground-Tyrant',
   'Muscisaxicola rufivertex': 'Rufous-naped Ground-Tyrant',
-  'Muscisaxicola rufivertex occipitalis': 'Rufous-naped Ground-Tyrant (Chestnut-naped)',
-  'Muscisaxicola rufivertex pallidiceps': 'Rufous-naped Ground-Tyrant (pallidiceps)',
-  'Muscisaxicola rufivertex rufivertex': 'Rufous-naped Ground-Tyrant (Rufous-naped)',
+  'Muscisaxicola rufivertex occipitalis':
+      'Rufous-naped Ground-Tyrant (Chestnut-naped)',
+  'Muscisaxicola rufivertex pallidiceps':
+      'Rufous-naped Ground-Tyrant (pallidiceps)',
+  'Muscisaxicola rufivertex rufivertex':
+      'Rufous-naped Ground-Tyrant (Rufous-naped)',
   'Muscisaxicola maclovianus': 'Dark-faced Ground-Tyrant',
   'Muscisaxicola maclovianus mentalis': 'Dark-faced Ground-Tyrant (mentalis)',
-  'Muscisaxicola maclovianus maclovianus': 'Dark-faced Ground-Tyrant (maclovianus)',
+  'Muscisaxicola maclovianus maclovianus':
+      'Dark-faced Ground-Tyrant (maclovianus)',
   'Muscisaxicola albilora': 'White-browed Ground-Tyrant',
   'Muscisaxicola alpinus': 'Plain-capped Ground-Tyrant',
   'Muscisaxicola capistratus': 'Cinnamon-bellied Ground-Tyrant',
@@ -9180,7 +9877,8 @@ const Map<String, String> scientificToCommon = {
   'Agriornis lividus': 'Great Shrike-Tyrant',
   'Agriornis micropterus': 'Gray-bellied Shrike-Tyrant',
   'Agriornis micropterus andecola': 'Gray-bellied Shrike-Tyrant (andecola)',
-  'Agriornis micropterus micropterus': 'Gray-bellied Shrike-Tyrant (micropterus)',
+  'Agriornis micropterus micropterus':
+      'Gray-bellied Shrike-Tyrant (micropterus)',
   'Agriornis lividus/micropterus': 'Great/Gray-bellied Shrike-Tyrant',
   'Agriornis murinus': 'Lesser Shrike-Tyrant',
   'Agriornis sp.': 'shrike-tyrant sp.',
@@ -9199,8 +9897,10 @@ const Map<String, String> scientificToCommon = {
   'Alectrurus tricolor': 'Cock-tailed Tyrant',
   'Alectrurus risora': 'Strange-tailed Tyrant',
   'Silvicultrix frontalis': 'Crowned Chat-Tyrant',
-  'Silvicultrix frontalis frontalis/albidiadema': 'Crowned Chat-Tyrant (Crowned)',
-  'Silvicultrix frontalis spodionota/boliviana': 'Crowned Chat-Tyrant (Kalinowski\'s)',
+  'Silvicultrix frontalis frontalis/albidiadema':
+      'Crowned Chat-Tyrant (Crowned)',
+  'Silvicultrix frontalis spodionota/boliviana':
+      'Crowned Chat-Tyrant (Kalinowski\'s)',
   'Silvicultrix jelskii': 'Jelski\'s Chat-Tyrant',
   'Silvicultrix pulchella': 'Golden-browed Chat-Tyrant',
   'Silvicultrix diadema': 'Yellow-bellied Chat-Tyrant',
@@ -9248,19 +9948,24 @@ const Map<String, String> scientificToCommon = {
   'Myiarchus barbirostris': 'Sad Flycatcher',
   'Myiarchus tuberculifer': 'Dusky-capped Flycatcher',
   'Myiarchus tuberculifer olivascens': 'Dusky-capped Flycatcher (olivascens)',
-  'Myiarchus tuberculifer [lawrenceii Group]': 'Dusky-capped Flycatcher (lawrenceii Group)',
-  'Myiarchus tuberculifer tuberculifer/pallidus': 'Dusky-capped Flycatcher (tuberculifer/pallidus)',
-  'Myiarchus tuberculifer nigriceps/atriceps': 'Dusky-capped Flycatcher (nigriceps/atriceps)',
+  'Myiarchus tuberculifer [lawrenceii Group]':
+      'Dusky-capped Flycatcher (lawrenceii Group)',
+  'Myiarchus tuberculifer tuberculifer/pallidus':
+      'Dusky-capped Flycatcher (tuberculifer/pallidus)',
+  'Myiarchus tuberculifer nigriceps/atriceps':
+      'Dusky-capped Flycatcher (nigriceps/atriceps)',
   'Myiarchus swainsoni': 'Swainson\'s Flycatcher',
   'Myiarchus swainsoni phaeonotus': 'Swainson\'s Flycatcher (phaeonotus)',
-  'Myiarchus swainsoni [swainsoni Group]': 'Swainson\'s Flycatcher (swainsoni Group)',
+  'Myiarchus swainsoni [swainsoni Group]':
+      'Swainson\'s Flycatcher (swainsoni Group)',
   'Myiarchus venezuelensis': 'Venezuelan Flycatcher',
   'Myiarchus panamensis': 'Panama Flycatcher',
   'Myiarchus venezuelensis/panamensis': 'Venezuelan/Panama Flycatcher',
   'Myiarchus ferox': 'Short-crested Flycatcher',
   'Myiarchus apicalis': 'Apical Flycatcher',
   'Myiarchus phaeocephalus': 'Sooty-crowned Flycatcher',
-  'Myiarchus phaeocephalus phaeocephalus': 'Sooty-crowned Flycatcher (phaeocephalus)',
+  'Myiarchus phaeocephalus phaeocephalus':
+      'Sooty-crowned Flycatcher (phaeocephalus)',
   'Myiarchus phaeocephalus interior': 'Sooty-crowned Flycatcher (interior)',
   'Myiarchus cephalotes': 'Pale-edged Flycatcher',
   'Myiarchus cinerascens': 'Ash-throated Flycatcher',
@@ -9270,14 +9975,17 @@ const Map<String, String> scientificToCommon = {
   'Myiarchus flavidior': 'Salvadoran Flycatcher',
   'Myiarchus cinerascens/nuttingi': 'Ash-throated/Nutting\'s Flycatcher',
   'Myiarchus cinerascens/flavidior': 'Ash-throated/Salvadoran Flycatcher',
-  'Myiarchus cinerascens/nuttingi/flavidior': 'Ash-throated/Nutting\'s/Salvadoran Flycatcher',
+  'Myiarchus cinerascens/nuttingi/flavidior':
+      'Ash-throated/Nutting\'s/Salvadoran Flycatcher',
   'Myiarchus nuttingi/flavidior': 'Nutting\'s/Salvadoran Flycatcher',
   'Myiarchus crinitus': 'Great Crested Flycatcher',
   'Myiarchus tyrannulus': 'Brown-crested Flycatcher',
   'Myiarchus tyrannulus magister': 'Brown-crested Flycatcher (Arizona)',
-  'Myiarchus tyrannulus [cooperi Group]': 'Brown-crested Flycatcher (Cooper\'s)',
+  'Myiarchus tyrannulus [cooperi Group]':
+      'Brown-crested Flycatcher (Cooper\'s)',
   'Myiarchus tyrannulus brachyurus': 'Brown-crested Flycatcher (Ometepe)',
-  'Myiarchus tyrannulus tyrannulus/bahiae': 'Brown-crested Flycatcher (South American)',
+  'Myiarchus tyrannulus tyrannulus/bahiae':
+      'Brown-crested Flycatcher (South American)',
   'Myiarchus magnirostris': 'Galapagos Flycatcher',
   'Myiarchus nugator': 'Grenada Flycatcher',
   'Myiarchus validus': 'Rufous-tailed Flycatcher',
@@ -9295,13 +10003,15 @@ const Map<String, String> scientificToCommon = {
   'Megarynchus pitangua chrysogaster': 'Boat-billed Flycatcher (Tumbes)',
   'Myiozetetes cayanensis': 'Rusty-margined Flycatcher',
   'Myiozetetes similis': 'Social Flycatcher',
-  'Myiozetetes similis [texensis Group]': 'Social Flycatcher (Vermilion-crowned)',
+  'Myiozetetes similis [texensis Group]':
+      'Social Flycatcher (Vermilion-crowned)',
   'Myiozetetes similis [similis Group]': 'Social Flycatcher (Social)',
   'Myiozetetes similis grandis': 'Social Flycatcher (Tumbes)',
   'Myiozetetes cayanensis/similis': 'Rusty-margined/Social Flycatcher',
   'Myiozetetes granadensis': 'Gray-capped Flycatcher',
   'Myiozetetes luteiventris': 'Dusky-chested Flycatcher',
-  'Myiozetetes granadensis/luteiventris': 'Gray-capped/Dusky-chested Flycatcher',
+  'Myiozetetes granadensis/luteiventris':
+      'Gray-capped/Dusky-chested Flycatcher',
   'Phelpsia inornata': 'White-bearded Flycatcher',
   'Conopias albovittatus': 'White-ringed Flycatcher',
   'Conopias parvus': 'Yellow-throated Flycatcher',
@@ -9325,7 +10035,8 @@ const Map<String, String> scientificToCommon = {
   'Tyrannus melancholicus': 'Tropical Kingbird',
   'Tyrannus melancholicus occidentalis': 'Tropical Kingbird (West Mexican)',
   'Tyrannus melancholicus satrapa': 'Tropical Kingbird (Middle American)',
-  'Tyrannus melancholicus melancholicus/despotes': 'Tropical Kingbird (South American)',
+  'Tyrannus melancholicus melancholicus/despotes':
+      'Tropical Kingbird (South American)',
   'Tyrannus albogularis/melancholicus': 'White-throated/Tropical Kingbird',
   'Tyrannus couchii': 'Couch\'s Kingbird',
   'Tyrannus melancholicus/couchii': 'Tropical/Couch\'s Kingbird',
@@ -9342,21 +10053,27 @@ const Map<String, String> scientificToCommon = {
   'Tyrannus melancholicus x dominicensis': 'Tropical x Gray Kingbird (hybrid)',
   'Tyrannus verticalis x dominicensis': 'Western x Gray Kingbird (hybrid)',
   'Tyrannus caudifasciatus': 'Loggerhead Kingbird',
-  'Tyrannus caudifasciatus [caudifasciatus Group]': 'Loggerhead Kingbird (Loggerhead)',
+  'Tyrannus caudifasciatus [caudifasciatus Group]':
+      'Loggerhead Kingbird (Loggerhead)',
   'Tyrannus caudifasciatus taylori': 'Loggerhead Kingbird (Puerto Rico)',
   'Tyrannus caudifasciatus gabbii': 'Loggerhead Kingbird (Hispaniolan)',
   'Tyrannus cubensis': 'Giant Kingbird',
   'Tyrannus forficatus': 'Scissor-tailed Flycatcher',
-  'Tyrannus melancholicus x forficatus': 'Tropical Kingbird x Scissor-tailed Flycatcher (hybrid)',
-  'Tyrannus couchii x forficatus': 'Couch\'s Kingbird x Scissor-tailed Flycatcher (hybrid)',
-  'Tyrannus verticalis x forficatus': 'Western Kingbird x Scissor-tailed Flycatcher (hybrid)',
-  'Tyrannus tyrannus x forficatus': 'Eastern Kingbird x Scissor-tailed Flycatcher (hybrid)',
+  'Tyrannus melancholicus x forficatus':
+      'Tropical Kingbird x Scissor-tailed Flycatcher (hybrid)',
+  'Tyrannus couchii x forficatus':
+      'Couch\'s Kingbird x Scissor-tailed Flycatcher (hybrid)',
+  'Tyrannus verticalis x forficatus':
+      'Western Kingbird x Scissor-tailed Flycatcher (hybrid)',
+  'Tyrannus tyrannus x forficatus':
+      'Eastern Kingbird x Scissor-tailed Flycatcher (hybrid)',
   'Tyrannus savana': 'Fork-tailed Flycatcher',
   'Tyrannus savana savana': 'Fork-tailed Flycatcher (savana)',
   'Tyrannus savana monachus': 'Fork-tailed Flycatcher (monachus)',
   'Tyrannus savana sanctaemartae': 'Fork-tailed Flycatcher (sanctaemartae)',
   'Tyrannus savana circumdatus': 'Fork-tailed Flycatcher (circumdatus)',
-  'Tyrannus melancholicus x savana': 'Tropical Kingbird x Fork-tailed Flycatcher (hybrid)',
+  'Tyrannus melancholicus x savana':
+      'Tropical Kingbird x Fork-tailed Flycatcher (hybrid)',
   'Tyrannus sp.': 'Tyrannus sp.',
   'Tyrannidae sp.': 'new world flycatcher sp.',
   'Menura alberti': 'Albert\'s Lyrebird',
@@ -9387,7 +10104,8 @@ const Map<String, String> scientificToCommon = {
   'Sericulus bakeri': 'Fire-maned Bowerbird',
   'Sericulus chrysocephalus': 'Regent Bowerbird',
   'Ptilonorhynchus violaceus': 'Satin Bowerbird',
-  'Sericulus chrysocephalus x Ptilonorhynchus violaceus': 'Regent x Satin Bowerbird (hybrid)',
+  'Sericulus chrysocephalus x Ptilonorhynchus violaceus':
+      'Regent x Satin Bowerbird (hybrid)',
   'Chlamydera guttata': 'Western Bowerbird',
   'Chlamydera maculata': 'Spotted Bowerbird',
   'Chlamydera nuchalis': 'Great Bowerbird',
@@ -9398,7 +10116,8 @@ const Map<String, String> scientificToCommon = {
   'Cormobates placens': 'Papuan Treecreeper',
   'Cormobates leucophaea': 'White-throated Treecreeper',
   'Cormobates leucophaea minor': 'White-throated Treecreeper (Little)',
-  'Cormobates leucophaea [leucophaea Group]': 'White-throated Treecreeper (White-throated)',
+  'Cormobates leucophaea [leucophaea Group]':
+      'White-throated Treecreeper (White-throated)',
   'Climacteris affinis': 'White-browed Treecreeper',
   'Climacteris erythrops': 'Red-browed Treecreeper',
   'Climacteris picumnus': 'Brown Treecreeper',
@@ -9437,8 +10156,10 @@ const Map<String, String> scientificToCommon = {
   'Malurus elegans': 'Red-winged Fairywren',
   'Malurus pulcherrimus': 'Blue-breasted Fairywren',
   'Malurus assimilis': 'Purple-backed Fairywren',
-  'Malurus assimilis dulcis/rogersi': 'Purple-backed Fairywren (Lavender-flanked)',
-  'Malurus assimilis assimilis/bernieri': 'Purple-backed Fairywren (Purple-backed)',
+  'Malurus assimilis dulcis/rogersi':
+      'Purple-backed Fairywren (Lavender-flanked)',
+  'Malurus assimilis assimilis/bernieri':
+      'Purple-backed Fairywren (Purple-backed)',
   'Malurus lamberti': 'Variegated Fairywren',
   'Malurus assimilis/lamberti': 'Purple-backed/Variegated Fairywren',
   'Malurus amabilis': 'Lovely Fairywren',
@@ -9449,14 +10170,17 @@ const Map<String, String> scientificToCommon = {
   'Malurus cyaneus': 'Superb Fairywren',
   'Malurus leucopterus': 'White-winged Fairywren',
   'Malurus leucopterus leuconotus': 'White-winged Fairywren (Blue-and-white)',
-  'Malurus leucopterus leucopterus/edouardi': 'White-winged Fairywren (Black-and-white)',
+  'Malurus leucopterus leucopterus/edouardi':
+      'White-winged Fairywren (Black-and-white)',
   'Malurus cyaneus x leucopterus': 'Superb x White-winged Fairywren (hybrid)',
   'Malurus melanocephalus': 'Red-backed Fairywren',
   'Malurus cyaneus x melanocephalus': 'Superb x Red-backed Fairywren (hybrid)',
   'Malurus alboscapulatus': 'White-shouldered Fairywren',
   'Malurus alboscapulatus lorentzi': 'White-shouldered Fairywren (Southern)',
-  'Malurus alboscapulatus alboscapulatus/naimii': 'White-shouldered Fairywren (Pied)',
-  'Malurus alboscapulatus [moretoni Group]': 'White-shouldered Fairywren (Black)',
+  'Malurus alboscapulatus alboscapulatus/naimii':
+      'White-shouldered Fairywren (Pied)',
+  'Malurus alboscapulatus [moretoni Group]':
+      'White-shouldered Fairywren (Black)',
   'Malurus sp.': 'fairywren sp.',
   'Myza celebensis': 'Dark-eared Myza',
   'Myza sarasinorum': 'White-eared Myza',
@@ -9473,7 +10197,8 @@ const Map<String, String> scientificToCommon = {
   'Pycnopygius stictocephalus': 'Streak-headed Honeyeater',
   'Prosthemadera novaeseelandiae': 'Tui',
   'Anthornis melanura': 'New Zealand Bellbird',
-  'Prosthemadera novaeseelandiae/Anthornis melanura': 'Tui/New Zealand Bellbird',
+  'Prosthemadera novaeseelandiae/Anthornis melanura':
+      'Tui/New Zealand Bellbird',
   'Anthornis melanocephala': 'Chatham Islands Bellbird',
   'Meliphaga aruensis': 'Puff-backed Honeyeater',
   'Meliphaga notata': 'Yellow-spotted Honeyeater',
@@ -9503,7 +10228,8 @@ const Map<String, String> scientificToCommon = {
   'Caligavis subfrenata': 'Black-throated Honeyeater',
   'Caligavis obscura': 'Obscure Honeyeater',
   'Lichenostomus melanops': 'Yellow-tufted Honeyeater',
-  'Lichenostomus melanops melanops/meltoni': 'Yellow-tufted Honeyeater (Yellow-tufted)',
+  'Lichenostomus melanops melanops/meltoni':
+      'Yellow-tufted Honeyeater (Yellow-tufted)',
   'Lichenostomus melanops cassidix': 'Yellow-tufted Honeyeater (Helmeted)',
   'Lichenostomus cratitius': 'Purple-gaped Honeyeater',
   'Manorina melanophrys': 'Bell Miner',
@@ -9512,7 +10238,8 @@ const Map<String, String> scientificToCommon = {
   'Manorina flavigula [flavigula Group]': 'Yellow-throated Miner (Pale-rumped)',
   'Manorina flavigula obscura': 'Yellow-throated Miner (Dark-rumped)',
   'Manorina melanotis': 'Black-eared Miner',
-  'Manorina flavigula x melanotis': 'Yellow-throated x Black-eared Miner (hybrid)',
+  'Manorina flavigula x melanotis':
+      'Yellow-throated x Black-eared Miner (hybrid)',
   'Manorina sp.': 'miner sp. (Manorina sp.)',
   'Melionyx fuscus': 'Sooty Honeyeater',
   'Melionyx nouhuysi': 'Short-bearded Honeyeater',
@@ -9528,7 +10255,8 @@ const Map<String, String> scientificToCommon = {
   'Melidectes belfordi joiceyi/kinneari': 'Belford\'s Melidectes (Western)',
   'Melidectes belfordi schraderensis': 'Belford\'s Melidectes (Schrader Mts.)',
   'Melidectes rufocrissalis': 'Yellow-browed Melidectes',
-  'Melidectes belfordi x rufocrissalis': 'Belford\'s x Yellow-browed Melidectes (hybrid)',
+  'Melidectes belfordi x rufocrissalis':
+      'Belford\'s x Yellow-browed Melidectes (hybrid)',
   'Melidectes belfordi/rufocrissalis': 'Belford\'s/Yellow-browed Melidectes',
   'Melidectes sp.': 'melidectes sp.',
   'Bolemoreus frenatus': 'Bridled Honeyeater',
@@ -9569,7 +10297,8 @@ const Map<String, String> scientificToCommon = {
   'Melipotes fumigatus fumigatus/goliathi': 'Smoky Honeyeater (Smoky)',
   'Melipotes carolae': 'Foja Honeyeater',
   'Melipotes ater': 'Spangled Honeyeater',
-  'Melipotes [undescribed Fakfak Mts. form]': 'Fakfak Honeyeater (undescribed form)',
+  'Melipotes [undescribed Fakfak Mts. form]':
+      'Fakfak Honeyeater (undescribed form)',
   'Melipotes sp.': 'Melipotes sp.',
   'Macgregoria pulchra': 'Macgregor\'s Honeyeater',
   'Melilestes megarhynchus': 'Long-billed Honeyeater',
@@ -9639,7 +10368,8 @@ const Map<String, String> scientificToCommon = {
   'Ptiloprora plumbea': 'Leaden Honeyeater',
   'Ptiloprora meekiana': 'Yellow-streaked Honeyeater',
   'Ptiloprora erythropleura': 'Rufous-sided Honeyeater',
-  'Ptiloprora erythropleura erythropleura': 'Rufous-sided Honeyeater (Red-eyed)',
+  'Ptiloprora erythropleura erythropleura':
+      'Rufous-sided Honeyeater (Red-eyed)',
   'Ptiloprora erythropleura dammermani': 'Rufous-sided Honeyeater (White-eyed)',
   'Ptiloprora mayri': 'Mayr\'s Honeyeater',
   'Ptiloprora guisei': 'Rufous-backed Honeyeater',
@@ -9660,7 +10390,8 @@ const Map<String, String> scientificToCommon = {
   'Phylidonyris niger': 'White-cheeked Honeyeater',
   'Phylidonyris niger niger': 'White-cheeked Honeyeater (White-cheeked)',
   'Phylidonyris niger gouldii': 'White-cheeked Honeyeater (Gould\'s)',
-  'Phylidonyris novaehollandiae x niger': 'New Holland x White-cheeked Honeyeater (hybrid)',
+  'Phylidonyris novaehollandiae x niger':
+      'New Holland x White-cheeked Honeyeater (hybrid)',
   'Trichodere cockerelli': 'White-streaked Honeyeater',
   'Nesoptilotis leucotis': 'White-eared Honeyeater',
   'Nesoptilotis flavicollis': 'Yellow-throated Honeyeater',
@@ -9688,10 +10419,14 @@ const Map<String, String> scientificToCommon = {
   'Foulehaio carunculatus': 'Eastern Wattled-Honeyeater',
   'Foulehaio taviunensis': 'Northern Wattled-Honeyeater',
   'Xanthotis flaviventer': 'Tawny-breasted Honeyeater',
-  'Xanthotis flaviventer [flaviventer Group]': 'Tawny-breasted Honeyeater (Western)',
-  'Xanthotis flaviventer meyerii/philemon': 'Tawny-breasted Honeyeater (Northern)',
-  'Xanthotis flaviventer [filiger Group]': 'Tawny-breasted Honeyeater (Southern)',
-  'Xanthotis flaviventer spilogaster': 'Tawny-breasted Honeyeater (D\'Entrecasteaux)',
+  'Xanthotis flaviventer [flaviventer Group]':
+      'Tawny-breasted Honeyeater (Western)',
+  'Xanthotis flaviventer meyerii/philemon':
+      'Tawny-breasted Honeyeater (Northern)',
+  'Xanthotis flaviventer [filiger Group]':
+      'Tawny-breasted Honeyeater (Southern)',
+  'Xanthotis flaviventer spilogaster':
+      'Tawny-breasted Honeyeater (D\'Entrecasteaux)',
   'Xanthotis polygrammus': 'Spotted Honeyeater',
   'Xanthotis macleayanus': 'Macleay\'s Honeyeater',
   'Plectorhyncha lanceolata': 'Striped Honeyeater',
@@ -9710,7 +10445,8 @@ const Map<String, String> scientificToCommon = {
   'Philemon buceroides': 'Helmeted Friarbird',
   'Philemon buceroides novaeguineae': 'Helmeted Friarbird (New Guinea)',
   'Philemon buceroides yorki': 'Helmeted Friarbird (Hornbill)',
-  'Philemon buceroides gordoni/ammitophilus': 'Helmeted Friarbird (Arnhem Land)',
+  'Philemon buceroides gordoni/ammitophilus':
+      'Helmeted Friarbird (Arnhem Land)',
   'Philemon buceroides buceroides/neglectus': 'Helmeted Friarbird (Tenggara)',
   'Philemon albitorques': 'White-naped Friarbird',
   'Philemon cockerelli': 'New Britain Friarbird',
@@ -9729,7 +10465,8 @@ const Map<String, String> scientificToCommon = {
   'Pardalotus quadragintus': 'Forty-spotted Pardalote',
   'Pardalotus rubricatus': 'Red-browed Pardalote',
   'Pardalotus striatus': 'Striated Pardalote',
-  'Pardalotus striatus [melanocephalus Group]': 'Striated Pardalote (Black-headed)',
+  'Pardalotus striatus [melanocephalus Group]':
+      'Striated Pardalote (Black-headed)',
   'Pardalotus striatus ornatus': 'Striated Pardalote (Eastern)',
   'Pardalotus striatus striatus': 'Striated Pardalote (Yellow-tipped)',
   'Pardalotus striatus substriatus': 'Striated Pardalote (Striated)',
@@ -9755,14 +10492,16 @@ const Map<String, String> scientificToCommon = {
   'Sericornis humilis': 'Tasmanian Scrubwren',
   'Sericornis frontalis': 'White-browed Scrubwren',
   'Sericornis frontalis laevigaster': 'White-browed Scrubwren (Buff-breasted)',
-  'Sericornis frontalis [frontalis Group]': 'White-browed Scrubwren (White-browed)',
+  'Sericornis frontalis [frontalis Group]':
+      'White-browed Scrubwren (White-browed)',
   'Sericornis maculatus': 'Spotted Scrubwren',
   'Sericornis frontalis/maculatus': 'White-browed/Spotted Scrubwren',
   'Sericornis keri': 'Atherton Scrubwren',
   'Sericornis beccarii': 'Tropical Scrubwren',
   'Sericornis magnirostra': 'Large-billed Scrubwren',
   'Sericornis magnirostra viridior': 'Large-billed Scrubwren (Straight-billed)',
-  'Sericornis magnirostra magnirostra/howei': 'Large-billed Scrubwren (Recurve-billed)',
+  'Sericornis magnirostra magnirostra/howei':
+      'Large-billed Scrubwren (Recurve-billed)',
   'Sericornis nouhuysi': 'Large Scrubwren',
   'Aethomyias spilodera': 'Pale-billed Scrubwren',
   'Aethomyias nigrorufus': 'Bicolored Mouse-Warbler',
@@ -9776,7 +10515,8 @@ const Map<String, String> scientificToCommon = {
   'Acanthornis magna': 'Scrubtit',
   'Aphelocephala leucopsis': 'Southern Whiteface',
   'Aphelocephala leucopsis leucopsis': 'Southern Whiteface (Gray-flanked)',
-  'Aphelocephala leucopsis castaneiventris': 'Southern Whiteface (Rufous-flanked)',
+  'Aphelocephala leucopsis castaneiventris':
+      'Southern Whiteface (Rufous-flanked)',
   'Aphelocephala nigricincta': 'Banded Whiteface',
   'Aphelocephala pectoralis': 'Chestnut-breasted Whiteface',
   'Acanthiza chrysorrhoa': 'Yellow-rumped Thornbill',
@@ -9795,7 +10535,8 @@ const Map<String, String> scientificToCommon = {
   'Acanthiza inornata': 'Western Thornbill',
   'Acanthiza reguloides': 'Buff-rumped Thornbill',
   'Acanthiza reguloides squamata': 'Buff-rumped Thornbill (Yellowish)',
-  'Acanthiza reguloides [reguloides Group]': 'Buff-rumped Thornbill (Buff-rumped)',
+  'Acanthiza reguloides [reguloides Group]':
+      'Buff-rumped Thornbill (Buff-rumped)',
   'Acanthiza sp.': 'thornbill sp.',
   'Gerygone chrysogaster': 'Yellow-bellied Gerygone',
   'Gerygone mouki': 'Brown Gerygone',
@@ -9822,7 +10563,8 @@ const Map<String, String> scientificToCommon = {
   'Gerygone sp.': 'gerygone sp.',
   'Garritornis isidorei': 'Papuan Babbler',
   'Pomatostomus temporalis': 'Gray-crowned Babbler',
-  'Pomatostomus temporalis temporalis/strepitans': 'Gray-crowned Babbler (Gray-crowned)',
+  'Pomatostomus temporalis temporalis/strepitans':
+      'Gray-crowned Babbler (Gray-crowned)',
   'Pomatostomus temporalis rubeculus': 'Gray-crowned Babbler (Rufous-breasted)',
   'Pomatostomus superciliosus': 'White-browed Babbler',
   'Pomatostomus halli': 'Hall\'s Babbler',
@@ -9845,7 +10587,8 @@ const Map<String, String> scientificToCommon = {
   'Ptilorrhoa leucosticta': 'Spotted Jewel-babbler',
   'Ptilorrhoa caerulescens': 'Blue Jewel-babbler',
   'Ptilorrhoa geislerorum': 'Dimorphic Jewel-babbler',
-  'Ptilorrhoa [undescribed Yapen form]': 'Yapen Jewel-babbler (undescribed form)',
+  'Ptilorrhoa [undescribed Yapen form]':
+      'Yapen Jewel-babbler (undescribed form)',
   'Ptilorrhoa caerulescens/geislerorum': 'Blue/Dimorphic Jewel-babbler',
   'Ptilorrhoa castanonota': 'Chestnut-backed Jewel-babbler',
   'Ptilorrhoa sp.': 'jewel-babbler sp.',
@@ -9855,7 +10598,8 @@ const Map<String, String> scientificToCommon = {
   'Pericrocotus cinnamomeus': 'Small Minivet',
   'Pericrocotus solaris': 'Gray-chinned Minivet',
   'Pericrocotus solaris [solaris Group]': 'Gray-chinned Minivet (Gray-chinned)',
-  'Pericrocotus solaris montanus/cinereigula': 'Gray-chinned Minivet (Gray-throated)',
+  'Pericrocotus solaris montanus/cinereigula':
+      'Gray-chinned Minivet (Gray-throated)',
   'Pericrocotus miniatus': 'Sunda Minivet',
   'Pericrocotus brevirostris': 'Short-billed Minivet',
   'Pericrocotus lansbergei': 'Flores Minivet',
@@ -9864,7 +10608,8 @@ const Map<String, String> scientificToCommon = {
   'Pericrocotus speciosus': 'Scarlet Minivet',
   'Pericrocotus speciosus [speciosus Group]': 'Scarlet Minivet (Scarlet)',
   'Pericrocotus speciosus leytensis/novus': 'Scarlet Minivet (Philippine Red)',
-  'Pericrocotus speciosus [marchesae Group]': 'Scarlet Minivet (Philippine Yellow)',
+  'Pericrocotus speciosus [marchesae Group]':
+      'Scarlet Minivet (Philippine Yellow)',
   'Pericrocotus speciosus exul/siebersi': 'Scarlet Minivet (Javan)',
   'Pericrocotus tegimae': 'Ryukyu Minivet',
   'Pericrocotus divaricatus': 'Ashy Minivet',
@@ -9891,7 +10636,8 @@ const Map<String, String> scientificToCommon = {
   'Coracina novaehollandiae': 'Black-faced Cuckooshrike',
   'Coracina welchmani': 'North Melanesian Cuckooshrike',
   'Coracina papuensis': 'White-bellied Cuckooshrike',
-  'Coracina papuensis [papuensis Group]': 'White-bellied Cuckooshrike (White-bellied)',
+  'Coracina papuensis [papuensis Group]':
+      'White-bellied Cuckooshrike (White-bellied)',
   'Coracina papuensis ingens': 'White-bellied Cuckooshrike (Manus)',
   'Coracina atriceps': 'Moluccan Cuckooshrike',
   'Coracina caledonica': 'South Melanesian Cuckooshrike',
@@ -9952,7 +10698,8 @@ const Map<String, String> scientificToCommon = {
   'Lalage typica': 'Mauritius Cuckooshrike',
   'Lalage melaschistos': 'Black-winged Cuckooshrike',
   'Lalage melanoptera': 'Black-headed Cuckooshrike',
-  'Coracina macei/javensis/Lalage melanoptera': 'Indian/Oriental/Black-headed Cuckooshrike',
+  'Coracina macei/javensis/Lalage melanoptera':
+      'Indian/Oriental/Black-headed Cuckooshrike',
   'Lalage fimbriata': 'Lesser Cuckooshrike',
   'Lalage polioptera': 'Indochinese Cuckooshrike',
   'Lalage sp.': 'Lalage sp.',
@@ -9972,7 +10719,8 @@ const Map<String, String> scientificToCommon = {
   'Edolisoma mindanense': 'Black-bibbed Cicadabird',
   'Edolisoma mindanense lecroyae': 'Black-bibbed Cicadabird (Luzon)',
   'Edolisoma mindanense elusum': 'Black-bibbed Cicadabird (Mindoro)',
-  'Edolisoma mindanense mindanense/ripleyi': 'Black-bibbed Cicadabird (Mindanao)',
+  'Edolisoma mindanense mindanense/ripleyi':
+      'Black-bibbed Cicadabird (Mindanao)',
   'Edolisoma mindanense everetti': 'Black-bibbed Cicadabird (Sulu)',
   'Edolisoma schisticeps': 'Gray-headed Cicadabird',
   'Edolisoma melas': 'Black Cicadabird',
@@ -9989,7 +10737,8 @@ const Map<String, String> scientificToCommon = {
   'Edolisoma nesiotis': 'Yap Cicadabird',
   'Edolisoma erythropygium': 'Central Melanesian Cicadabird',
   'Edolisoma erythropygium ultimum': 'Central Melanesian Cicadabird (Lihir)',
-  'Edolisoma erythropygium erythropygium/saturatius': 'Central Melanesian Cicadabird (Central Melanesian)',
+  'Edolisoma erythropygium erythropygium/saturatius':
+      'Central Melanesian Cicadabird (Central Melanesian)',
   'Edolisoma erythropygium nisorium': 'Central Melanesian Cicadabird (Pavuvu)',
   'Edolisoma morio': 'Sulawesi Cicadabird',
   'Edolisoma meyerii': 'Geelvink Cicadabird',
@@ -10028,8 +10777,10 @@ const Map<String, String> scientificToCommon = {
   'Androphobus viridis': 'Papuan Whipbird',
   'Psophodes olivaceus': 'Eastern Whipbird',
   'Psophodes nigrogularis': 'Western Whipbird',
-  'Psophodes nigrogularis nigrogularis/oberon': 'Western Whipbird (Black-throated)',
-  'Psophodes nigrogularis leucogaster/lashmari': 'Western Whipbird (White-bellied)',
+  'Psophodes nigrogularis nigrogularis/oberon':
+      'Western Whipbird (Black-throated)',
+  'Psophodes nigrogularis leucogaster/lashmari':
+      'Western Whipbird (White-bellied)',
   'Psophodes occidentalis': 'Chiming Wedgebill',
   'Psophodes cristatus': 'Chirruping Wedgebill',
   'Eulacestoma nigropectus': 'Wattled Ploughbill',
@@ -10047,13 +10798,18 @@ const Map<String, String> scientificToCommon = {
   'Pteruthius flaviscapis': 'Pied Shrike-Babbler',
   'Pteruthius aeralatus': 'White-browed Shrike-Babbler',
   'Pteruthius aeralatus ripleyi': 'White-browed Shrike-Babbler (Himalayan)',
-  'Pteruthius aeralatus validirostris': 'White-browed Shrike-Babbler (Chestnut-winged)',
-  'Pteruthius aeralatus ricketti': 'White-browed Shrike-Babbler (Gray-breasted)',
-  'Pteruthius aeralatus [aeralatus Group]': 'White-browed Shrike-Babbler (Blyth\'s)',
+  'Pteruthius aeralatus validirostris':
+      'White-browed Shrike-Babbler (Chestnut-winged)',
+  'Pteruthius aeralatus ricketti':
+      'White-browed Shrike-Babbler (Gray-breasted)',
+  'Pteruthius aeralatus [aeralatus Group]':
+      'White-browed Shrike-Babbler (Blyth\'s)',
   'Pteruthius aeralatus annamensis': 'White-browed Shrike-Babbler (Dalat)',
   'Pteruthius xanthochlorus': 'Green Shrike-Babbler',
-  'Pteruthius xanthochlorus xanthochlorus/occidentalis': 'Green Shrike-Babbler (Black-crowned)',
-  'Pteruthius xanthochlorus pallidus/hybrida': 'Green Shrike-Babbler (Eye-ringed)',
+  'Pteruthius xanthochlorus xanthochlorus/occidentalis':
+      'Green Shrike-Babbler (Black-crowned)',
+  'Pteruthius xanthochlorus pallidus/hybrida':
+      'Green Shrike-Babbler (Eye-ringed)',
   'Pteruthius melanotis': 'Black-eared Shrike-Babbler',
   'Pteruthius aenobarbus': 'Trilling Shrike-Babbler',
   'Pteruthius intermedius': 'Clicking Shrike-Babbler',
@@ -10062,15 +10818,21 @@ const Map<String, String> scientificToCommon = {
   'Pteruthius sp.': 'shrike-babbler sp.',
   'Erpornis zantholeuca': 'White-bellied Erpornis',
   'Cyclarhis gujanensis': 'Rufous-browed Peppershrike',
-  'Cyclarhis gujanensis [gujanensis Group]': 'Rufous-browed Peppershrike (Northern)',
+  'Cyclarhis gujanensis [gujanensis Group]':
+      'Rufous-browed Peppershrike (Northern)',
   'Cyclarhis gujanensis insularis': 'Rufous-browed Peppershrike (Cozumel I.)',
-  'Cyclarhis gujanensis [virenticeps Group]': 'Rufous-browed Peppershrike (Yellow-backed)',
-  'Cyclarhis gujanensis viridis/cearensis': 'Rufous-browed Peppershrike (Chaco)',
-  'Cyclarhis gujanensis ochrocephala': 'Rufous-browed Peppershrike (Ochre-crowned)',
+  'Cyclarhis gujanensis [virenticeps Group]':
+      'Rufous-browed Peppershrike (Yellow-backed)',
+  'Cyclarhis gujanensis viridis/cearensis':
+      'Rufous-browed Peppershrike (Chaco)',
+  'Cyclarhis gujanensis ochrocephala':
+      'Rufous-browed Peppershrike (Ochre-crowned)',
   'Cyclarhis nigrirostris': 'Black-billed Peppershrike',
-  'Cyclarhis gujanensis/nigrirostris': 'Rufous-browed/Black-billed Peppershrike',
+  'Cyclarhis gujanensis/nigrirostris':
+      'Rufous-browed/Black-billed Peppershrike',
   'Hylophilus amaurocephalus': 'Gray-eyed Greenlet',
-  'Hylophilus amaurocephalus [undescribed Beni form]': 'Gray-eyed Greenlet (Beni)',
+  'Hylophilus amaurocephalus [undescribed Beni form]':
+      'Gray-eyed Greenlet (Beni)',
   'Hylophilus poicilotis': 'Rufous-crowned Greenlet',
   'Hylophilus olivaceus': 'Olivaceous Greenlet',
   'Hylophilus pectoralis': 'Ashy-headed Greenlet',
@@ -10081,14 +10843,16 @@ const Map<String, String> scientificToCommon = {
   'Hylophilus semicinereus': 'Gray-chested Greenlet',
   'Hylophilus brunneiceps': 'Brown-headed Greenlet',
   'Hylophilus thoracicus': 'Lemon-chested Greenlet',
-  'Hylophilus thoracicus griseiventris/aemulus': 'Lemon-chested Greenlet (Lemon-chested)',
+  'Hylophilus thoracicus griseiventris/aemulus':
+      'Lemon-chested Greenlet (Lemon-chested)',
   'Hylophilus thoracicus thoracicus': 'Lemon-chested Greenlet (Rio de Janeiro)',
   'Vireolanius melitophrys': 'Chestnut-sided Shrike-Vireo',
   'Vireolanius pulchellus': 'Green Shrike-Vireo',
   'Vireolanius eximius': 'Yellow-browed Shrike-Vireo',
   'Vireolanius leucotis': 'Slaty-capped Shrike-Vireo',
   'Vireolanius leucotis mikettae': 'Slaty-capped Shrike-Vireo (Pale-legged)',
-  'Vireolanius leucotis [leucotis Group]': 'Slaty-capped Shrike-Vireo (Slaty-capped)',
+  'Vireolanius leucotis [leucotis Group]':
+      'Slaty-capped Shrike-Vireo (Slaty-capped)',
   'Tunchiornis ochraceiceps': 'Ochre-crowned Greenlet',
   'Tunchiornis ferrugineifrons': 'Rufous-fronted Greenlet',
   'Tunchiornis luteifrons': 'Guianan Greenlet',
@@ -10115,7 +10879,8 @@ const Map<String, String> scientificToCommon = {
   'Vireo crassirostris': 'Thick-billed Vireo',
   'Vireo pallens': 'Mangrove Vireo',
   'Vireo pallens paluster': 'Mangrove Vireo (West Mexico)',
-  'Vireo pallens [semiflavus Group]': 'Mangrove Vireo (Northern Central America)',
+  'Vireo pallens [semiflavus Group]':
+      'Mangrove Vireo (Northern Central America)',
   'Vireo pallens approximans': 'Mangrove Vireo (Providencia)',
   'Vireo pallens [pallens Group]': 'Mangrove Vireo (Southern Central America)',
   'Vireo bairdi': 'Cozumel Vireo',
@@ -10139,7 +10904,8 @@ const Map<String, String> scientificToCommon = {
   'Vireo cassinii cassinii': 'Cassin\'s Vireo (Cassin\'s)',
   'Vireo cassinii lucasanus': 'Cassin\'s Vireo (San Lucas)',
   'Vireo solitarius': 'Blue-headed Vireo',
-  'Vireo flavifrons x solitarius': 'Yellow-throated x Blue-headed Vireo (hybrid)',
+  'Vireo flavifrons x solitarius':
+      'Yellow-throated x Blue-headed Vireo (hybrid)',
   'Vireo cassinii/solitarius': 'Cassin\'s/Blue-headed Vireo',
   'Vireo plumbeus': 'Plumbeous Vireo',
   'Vireo plumbeus plumbeus/gravis': 'Plumbeous Vireo (Plumbeous)',
@@ -10162,7 +10928,8 @@ const Map<String, String> scientificToCommon = {
   'Vireo philadelphicus x olivaceus': 'Philadelphia x Red-eyed Vireo (hybrid)',
   'Vireo gilvus x olivaceus': 'Eastern Warbling x Red-eyed Vireo (hybrid)',
   'Vireo swainsoni x olivaceus': 'Western Warbling x Red-eyed Vireo (hybrid)',
-  'Vireo gilvus/swainsoni x olivaceus': 'Eastern/Western Warbling x Red-eyed Vireo (hybrid)',
+  'Vireo gilvus/swainsoni x olivaceus':
+      'Eastern/Western Warbling x Red-eyed Vireo (hybrid)',
   'Vireo philadelphicus/olivaceus': 'Philadelphia/Red-eyed Vireo',
   'Vireo chivi': 'Chivi Vireo',
   'Vireo chivi [agilis Group]': 'Chivi Vireo (resident)',
@@ -10170,7 +10937,8 @@ const Map<String, String> scientificToCommon = {
   'Vireo olivaceus/chivi': 'Red-eyed/Chivi Vireo',
   'Vireo gracilirostris': 'Noronha Vireo',
   'Vireo flavoviridis': 'Yellow-green Vireo',
-  'Vireo flavoviridis [flavoviridis Group]': 'Yellow-green Vireo (Yellow-green)',
+  'Vireo flavoviridis [flavoviridis Group]':
+      'Yellow-green Vireo (Yellow-green)',
   'Vireo flavoviridis forreri': 'Yellow-green Vireo (Tres Marias Is.)',
   'Vireo olivaceus/flavoviridis': 'Red-eyed/Yellow-green Vireo',
   'Vireo altiloquus': 'Black-whiskered Vireo',
@@ -10186,17 +10954,23 @@ const Map<String, String> scientificToCommon = {
   'Colluricincla boweri': 'Bower\'s Shrikethrush',
   'Colluricincla harmonica': 'Gray Shrikethrush',
   'Colluricincla harmonica [brunnea Group]': 'Gray Shrikethrush (Gray)',
-  'Colluricincla harmonica harmonica/strigata': 'Gray Shrikethrush (Brown-backed)',
+  'Colluricincla harmonica harmonica/strigata':
+      'Gray Shrikethrush (Brown-backed)',
   'Colluricincla tenebrosa': 'Sooty Shrikethrush',
   'Colluricincla megarhyncha': 'Little Shrikethrush',
   'Colluricincla megarhyncha [fortis Group]': 'Little Shrikethrush (Variable)',
   'Colluricincla megarhyncha affinis': 'Little Shrikethrush (Waigeo)',
-  'Colluricincla megarhyncha [obscura Group]': 'Little Shrikethrush (Mamberamo)',
-  'Colluricincla megarhyncha [tappenbecki Group]': 'Little Shrikethrush (Sepik-Ramu)',
-  'Colluricincla megarhyncha [megarhyncha Group]': 'Little Shrikethrush (Arafura)',
+  'Colluricincla megarhyncha [obscura Group]':
+      'Little Shrikethrush (Mamberamo)',
+  'Colluricincla megarhyncha [tappenbecki Group]':
+      'Little Shrikethrush (Sepik-Ramu)',
+  'Colluricincla megarhyncha [megarhyncha Group]':
+      'Little Shrikethrush (Arafura)',
   'Colluricincla megarhyncha discolor': 'Little Shrikethrush (Tagula)',
-  'Colluricincla megarhyncha [rufogaster Group]': 'Little Shrikethrush (Rufous)',
-  'Colluricincla megarhyncha [megarhyncha Group/rufogaster Group]': 'Little Shrikethrush (Arafura/Rufous)',
+  'Colluricincla megarhyncha [rufogaster Group]':
+      'Little Shrikethrush (Rufous)',
+  'Colluricincla megarhyncha [megarhyncha Group/rufogaster Group]':
+      'Little Shrikethrush (Arafura/Rufous)',
   'Colluricincla sp.': 'Colluricincla sp.',
   'Melanorectes nigrescens': 'Black Pitohui',
   'Coracornis sanghirensis': 'Sangihe Whistler',
@@ -10216,11 +10990,14 @@ const Map<String, String> scientificToCommon = {
   'Pachycephala soror': 'Sclater\'s Whistler',
   'Pachycephala soror [soror Group]': 'Sclater\'s Whistler (Sclater\'s)',
   'Pachycephala soror octogenarii': 'Sclater\'s Whistler (Bomberai)',
-  'Pachycephala soror [undescribed Fakfak form]': 'Sclater\'s Whistler (undescribed Fakfak form)',
+  'Pachycephala soror [undescribed Fakfak form]':
+      'Sclater\'s Whistler (undescribed Fakfak form)',
   'Pachycephala vitiensis': 'White-throated Fiji Whistler',
   'Pachycephala graeffii': 'Yellow-throated Fiji Whistler',
-  'Pachycephala graeffii graeffii/aurantiiventris': 'Yellow-throated Fiji Whistler (Yellow-lored)',
-  'Pachycephala graeffii [optata Group]': 'Yellow-throated Fiji Whistler (Black-banded)',
+  'Pachycephala graeffii graeffii/aurantiiventris':
+      'Yellow-throated Fiji Whistler (Yellow-lored)',
+  'Pachycephala graeffii [optata Group]':
+      'Yellow-throated Fiji Whistler (Black-banded)',
   'Pachycephala graeffii torquata': 'Yellow-throated Fiji Whistler (Taveuni)',
   'Pachycephala flavifrons': 'Samoan Whistler',
   'Pachycephala jacquinoti': 'Tongan Whistler',
@@ -10229,34 +11006,40 @@ const Map<String, String> scientificToCommon = {
   'Pachycephala richardsi': 'Bougainville Hooded Whistler',
   'Pachycephala citreogaster': 'Bismarck Whistler',
   'Pachycephala citreogaster goodsoni': 'Bismarck Whistler (Manus)',
-  'Pachycephala citreogaster [citreogaster Group]': 'Bismarck Whistler (Bismarck)',
+  'Pachycephala citreogaster [citreogaster Group]':
+      'Bismarck Whistler (Bismarck)',
   'Pachycephala collaris': 'Louisiade Whistler',
   'Pachycephala ornata': 'Nendo Whistler',
   'Pachycephala utupuae': 'Utupua Whistler',
   'Pachycephala vanikorensis': 'Vanikoro Whistler',
   'Pachycephala orioloides': 'Oriole Whistler',
-  'Pachycephala orioloides [orioloides Group]': 'Oriole Whistler (North Solomons)',
+  'Pachycephala orioloides [orioloides Group]':
+      'Oriole Whistler (North Solomons)',
   'Pachycephala orioloides melanonota': 'Oriole Whistler (Vella Lavella)',
   'Pachycephala orioloides sanfordi': 'Oriole Whistler (Malaita)',
   'Pachycephala orioloides cinnamomea': 'Oriole Whistler (Guadalcanal)',
   'Pachycephala orioloides christophori': 'Oriole Whistler (Makira)',
   'Pachycephala feminina': 'Rennell Whistler',
   'Pachycephala calliope': 'Tenggara Whistler',
-  'Pachycephala calliope fulvotincta/javana': 'Tenggara Whistler (Rusty-breasted)',
+  'Pachycephala calliope fulvotincta/javana':
+      'Tenggara Whistler (Rusty-breasted)',
   'Pachycephala calliope everetti': 'Tenggara Whistler (Flores Sea)',
   'Pachycephala calliope fulviventris': 'Tenggara Whistler (Sumba)',
   'Pachycephala calliope calliope': 'Tenggara Whistler (Timor)',
   'Pachycephala teysmanni': 'Selayar Whistler',
   'Pachycephala macrorhyncha': 'Moluccan Whistler',
-  'Pachycephala macrorhyncha [macrorhyncha Group]': 'Moluccan Whistler (Moluccan)',
+  'Pachycephala macrorhyncha [macrorhyncha Group]':
+      'Moluccan Whistler (Moluccan)',
   'Pachycephala macrorhyncha fuscoflava': 'Moluccan Whistler (Tanimbar)',
   'Pachycephala sharpei': 'Babar Whistler',
   'Pachycephala mentalis': 'Black-chinned Whistler',
-  'Pachycephala mentalis mentalis/tidorensis': 'Black-chinned Whistler (North Moluccan)',
+  'Pachycephala mentalis mentalis/tidorensis':
+      'Black-chinned Whistler (North Moluccan)',
   'Pachycephala mentalis obiensis': 'Black-chinned Whistler (Obi)',
   'Pachycephala balim': 'Baliem Whistler',
   'Pachycephala pectoralis': 'Golden Whistler',
-  'Pachycephala pectoralis fuliginosa/occidentalis': 'Golden Whistler (Western)',
+  'Pachycephala pectoralis fuliginosa/occidentalis':
+      'Golden Whistler (Western)',
   'Pachycephala pectoralis [pectoralis Group]': 'Golden Whistler (Eastern)',
   'Pachycephala pectoralis xanthoprocta': 'Golden Whistler (Norfolk)',
   'Pachycephala melanura': 'Black-tailed Whistler',
@@ -10264,7 +11047,8 @@ const Map<String, String> scientificToCommon = {
   'Pachycephala melanura spinicaudus/dahli': 'Black-tailed Whistler (Papuan)',
   'Pachycephala melanura melanura': 'Black-tailed Whistler (Pilbara)',
   'Pachycephala melanura robusta': 'Black-tailed Whistler (North Australian)',
-  'Pachycephala orioloides x melanura': 'Oriole x Black-tailed Whistler (hybrid)',
+  'Pachycephala orioloides x melanura':
+      'Oriole x Black-tailed Whistler (hybrid)',
   'Pachycephala tenebrosa': 'Morningbird',
   'Pachycephala modesta': 'Brown-backed Whistler',
   'Pachycephala lorentzi': 'Lorentz\'s Whistler',
@@ -10272,7 +11056,8 @@ const Map<String, String> scientificToCommon = {
   'Pachycephala philippinensis': 'Yellow-bellied Whistler',
   'Pachycephala philippinensis fallax': 'Yellow-bellied Whistler (fallax)',
   'Pachycephala philippinensis illex': 'Yellow-bellied Whistler (illex)',
-  'Pachycephala philippinensis [philippinensis Group]': 'Yellow-bellied Whistler (philippinensis Group)',
+  'Pachycephala philippinensis [philippinensis Group]':
+      'Yellow-bellied Whistler (philippinensis Group)',
   'Pachycephala hypoxantha': 'Bornean Whistler',
   'Pachycephala sulfuriventer': 'Sulphur-bellied Whistler',
   'Pachycephala cinerea': 'Mangrove Whistler',
@@ -10291,7 +11076,8 @@ const Map<String, String> scientificToCommon = {
   'Pachycephala simplex sudestensis': 'Gray Whistler (Tagula)',
   'Pachycephala arctitorquis': 'Wallacean Whistler',
   'Pachycephala arctitorquis tianduana': 'Wallacean Whistler (Tayandu)',
-  'Pachycephala arctitorquis arctitorquis/kebirensis': 'Wallacean Whistler (Wallacean)',
+  'Pachycephala arctitorquis arctitorquis/kebirensis':
+      'Wallacean Whistler (Wallacean)',
   'Pachycephala griseonota': 'Drab Whistler',
   'Pachycephala griseonota lineolata': 'Drab Whistler (Peleng)',
   'Pachycephala griseonota cinerascens': 'Drab Whistler (Halmahera)',
@@ -10304,24 +11090,30 @@ const Map<String, String> scientificToCommon = {
   'Pachycephala leucogastra meeki': 'White-bellied Whistler (Rossel)',
   'Pachycephala monacha': 'Black-headed Whistler',
   'Pachycephala rufiventris': 'Rufous Whistler',
-  'Pachycephala rufiventris [rufiventris Group]': 'Rufous Whistler (Australian)',
+  'Pachycephala rufiventris [rufiventris Group]':
+      'Rufous Whistler (Australian)',
   'Pachycephala rufiventris xanthetraea': 'Rufous Whistler (Grand Terre)',
   'Pachycephala lanioides': 'White-breasted Whistler',
   'Pachycephala sp.': 'Pachycephala sp.',
   'Pitohui dichrous': 'Hooded Pitohui',
   'Pitohui cerviniventris': 'Raja Ampat Pitohui',
   'Pitohui kirhocephalus': 'Northern Variable Pitohui',
-  'Pitohui kirhocephalus [kirhocephalus Group]': 'Northern Variable Pitohui (Northwestern)',
-  'Pitohui kirhocephalus brunneicaudus': 'Northern Variable Pitohui (Sepik-Ramu)',
+  'Pitohui kirhocephalus [kirhocephalus Group]':
+      'Northern Variable Pitohui (Northwestern)',
+  'Pitohui kirhocephalus brunneicaudus':
+      'Northern Variable Pitohui (Sepik-Ramu)',
   'Pitohui kirhocephalus decipiens': 'Northern Variable Pitohui (Onin)',
-  'Pitohui kirhocephalus rubiensis/dohertyi': 'Northern Variable Pitohui (Wandammen)',
+  'Pitohui kirhocephalus rubiensis/dohertyi':
+      'Northern Variable Pitohui (Wandammen)',
   'Pitohui kirhocephalus jobiensis': 'Northern Variable Pitohui (Yapen)',
   'Pitohui kirhocephalus brunneivertex': 'Northern Variable Pitohui (Geelvink)',
   'Pitohui uropygialis': 'Southern Variable Pitohui',
   'Pitohui uropygialis uropygialis': 'Southern Variable Pitohui (Misool)',
-  'Pitohui uropygialis aruensis/nigripectus': 'Southern Variable Pitohui (Mimika)',
+  'Pitohui uropygialis aruensis/nigripectus':
+      'Southern Variable Pitohui (Mimika)',
   'Pitohui uropygialis brunneiceps': 'Southern Variable Pitohui (Brown-headed)',
-  'Pitohui uropygialis meridionalis': 'Southern Variable Pitohui (Southeastern)',
+  'Pitohui uropygialis meridionalis':
+      'Southern Variable Pitohui (Southeastern)',
   'Pitohui kirhocephalus/uropygialis': 'Northern/Southern Variable Pitohui',
   'Oriolus melanotis': 'Timor Oriole',
   'Oriolus finschi': 'Wetar Oriole',
@@ -10355,7 +11147,8 @@ const Map<String, String> scientificToCommon = {
   'Oriolus kundoo/chinensis': 'Indian Golden/Black-naped Oriole',
   'Oriolus tenuirostris': 'Slender-billed Oriole',
   'Oriolus chlorocephalus': 'Green-headed Oriole',
-  'Oriolus chlorocephalus chlorocephalus/amani': 'Green-headed Oriole (Green-headed)',
+  'Oriolus chlorocephalus chlorocephalus/amani':
+      'Green-headed Oriole (Green-headed)',
   'Oriolus chlorocephalus speculifer': 'Green-headed Oriole (Gorongosa)',
   'Oriolus crassirostris': 'Sao Tome Oriole',
   'Oriolus brachyrynchus': 'Western Black-headed Oriole',
@@ -10384,9 +11177,12 @@ const Map<String, String> scientificToCommon = {
   'Machaerirhynchus nigripectus': 'Black-breasted Boatbill',
   'Machaerirhynchus flaviventer': 'Yellow-breasted Boatbill',
   'Machaerirhynchus flaviventer albifrons': 'Yellow-breasted Boatbill (Waigeo)',
-  'Machaerirhynchus flaviventer novus/albigula': 'Yellow-breasted Boatbill (White-browed)',
-  'Machaerirhynchus flaviventer xanthogenys': 'Yellow-breasted Boatbill (Yellow-faced)',
-  'Machaerirhynchus flaviventer flaviventer/secundus': 'Yellow-breasted Boatbill (Black-cheeked)',
+  'Machaerirhynchus flaviventer novus/albigula':
+      'Yellow-breasted Boatbill (White-browed)',
+  'Machaerirhynchus flaviventer xanthogenys':
+      'Yellow-breasted Boatbill (Yellow-faced)',
+  'Machaerirhynchus flaviventer flaviventer/secundus':
+      'Yellow-breasted Boatbill (Black-cheeked)',
   'Artamus fuscus': 'Ashy Woodswallow',
   'Artamus mentalis': 'Fiji Woodswallow',
   'Artamus monachus': 'Ivory-backed Woodswallow',
@@ -10395,10 +11191,12 @@ const Map<String, String> scientificToCommon = {
   'Artamus insignis': 'Bismarck Woodswallow',
   'Artamus personatus': 'Masked Woodswallow',
   'Artamus superciliosus': 'White-browed Woodswallow',
-  'Artamus personatus x superciliosus': 'Masked x White-browed Woodswallow (hybrid)',
+  'Artamus personatus x superciliosus':
+      'Masked x White-browed Woodswallow (hybrid)',
   'Artamus personatus/superciliosus': 'Masked/White-browed Woodswallow',
   'Artamus cinereus': 'Black-faced Woodswallow',
-  'Artamus cinereus normani/inkermani': 'Black-faced Woodswallow (White-vented)',
+  'Artamus cinereus normani/inkermani':
+      'Black-faced Woodswallow (White-vented)',
   'Artamus cinereus [cinereus Group]': 'Black-faced Woodswallow (Black-vented)',
   'Artamus cyanopterus': 'Dusky Woodswallow',
   'Artamus minor': 'Little Woodswallow',
@@ -10416,9 +11214,11 @@ const Map<String, String> scientificToCommon = {
   'Gymnorhina tibicen papuana': 'Australian Magpie (Papuan)',
   'Gymnorhina tibicen [tibicen Group]': 'Australian Magpie (Black-backed)',
   'Gymnorhina tibicen dorsalis': 'Australian Magpie (Western)',
-  'Gymnorhina tibicen [tibicen Group] x dorsalis': 'Australian Magpie (Black-backed x Western)',
+  'Gymnorhina tibicen [tibicen Group] x dorsalis':
+      'Australian Magpie (Black-backed x Western)',
   'Gymnorhina tibicen telonocua/tyrannica': 'Australian Magpie (White-backed)',
-  'Gymnorhina tibicen [tibicen Group] x telonocua/tyrannica': 'Australian Magpie (Black-backed x White-backed)',
+  'Gymnorhina tibicen [tibicen Group] x telonocua/tyrannica':
+      'Australian Magpie (Black-backed x White-backed)',
   'Gymnorhina tibicen hypoleuca': 'Australian Magpie (Tasmanian)',
   'Strepera graculina': 'Pied Currawong',
   'Strepera fuliginosa': 'Black Currawong',
@@ -10478,7 +11278,8 @@ const Map<String, String> scientificToCommon = {
   'Batis sp.': 'batis sp.',
   'Prionops plumatus': 'White-crested Helmetshrike',
   'Prionops plumatus plumatus': 'White-crested Helmetshrike (Long-crested)',
-  'Prionops plumatus [poliocephalus Group]': 'White-crested Helmetshrike (Yellow-eyed)',
+  'Prionops plumatus [poliocephalus Group]':
+      'White-crested Helmetshrike (Yellow-eyed)',
   'Prionops poliolophus': 'Gray-crested Helmetshrike',
   'Prionops alberti': 'Yellow-crested Helmetshrike',
   'Prionops caniceps': 'Red-billed Helmetshrike',
@@ -10558,7 +11359,8 @@ const Map<String, String> scientificToCommon = {
   'Bocagia minuta anchietae/reichenowi': 'Marsh Tchagra (Anchieta\'s)',
   'Tchagra senegalus': 'Black-crowned Tchagra',
   'Tchagra senegalus cucullatus': 'Black-crowned Tchagra (Hooded)',
-  'Tchagra senegalus [senegalus Group]': 'Black-crowned Tchagra (Black-crowned)',
+  'Tchagra senegalus [senegalus Group]':
+      'Black-crowned Tchagra (Black-crowned)',
   'Tchagra australis': 'Brown-crowned Tchagra',
   'Tchagra jamesi': 'Three-streaked Tchagra',
   'Tchagra tchagra': 'Southern Tchagra',
@@ -10598,7 +11400,8 @@ const Map<String, String> scientificToCommon = {
   'Telophorus zeylonus restrictus': 'Bokmakierie (Chimanimani)',
   'Telophorus viridis': 'Four-colored Bushshrike',
   'Telophorus viridis viridis': 'Four-colored Bushshrike (Gorgeous)',
-  'Telophorus viridis [quadricolor Group]': 'Four-colored Bushshrike (Four-colored)',
+  'Telophorus viridis [quadricolor Group]':
+      'Four-colored Bushshrike (Four-colored)',
   'Telophorus dohertyi': 'Doherty\'s Bushshrike',
   'Chlorophoneus bocagei': 'Gray-green Bushshrike',
   'Chlorophoneus sulfureopectus': 'Sulphur-breasted Bushshrike',
@@ -10613,7 +11416,8 @@ const Map<String, String> scientificToCommon = {
   'Malaconotus gladiator': 'Green-breasted Bushshrike',
   'Malaconotus blanchoti': 'Gray-headed Bushshrike',
   'Malaconotus monteiri': 'Monteiro\'s Bushshrike',
-  'Malaconotus monteiri perspicillatus': 'Monteiro\'s Bushshrike (Mt. Cameroon)',
+  'Malaconotus monteiri perspicillatus':
+      'Monteiro\'s Bushshrike (Mt. Cameroon)',
   'Malaconotus monteiri monteiri': 'Monteiro\'s Bushshrike (Monteiro\'s)',
   'Malaconotus alius': 'Uluguru Bushshrike',
   'Telophorus/Malaconotus sp.': 'bushshrike sp.',
@@ -10631,7 +11435,8 @@ const Map<String, String> scientificToCommon = {
   'Rhipidura perlata': 'Spotted Fantail',
   'Rhipidura fuscorufa': 'Cinnamon-tailed Fantail',
   'Rhipidura cockerelli': 'White-winged Fantail',
-  'Rhipidura cockerelli [cockerelli Group]': 'White-winged Fantail (White-winged)',
+  'Rhipidura cockerelli [cockerelli Group]':
+      'White-winged Fantail (White-winged)',
   'Rhipidura cockerelli lavellae': 'White-winged Fantail (Dot-breasted)',
   'Rhipidura cockerelli albina': 'White-winged Fantail (Black-breasted)',
   'Rhipidura coultasi': 'White-gorgeted Fantail',
@@ -10656,7 +11461,8 @@ const Map<String, String> scientificToCommon = {
   'Rhipidura nigritorquis': 'Philippine Pied-Fantail',
   'Rhipidura albicollis': 'White-throated Fantail',
   'Rhipidura albogularis': 'Spot-breasted Fantail',
-  'Rhipidura albicollis x albogularis': 'White-throated x Spot-breasted Fantail (hybrid)',
+  'Rhipidura albicollis x albogularis':
+      'White-throated x Spot-breasted Fantail (hybrid)',
   'Rhipidura albicollis/albogularis': 'White-throated/Spot-breasted Fantail',
   'Rhipidura phoenicura': 'Rufous-tailed Fantail',
   'Rhipidura euryura': 'White-bellied Fantail',
@@ -10677,26 +11483,32 @@ const Map<String, String> scientificToCommon = {
   'Rhipidura lepida': 'Palau Fantail',
   'Rhipidura semirubra': 'Manus Fantail',
   'Rhipidura semicollaris': 'Supertramp Fantail',
-  'Rhipidura semicollaris [semicollaris Group]': 'Supertramp Fantail (Lesser Sundas)',
+  'Rhipidura semicollaris [semicollaris Group]':
+      'Supertramp Fantail (Lesser Sundas)',
   'Rhipidura semicollaris elegantula': 'Supertramp Fantail (Pale-fronted)',
   'Rhipidura semicollaris reichenowi': 'Supertramp Fantail (Babar)',
   'Rhipidura semicollaris hamadryas': 'Supertramp Fantail (Tanimbar)',
-  'Rhipidura semicollaris squamata/henrici': 'Supertramp Fantail (Black-chested)',
+  'Rhipidura semicollaris squamata/henrici':
+      'Supertramp Fantail (Black-chested)',
   'Rhipidura dryas': 'Arafura Fantail',
   'Rhipidura torrida': 'Gilolo Fantail',
   'Rhipidura rufifrons': 'Australian Rufous Fantail',
   'Rhipidura dryas/rufifrons': 'Arafura/Australian Rufous Fantail',
   'Rhipidura louisiadensis': 'Louisiade Fantail',
   'Rhipidura melanolaema': 'Santa Cruz Fantail',
-  'Rhipidura melanolaema melanolaema/utupuae': 'Santa Cruz Fantail (White-fronted)',
+  'Rhipidura melanolaema melanolaema/utupuae':
+      'Santa Cruz Fantail (White-fronted)',
   'Rhipidura melanolaema agilis': 'Santa Cruz Fantail (Brown-fronted)',
   'Rhipidura versicolor': 'Micronesian Rufous Fantail',
   'Rhipidura versicolor uraniae': 'Micronesian Rufous Fantail (Guam)',
-  'Rhipidura versicolor saipanensis/mariae': 'Micronesian Rufous Fantail (Marianas)',
+  'Rhipidura versicolor saipanensis/mariae':
+      'Micronesian Rufous Fantail (Marianas)',
   'Rhipidura versicolor versicolor': 'Micronesian Rufous Fantail (Yap)',
   'Rhipidura rufofronta': 'Solomons Rufous Fantail',
-  'Rhipidura rufofronta [rufofronta Group]': 'Solomons Rufous Fantail (Brown-backed)',
-  'Rhipidura rufofronta russata/kuperi': 'Solomons Rufous Fantail (Rufous-backed)',
+  'Rhipidura rufofronta [rufofronta Group]':
+      'Solomons Rufous Fantail (Brown-backed)',
+  'Rhipidura rufofronta russata/kuperi':
+      'Solomons Rufous Fantail (Rufous-backed)',
   'Rhipidura rufofronta ugiensis': 'Solomons Rufous Fantail (Dark-throated)',
   'Rhipidura kubaryi': 'Pohnpei Fantail',
   'Rhipidura albolimbata': 'Friendly Fantail',
@@ -10723,7 +11535,8 @@ const Map<String, String> scientificToCommon = {
   'Rhipidura phasiana': 'Mangrove Fantail',
   'Rhipidura fuliginosa': 'New Zealand Fantail',
   'Rhipidura fuliginosa cervina': 'New Zealand Fantail (Lord Howe)',
-  'Rhipidura fuliginosa [fuliginosa Group]': 'New Zealand Fantail (New Zealand)',
+  'Rhipidura fuliginosa [fuliginosa Group]':
+      'New Zealand Fantail (New Zealand)',
   'Rhipidura sp.': 'fantail sp.',
   'Dicrurus sharpei': 'Sharpe\'s Drongo',
   'Dicrurus sharpei occidentalis': 'Sharpe\'s Drongo (Western)',
@@ -10733,8 +11546,10 @@ const Map<String, String> scientificToCommon = {
   'Dicrurus atripennis': 'Shining Drongo',
   'Dicrurus adsimilis': 'Fork-tailed Drongo',
   'Dicrurus adsimilis apivorus': 'Fork-tailed Drongo (Clancey\'s)',
-  'Dicrurus adsimilis [adsimilis Group]': 'Fork-tailed Drongo (adsimilis Group)',
-  'Dicrurus adsimilis divaricatus/lugubris': 'Fork-tailed Drongo (Glossy-backed)',
+  'Dicrurus adsimilis [adsimilis Group]':
+      'Fork-tailed Drongo (adsimilis Group)',
+  'Dicrurus adsimilis divaricatus/lugubris':
+      'Fork-tailed Drongo (Glossy-backed)',
   'Dicrurus modestus': 'Velvet-mantled Drongo',
   'Dicrurus modestus atactus': 'Velvet-mantled Drongo (Fanti)',
   'Dicrurus modestus modestus': 'Velvet-mantled Drongo (Principe)',
@@ -10747,10 +11562,12 @@ const Map<String, String> scientificToCommon = {
   'Dicrurus waldenii': 'Mayotte Drongo',
   'Dicrurus macrocercus': 'Black Drongo',
   'Dicrurus leucophaeus': 'Ashy Drongo',
-  'Dicrurus leucophaeus [longicaudatus Group/leucophaeus Group]': 'Ashy Drongo (Blackish/Sooty)',
+  'Dicrurus leucophaeus [longicaudatus Group/leucophaeus Group]':
+      'Ashy Drongo (Blackish/Sooty)',
   'Dicrurus leucophaeus [longicaudatus Group]': 'Ashy Drongo (Blackish)',
   'Dicrurus leucophaeus [leucophaeus Group]': 'Ashy Drongo (Sooty)',
-  'Dicrurus leucophaeus innexus/leucogenis/salangensis': 'Ashy Drongo (Hainan/White-cheeked/White-lored)',
+  'Dicrurus leucophaeus innexus/leucogenis/salangensis':
+      'Ashy Drongo (Hainan/White-cheeked/White-lored)',
   'Dicrurus leucophaeus leucogenis': 'Ashy Drongo (White-cheeked)',
   'Dicrurus leucophaeus salangensis': 'Ashy Drongo (White-lored)',
   'Dicrurus leucophaeus innexus': 'Ashy Drongo (Hainan)',
@@ -10759,16 +11576,19 @@ const Map<String, String> scientificToCommon = {
   'Dicrurus macrocercus/leucophaeus': 'Black/Ashy Drongo',
   'Dicrurus caerulescens': 'White-bellied Drongo',
   'Dicrurus caerulescens caerulescens': 'White-bellied Drongo (White-bellied)',
-  'Dicrurus caerulescens leucopygialis/insularis': 'White-bellied Drongo (White-vented)',
+  'Dicrurus caerulescens leucopygialis/insularis':
+      'White-bellied Drongo (White-vented)',
   'Dicrurus annectens': 'Crow-billed Drongo',
   'Dicrurus aeneus': 'Bronzed Drongo',
   'Dicrurus remifer': 'Lesser Racket-tailed Drongo',
   'Dicrurus hottentottus': 'Hair-crested Drongo',
-  'Dicrurus hottentottus hottentottus/brevirostris': 'Hair-crested Drongo (Hair-crested)',
+  'Dicrurus hottentottus hottentottus/brevirostris':
+      'Hair-crested Drongo (Hair-crested)',
   'Dicrurus hottentottus viridinitens': 'Hair-crested Drongo (Mentawai)',
   'Dicrurus hottentottus borneensis': 'Hair-crested Drongo (Bornean)',
   'Dicrurus hottentottus jentincki/faberi': 'Hair-crested Drongo (Javan)',
-  'Dicrurus hottentottus leucops/banggaiensis': 'Hair-crested Drongo (White-eyed)',
+  'Dicrurus hottentottus leucops/banggaiensis':
+      'Hair-crested Drongo (White-eyed)',
   'Dicrurus hottentottus guillemardi': 'Hair-crested Drongo (Obi)',
   'Dicrurus hottentottus pectoralis': 'Hair-crested Drongo (Sula)',
   'Dicrurus hottentottus suluensis': 'Hair-crested Drongo (Sulu)',
@@ -10827,9 +11647,11 @@ const Map<String, String> scientificToCommon = {
   'Drepanornis bruijnii': 'Pale-billed Sicklebill',
   'Semioptera wallacii': 'Standardwing Bird-of-Paradise',
   'Lophorina superba': 'Vogelkop Lophorina',
-  'Parotia sefilata x Lophorina superba': 'Western Parotia x Vogelkop Lophorina (hybrid)',
+  'Parotia sefilata x Lophorina superba':
+      'Western Parotia x Vogelkop Lophorina (hybrid)',
   'Lophorina latipennis': 'Greater Lophorina',
-  'Parotia carolae x Lophorina latipennis': 'Carola\'s Parotia x Greater Lophorina (hybrid)',
+  'Parotia carolae x Lophorina latipennis':
+      'Carola\'s Parotia x Greater Lophorina (hybrid)',
   'Lophorina minor': 'Lesser Lophorina',
   'Lophorina sp.': 'lophorina sp.',
   'Ptiloris paradiseus': 'Paradise Riflebird',
@@ -10845,7 +11667,8 @@ const Map<String, String> scientificToCommon = {
   'Astrapia rothschildi': 'Huon Astrapia',
   'Astrapia stephaniae': 'Stephanie\'s Astrapia',
   'Astrapia mayeri': 'Ribbon-tailed Astrapia',
-  'Astrapia stephaniae x mayeri': 'Stephanie\'s x Ribbon-tailed Astrapia (hybrid)',
+  'Astrapia stephaniae x mayeri':
+      'Stephanie\'s x Ribbon-tailed Astrapia (hybrid)',
   'Astrapia sp.': 'Astrapia sp.',
   'Cicinnurus regius': 'King Bird-of-Paradise',
   'Diphyllodes respublica': 'Wilson\'s Bird-of-Paradise',
@@ -10865,8 +11688,10 @@ const Map<String, String> scientificToCommon = {
   'Ifrita kowaldi': 'Blue-capped Ifrita',
   'Trochocercus nitens': 'Blue-headed Crested Flycatcher',
   'Trochocercus cyanomelas': 'African Crested Flycatcher',
-  'Trochocercus cyanomelas [bivittatus Group]': 'African Crested Flycatcher (Eastern)',
-  'Trochocercus cyanomelas cyanomelas/segregus': 'African Crested Flycatcher (Southern)',
+  'Trochocercus cyanomelas [bivittatus Group]':
+      'African Crested Flycatcher (Eastern)',
+  'Trochocercus cyanomelas cyanomelas/segregus':
+      'African Crested Flycatcher (Southern)',
   'Hypothymis helenae': 'Short-crested Monarch',
   'Hypothymis azurea': 'Black-naped Monarch',
   'Hypothymis puella': 'Pale-blue Monarch',
@@ -10874,37 +11699,51 @@ const Map<String, String> scientificToCommon = {
   'Terpsiphone cyanescens': 'Blue Paradise-Flycatcher',
   'Terpsiphone cinnamomea': 'Rufous Paradise-Flycatcher',
   'Terpsiphone cinnamomea unirufa': 'Rufous Paradise-Flycatcher (Northern)',
-  'Terpsiphone cinnamomea cinnamomea/talautensis': 'Rufous Paradise-Flycatcher (Southern)',
+  'Terpsiphone cinnamomea cinnamomea/talautensis':
+      'Rufous Paradise-Flycatcher (Southern)',
   'Terpsiphone atrocaudata': 'Black Paradise-Flycatcher',
-  'Terpsiphone atrocaudata atrocaudata/illex': 'Black Paradise-Flycatcher (Northern)',
-  'Terpsiphone atrocaudata periophthalmica': 'Black Paradise-Flycatcher (Philippines)',
+  'Terpsiphone atrocaudata atrocaudata/illex':
+      'Black Paradise-Flycatcher (Northern)',
+  'Terpsiphone atrocaudata periophthalmica':
+      'Black Paradise-Flycatcher (Philippines)',
   'Terpsiphone incei': 'Amur Paradise-Flycatcher',
   'Terpsiphone atrocaudata/incei': 'Black/Amur Paradise-Flycatcher',
   'Terpsiphone affinis': 'Blyth\'s Paradise-Flycatcher',
   'Terpsiphone floris': 'Tenggara Paradise-Flycatcher',
-  'Hypothymis azurea x Terpsiphone affinis': 'Black-naped Monarch x Blyth\'s Paradise-Flycatcher (hybrid)',
+  'Hypothymis azurea x Terpsiphone affinis':
+      'Black-naped Monarch x Blyth\'s Paradise-Flycatcher (hybrid)',
   'Terpsiphone incei/affinis': 'Amur/Blyth\'s Paradise-Flycatcher',
   'Terpsiphone bourbonnensis': 'Mascarene Paradise-Flycatcher',
   'Terpsiphone paradisi': 'Indian Paradise-Flycatcher',
   'Terpsiphone affinis/paradisi': 'Blyth\'s/Indian Paradise-Flycatcher',
-  'Terpsiphone incei/affinis/paradisi': 'Amur/Blyth\'s/Indian Paradise-Flycatcher',
+  'Terpsiphone incei/affinis/paradisi':
+      'Amur/Blyth\'s/Indian Paradise-Flycatcher',
   'Terpsiphone atrochalybeia': 'Sao Tome Paradise-Flycatcher',
   'Terpsiphone corvina': 'Seychelles Paradise-Flycatcher',
   'Terpsiphone mutata': 'Malagasy Paradise-Flycatcher',
-  'Terpsiphone mutata [mutata Group]': 'Malagasy Paradise-Flycatcher (Malagasy)',
-  'Terpsiphone mutata vulpina/voeltzkowiana': 'Malagasy Paradise-Flycatcher (Comoro)',
-  'Terpsiphone mutata comorensis': 'Malagasy Paradise-Flycatcher (Grande Comore)',
+  'Terpsiphone mutata [mutata Group]':
+      'Malagasy Paradise-Flycatcher (Malagasy)',
+  'Terpsiphone mutata vulpina/voeltzkowiana':
+      'Malagasy Paradise-Flycatcher (Comoro)',
+  'Terpsiphone mutata comorensis':
+      'Malagasy Paradise-Flycatcher (Grande Comore)',
   'Terpsiphone rufiventer': 'Black-headed Paradise-Flycatcher',
-  'Terpsiphone rufiventer [rufiventer Group]': 'Black-headed Paradise-Flycatcher (Red-bellied)',
-  'Terpsiphone rufiventer tricolor/neumanni': 'Black-headed Paradise-Flycatcher (Tricolored)',
-  'Terpsiphone rufiventer smithii': 'Black-headed Paradise-Flycatcher (Annobon)',
+  'Terpsiphone rufiventer [rufiventer Group]':
+      'Black-headed Paradise-Flycatcher (Red-bellied)',
+  'Terpsiphone rufiventer tricolor/neumanni':
+      'Black-headed Paradise-Flycatcher (Tricolored)',
+  'Terpsiphone rufiventer smithii':
+      'Black-headed Paradise-Flycatcher (Annobon)',
   'Terpsiphone bedfordi': 'Bedford\'s Paradise-Flycatcher',
   'Terpsiphone rufocinerea': 'Rufous-vented Paradise-Flycatcher',
   'Terpsiphone batesi': 'Bates\'s Paradise-Flycatcher',
   'Terpsiphone viridis': 'African Paradise-Flycatcher',
-  'Terpsiphone rufiventer x viridis': 'Black-headed x African Paradise-Flycatcher (hybrid)',
-  'Terpsiphone rufocinerea x viridis': 'Rufous-vented x African Paradise-Flycatcher (hybrid)',
-  'Terpsiphone rufocinerea/batesi': 'Rufous-vented/Bates\'s Paradise-Flycatcher',
+  'Terpsiphone rufiventer x viridis':
+      'Black-headed x African Paradise-Flycatcher (hybrid)',
+  'Terpsiphone rufocinerea x viridis':
+      'Rufous-vented x African Paradise-Flycatcher (hybrid)',
+  'Terpsiphone rufocinerea/batesi':
+      'Rufous-vented/Bates\'s Paradise-Flycatcher',
   'Terpsiphone sp.': 'paradise-flycatcher sp.',
   'Chasiempis sandwichensis': 'Hawaii Elepaio',
   'Chasiempis sandwichensis sandwichensis': 'Hawaii Elepaio (Kona coast)',
@@ -10933,7 +11772,8 @@ const Map<String, String> scientificToCommon = {
   'Clytorhynchus vitiensis fortunae': 'Fiji Shrikebill (Fortuna)',
   'Clytorhynchus vitiensis keppeli': 'Fiji Shrikebill (Dusky)',
   'Clytorhynchus nigrogularis': 'Black-throated Shrikebill',
-  'Clytorhynchus nigrogularis nigrogularis': 'Black-throated Shrikebill (Black-faced)',
+  'Clytorhynchus nigrogularis nigrogularis':
+      'Black-throated Shrikebill (Black-faced)',
   'Clytorhynchus nigrogularis maximus': 'Black-throated Shrikebill (Kadavu)',
   'Clytorhynchus vitiensis/nigrogularis': 'Fiji/Black-throated Shrikebill',
   'Clytorhynchus sanctaecrucis': 'Santa Cruz Shrikebill',
@@ -10947,10 +11787,12 @@ const Map<String, String> scientificToCommon = {
   'Monarcha cinerascens': 'Island Monarch',
   'Monarcha richardsii': 'White-capped Monarch',
   'Monarcha castaneiventris': 'Chestnut-bellied Monarch',
-  'Monarcha castaneiventris castaneiventris/obscurior': 'Chestnut-bellied Monarch (Chestnut-bellied)',
+  'Monarcha castaneiventris castaneiventris/obscurior':
+      'Chestnut-bellied Monarch (Chestnut-bellied)',
   'Monarcha castaneiventris megarhynchus': 'Chestnut-bellied Monarch (Makira)',
   'Monarcha castaneiventris ugiensis': 'Chestnut-bellied Monarch (Ugi)',
-  'Monarcha castaneiventris erythrostictus': 'Chestnut-bellied Monarch (Bougainville)',
+  'Monarcha castaneiventris erythrostictus':
+      'Chestnut-bellied Monarch (Bougainville)',
   'Monarcha melanopsis': 'Black-faced Monarch',
   'Monarcha frater': 'Black-winged Monarch',
   'Monarcha frater frater': 'Black-winged Monarch (Arfak)',
@@ -10963,12 +11805,16 @@ const Map<String, String> scientificToCommon = {
   'Symposiachrus sacerdotum': 'Flores Monarch',
   'Symposiachrus boanensis': 'Boano Monarch',
   'Symposiachrus bimaculatus': 'Moluccan Spectacled Monarch',
-  'Symposiachrus bimaculatus bimaculatus': 'Moluccan Spectacled Monarch (Halmahera)',
+  'Symposiachrus bimaculatus bimaculatus':
+      'Moluccan Spectacled Monarch (Halmahera)',
   'Symposiachrus bimaculatus diadematus': 'Moluccan Spectacled Monarch (Obi)',
-  'Symposiachrus bimaculatus nigrimentum/wellsi': 'Moluccan Spectacled Monarch (Seram)',
+  'Symposiachrus bimaculatus nigrimentum/wellsi':
+      'Moluccan Spectacled Monarch (Seram)',
   'Symposiachrus trivirgatus': 'Australian Spectacled Monarch',
-  'Symposiachrus trivirgatus trivirgatus/albiventris': 'Australian Spectacled Monarch (Western)',
-  'Symposiachrus trivirgatus gouldii/melanorrhous': 'Australian Spectacled Monarch (Eastern)',
+  'Symposiachrus trivirgatus trivirgatus/albiventris':
+      'Australian Spectacled Monarch (Western)',
+  'Symposiachrus trivirgatus gouldii/melanorrhous':
+      'Australian Spectacled Monarch (Eastern)',
   'Symposiachrus melanopterus': 'Louisiade Spectacled Monarch',
   'Symposiachrus leucurus': 'Kai Monarch',
   'Symposiachrus everetti': 'Tanahjampea Monarch',
@@ -10991,7 +11837,8 @@ const Map<String, String> scientificToCommon = {
   'Arses telescopthalmus': 'Frilled Monarch',
   'Arses lorealis': 'Frill-necked Monarch',
   'Arses insularis': 'Ochre-collared Monarch',
-  'Arses telescopthalmus x insularis': 'Frilled x Ochre-collared Monarch (hybrid)',
+  'Arses telescopthalmus x insularis':
+      'Frilled x Ochre-collared Monarch (hybrid)',
   'Arses kaupi': 'Pied Monarch',
   'Grallina cyanoleuca': 'Magpie-lark',
   'Grallina bruijnii': 'Torrent-lark',
@@ -11042,14 +11889,17 @@ const Map<String, String> scientificToCommon = {
   'Lanius cristatus superciliosus': 'Brown Shrike (Japanese)',
   'Lanius cristatus lucionensis': 'Brown Shrike (Philippine)',
   'Lanius tigrinus x cristatus': 'Tiger x Brown Shrike (hybrid)',
-  'Lanius phoenicuroides/isabellinus/cristatus': 'Red-tailed/Isabelline/Brown Shrike',
+  'Lanius phoenicuroides/isabellinus/cristatus':
+      'Red-tailed/Isabelline/Brown Shrike',
   'Lanius collurioides': 'Burmese Shrike',
   'Lanius gubernator': 'Emin\'s Shrike',
   'Lanius vittatus': 'Bay-backed Shrike',
   'Lanius schach': 'Long-tailed Shrike',
-  'Lanius schach erythronotus/caniceps': 'Long-tailed Shrike (erythronotus/caniceps)',
+  'Lanius schach erythronotus/caniceps':
+      'Long-tailed Shrike (erythronotus/caniceps)',
   'Lanius schach schach': 'Long-tailed Shrike (schach)',
-  'Lanius schach tricolor/longicaudatus': 'Long-tailed Shrike (tricolor/longicaudatus)',
+  'Lanius schach tricolor/longicaudatus':
+      'Long-tailed Shrike (tricolor/longicaudatus)',
   'Lanius schach schach x tricolor': 'Long-tailed Shrike (schach x tricolor)',
   'Lanius schach bentet': 'Long-tailed Shrike (bentet)',
   'Lanius schach [nasutus Group]': 'Long-tailed Shrike (nasutus Group)',
@@ -11112,13 +11962,15 @@ const Map<String, String> scientificToCommon = {
   'Cyanolyca cucullata': 'Azure-hooded Jay',
   'Cyanolyca pulchra': 'Beautiful Jay',
   'Cyanolyca armillata': 'Black-collared Jay',
-  'Cyanolyca armillata armillata/meridana': 'Black-collared Jay (Black-collared)',
+  'Cyanolyca armillata armillata/meridana':
+      'Black-collared Jay (Black-collared)',
   'Cyanolyca armillata quindiuna': 'Black-collared Jay (Quindio)',
   'Cyanolyca turcosa': 'Turquoise Jay',
   'Cyanolyca viridicyanus': 'White-collared Jay',
   'Cyanocorax colliei': 'Black-throated Magpie-Jay',
   'Cyanocorax formosus': 'White-throated Magpie-Jay',
-  'Cyanocorax colliei x formosus': 'Black-throated x White-throated Magpie-Jay (hybrid)',
+  'Cyanocorax colliei x formosus':
+      'Black-throated x White-throated Magpie-Jay (hybrid)',
   'Cyanocorax colliei/formosus': 'Black-throated/White-throated Magpie-Jay',
   'Cyanocorax morio': 'Brown Jay',
   'Cyanocorax caeruleus': 'Azure Jay',
@@ -11146,7 +11998,8 @@ const Map<String, String> scientificToCommon = {
   'Cyanocitta stelleri': 'Steller\'s Jay',
   'Cyanocitta stelleri [stelleri Group]': 'Steller\'s Jay (Coastal)',
   'Cyanocitta stelleri annectens': 'Steller\'s Jay (Northwest Interior)',
-  'Cyanocitta stelleri [diademata Group]': 'Steller\'s Jay (Southwest Interior)',
+  'Cyanocitta stelleri [diademata Group]':
+      'Steller\'s Jay (Southwest Interior)',
   'Cyanocitta stelleri [coronata Group]': 'Steller\'s Jay (Middle American)',
   'Cyanocitta cristata': 'Blue Jay',
   'Cyanocorax yncas x Cyanocitta cristata': 'Green x Blue Jay (hybrid)',
@@ -11154,11 +12007,15 @@ const Map<String, String> scientificToCommon = {
   'Aphelocoma coerulescens': 'Florida Scrub-Jay',
   'Aphelocoma insularis': 'Island Scrub-Jay',
   'Aphelocoma californica': 'California Scrub-Jay',
-  'Cyanocitta stelleri x Aphelocoma californica': 'Steller\'s Jay x California Scrub-Jay (hybrid)',
+  'Cyanocitta stelleri x Aphelocoma californica':
+      'Steller\'s Jay x California Scrub-Jay (hybrid)',
   'Aphelocoma woodhouseii': 'Woodhouse\'s Scrub-Jay',
-  'Aphelocoma woodhouseii [woodhouseii Group]': 'Woodhouse\'s Scrub-Jay (Woodhouse\'s)',
-  'Aphelocoma woodhouseii sumichrasti/remota': 'Woodhouse\'s Scrub-Jay (Sumichrast\'s)',
-  'Cyanocitta stelleri x Aphelocoma woodhouseii': 'Steller\'s Jay x Woodhouse\'s Scrub-Jay (hybrid)',
+  'Aphelocoma woodhouseii [woodhouseii Group]':
+      'Woodhouse\'s Scrub-Jay (Woodhouse\'s)',
+  'Aphelocoma woodhouseii sumichrasti/remota':
+      'Woodhouse\'s Scrub-Jay (Sumichrast\'s)',
+  'Cyanocitta stelleri x Aphelocoma woodhouseii':
+      'Steller\'s Jay x Woodhouse\'s Scrub-Jay (hybrid)',
   'Aphelocoma californica/woodhouseii': 'California/Woodhouse\'s Scrub-Jay',
   'Aphelocoma wollweberi': 'Mexican Jay',
   'Aphelocoma wollweberi [wollweberi Group]': 'Mexican Jay (Arizona)',
@@ -11234,7 +12091,8 @@ const Map<String, String> scientificToCommon = {
   'Nucifraga caryocatactes/hemispila': 'Northern/Southern Nutcracker',
   'Nucifraga multipunctata': 'Kashmir Nutcracker',
   'Pyrrhocorax pyrrhocorax': 'Red-billed Chough',
-  'Pyrrhocorax pyrrhocorax [pyrrhocorax Group]': 'Red-billed Chough (Red-billed)',
+  'Pyrrhocorax pyrrhocorax [pyrrhocorax Group]':
+      'Red-billed Chough (Red-billed)',
   'Pyrrhocorax pyrrhocorax baileyi': 'Red-billed Chough (Ethiopian)',
   'Pyrrhocorax graculus': 'Yellow-billed Chough',
   'Pyrrhocorax pyrrhocorax/graculus': 'Red-billed/Yellow-billed Chough',
@@ -11285,7 +12143,8 @@ const Map<String, String> scientificToCommon = {
   'Corvus corone/cornix': 'Carrion/Hooded Crow',
   'Corvus corone x cornix': 'Carrion x Hooded Crow (hybrid)',
   'Corvus macrorhynchos': 'Large-billed Crow',
-  'Corvus macrorhynchos [macrorhynchos Group]': 'Large-billed Crow (Large-billed)',
+  'Corvus macrorhynchos [macrorhynchos Group]':
+      'Large-billed Crow (Large-billed)',
   'Corvus macrorhynchos culminatus': 'Large-billed Crow (Indian Jungle)',
   'Corvus macrorhynchos levaillantii': 'Large-billed Crow (Eastern)',
   'Corvus corone/macrorhynchos': 'Carrion/Large-billed Crow',
@@ -11327,7 +12186,8 @@ const Map<String, String> scientificToCommon = {
   'Melanocharis sp.': 'Melanocharis berrypecker sp.',
   'Toxorhamphus novaeguineae': 'Yellow-bellied Longbill',
   'Toxorhamphus poliopterus': 'Slaty-chinned Longbill',
-  'Toxorhamphus novaeguineae/poliopterus': 'Yellow-bellied/Slaty-chinned Longbill',
+  'Toxorhamphus novaeguineae/poliopterus':
+      'Yellow-bellied/Slaty-chinned Longbill',
   'Oedistoma iliolophus': 'Spectacled Longbill',
   'Oedistoma pygmaeum': 'Pygmy Longbill',
   'Callaeas wilsoni': 'North Island Kokako',
@@ -11371,7 +12231,8 @@ const Map<String, String> scientificToCommon = {
   'Monachella muelleriana coultasi': 'Torrent Flyrobin (New Britain)',
   'Microeca hemixantha': 'Golden-bellied Flyrobin',
   'Microeca flavigaster': 'Lemon-bellied Flyrobin',
-  'Microeca flavigaster [flavigaster Group]': 'Lemon-bellied Flyrobin (Lemon-bellied)',
+  'Microeca flavigaster [flavigaster Group]':
+      'Lemon-bellied Flyrobin (Lemon-bellied)',
   'Microeca flavigaster tormenti': 'Lemon-bellied Flyrobin (Kimberley)',
   'Microeca [undescribed form]': 'Bismarck Flyrobin (undescribed form)',
   'Microeca fascinans': 'Jacky-winter',
@@ -11399,7 +12260,8 @@ const Map<String, String> scientificToCommon = {
   'Eopsaltria australis chrysorrhos': 'Eastern Yellow Robin (Wet Tropics)',
   'Eopsaltria australis australis': 'Eastern Yellow Robin (Southeastern)',
   'Eopsaltria griseogularis': 'Western Yellow Robin',
-  'Eopsaltria griseogularis griseogularis': 'Western Yellow Robin (Yellow-rumped)',
+  'Eopsaltria griseogularis griseogularis':
+      'Western Yellow Robin (Yellow-rumped)',
   'Eopsaltria griseogularis rosinae': 'Western Yellow Robin (Green-rumped)',
   'Eopsaltria georgiana': 'White-breasted Robin',
   'Eopsaltria capito': 'Pale-yellow Robin',
@@ -11421,7 +12283,8 @@ const Map<String, String> scientificToCommon = {
   'Elminia albicauda': 'White-tailed Blue Flycatcher',
   'Elminia nigromitrata': 'Dusky Crested Flycatcher',
   'Elminia albiventris': 'White-bellied Crested Flycatcher',
-  'Elminia albiventris albiventris': 'White-bellied Crested Flycatcher (White-bellied)',
+  'Elminia albiventris albiventris':
+      'White-bellied Crested Flycatcher (White-bellied)',
   'Elminia albiventris toroensis': 'White-bellied Crested Flycatcher (Toro)',
   'Elminia albonotata': 'White-tailed Crested Flycatcher',
   'Culicicapa ceylonensis': 'Gray-headed Canary-Flycatcher',
@@ -11467,19 +12330,23 @@ const Map<String, String> scientificToCommon = {
   'Poecile weigoldicus': 'Sichuan Tit',
   'Poecile carolinensis': 'Carolina Chickadee',
   'Poecile atricapillus': 'Black-capped Chickadee',
-  'Poecile carolinensis x atricapillus': 'Carolina x Black-capped Chickadee (hybrid)',
+  'Poecile carolinensis x atricapillus':
+      'Carolina x Black-capped Chickadee (hybrid)',
   'Poecile carolinensis/atricapillus': 'Carolina/Black-capped Chickadee',
   'Poecile gambeli': 'Mountain Chickadee',
   'Poecile gambeli [gambeli Group]': 'Mountain Chickadee (Rocky Mts.)',
   'Poecile gambeli [baileyae Group]': 'Mountain Chickadee (Pacific)',
-  'Poecile atricapillus x gambeli': 'Black-capped x Mountain Chickadee (hybrid)',
+  'Poecile atricapillus x gambeli':
+      'Black-capped x Mountain Chickadee (hybrid)',
   'Poecile atricapillus/gambeli': 'Black-capped/Mountain Chickadee',
   'Poecile sclateri': 'Mexican Chickadee',
   'Poecile gambeli x sclateri': 'Mountain x Mexican Chickadee (hybrid)',
   'Poecile rufescens': 'Chestnut-backed Chickadee',
-  'Poecile gambeli x rufescens': 'Mountain x Chestnut-backed Chickadee (hybrid)',
+  'Poecile gambeli x rufescens':
+      'Mountain x Chestnut-backed Chickadee (hybrid)',
   'Poecile hudsonicus': 'Boreal Chickadee',
-  'Poecile atricapillus x hudsonicus': 'Black-capped x Boreal Chickadee (hybrid)',
+  'Poecile atricapillus x hudsonicus':
+      'Black-capped x Boreal Chickadee (hybrid)',
   'Poecile gambeli x hudsonicus': 'Mountain x Boreal Chickadee (hybrid)',
   'Poecile cinctus': 'Gray-headed Chickadee',
   'Poecile montanus x cinctus': 'Willow Tit x Gray-headed Chickadee (hybrid)',
@@ -11497,10 +12364,13 @@ const Map<String, String> scientificToCommon = {
   'Baeolophus wollweberi/ridgwayi': 'Bridled/Juniper Titmouse',
   'Baeolophus inornatus/ridgwayi': 'Oak/Juniper Titmouse (Plain Titmouse)',
   'Baeolophus bicolor': 'Tufted Titmouse',
-  'Poecile carolinensis x Baeolophus bicolor': 'Carolina Chickadee x Tufted Titmouse (hybrid)',
-  'Poecile atricapillus x Baeolophus bicolor': 'Black-capped Chickadee x Tufted Titmouse (hybrid)',
+  'Poecile carolinensis x Baeolophus bicolor':
+      'Carolina Chickadee x Tufted Titmouse (hybrid)',
+  'Poecile atricapillus x Baeolophus bicolor':
+      'Black-capped Chickadee x Tufted Titmouse (hybrid)',
   'Baeolophus atricristatus': 'Black-crested Titmouse',
-  'Baeolophus bicolor x atricristatus': 'Tufted x Black-crested Titmouse (hybrid)',
+  'Baeolophus bicolor x atricristatus':
+      'Tufted x Black-crested Titmouse (hybrid)',
   'Baeolophus bicolor/atricristatus': 'Tufted/Black-crested Titmouse',
   'Pseudopodoces humilis': 'Ground Tit',
   'Parus monticolus': 'Green-backed Tit',
@@ -11524,8 +12394,10 @@ const Map<String, String> scientificToCommon = {
   'Melaniparus guineensis': 'White-shouldered Black-Tit',
   'Melaniparus leucomelas': 'White-winged Black-Tit',
   'Melaniparus rufiventris': 'Rufous-bellied Tit',
-  'Melaniparus rufiventris rufiventris/masukuensis': 'Rufous-bellied Tit (Rufous-bellied)',
-  'Melaniparus rufiventris pallidiventris': 'Rufous-bellied Tit (Cinnamon-breasted)',
+  'Melaniparus rufiventris rufiventris/masukuensis':
+      'Rufous-bellied Tit (Rufous-bellied)',
+  'Melaniparus rufiventris pallidiventris':
+      'Rufous-bellied Tit (Cinnamon-breasted)',
   'Melaniparus albiventris': 'White-bellied Tit',
   'Melaniparus niger': 'Southern Black-Tit',
   'Melaniparus carpi': 'Carp\'s Tit',
@@ -11544,7 +12416,8 @@ const Map<String, String> scientificToCommon = {
   'Auriparus flaviceps': 'Verdin',
   'Remiz pendulinus': 'Eurasian Penduline-Tit',
   'Remiz macronyx': 'Black-headed Penduline-Tit',
-  'Remiz pendulinus x macronyx': 'Eurasian x Black-headed Penduline-Tit (hybrid)',
+  'Remiz pendulinus x macronyx':
+      'Eurasian x Black-headed Penduline-Tit (hybrid)',
   'Remiz pendulinus/macronyx': 'Eurasian/Black-headed Penduline-Tit',
   'Remiz coronatus': 'White-crowned Penduline-Tit',
   'Remiz pendulinus/coronatus': 'Eurasian/White-crowned Penduline-Tit',
@@ -11555,8 +12428,10 @@ const Map<String, String> scientificToCommon = {
   'Anthoscopus parvulus': 'Yellow Penduline-Tit',
   'Anthoscopus flavifrons': 'Forest Penduline-Tit',
   'Anthoscopus caroli': 'African Penduline-Tit',
-  'Anthoscopus caroli [ansorgei Group]': 'African Penduline-Tit (White-bellied)',
-  'Anthoscopus caroli sylviella/sharpei': 'African Penduline-Tit (Buff-bellied)',
+  'Anthoscopus caroli [ansorgei Group]':
+      'African Penduline-Tit (White-bellied)',
+  'Anthoscopus caroli sylviella/sharpei':
+      'African Penduline-Tit (Buff-bellied)',
   'Anthoscopus caroli roccatii': 'African Penduline-Tit (Yellow-bellied)',
   'Anthoscopus caroli rankinei': 'African Penduline-Tit (Slaty-backed)',
   'Anthoscopus caroli [caroli Group]': 'African Penduline-Tit (Buff-vented)',
@@ -11571,11 +12446,14 @@ const Map<String, String> scientificToCommon = {
   'Ammomanopsis grayi': 'Gray\'s Lark',
   'Certhilauda chuana': 'Short-clawed Lark',
   'Certhilauda subcoronata': 'Karoo Long-billed Lark',
-  'Certhilauda subcoronata benguelensis/kaokoensis': 'Karoo Long-billed Lark (Benguela)',
-  'Certhilauda subcoronata [subcoronata Group]': 'Karoo Long-billed Lark (Karoo)',
+  'Certhilauda subcoronata benguelensis/kaokoensis':
+      'Karoo Long-billed Lark (Benguela)',
+  'Certhilauda subcoronata [subcoronata Group]':
+      'Karoo Long-billed Lark (Karoo)',
   'Certhilauda semitorquata': 'Eastern Long-billed Lark',
   'Certhilauda curvirostris': 'Cape Long-billed Lark',
-  'Certhilauda curvirostris curvirostris/falcirostris': 'Cape Long-billed Lark (Cape)',
+  'Certhilauda curvirostris curvirostris/falcirostris':
+      'Cape Long-billed Lark (Cape)',
   'Certhilauda curvirostris brevirostris': 'Cape Long-billed Lark (Agulhas)',
   'Certhilauda sp.': 'long-billed lark sp.',
   'Pinarocorys erythropygia': 'Rufous-rumped Lark',
@@ -11601,7 +12479,8 @@ const Map<String, String> scientificToCommon = {
   'Calendulauda gilletti': 'Gillett\'s Lark',
   'Calendulauda poecilosterna': 'Pink-breasted Lark',
   'Calendulauda africanoides': 'Fawn-colored Lark',
-  'Calendulauda africanoides [africanoides Group]': 'Fawn-colored Lark (Fawn-colored)',
+  'Calendulauda africanoides [africanoides Group]':
+      'Fawn-colored Lark (Fawn-colored)',
   'Calendulauda africanoides alopex/intercedens': 'Fawn-colored Lark (Foxy)',
   'Calendulauda albescens': 'Karoo Lark',
   'Calendulauda burra': 'Red Lark',
@@ -11697,7 +12576,8 @@ const Map<String, String> scientificToCommon = {
   'Eremophila alpestris brandti': 'Horned Lark (Brandt\'s)',
   'Eremophila alpestris flava': 'Horned Lark (Shore)',
   'Eremophila alpestris [alpestris Group]': 'Horned Lark (Eastern dark Group)',
-  'Eremophila alpestris [occidentalis Group]': 'Horned Lark (Western pale Group)',
+  'Eremophila alpestris [occidentalis Group]':
+      'Horned Lark (Western pale Group)',
   'Eremophila alpestris [strigata Group]': 'Horned Lark (Western rufous Group)',
   'Eremophila alpestris enertera': 'Horned Lark (South Baja)',
   'Eremophila alpestris [chrysolaema Group]': 'Horned Lark (Mexican)',
@@ -11714,7 +12594,8 @@ const Map<String, String> scientificToCommon = {
   'Calandrella brachydactyla/acutirostris': 'Greater Short-toed/Hume\'s Lark',
   'Calandrella dukhunensis': 'Mongolian Short-toed Lark',
   'Calandrella brachydactyla/dukhunensis': 'Greater/Mongolian Short-toed Lark',
-  'Calandrella acutirostris/dukhunensis': 'Hume\'s Lark/Mongolian Short-toed Lark',
+  'Calandrella acutirostris/dukhunensis':
+      'Hume\'s Lark/Mongolian Short-toed Lark',
   'Calandrella sp.': 'Calandrella sp.',
   'Melanocorypha bimaculata': 'Bimaculated Lark',
   'Melanocorypha maxima': 'Tibetan Lark',
@@ -11736,7 +12617,8 @@ const Map<String, String> scientificToCommon = {
   'Alaudala rufescens/heinei': 'Mediterranean/Turkestan Short-toed Lark',
   'Alaudala raytal': 'Sand Lark',
   'Alaudala sp.': 'Alaudala sp.',
-  'Calandrella brachydactyla/Alaudala sp.': 'Greater Short-toed Lark/Alaudala sp.',
+  'Calandrella brachydactyla/Alaudala sp.':
+      'Greater Short-toed Lark/Alaudala sp.',
   'Calandrella/Alaudala sp.': 'Calandrella/Alaudala sp.',
   'Alaudidae sp.': 'lark sp.',
   'Panurus biarmicus': 'Bearded Reedling',
@@ -11747,7 +12629,8 @@ const Map<String, String> scientificToCommon = {
   'Sylvietta virens': 'Green Crombec',
   'Sylvietta denti': 'Lemon-bellied Crombec',
   'Sylvietta leucophrys': 'White-browed Crombec',
-  'Sylvietta leucophrys leucophrys/chloronota': 'White-browed Crombec (White-browed)',
+  'Sylvietta leucophrys leucophrys/chloronota':
+      'White-browed Crombec (White-browed)',
   'Sylvietta leucophrys chapini': 'White-browed Crombec (Lendu)',
   'Sylvietta brachyura': 'Northern Crombec',
   'Sylvietta brachyura brachyura/carnapi': 'Northern Crombec (Northern)',
@@ -11771,15 +12654,18 @@ const Map<String, String> scientificToCommon = {
   'Neomixis tenella': 'Common Jery',
   'Neomixis viridis': 'Green Jery',
   'Neomixis striatigula': 'Stripe-throated Jery',
-  'Neomixis striatigula striatigula/sclateri': 'Stripe-throated Jery (Stripe-throated)',
+  'Neomixis striatigula striatigula/sclateri':
+      'Stripe-throated Jery (Stripe-throated)',
   'Neomixis striatigula pallidior': 'Stripe-throated Jery (Subdesert)',
   'Neomixis sp.': 'jery sp.',
   'Micromacronus leytensis': 'Leyte Plumed-Warbler',
   'Micromacronus sordidus': 'Mindanao Plumed-Warbler',
   'Eremomela flavicrissalis': 'Yellow-vented Eremomela',
   'Eremomela icteropygialis': 'Yellow-bellied Eremomela',
-  'Eremomela icteropygialis [icteropygialis Group]': 'Yellow-bellied Eremomela (Yellow-bellied)',
-  'Eremomela icteropygialis salvadorii': 'Yellow-bellied Eremomela (Salvadori\'s)',
+  'Eremomela icteropygialis [icteropygialis Group]':
+      'Yellow-bellied Eremomela (Yellow-bellied)',
+  'Eremomela icteropygialis salvadorii':
+      'Yellow-bellied Eremomela (Salvadori\'s)',
   'Eremomela pusilla': 'Senegal Eremomela',
   'Eremomela canescens': 'Green-backed Eremomela',
   'Eremomela scotops': 'Green-capped Eremomela',
@@ -11809,20 +12695,25 @@ const Map<String, String> scientificToCommon = {
   'Poliolais lopezi lopezi': 'White-tailed Warbler (Bioko)',
   'Calamonastes undosus': 'Miombo Wren-Warbler',
   'Calamonastes stierlingi': 'Stierling\'s Wren-Warbler',
-  'Calamonastes undosus x stierlingi': 'Miombo x Stierling\'s Wren-Warbler (hybrid)',
+  'Calamonastes undosus x stierlingi':
+      'Miombo x Stierling\'s Wren-Warbler (hybrid)',
   'Calamonastes undosus/stierlingi': 'Miombo/Stierling\'s Wren-Warbler',
   'Calamonastes simplex': 'Gray Wren-Warbler',
   'Calamonastes fasciolatus': 'Barred Wren-Warbler',
   'Calamonastes stierlingi/fasciolatus': 'Stierling\'s/Barred Wren-Warbler',
   'Camaroptera brachyura': 'Green-backed Camaroptera',
-  'Camaroptera brachyura [brevicaudata Group]': 'Green-backed Camaroptera (Gray-backed)',
-  'Camaroptera brachyura [brachyura Group]': 'Green-backed Camaroptera (Green-backed)',
+  'Camaroptera brachyura [brevicaudata Group]':
+      'Green-backed Camaroptera (Gray-backed)',
+  'Camaroptera brachyura [brachyura Group]':
+      'Green-backed Camaroptera (Green-backed)',
   'Camaroptera harterti': 'Hartert\'s Camaroptera',
   'Camaroptera brachyura/harterti': 'Green-backed/Hartert\'s Camaroptera',
   'Camaroptera superciliaris': 'Yellow-browed Camaroptera',
   'Camaroptera chloronota': 'Olive-green Camaroptera',
-  'Camaroptera chloronota [chloronota Group]': 'Olive-green Camaroptera (Olive-green)',
-  'Camaroptera chloronota toroensis/kamitugaensis': 'Olive-green Camaroptera (Tawny-breasted)',
+  'Camaroptera chloronota [chloronota Group]':
+      'Olive-green Camaroptera (Olive-green)',
+  'Camaroptera chloronota toroensis/kamitugaensis':
+      'Olive-green Camaroptera (Tawny-breasted)',
   'Camaroptera sp.': 'camaroptera sp.',
   'Spiloptila clamans': 'Cricket Longtail',
   'Phyllolais pulchella': 'Buff-bellied Warbler',
@@ -11838,14 +12729,17 @@ const Map<String, String> scientificToCommon = {
   'Apalis binotata': 'Masked Apalis',
   'Apalis personata': 'Black-faced Apalis',
   'Apalis flavida': 'Yellow-breasted Apalis',
-  'Apalis flavida flavocincta/viridiceps': 'Yellow-breasted Apalis (Brown-tailed)',
+  'Apalis flavida flavocincta/viridiceps':
+      'Yellow-breasted Apalis (Brown-tailed)',
   'Apalis flavida [flavida Group]': 'Yellow-breasted Apalis (Yellow-breasted)',
   'Apalis ruddi': 'Rudd\'s Apalis',
   'Apalis sharpii': 'Sharpe\'s Apalis',
   'Apalis rufogularis': 'Buff-throated Apalis',
-  'Apalis rufogularis rufogularis/sanderi': 'Buff-throated Apalis (Black-breasted)',
+  'Apalis rufogularis rufogularis/sanderi':
+      'Buff-throated Apalis (Black-breasted)',
   'Apalis rufogularis angolensis/brauni': 'Buff-throated Apalis (Angola)',
-  'Apalis rufogularis nigrescens/kigezi': 'Buff-throated Apalis (Buff-throated)',
+  'Apalis rufogularis nigrescens/kigezi':
+      'Buff-throated Apalis (Buff-throated)',
   'Apalis argentea': 'Kungwe Apalis',
   'Apalis bamendae': 'Bamenda Apalis',
   'Apalis goslingi': 'Gosling\'s Apalis',
@@ -11898,7 +12792,8 @@ const Map<String, String> scientificToCommon = {
   'Prinia gracilis/lepida': 'Graceful/Delicate Prinia',
   'Prinia sylvatica': 'Jungle Prinia',
   'Prinia flaviventris': 'Yellow-bellied Prinia',
-  'Prinia flaviventris [flaviventris Group]': 'Yellow-bellied Prinia (Yellow-bellied)',
+  'Prinia flaviventris [flaviventris Group]':
+      'Yellow-bellied Prinia (Yellow-bellied)',
   'Prinia flaviventris sonitans': 'Yellow-bellied Prinia (Chinese)',
   'Prinia socialis': 'Ashy Prinia',
   'Prinia flaviventris/socialis': 'Yellow-bellied/Ashy Prinia',
@@ -11923,7 +12818,8 @@ const Map<String, String> scientificToCommon = {
   'Prinia sp.': 'prinia sp.',
   'Euryptila subcinnamomea': 'Cinnamon-breasted Warbler',
   'Scepomycter winifredae': 'Mrs. Moreau\'s Warbler',
-  'Scepomycter winifredae winifredae': 'Mrs. Moreau\'s Warbler (Mrs. Moreau\'s)',
+  'Scepomycter winifredae winifredae':
+      'Mrs. Moreau\'s Warbler (Mrs. Moreau\'s)',
   'Scepomycter winifredae rubehoensis': 'Mrs. Moreau\'s Warbler (Rubeho)',
   'Incana incana': 'Socotra Warbler',
   'Malcorus pectoralis': 'Rufous-eared Warbler',
@@ -11957,7 +12853,8 @@ const Map<String, String> scientificToCommon = {
   'Cisticola rufilatus': 'Tinkling Cisticola',
   'Cisticola subruficapilla': 'Gray-backed Cisticola',
   'Cisticola subruficapilla newtoni': 'Gray-backed Cisticola (Namib)',
-  'Cisticola subruficapilla [subruficapilla Group]': 'Gray-backed Cisticola (Red-headed)',
+  'Cisticola subruficapilla [subruficapilla Group]':
+      'Gray-backed Cisticola (Red-headed)',
   'Cisticola subruficapilla jamesi': 'Gray-backed Cisticola (Plain-breasted)',
   'Cisticola distinctus': 'Lynes\'s Cisticola',
   'Cisticola lais': 'Wailing Cisticola',
@@ -11969,7 +12866,8 @@ const Map<String, String> scientificToCommon = {
   'Cisticola pipiens': 'Chirping Cisticola',
   'Cisticola lugubris': 'Ethiopian Cisticola',
   'Cisticola marginatus': 'Winding Cisticola',
-  'Cisticola haematocephalus/luapula/marginatus': 'Coastal/Luapula/Winding Cisticola',
+  'Cisticola haematocephalus/luapula/marginatus':
+      'Coastal/Luapula/Winding Cisticola',
   'Cisticola galactotes': 'Rufous-winged Cisticola',
   'Cisticola carruthersi': 'Carruthers\'s Cisticola',
   'Cisticola tinniens': 'Levaillant\'s Cisticola',
@@ -11991,7 +12889,8 @@ const Map<String, String> scientificToCommon = {
   'Cisticola juncidis': 'Zitting Cisticola',
   'Cisticola juncidis [juncidis Group]': 'Zitting Cisticola (Western)',
   'Cisticola juncidis terrestris/uropygialis': 'Zitting Cisticola (African)',
-  'Cisticola juncidis [tinnabulans Group]': 'Zitting Cisticola (Double Zitting)',
+  'Cisticola juncidis [tinnabulans Group]':
+      'Zitting Cisticola (Double Zitting)',
   'Cisticola juncidis brunniceps': 'Zitting Cisticola (Far Eastern)',
   'Cisticola haesitatus': 'Socotra Cisticola',
   'Cisticola cherina': 'Madagascar Cisticola',
@@ -12005,12 +12904,15 @@ const Map<String, String> scientificToCommon = {
   'Cisticola dambo': 'Dambo Cisticola',
   'Cisticola [undescribed form]': 'Teke Cisticola (undescribed form)',
   'Cisticola brunnescens': 'Pectoral-patch Cisticola',
-  'Cisticola brunnescens lynesi/mbangensis': 'Pectoral-patch Cisticola (Lynes\'s)',
-  'Cisticola brunnescens [brunnescens Group]': 'Pectoral-patch Cisticola (Pectoral-patch)',
+  'Cisticola brunnescens lynesi/mbangensis':
+      'Pectoral-patch Cisticola (Lynes\'s)',
+  'Cisticola brunnescens [brunnescens Group]':
+      'Pectoral-patch Cisticola (Pectoral-patch)',
   'Cisticola cinnamomeus': 'Pale-crowned Cisticola',
   'Cisticola ayresii': 'Wing-snapping Cisticola',
   'Cisticola ayresii gabun': 'Wing-snapping Cisticola (Gabon)',
-  'Cisticola ayresii [ayresii Group]': 'Wing-snapping Cisticola (Wing-snapping)',
+  'Cisticola ayresii [ayresii Group]':
+      'Wing-snapping Cisticola (Wing-snapping)',
   'Cisticola exilis': 'Golden-headed Cisticola',
   'Cisticola juncidis/exilis': 'Zitting/Golden-headed Cisticola',
   'Cisticola sp.': 'cisticola sp.',
@@ -12023,7 +12925,8 @@ const Map<String, String> scientificToCommon = {
   'Nesillas brevicaudata': 'Grande Comore Brush-Warbler',
   'Nesillas mariae': 'Moheli Brush-Warbler',
   'Calamonastides gracilirostris': 'Papyrus Yellow-Warbler',
-  'Calamonastides gracilirostris gracilirostris': 'Papyrus Yellow-Warbler (Papyrus)',
+  'Calamonastides gracilirostris gracilirostris':
+      'Papyrus Yellow-Warbler (Papyrus)',
   'Calamonastides gracilirostris bensoni': 'Papyrus Yellow-Warbler (Zambian)',
   'Arundinax aedon': 'Thick-billed Warbler',
   'Iduna caligata': 'Booted Warbler',
@@ -12055,7 +12958,8 @@ const Map<String, String> scientificToCommon = {
   'Acrocephalus agricola/dumetorum': 'Paddyfield/Blyth\'s Reed Warbler',
   'Acrocephalus orinus': 'Large-billed Reed Warbler',
   'Acrocephalus dumetorum/orinus': 'Blyth\'s/Large-billed Reed Warbler',
-  'Acrocephalus agricola/concinens/dumetorum/orinus': 'Paddyfield/Blunt-winged/Blyth\'s/Large-billed Reed Warbler',
+  'Acrocephalus agricola/concinens/dumetorum/orinus':
+      'Paddyfield/Blunt-winged/Blyth\'s/Large-billed Reed Warbler',
   'Acrocephalus palustris': 'Marsh Warbler',
   'Acrocephalus scirpaceus': 'Common Reed Warbler',
   'Acrocephalus scirpaceus scirpaceus': 'Common Reed Warbler (Common)',
@@ -12075,9 +12979,12 @@ const Map<String, String> scientificToCommon = {
   'Acrocephalus scirpaceus/arundinaceus': 'Common/Great Reed Warbler',
   'Acrocephalus orientalis': 'Oriental Reed Warbler',
   'Acrocephalus stentoreus': 'Clamorous Reed Warbler',
-  'Acrocephalus stentoreus stentoreus/levantinus': 'Clamorous Reed Warbler (Clamorous)',
-  'Acrocephalus stentoreus [brunnescens Group]': 'Clamorous Reed Warbler (Brown)',
-  'Acrocephalus arundinaceus/orientalis/stentoreus': 'Great/Oriental/Clamorous Reed Warbler',
+  'Acrocephalus stentoreus stentoreus/levantinus':
+      'Clamorous Reed Warbler (Clamorous)',
+  'Acrocephalus stentoreus [brunnescens Group]':
+      'Clamorous Reed Warbler (Brown)',
+  'Acrocephalus arundinaceus/orientalis/stentoreus':
+      'Great/Oriental/Clamorous Reed Warbler',
   'Acrocephalus luscinius': 'Nightingale Reed Warbler',
   'Acrocephalus hiwae': 'Saipan Reed Warbler',
   'Acrocephalus australis': 'Australian Reed Warbler',
@@ -12112,7 +13019,8 @@ const Map<String, String> scientificToCommon = {
   'Helopsaltes certhiola': 'Pallas\'s Grasshopper Warbler',
   'Helopsaltes ochotensis': 'Middendorff\'s Grasshopper Warbler',
   'Helopsaltes pleskei': 'Pleske\'s Grasshopper Warbler',
-  'Helopsaltes ochotensis/pleskei': 'Middendorff\'s/Pleske\'s Grasshopper Warbler',
+  'Helopsaltes ochotensis/pleskei':
+      'Middendorff\'s/Pleske\'s Grasshopper Warbler',
   'Helopsaltes sp.': 'Helopsaltes sp.',
   'Locustella lanceolata': 'Lanceolated Warbler',
   'Locustella alfredi': 'Bamboo Warbler',
@@ -12161,8 +13069,10 @@ const Map<String, String> scientificToCommon = {
   'Cincloramphus mathewsi': 'Rufous Songlark',
   'Cincloramphus timoriensis': 'Tawny Grassbird',
   'Cincloramphus macrurus': 'Papuan Grassbird',
-  'Cincloramphus macrurus interscapularis/mayri': 'Papuan Grassbird (interscapularis/mayri)',
-  'Cincloramphus macrurus [macrurus Group]': 'Papuan Grassbird (macrurus Group)',
+  'Cincloramphus macrurus interscapularis/mayri':
+      'Papuan Grassbird (interscapularis/mayri)',
+  'Cincloramphus macrurus [macrurus Group]':
+      'Papuan Grassbird (macrurus Group)',
   'Cincloramphus timoriensis/macrurus': 'Tawny/Papuan Grassbird',
   'Cincloramphus whitneyi': 'Santo Thicketbird',
   'Cincloramphus turipavae': 'Guadalcanal Thicketbird',
@@ -12174,7 +13084,8 @@ const Map<String, String> scientificToCommon = {
   'Schoenicola striatus': 'Bristled Grassbird',
   'Catriscus brevirostris': 'Fan-tailed Grassbird',
   'Megalurus palustris': 'Striated Grassbird',
-  'Poodytes/Cincloramphus/Megalurus sp.': 'Poodytes/Cincloramphus/Megalurus sp.',
+  'Poodytes/Cincloramphus/Megalurus sp.':
+      'Poodytes/Cincloramphus/Megalurus sp.',
   'Bradypterus sylvaticus': 'Knysna Warbler',
   'Bradypterus bangwaensis': 'Bangwa Warbler',
   'Bradypterus barratti': 'Barratt\'s Warbler',
@@ -12205,7 +13116,8 @@ const Map<String, String> scientificToCommon = {
   'Xanthomixis cinereiceps': 'Gray-crowned Tetraka',
   'Randia pseudozosterops': 'Rand\'s Warbler',
   'Pnoepyga albiventer': 'Scaly-breasted Cupwing',
-  'Pnoepyga albiventer albiventer/pallidior': 'Scaly-breasted Cupwing (Himalayan)',
+  'Pnoepyga albiventer albiventer/pallidior':
+      'Scaly-breasted Cupwing (Himalayan)',
   'Pnoepyga albiventer mutica': 'Scaly-breasted Cupwing (Chinese)',
   'Pnoepyga formosana': 'Taiwan Cupwing',
   'Pnoepyga immaculata': 'Immaculate Cupwing',
@@ -12260,7 +13172,8 @@ const Map<String, String> scientificToCommon = {
   'Progne cryptoleuca x dominicensis': 'Cuban x Caribbean Martin (hybrid)',
   'Progne sinaloae': 'Sinaloa Martin',
   'Progne dominicensis/sinaloae': 'Caribbean/Sinaloa Martin',
-  'Progne cryptoleuca/dominicensis/sinaloae': 'Cuban/Caribbean/Sinaloa Martin (Snowy-bellied Martin)',
+  'Progne cryptoleuca/dominicensis/sinaloae':
+      'Cuban/Caribbean/Sinaloa Martin (Snowy-bellied Martin)',
   'Progne chalybea': 'Gray-breasted Martin',
   'Progne elegans': 'Southern Martin',
   'Progne subis/elegans': 'Purple/Southern Martin',
@@ -12272,11 +13185,15 @@ const Map<String, String> scientificToCommon = {
   'Progne tapera fusca': 'Brown-chested Martin (fusca)',
   'Progne sp.': 'new world martin sp. (Progne sp.)',
   'Stelgidopteryx serripennis': 'Northern Rough-winged Swallow',
-  'Stelgidopteryx serripennis [serripennis Group]': 'Northern Rough-winged Swallow (Northern)',
-  'Stelgidopteryx serripennis ridgwayi/stuarti': 'Northern Rough-winged Swallow (Ridgway\'s)',
-  'Tachycineta thalassina x Stelgidopteryx serripennis': 'Violet-green x Northern Rough-winged Swallow (hybrid)',
+  'Stelgidopteryx serripennis [serripennis Group]':
+      'Northern Rough-winged Swallow (Northern)',
+  'Stelgidopteryx serripennis ridgwayi/stuarti':
+      'Northern Rough-winged Swallow (Ridgway\'s)',
+  'Tachycineta thalassina x Stelgidopteryx serripennis':
+      'Violet-green x Northern Rough-winged Swallow (hybrid)',
   'Stelgidopteryx ruficollis': 'Southern Rough-winged Swallow',
-  'Stelgidopteryx serripennis/ruficollis': 'Northern/Southern Rough-winged Swallow',
+  'Stelgidopteryx serripennis/ruficollis':
+      'Northern/Southern Rough-winged Swallow',
   'Atticora pileata': 'Black-capped Swallow',
   'Atticora tibialis': 'White-thighed Swallow',
   'Atticora fasciata': 'White-banded Swallow',
@@ -12326,9 +13243,11 @@ const Map<String, String> scientificToCommon = {
   'Hirundo albigularis': 'White-throated Swallow',
   'Hirundo smithii': 'Wire-tailed Swallow',
   'Atronanus fuliginosus': 'Forest Swallow',
-  'Psalidoprocne nitens/Atronanus fuliginosus': 'Square-tailed Sawwing/Forest Swallow',
+  'Psalidoprocne nitens/Atronanus fuliginosus':
+      'Square-tailed Sawwing/Forest Swallow',
   'Delichon urbicum': 'Western House-Martin',
-  'Hirundo rustica x Delichon urbicum': 'Barn Swallow x Western House-Martin (hybrid)',
+  'Hirundo rustica x Delichon urbicum':
+      'Barn Swallow x Western House-Martin (hybrid)',
   'Delichon lagopodum': 'Siberian House-Martin',
   'Delichon urbicum/lagopodum': 'Western/Siberian House-Martin',
   'Delichon dasypus': 'Asian House-Martin',
@@ -12337,16 +13256,19 @@ const Map<String, String> scientificToCommon = {
   'Delichon sp.': 'house-martin sp.',
   'Cecropis cucullata': 'Greater Striped Swallow',
   'Cecropis rufula': 'European Red-rumped Swallow',
-  'Hirundo rustica x Cecropis rufula': 'Barn x European Red-rumped Swallow (hybrid)',
+  'Hirundo rustica x Cecropis rufula':
+      'Barn x European Red-rumped Swallow (hybrid)',
   'Cecropis melanocrissus': 'African Red-rumped Swallow',
   'Cecropis melanocrissus domicella': 'African Red-rumped Swallow (domicella)',
-  'Cecropis melanocrissus [melanocrissus Group]': 'African Red-rumped Swallow (melanocrissus Group)',
+  'Cecropis melanocrissus [melanocrissus Group]':
+      'African Red-rumped Swallow (melanocrissus Group)',
   'Cecropis rufula/melanocrissus': 'European/African Red-rumped Swallow',
   'Cecropis daurica': 'Eastern Red-rumped Swallow',
   'Cecropis daurica [daurica Group]': 'Eastern Red-rumped Swallow (Daurian)',
   'Cecropis daurica [striolata Group]': 'Eastern Red-rumped Swallow (Striated)',
   'Cecropis rufula/daurica': 'European/Eastern Red-rumped Swallow',
-  'Cecropis rufula/melanocrissus/daurica': 'European/African/Eastern Red-rumped Swallow',
+  'Cecropis rufula/melanocrissus/daurica':
+      'European/African/Eastern Red-rumped Swallow',
   'Cecropis hyperythra': 'Sri Lanka Swallow',
   'Cecropis badia': 'Rufous-bellied Swallow',
   'Cecropis abyssinica': 'Lesser Striped Swallow',
@@ -12363,10 +13285,12 @@ const Map<String, String> scientificToCommon = {
   'Petrochelidon nigricans': 'Tree Martin',
   'Petrochelidon ariel/nigricans': 'Fairy/Tree Martin',
   'Petrochelidon pyrrhonota': 'Cliff Swallow',
-  'Petrochelidon pyrrhonota [pyrrhonota Group]': 'Cliff Swallow (pyrrhonota Group)',
+  'Petrochelidon pyrrhonota [pyrrhonota Group]':
+      'Cliff Swallow (pyrrhonota Group)',
   'Petrochelidon pyrrhonota melanogaster': 'Cliff Swallow (melanogaster)',
   'Hirundo rustica x Petrochelidon pyrrhonota': 'Barn x Cliff Swallow (hybrid)',
-  'Tachycineta thalassina x Petrochelidon pyrrhonota': 'Violet-green x Cliff Swallow (hybrid)',
+  'Tachycineta thalassina x Petrochelidon pyrrhonota':
+      'Violet-green x Cliff Swallow (hybrid)',
   'Petrochelidon fulva': 'Cave Swallow',
   'Petrochelidon fulva [fulva Group]': 'Cave Swallow (Caribbean)',
   'Petrochelidon fulva pallida': 'Cave Swallow (Texas)',
@@ -12403,16 +13327,20 @@ const Map<String, String> scientificToCommon = {
   'Baeopogon clamans': 'Sjöstedt\'s Greenbul',
   'Arizelocichla montana': 'Cameroon Mountain Greenbul',
   'Arizelocichla masukuensis': 'Shelley\'s Greenbul',
-  'Arizelocichla masukuensis kakamegae/kungwensis': 'Shelley\'s Greenbul (Kakamega)',
-  'Arizelocichla masukuensis masukuensis/roehli': 'Shelley\'s Greenbul (Shelley\'s)',
+  'Arizelocichla masukuensis kakamegae/kungwensis':
+      'Shelley\'s Greenbul (Kakamega)',
+  'Arizelocichla masukuensis masukuensis/roehli':
+      'Shelley\'s Greenbul (Shelley\'s)',
   'Arizelocichla tephrolaema': 'Western Mountain Greenbul',
   'Arizelocichla kikuyuensis': 'Kikuyu Mountain Greenbul',
   'Arizelocichla nigriceps': 'Black-headed Mountain Greenbul',
   'Arizelocichla neumanni': 'Uluguru Mountain Greenbul',
   'Arizelocichla fusciceps': 'Black-browed Mountain Greenbul',
   'Arizelocichla striifacies': 'Olive-headed Greenbul',
-  'Arizelocichla striifacies striifacies': 'Olive-headed Greenbul (Stripe-faced)',
-  'Arizelocichla striifacies olivaceiceps': 'Olive-headed Greenbul (Olive-headed)',
+  'Arizelocichla striifacies striifacies':
+      'Olive-headed Greenbul (Stripe-faced)',
+  'Arizelocichla striifacies olivaceiceps':
+      'Olive-headed Greenbul (Olive-headed)',
   'Arizelocichla milanjensis': 'Stripe-cheeked Greenbul',
   'Arizelocichla chlorigula': 'Yellow-throated Mountain Greenbul',
   'Arizelocichla sp.': 'Arizelocichla sp.',
@@ -12436,8 +13364,10 @@ const Map<String, String> scientificToCommon = {
   'Phyllastrephus albigularis': 'White-throated Greenbul',
   'Phyllastrephus viridiceps': 'Angola Greenbul',
   'Phyllastrephus flavostriatus': 'Yellow-streaked Greenbul',
-  'Phyllastrephus flavostriatus alfredi': 'Yellow-streaked Greenbul (Sharpe\'s)',
-  'Phyllastrephus flavostriatus [flavostriatus Group]': 'Yellow-streaked Greenbul (Yellow-streaked)',
+  'Phyllastrephus flavostriatus alfredi':
+      'Yellow-streaked Greenbul (Sharpe\'s)',
+  'Phyllastrephus flavostriatus [flavostriatus Group]':
+      'Yellow-streaked Greenbul (Yellow-streaked)',
   'Phyllastrephus xavieri': 'Xavier\'s Greenbul',
   'Phyllastrephus icterinus': 'Icterine Greenbul',
   'Phyllastrephus xavieri/icterinus': 'Xavier\'s/Icterine Greenbul',
@@ -12448,7 +13378,8 @@ const Map<String, String> scientificToCommon = {
   'Phyllastrephus fischeri': 'Fischer\'s Greenbul',
   'Phyllastrephus cabanisi': 'Cabanis\'s Greenbul',
   'Phyllastrephus cabanisi placidus': 'Cabanis\'s Greenbul (Placid)',
-  'Phyllastrephus cabanisi [cabanisi Group]': 'Cabanis\'s Greenbul (Cabanis\'s)',
+  'Phyllastrephus cabanisi [cabanisi Group]':
+      'Cabanis\'s Greenbul (Cabanis\'s)',
   'Phyllastrephus scandens': 'Leaf-love',
   'Phyllastrephus lorenzi': 'Sassi\'s Greenbul',
   'Phyllastrephus poliocephalus': 'Gray-headed Greenbul',
@@ -12470,7 +13401,8 @@ const Map<String, String> scientificToCommon = {
   'Alophoixus ochraceus': 'Ochraceous Bulbul',
   'Alophoixus pallidus': 'Puff-throated Bulbul',
   'Alophoixus pallidus griseiceps': 'Puff-throated Bulbul (Gray-crowned)',
-  'Alophoixus pallidus [pallidus Group]': 'Puff-throated Bulbul (Puff-throated)',
+  'Alophoixus pallidus [pallidus Group]':
+      'Puff-throated Bulbul (Puff-throated)',
   'Alcurus striatus': 'Striated Bulbul',
   'Iole finschii': 'Finsch\'s Bulbul',
   'Iole palawanensis': 'Sulphur-bellied Bulbul',
@@ -12527,9 +13459,11 @@ const Map<String, String> scientificToCommon = {
   'Hypsipetes olivaceus': 'Mauritius Bulbul',
   'Hypsipetes thompsoni': 'White-headed Bulbul',
   'Hypsipetes leucocephalus': 'Black Bulbul',
-  'Hypsipetes leucocephalus [psaroides Group]': 'Black Bulbul (psaroides Group)',
+  'Hypsipetes leucocephalus [psaroides Group]':
+      'Black Bulbul (psaroides Group)',
   'Hypsipetes leucocephalus sinensis/ambiens': 'Black Bulbul (Black)',
-  'Hypsipetes leucocephalus [leucocephalus Group]': 'Black Bulbul (leucocephalus Group)',
+  'Hypsipetes leucocephalus [leucocephalus Group]':
+      'Black Bulbul (leucocephalus Group)',
   'Hypsipetes leucocephalus perniger': 'Black Bulbul (perniger)',
   'Hypsipetes leucocephalus nigerrimus': 'Black Bulbul (Gray-winged)',
   'Hypsipetes ganeesa': 'Square-tailed Bulbul',
@@ -12601,7 +13535,8 @@ const Map<String, String> scientificToCommon = {
   'Pycnonotus goiavier': 'Yellow-vented Bulbul',
   'Pycnonotus goiavier [analis Group]': 'Yellow-vented Bulbul (Sunda)',
   'Pycnonotus goiavier [goiavier Group]': 'Yellow-vented Bulbul (Philippine)',
-  'Pycnonotus jocosus x goiavier': 'Red-whiskered x Yellow-vented Bulbul (hybrid)',
+  'Pycnonotus jocosus x goiavier':
+      'Red-whiskered x Yellow-vented Bulbul (hybrid)',
   'Pycnonotus cafer': 'Red-vented Bulbul',
   'Pycnonotus jocosus x cafer': 'Red-whiskered x Red-vented Bulbul (hybrid)',
   'Pycnonotus jocosus/cafer': 'Red-whiskered/Red-vented Bulbul',
@@ -12620,7 +13555,8 @@ const Map<String, String> scientificToCommon = {
   'Pycnonotidae sp.': 'Pycnonotidae sp.',
   'Phylloscopus sibilatrix': 'Wood Warbler',
   'Phylloscopus bonelli': 'Western Bonelli\'s Warbler',
-  'Phylloscopus sibilatrix x bonelli': 'Wood x Western Bonelli\'s Warbler (hybrid)',
+  'Phylloscopus sibilatrix x bonelli':
+      'Wood x Western Bonelli\'s Warbler (hybrid)',
   'Phylloscopus orientalis': 'Eastern Bonelli\'s Warbler',
   'Phylloscopus bonelli/orientalis': 'Western/Eastern Bonelli\'s Warbler',
   'Phylloscopus maculipennis': 'Ashy-throated Warbler',
@@ -12643,12 +13579,14 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus armandii': 'Yellow-streaked Warbler',
   'Phylloscopus griseolus': 'Sulphur-bellied Warbler',
   'Phylloscopus affinis': 'Tickell\'s Leaf Warbler',
-  'Phylloscopus affinis affinis/perflavus': 'Tickell\'s Leaf Warbler (Tickell\'s)',
+  'Phylloscopus affinis affinis/perflavus':
+      'Tickell\'s Leaf Warbler (Tickell\'s)',
   'Phylloscopus affinis occisinensis': 'Tickell\'s Leaf Warbler (Alpine)',
   'Phylloscopus griseolus/affinis': 'Sulphur-bellied/Tickell\'s Leaf Warbler',
   'Phylloscopus fuscatus': 'Dusky Warbler',
   'Phylloscopus schwarzi/fuscatus': 'Radde\'s/Dusky Warbler',
-  'Phylloscopus schwarzi/armandii/fuscatus': 'Radde\'s/Yellow-streaked/Dusky Warbler',
+  'Phylloscopus schwarzi/armandii/fuscatus':
+      'Radde\'s/Yellow-streaked/Dusky Warbler',
   'Phylloscopus fuligiventer': 'Smoky Warbler',
   'Phylloscopus fuscatus/fuligiventer': 'Dusky/Smoky Warbler',
   'Phylloscopus neglectus': 'Plain Leaf Warbler',
@@ -12661,11 +13599,13 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus collybita': 'Common Chiffchaff',
   'Phylloscopus collybita [collybita Group]': 'Common Chiffchaff (Common)',
   'Phylloscopus collybita tristis': 'Common Chiffchaff (Siberian)',
-  'Phylloscopus trochilus x collybita': 'Willow Warbler x Common Chiffchaff (hybrid)',
+  'Phylloscopus trochilus x collybita':
+      'Willow Warbler x Common Chiffchaff (hybrid)',
   'Phylloscopus trochilus/collybita': 'Willow Warbler/Common Chiffchaff',
   'Phylloscopus sindianus/collybita': 'Mountain/Common Chiffchaff',
   'Phylloscopus ibericus': 'Iberian Chiffchaff',
-  'Phylloscopus trochilus/collybita/ibericus': 'Willow Warbler/Common Chiffchaff/Iberian Chiffchaff',
+  'Phylloscopus trochilus/collybita/ibericus':
+      'Willow Warbler/Common Chiffchaff/Iberian Chiffchaff',
   'Phylloscopus collybita/ibericus': 'Common/Iberian Chiffchaff',
   'Phylloscopus cebuensis': 'Lemon-throated Leaf Warbler',
   'Phylloscopus olivaceus': 'Philippine Leaf Warbler',
@@ -12688,19 +13628,23 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus tephrocephalus/valentini': 'Gray-crowned/Bianchi\'s Warbler',
   'Phylloscopus omeiensis': 'Martens\'s Warbler',
   'Phylloscopus soror': 'Alström\'s Warbler',
-  'Phylloscopus valentini/omeiensis/soror': 'Bianchi\'s/Martens\'s/Alström\'s Warbler',
-  'Phylloscopus sp. (burkii complex)': 'Phylloscopus sp. (Golden-spectacled Warbler complex)',
+  'Phylloscopus valentini/omeiensis/soror':
+      'Bianchi\'s/Martens\'s/Alström\'s Warbler',
+  'Phylloscopus sp. (burkii complex)':
+      'Phylloscopus sp. (Golden-spectacled Warbler complex)',
   'Phylloscopus nitidus': 'Green Warbler',
   'Phylloscopus trochiloides': 'Greenish Warbler',
   'Phylloscopus trochiloides viridanus': 'Greenish Warbler (viridanus)',
-  'Phylloscopus trochiloides trochiloides/ludlowi': 'Greenish Warbler (trochiloides/ludlowi)',
+  'Phylloscopus trochiloides trochiloides/ludlowi':
+      'Greenish Warbler (trochiloides/ludlowi)',
   'Phylloscopus trochiloides obscuratus': 'Greenish Warbler (obscuratus)',
   'Phylloscopus nitidus/trochiloides': 'Green/Greenish Warbler',
   'Phylloscopus plumbeitarsus': 'Two-barred Warbler',
   'Phylloscopus trochiloides/plumbeitarsus': 'Greenish/Two-barred Warbler',
   'Phylloscopus emeiensis': 'Emei Leaf Warbler',
   'Phylloscopus magnirostris': 'Large-billed Leaf Warbler',
-  'Phylloscopus trochiloides/magnirostris': 'Greenish/Large-billed Leaf Warbler',
+  'Phylloscopus trochiloides/magnirostris':
+      'Greenish/Large-billed Leaf Warbler',
   'Phylloscopus tenellipes': 'Pale-legged Leaf Warbler',
   'Phylloscopus borealoides': 'Sakhalin Leaf Warbler',
   'Phylloscopus tenellipes/borealoides': 'Pale-legged/Sakhalin Leaf Warbler',
@@ -12709,7 +13653,8 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus xanthodryas/borealis': 'Japanese Leaf/Arctic Warbler',
   'Phylloscopus examinandus': 'Kamchatka Leaf Warbler',
   'Phylloscopus borealis/examinandus': 'Arctic/Kamchatka Leaf Warbler',
-  'Phylloscopus xanthodryas/borealis/examinandus': 'Japanese Leaf/Arctic/Kamchatka Leaf Warbler',
+  'Phylloscopus xanthodryas/borealis/examinandus':
+      'Japanese Leaf/Arctic/Kamchatka Leaf Warbler',
   'Phylloscopus castaniceps': 'Chestnut-crowned Warbler',
   'Phylloscopus montis': 'Yellow-breasted Warbler',
   'Phylloscopus grammiceps': 'Sunda Warbler',
@@ -12718,12 +13663,14 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus calciatilis': 'Limestone Leaf Warbler',
   'Phylloscopus cantator': 'Yellow-vented Warbler',
   'Phylloscopus ricketti': 'Sulphur-breasted Warbler',
-  'Phylloscopus calciatilis/ricketti': 'Limestone Leaf/Sulphur-breasted Warbler',
+  'Phylloscopus calciatilis/ricketti':
+      'Limestone Leaf/Sulphur-breasted Warbler',
   'Phylloscopus occipitalis': 'Western Crowned Warbler',
   'Phylloscopus reguloides': 'Blyth\'s Leaf Warbler',
   'Phylloscopus claudiae': 'Claudia\'s Leaf Warbler',
   'Phylloscopus goodsoni': 'Hartert\'s Leaf Warbler',
-  'Phylloscopus reguloides/claudiae/goodsoni': 'Blyth\'s/Claudia\'s/Hartert\'s Leaf Warbler',
+  'Phylloscopus reguloides/claudiae/goodsoni':
+      'Blyth\'s/Claudia\'s/Hartert\'s Leaf Warbler',
   'Phylloscopus xanthoschistos': 'Gray-hooded Warbler',
   'Phylloscopus intensior': 'Davison\'s Leaf Warbler',
   'Phylloscopus hainanus': 'Hainan Leaf Warbler',
@@ -12738,7 +13685,8 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus makirensis': 'Makira Leaf Warbler',
   'Phylloscopus nesophilus': 'Sulawesi Leaf Warbler',
   'Phylloscopus sarasinorum': 'Lompobattang Leaf Warbler',
-  'Phylloscopus [undescribed Selayar form]': 'Selayar Leaf Warbler (undescribed form)',
+  'Phylloscopus [undescribed Selayar form]':
+      'Selayar Leaf Warbler (undescribed form)',
   'Phylloscopus poliocephalus': 'Island Leaf Warbler',
   'Phylloscopus poliocephalus suaramerdu': 'Island Leaf Warbler (Peleng)',
   'Phylloscopus poliocephalus emilsalimi': 'Island Leaf Warbler (Taliabu)',
@@ -12747,8 +13695,10 @@ const Map<String, String> scientificToCommon = {
   'Phylloscopus poliocephalus everetti': 'Island Leaf Warbler (Buru)',
   'Phylloscopus poliocephalus ceramensis': 'Island Leaf Warbler (Seram)',
   'Phylloscopus poliocephalus avicola': 'Island Leaf Warbler (Kai)',
-  'Phylloscopus poliocephalus [poliocephalus Group]': 'Island Leaf Warbler (New Guinea)',
-  'Phylloscopus poliocephalus [matthiae Group]': 'Island Leaf Warbler (South Pacific)',
+  'Phylloscopus poliocephalus [poliocephalus Group]':
+      'Island Leaf Warbler (New Guinea)',
+  'Phylloscopus poliocephalus [matthiae Group]':
+      'Island Leaf Warbler (South Pacific)',
   'Phylloscopus maforensis': 'Numfor Leaf Warbler',
   'Phylloscopus misoriensis': 'Biak Leaf Warbler',
   'Phylloscopus amoenus': 'Kolombangara Leaf Warbler',
@@ -12783,7 +13733,8 @@ const Map<String, String> scientificToCommon = {
   'Phyllergates cucullatus': 'Mountain Tailorbird',
   'Phyllergates heterolaemus': 'Rufous-headed Tailorbird',
   'Tickellia hodgsoni': 'Broad-billed Warbler',
-  'Phyllergates cucullatus/Tickellia hodgsoni': 'Mountain Tailorbird/Broad-billed Warbler',
+  'Phyllergates cucullatus/Tickellia hodgsoni':
+      'Mountain Tailorbird/Broad-billed Warbler',
   'Horornis seebohmi': 'Philippine Bush Warbler',
   'Horornis diphone': 'Japanese Bush Warbler',
   'Horornis diphone [cantans Group]': 'Japanese Bush Warbler (Northern)',
@@ -12796,15 +13747,19 @@ const Map<String, String> scientificToCommon = {
   'Horornis haddeni': 'Odedi',
   'Horornis ruficapilla': 'Fiji Bush Warbler',
   'Horornis fortipes': 'Brownish-flanked Bush Warbler',
-  'Horornis fortipes [fortipes Group]': 'Brownish-flanked Bush Warbler (Brownish-flanked)',
+  'Horornis fortipes [fortipes Group]':
+      'Brownish-flanked Bush Warbler (Brownish-flanked)',
   'Horornis fortipes robustipes': 'Brownish-flanked Bush Warbler (Taiwan)',
   'Horornis brunnescens': 'Hume\'s Bush Warbler',
   'Horornis acanthizoides': 'Yellowish-bellied Bush Warbler',
-  'Horornis fortipes/acanthizoides': 'Brownish-flanked/Yellowish-bellied Bush Warbler',
+  'Horornis fortipes/acanthizoides':
+      'Brownish-flanked/Yellowish-bellied Bush Warbler',
   'Horornis flavolivaceus': 'Aberrant Bush Warbler',
   'Horornis flavolivaceus [vulcanius Group]': 'Aberrant Bush Warbler (Sunda)',
-  'Horornis flavolivaceus [flavolivaceus Group]': 'Aberrant Bush Warbler (Aberrant)',
-  'Horornis flavolivaceus intricatus/oblitus': 'Aberrant Bush Warbler (Perplexing)',
+  'Horornis flavolivaceus [flavolivaceus Group]':
+      'Aberrant Bush Warbler (Aberrant)',
+  'Horornis flavolivaceus intricatus/oblitus':
+      'Aberrant Bush Warbler (Perplexing)',
   'Horornis sp.': 'Horornis sp.',
   'Leptopoecile sophiae': 'White-browed Tit-Warbler',
   'Leptopoecile elegans': 'Crested Tit-Warbler',
@@ -12813,18 +13768,22 @@ const Map<String, String> scientificToCommon = {
   'Aegithalos caudatus [europaeus Group]': 'Long-tailed Tit (europaeus Group)',
   'Aegithalos caudatus [alpinus Group]': 'Long-tailed Tit (alpinus Group)',
   'Aegithalos glaucogularis': 'Silver-throated Tit',
-  'Aegithalos caudatus x glaucogularis': 'Long-tailed x Silver-throated Tit (hybrid)',
+  'Aegithalos caudatus x glaucogularis':
+      'Long-tailed x Silver-throated Tit (hybrid)',
   'Aegithalos leucogenys': 'White-cheeked Tit',
   'Aegithalos exilis': 'Pygmy Tit',
   'Aegithalos concinnus': 'Black-throated Tit',
-  'Aegithalos concinnus [concinnus Group]': 'Black-throated Tit (Black-throated)',
-  'Aegithalos concinnus iredalei/rubricapillus': 'Black-throated Tit (Red-headed)',
+  'Aegithalos concinnus [concinnus Group]':
+      'Black-throated Tit (Black-throated)',
+  'Aegithalos concinnus iredalei/rubricapillus':
+      'Black-throated Tit (Red-headed)',
   'Aegithalos concinnus annamensis': 'Black-throated Tit (Gray-crowned)',
   'Aegithalos niveogularis': 'White-throated Tit',
   'Aegithalos iouschistos': 'Black-browed Tit',
   'Aegithalos iouschistos iouschistos': 'Black-browed Tit (Rufous-fronted)',
   'Aegithalos iouschistos sharpei': 'Black-browed Tit (Burmese)',
-  'Aegithalos iouschistos bonvaloti/obscuratus': 'Black-browed Tit (Black-browed)',
+  'Aegithalos iouschistos bonvaloti/obscuratus':
+      'Black-browed Tit (Black-browed)',
   'Aegithalos fuliginosus': 'Sooty Tit',
   'Psaltriparus minimus': 'Bushtit',
   'Psaltriparus minimus [minimus Group]': 'Bushtit (Pacific)',
@@ -12856,7 +13815,8 @@ const Map<String, String> scientificToCommon = {
   'Curruca curruca minula/margelanica': 'Lesser Whitethroat (Desert/Gansu)',
   'Curruca curruca althaea': 'Lesser Whitethroat (Hume\'s)',
   'Curruca curruca curruca/althaea': 'Lesser Whitethroat (Lesser/Hume\'s)',
-  'Curruca curruca curruca/minula/althaea': 'Lesser Whitethroat (Lesser/Desert/Hume\'s)',
+  'Curruca curruca curruca/minula/althaea':
+      'Lesser Whitethroat (Lesser/Desert/Hume\'s)',
   'Curruca lugens': 'Brown Parisoma',
   'Curruca lugens griseiventris': 'Brown Parisoma (Gray-vented)',
   'Curruca lugens [lugens Group]': 'Brown Parisoma (Brown)',
@@ -12870,7 +13830,8 @@ const Map<String, String> scientificToCommon = {
   'Curruca deserticola': 'Tristram\'s Warbler',
   'Curruca mystacea': 'Menetries\'s Warbler',
   'Curruca mystacea mystacea': 'Menetries\'s Warbler (mystacea)',
-  'Curruca mystacea rubescens/turcmenica': 'Menetries\'s Warbler (rubescens/turcmenica)',
+  'Curruca mystacea rubescens/turcmenica':
+      'Menetries\'s Warbler (rubescens/turcmenica)',
   'Curruca ruppeli': 'Rüppell\'s Warbler',
   'Curruca melanothorax': 'Cyprus Warbler',
   'Curruca melanocephala': 'Sardinian Warbler',
@@ -12878,7 +13839,8 @@ const Map<String, String> scientificToCommon = {
   'Curruca iberiae': 'Western Subalpine Warbler',
   'Curruca cantillans': 'Eastern Subalpine Warbler',
   'Curruca iberiae/cantillans': 'Western/Eastern Subalpine Warbler',
-  'Curruca subalpina/iberiae/cantillans': 'Moltoni\'s/Western/Eastern Subalpine Warbler',
+  'Curruca subalpina/iberiae/cantillans':
+      'Moltoni\'s/Western/Eastern Subalpine Warbler',
   'Curruca communis': 'Greater Whitethroat',
   'Curruca conspicillata': 'Spectacled Warbler',
   'Curruca sarda': 'Marmora\'s Warbler',
@@ -12902,7 +13864,8 @@ const Map<String, String> scientificToCommon = {
   'Fulvetta striaticollis': 'Chinese Fulvetta',
   'Fulvetta ludlowi': 'Brown-throated Fulvetta',
   'Fulvetta vinipectus': 'White-browed Fulvetta',
-  'Fulvetta vinipectus vinipectus/kangrae': 'White-browed Fulvetta (White-throated)',
+  'Fulvetta vinipectus vinipectus/kangrae':
+      'White-browed Fulvetta (White-throated)',
   'Fulvetta vinipectus chumbiensis': 'White-browed Fulvetta (Bhutan)',
   'Fulvetta vinipectus austeni': 'White-browed Fulvetta (Naga Hills)',
   'Fulvetta vinipectus ripponi': 'White-browed Fulvetta (Chin Hills)',
@@ -12923,17 +13886,23 @@ const Map<String, String> scientificToCommon = {
   'Paradoxornis paradoxus': 'Three-toed Parrotbill',
   'Paradoxornis gularis': 'Gray-headed Parrotbill',
   'Paradoxornis margaritae': 'Black-headed Parrotbill',
-  'Paradoxornis gularis x margaritae': 'Gray-headed x Black-headed Parrotbill (hybrid)',
+  'Paradoxornis gularis x margaritae':
+      'Gray-headed x Black-headed Parrotbill (hybrid)',
   'Paradoxornis ruficeps': 'White-breasted Parrotbill',
   'Paradoxornis bakeri': 'Rufous-headed Parrotbill',
   'Suthora davidiana': 'Short-tailed Parrotbill',
   'Suthora fulvifrons': 'Fulvous Parrotbill',
   'Suthora nipalensis': 'Black-throated Parrotbill',
-  'Suthora nipalensis nipalensis/garhwalensis': 'Black-throated Parrotbill (Black-throated)',
-  'Suthora nipalensis humii/crocotia': 'Black-throated Parrotbill (Orange-eared)',
-  'Suthora nipalensis poliotis/feae': 'Black-throated Parrotbill (Gray-breasted)',
-  'Suthora nipalensis ripponi/patriciae': 'Black-throated Parrotbill (Buff-breasted)',
-  'Suthora nipalensis beaulieu/kamoli': 'Black-throated Parrotbill (Black-eared)',
+  'Suthora nipalensis nipalensis/garhwalensis':
+      'Black-throated Parrotbill (Black-throated)',
+  'Suthora nipalensis humii/crocotia':
+      'Black-throated Parrotbill (Orange-eared)',
+  'Suthora nipalensis poliotis/feae':
+      'Black-throated Parrotbill (Gray-breasted)',
+  'Suthora nipalensis ripponi/patriciae':
+      'Black-throated Parrotbill (Buff-breasted)',
+  'Suthora nipalensis beaulieu/kamoli':
+      'Black-throated Parrotbill (Black-eared)',
   'Suthora verreauxi': 'Golden Parrotbill',
   'Suthora atrosuperciliaris': 'Pale-billed Parrotbill',
   'Suthora conspicillata': 'Spectacled Parrotbill',
@@ -12942,7 +13911,8 @@ const Map<String, String> scientificToCommon = {
   'Suthora brunnea': 'Brown-winged Parrotbill',
   'Suthora webbiana': 'Vinous-throated Parrotbill',
   'Suthora alphonsiana': 'Ashy-throated Parrotbill',
-  'Suthora webbiana x alphonsiana': 'Vinous-throated x Ashy-throated Parrotbill (hybrid)',
+  'Suthora webbiana x alphonsiana':
+      'Vinous-throated x Ashy-throated Parrotbill (hybrid)',
   'Suthora przewalskii': 'Rusty-throated Parrotbill',
   'Paradoxornithidae sp.': 'parrotbill sp.',
   'Parayuhina diademata': 'White-collared Yuhina',
@@ -13025,8 +13995,10 @@ const Map<String, String> scientificToCommon = {
   'Zosterops leucophaeus': 'Principe Speirops',
   'Zosterops silvanus': 'Taita White-eye',
   'Zosterops senegalensis': 'Northern Yellow White-eye',
-  'Zosterops senegalensis senegalensis/demeryi': 'Northern Yellow White-eye (senegalensis/demeryi)',
-  'Zosterops senegalensis jacksoni/gerhardi': 'Northern Yellow White-eye (jacksoni/gerhardi)',
+  'Zosterops senegalensis senegalensis/demeryi':
+      'Northern Yellow White-eye (senegalensis/demeryi)',
+  'Zosterops senegalensis jacksoni/gerhardi':
+      'Northern Yellow White-eye (jacksoni/gerhardi)',
   'Zosterops stuhlmanni/senegalensis': 'Green/Northern Yellow White-eye',
   'Zosterops kasaicus': 'Angola White-eye',
   'Zosterops pallidus': 'Orange River White-eye',
@@ -13050,17 +14022,21 @@ const Map<String, String> scientificToCommon = {
   'Zosterops meratusensis': 'Meratus White-eye',
   'Zosterops flavissimus': 'Wakatobi White-eye',
   'Zosterops atrifrons': 'Black-crowned White-eye',
-  'Zosterops atrifrons atrifrons/surdus': 'Black-crowned White-eye (northern Sulawesi)',
+  'Zosterops atrifrons atrifrons/surdus':
+      'Black-crowned White-eye (northern Sulawesi)',
   'Zosterops atrifrons subatrifrons': 'Black-crowned White-eye (Banggai)',
   'Zosterops atrifrons sulaensis': 'Black-crowned White-eye (Sula)',
-  'Zosterops atrifrons [undescribed Lake Matano form]': 'Black-crowned White-eye (undescribed Lake Matano form)',
+  'Zosterops atrifrons [undescribed Lake Matano form]':
+      'Black-crowned White-eye (undescribed Lake Matano form)',
   'Zosterops nehrkorni': 'Sangihe White-eye',
   'Zosterops somadikartai': 'Togian White-eye',
   'Zosterops consobrinorum': 'Sulawesi White-eye',
   'Zosterops anomalus': 'Black-ringed White-eye',
   'Zosterops minor': 'Black-fronted White-eye',
-  'Zosterops minor [chrysolaemus Group]': 'Black-fronted White-eye (Black-fronted)',
-  'Zosterops minor minor/rothschildi': 'Black-fronted White-eye (Green-fronted)',
+  'Zosterops minor [chrysolaemus Group]':
+      'Black-fronted White-eye (Black-fronted)',
+  'Zosterops minor minor/rothschildi':
+      'Black-fronted White-eye (Green-fronted)',
   'Zosterops meeki': 'Tagula White-eye',
   'Zosterops dehaani': 'Morotai White-eye',
   'Zosterops atriceps': 'Cream-throated White-eye',
@@ -13072,7 +14048,8 @@ const Map<String, String> scientificToCommon = {
   'Zosterops flavus': 'Javan White-eye',
   'Zosterops citrinella': 'Ashy-bellied White-eye',
   'Zosterops citrinella unicus': 'Ashy-bellied White-eye (Yellow-bellied)',
-  'Zosterops citrinella [citrinella Group]': 'Ashy-bellied White-eye (Ashy-bellied)',
+  'Zosterops citrinella [citrinella Group]':
+      'Ashy-bellied White-eye (Ashy-bellied)',
   'Zosterops luteus': 'Australian Yellow White-eye',
   'Zosterops lateralis': 'Silvereye',
   'Zosterops lateralis tephropleurus': 'Silvereye (Lord Howe)',
@@ -13085,7 +14062,8 @@ const Map<String, String> scientificToCommon = {
   'Zosterops lateralis griseonota': 'Silvereye (New Caledonian)',
   'Zosterops lateralis [vatensis Group]': 'Silvereye (Vanuatu)',
   'Zosterops lateralis flaviceps': 'Silvereye (Fiji)',
-  'Zosterops citrinella x lateralis': 'Ashy-bellied White-eye x Silvereye (hybrid)',
+  'Zosterops citrinella x lateralis':
+      'Ashy-bellied White-eye x Silvereye (hybrid)',
   'Zosterops citrinella/lateralis': 'Ashy-bellied White-eye/Silvereye',
   'Zosterops paruhbesar': 'Wangi-wangi White-eye',
   'Zosterops auriventer': 'Hume\'s White-eye',
@@ -13144,7 +14122,8 @@ const Map<String, String> scientificToCommon = {
   'Timalia pileata': 'Chestnut-capped Babbler',
   'Dumetia hyperythra': 'Tawny-bellied Babbler',
   'Dumetia hyperythra hyperythra': 'Tawny-bellied Babbler (Tawny-bellied)',
-  'Dumetia hyperythra albogularis/phillipsi': 'Tawny-bellied Babbler (White-throated)',
+  'Dumetia hyperythra albogularis/phillipsi':
+      'Tawny-bellied Babbler (White-throated)',
   'Dumetia atriceps': 'Dark-fronted Babbler',
   'Dumetia atriceps atriceps': 'Dark-fronted Babbler (atriceps)',
   'Dumetia atriceps bourdilloni': 'Dark-fronted Babbler (bourdilloni)',
@@ -13158,7 +14137,8 @@ const Map<String, String> scientificToCommon = {
   'Mixornis gularis woodi': 'Pin-striped Tit-Babbler (Palawan)',
   'Mixornis kelleyi/gularis': 'Gray-faced/Pin-striped Tit-Babbler',
   'Mixornis bornensis': 'Bold-striped Tit-Babbler',
-  'Mixornis bornensis [bornensis Group]': 'Bold-striped Tit-Babbler (Bold-striped)',
+  'Mixornis bornensis [bornensis Group]':
+      'Bold-striped Tit-Babbler (Bold-striped)',
   'Mixornis bornensis cagayanensis': 'Bold-striped Tit-Babbler (Mapun)',
   'Macronus ptilosus': 'Fluffy-backed Tit-Babbler',
   'Macronus striaticeps': 'Brown Tit-Babbler',
@@ -13167,8 +14147,10 @@ const Map<String, String> scientificToCommon = {
   'Cyanoderma bicolor': 'Gray-hooded Babbler',
   'Cyanoderma melanothorax': 'Crescent-chested Babbler',
   'Cyanoderma rufifrons': 'Rufous-fronted Babbler',
-  'Cyanoderma rufifrons [ambiguum Group]': 'Rufous-fronted Babbler (Buff-chested)',
-  'Cyanoderma rufifrons [rufifrons Group]': 'Rufous-fronted Babbler (Rufous-fronted)',
+  'Cyanoderma rufifrons [ambiguum Group]':
+      'Rufous-fronted Babbler (Buff-chested)',
+  'Cyanoderma rufifrons [rufifrons Group]':
+      'Rufous-fronted Babbler (Rufous-fronted)',
   'Cyanoderma pyrrhops': 'Black-chinned Babbler',
   'Cyanoderma ruficeps': 'Rufous-capped Babbler',
   'Cyanoderma sp.': 'Cyanoderma sp.',
@@ -13186,17 +14168,23 @@ const Map<String, String> scientificToCommon = {
   'Melanocichla calva': 'Bare-headed Laughingthrush',
   'Pomatorhinus ferruginosus': 'Black-crowned Scimitar-Babbler',
   'Pomatorhinus phayrei': 'Brown-crowned Scimitar-Babbler',
-  'Pomatorhinus phayrei phayrei/stanfordi': 'Brown-crowned Scimitar-Babbler (Phayre\'s)',
-  'Pomatorhinus phayrei [albogularis Group]': 'Brown-crowned Scimitar-Babbler (albogularis Group)',
-  'Pomatorhinus ferruginosus/phayrei': 'Black-crowned/Brown-crowned Scimitar-Babbler',
+  'Pomatorhinus phayrei phayrei/stanfordi':
+      'Brown-crowned Scimitar-Babbler (Phayre\'s)',
+  'Pomatorhinus phayrei [albogularis Group]':
+      'Brown-crowned Scimitar-Babbler (albogularis Group)',
+  'Pomatorhinus ferruginosus/phayrei':
+      'Black-crowned/Brown-crowned Scimitar-Babbler',
   'Pomatorhinus ochraceiceps': 'Red-billed Scimitar-Babbler',
-  'Pomatorhinus ferruginosus/ochraceiceps': 'Black-crowned/Red-billed Scimitar-Babbler',
-  'Pomatorhinus phayrei/ochraceiceps': 'Brown-crowned/Red-billed Scimitar-Babbler',
+  'Pomatorhinus ferruginosus/ochraceiceps':
+      'Black-crowned/Red-billed Scimitar-Babbler',
+  'Pomatorhinus phayrei/ochraceiceps':
+      'Brown-crowned/Red-billed Scimitar-Babbler',
   'Pomatorhinus superciliaris': 'Slender-billed Scimitar-Babbler',
   'Pomatorhinus ruficollis': 'Streak-breasted Scimitar-Babbler',
   'Pomatorhinus musicus': 'Taiwan Scimitar-Babbler',
   'Pomatorhinus schisticeps': 'White-browed Scimitar-Babbler',
-  'Pomatorhinus ruficollis/schisticeps': 'Streak-breasted/White-browed Scimitar-Babbler',
+  'Pomatorhinus ruficollis/schisticeps':
+      'Streak-breasted/White-browed Scimitar-Babbler',
   'Pomatorhinus horsfieldii': 'Indian Scimitar-Babbler',
   'Pomatorhinus melanurus': 'Sri Lanka Scimitar-Babbler',
   'Pomatorhinus bornensis': 'Sunda Scimitar-Babbler',
@@ -13208,7 +14196,8 @@ const Map<String, String> scientificToCommon = {
   'Erythrogenys mcclellandi': 'Spot-breasted Scimitar-Babbler',
   'Erythrogenys gravivox': 'Black-streaked Scimitar-Babbler',
   'Erythrogenys swinhoei': 'Gray-sided Scimitar-Babbler',
-  'Erythrogenys gravivox/swinhoei': 'Black-streaked/Gray-sided Scimitar-Babbler',
+  'Erythrogenys gravivox/swinhoei':
+      'Black-streaked/Gray-sided Scimitar-Babbler',
   'Erythrogenys erythrocnemis': 'Black-necklaced Scimitar-Babbler',
   'Stachyris nigricollis': 'Black-throated Babbler',
   'Stachyris grammiceps': 'White-breasted Babbler',
@@ -13293,9 +14282,11 @@ const Map<String, String> scientificToCommon = {
   'Kenopia striata': 'Striped Wren-Babbler',
   'Malacocincla abbotti': 'Abbott\'s Babbler',
   'Malacocincla sepiaria': 'Horsfield\'s Babbler',
-  'Malacocincla sepiaria tardinata/barussana': 'Horsfield\'s Babbler (Hartert\'s)',
+  'Malacocincla sepiaria tardinata/barussana':
+      'Horsfield\'s Babbler (Hartert\'s)',
   'Malacocincla sepiaria sepiaria': 'Horsfield\'s Babbler (Horsfield\'s)',
-  'Malacocincla sepiaria rufiventris/harterti': 'Horsfield\'s Babbler (Salvadori\'s)',
+  'Malacocincla sepiaria rufiventris/harterti':
+      'Horsfield\'s Babbler (Salvadori\'s)',
   'Malacocincla perspicillata': 'Black-browed Babbler',
   'Gypsophila crassa': 'Mountain Wren-Babbler',
   'Gypsophila brevicaudata': 'Streaked Wren-Babbler',
@@ -13305,8 +14296,10 @@ const Map<String, String> scientificToCommon = {
   'Gypsophila annamensis/calcicola/crispifrons': 'limestone babbler sp.',
   'Gypsophila rufipectus': 'Rusty-breasted Wren-Babbler',
   'Ptilocichla mindanensis': 'Striated Wren-Babbler',
-  'Ptilocichla mindanensis minuta/fortichi': 'Striated Wren-Babbler (minuta/fortichi)',
-  'Ptilocichla mindanensis mindanensis/basilanica': 'Striated Wren-Babbler (mindanensis/basilanica)',
+  'Ptilocichla mindanensis minuta/fortichi':
+      'Striated Wren-Babbler (minuta/fortichi)',
+  'Ptilocichla mindanensis mindanensis/basilanica':
+      'Striated Wren-Babbler (mindanensis/basilanica)',
   'Ptilocichla leucogrammica': 'Bornean Wren-Babbler',
   'Ptilocichla falcata': 'Falcated Wren-Babbler',
   'Napothera epilepidota': 'Eyebrowed Wren-Babbler',
@@ -13347,8 +14340,10 @@ const Map<String, String> scientificToCommon = {
   'Trochalopteron milnei': 'Red-tailed Laughingthrush',
   'Trochalopteron yersini': 'Collared Laughingthrush',
   'Trochalopteron erythrocephalum': 'Chestnut-crowned Laughingthrush',
-  'Trochalopteron erythrocephalum erythrocephalum/kali': 'Chestnut-crowned Laughingthrush (Chestnut-crowned)',
-  'Trochalopteron erythrocephalum nigrimentum': 'Chestnut-crowned Laughingthrush (Gray-crowned)',
+  'Trochalopteron erythrocephalum erythrocephalum/kali':
+      'Chestnut-crowned Laughingthrush (Chestnut-crowned)',
+  'Trochalopteron erythrocephalum nigrimentum':
+      'Chestnut-crowned Laughingthrush (Gray-crowned)',
   'Trochalopteron chrysopterum': 'Assam Laughingthrush',
   'Trochalopteron formosum': 'Red-winged Laughingthrush',
   'Trochalopteron melanostigma': 'Silver-eared Laughingthrush',
@@ -13368,15 +14363,19 @@ const Map<String, String> scientificToCommon = {
   'Heterophasia gracilis': 'Gray Sibia',
   'Heterophasia melanoleuca': 'Black-backed Sibia',
   'Heterophasia desgodinsi': 'Black-headed Sibia',
-  'Heterophasia desgodinsi desgodinsi/tonkinensis': 'Black-headed Sibia (Black-headed)',
-  'Heterophasia desgodinsi engelbachi/kingi': 'Black-headed Sibia (engelbachi/kingi)',
+  'Heterophasia desgodinsi desgodinsi/tonkinensis':
+      'Black-headed Sibia (Black-headed)',
+  'Heterophasia desgodinsi engelbachi/kingi':
+      'Black-headed Sibia (engelbachi/kingi)',
   'Heterophasia desgodinsi robinsoni': 'Black-headed Sibia (Lang Bian)',
   'Actinodura nipalensis': 'Hoary-throated Barwing',
   'Actinodura morrisoniana': 'Taiwan Barwing',
   'Actinodura waldeni': 'Streak-throated Barwing',
   'Actinodura waldeni daflaensis': 'Streak-throated Barwing (Gray-chested)',
-  'Actinodura waldeni [waldeni Group]': 'Streak-throated Barwing (Rufous-chested)',
-  'Actinodura nipalensis x waldeni': 'Hoary-throated x Streak-throated Barwing (hybrid)',
+  'Actinodura waldeni [waldeni Group]':
+      'Streak-throated Barwing (Rufous-chested)',
+  'Actinodura nipalensis x waldeni':
+      'Hoary-throated x Streak-throated Barwing (hybrid)',
   'Actinodura nipalensis/waldeni': 'Hoary-throated/Streak-throated Barwing',
   'Actinodura souliei': 'Streaked Barwing',
   'Actinodura cyanouroptera': 'Blue-winged Minla',
@@ -13388,11 +14387,13 @@ const Map<String, String> scientificToCommon = {
   'Actinodura sodangorum': 'Black-crowned Barwing',
   'Leiothrix lutea': 'Red-billed Leiothrix',
   'Leiothrix argentauris': 'Silver-eared Mesia',
-  'Leiothrix argentauris [argentauris Group]': 'Silver-eared Mesia (Silver-eared)',
+  'Leiothrix argentauris [argentauris Group]':
+      'Silver-eared Mesia (Silver-eared)',
   'Leiothrix argentauris laurinae/rookmakeri': 'Silver-eared Mesia (Sumatran)',
   'Minla ignotincta': 'Red-tailed Minla',
   'Leioptila annectens': 'Rufous-backed Sibia',
-  'Leioptila annectens [annectens Group]': 'Rufous-backed Sibia (Rufous-backed)',
+  'Leioptila annectens [annectens Group]':
+      'Rufous-backed Sibia (Rufous-backed)',
   'Leioptila annectens eximia': 'Rufous-backed Sibia (Dalat)',
   'Liocichla bugunorum': 'Bugun Liocichla',
   'Liocichla omeiensis': 'Emei Shan Liocichla',
@@ -13467,10 +14468,12 @@ const Map<String, String> scientificToCommon = {
   'Ianthocincla rufogularis': 'Rufous-chinned Laughingthrush',
   'Ianthocincla konkakinhensis': 'Chestnut-eared Laughingthrush',
   'Ianthocincla cineracea': 'Moustached Laughingthrush',
-  'Ianthocincla cineracea cineracea/strenua': 'Moustached Laughingthrush (Western)',
+  'Ianthocincla cineracea cineracea/strenua':
+      'Moustached Laughingthrush (Western)',
   'Ianthocincla cineracea cinereiceps': 'Moustached Laughingthrush (Eastern)',
   'Ianthocincla ocellata': 'Spotted Laughingthrush',
-  'Ianthocincla ocellata [ocellata Group]': 'Spotted Laughingthrush (Brown-cheeked)',
+  'Ianthocincla ocellata [ocellata Group]':
+      'Spotted Laughingthrush (Brown-cheeked)',
   'Ianthocincla ocellata artemisiae': 'Spotted Laughingthrush (Black-headed)',
   'Ianthocincla maxima': 'Giant Laughingthrush',
   'Ianthocincla bieti': 'Biet\'s Laughingthrush',
@@ -13482,16 +14485,19 @@ const Map<String, String> scientificToCommon = {
   'Pterorhinus courtoisi': 'Blue-crowned Laughingthrush',
   'Pterorhinus mitratus': 'Chestnut-capped Laughingthrush',
   'Pterorhinus treacheri': 'Chestnut-hooded Laughingthrush',
-  'Pterorhinus [undescribed Meratus form]': 'Meratus Laughingthrush (undescribed form)',
+  'Pterorhinus [undescribed Meratus form]':
+      'Meratus Laughingthrush (undescribed form)',
   'Pterorhinus ruficollis': 'Rufous-necked Laughingthrush',
   'Pterorhinus nuchalis': 'Chestnut-backed Laughingthrush',
   'Pterorhinus chinensis': 'Black-throated Laughingthrush',
-  'Pterorhinus chinensis [chinensis Group]': 'Black-throated Laughingthrush (Black-throated)',
+  'Pterorhinus chinensis [chinensis Group]':
+      'Black-throated Laughingthrush (Black-throated)',
   'Pterorhinus chinensis monachus': 'Black-throated Laughingthrush (Hainan)',
   'Pterorhinus sannio': 'White-browed Laughingthrush',
   'Pterorhinus perspicillatus': 'Masked Laughingthrush',
   'Pterorhinus pectoralis': 'Greater Necklaced Laughingthrush',
-  'Garrulax monileger/Pterorhinus pectoralis': 'Lesser/Greater Necklaced Laughingthrush',
+  'Garrulax monileger/Pterorhinus pectoralis':
+      'Lesser/Greater Necklaced Laughingthrush',
   'Pterorhinus davidi': 'Pere David\'s Laughingthrush',
   'Pterorhinus woodi': 'Mount Victoria Babax',
   'Pterorhinus lanceolatus': 'Chinese Babax',
@@ -13525,7 +14531,8 @@ const Map<String, String> scientificToCommon = {
   'Sitta magna': 'Giant Nuthatch',
   'Sitta carolinensis': 'White-breasted Nuthatch',
   'Sitta carolinensis carolinensis': 'White-breasted Nuthatch (Eastern)',
-  'Sitta carolinensis [lagunae Group]': 'White-breasted Nuthatch (Interior West)',
+  'Sitta carolinensis [lagunae Group]':
+      'White-breasted Nuthatch (Interior West)',
   'Sitta carolinensis aculeata/alexandrae': 'White-breasted Nuthatch (Pacific)',
   'Sitta formosa': 'Beautiful Nuthatch',
   'Sitta azurea': 'Blue Nuthatch',
@@ -13568,9 +14575,11 @@ const Map<String, String> scientificToCommon = {
   'Certhia hodgsoni': 'Hodgson\'s Treecreeper',
   'Certhia tianquanensis': 'Sichuan Treecreeper',
   'Certhia americana': 'Brown Creeper',
-  'Certhia americana [occidentalis Group]': 'Brown Creeper (occidentalis Group)',
+  'Certhia americana [occidentalis Group]':
+      'Brown Creeper (occidentalis Group)',
   'Certhia americana montana/idahoensis': 'Brown Creeper (montana/idahoensis)',
-  'Certhia americana americana/nigrescens': 'Brown Creeper (americana/nigrescens)',
+  'Certhia americana americana/nigrescens':
+      'Brown Creeper (americana/nigrescens)',
   'Certhia americana albescens/alticola': 'Brown Creeper (albescens/alticola)',
   'Certhia americana pernigra': 'Brown Creeper (pernigra)',
   'Certhia americana extima': 'Brown Creeper (extima)',
@@ -13584,7 +14593,8 @@ const Map<String, String> scientificToCommon = {
   'Microbates collaris': 'Collared Gnatwren',
   'Microbates cinereiventris': 'Tawny-faced Gnatwren',
   'Ramphocaenus melanurus': 'Long-billed Gnatwren',
-  'Ramphocaenus melanurus [rufiventris Group]': 'Long-billed Gnatwren (rufiventris Group)',
+  'Ramphocaenus melanurus [rufiventris Group]':
+      'Long-billed Gnatwren (rufiventris Group)',
   'Ramphocaenus melanurus [melanurus Group]': 'Long-billed Gnatwren (Trilling)',
   'Ramphocaenus sticturus': 'Chattering Gnatwren',
   'Ramphocaenus melanurus/sticturus': 'Long-billed/Chattering Gnatwren',
@@ -13600,7 +14610,8 @@ const Map<String, String> scientificToCommon = {
   'Polioptila lactea': 'Creamy-bellied Gnatcatcher',
   'Polioptila lembeyei': 'Cuban Gnatcatcher',
   'Polioptila plumbea': 'Tropical Gnatcatcher',
-  'Polioptila plumbea plumbiceps/anteocularis': 'Tropical Gnatcatcher (plumbiceps/anteocularis)',
+  'Polioptila plumbea plumbiceps/anteocularis':
+      'Tropical Gnatcatcher (plumbiceps/anteocularis)',
   'Polioptila plumbea innotata': 'Tropical Gnatcatcher (innotata)',
   'Polioptila plumbea plumbea': 'Tropical Gnatcatcher (plumbea)',
   'Polioptila plumbea parvirostris': 'Tropical Gnatcatcher (parvirostris)',
@@ -13615,10 +14626,12 @@ const Map<String, String> scientificToCommon = {
   'Polioptila melanura': 'Black-tailed Gnatcatcher',
   'Polioptila californica': 'California Gnatcatcher',
   'Polioptila nigriceps': 'Black-capped Gnatcatcher',
-  'Polioptila melanura x nigriceps': 'Black-tailed x Black-capped Gnatcatcher (hybrid)',
+  'Polioptila melanura x nigriceps':
+      'Black-tailed x Black-capped Gnatcatcher (hybrid)',
   'Polioptila albiloris': 'White-lored Gnatcatcher',
   'Polioptila albiloris vanrossemi': 'White-lored Gnatcatcher (Van Rossem\'s)',
-  'Polioptila albiloris albiloris': 'White-lored Gnatcatcher (Central American)',
+  'Polioptila albiloris albiloris':
+      'White-lored Gnatcatcher (Central American)',
   'Polioptila sp.': 'gnatcatcher sp.',
   'Salpinctes obsoletus': 'Rock Wren',
   'Salpinctes obsoletus [obsoletus Group]': 'Rock Wren (Northern)',
@@ -13626,8 +14639,10 @@ const Map<String, String> scientificToCommon = {
   'Microcerculus philomela': 'Nightingale Wren',
   'Microcerculus marginatus': 'Scaly-breasted Wren',
   'Microcerculus marginatus luscinia': 'Scaly-breasted Wren (Whistling)',
-  'Microcerculus marginatus taeniatus/occidentalis': 'Scaly-breasted Wren (Scaly)',
-  'Microcerculus marginatus [marginatus Group]': 'Scaly-breasted Wren (Southern)',
+  'Microcerculus marginatus taeniatus/occidentalis':
+      'Scaly-breasted Wren (Scaly)',
+  'Microcerculus marginatus [marginatus Group]':
+      'Scaly-breasted Wren (Southern)',
   'Microcerculus ustulatus': 'Flutist Wren',
   'Microcerculus bambla': 'Wing-banded Wren',
   'Odontorchilus branickii': 'Gray-mantled Wren',
@@ -13638,7 +14653,8 @@ const Map<String, String> scientificToCommon = {
   'Ferminia cerverai': 'Zapata Wren',
   'Troglodytes aedon': 'Northern House Wren',
   'Troglodytes aedon [aedon Group]': 'Northern House Wren (Northern)',
-  'Troglodytes aedon [brunneicollis Group]': 'Northern House Wren (Brown-throated)',
+  'Troglodytes aedon [brunneicollis Group]':
+      'Northern House Wren (Brown-throated)',
   'Troglodytes beani': 'Cozumel Wren',
   'Troglodytes martinicensis': 'Kalinago Wren',
   'Troglodytes martinicensis guadeloupensis': 'Kalinago Wren (Guadeloupe)',
@@ -13648,7 +14664,8 @@ const Map<String, String> scientificToCommon = {
   'Troglodytes musicus': 'St. Vincent Wren',
   'Troglodytes grenadensis': 'Grenada Wren',
   'Troglodytes musculus': 'Southern House Wren',
-  'Troglodytes musculus [intermedius Group]': 'Southern House Wren (Central American)',
+  'Troglodytes musculus [intermedius Group]':
+      'Southern House Wren (Central American)',
   'Troglodytes musculus [audax Group]': 'Southern House Wren (North Andean)',
   'Troglodytes musculus carabayae': 'Southern House Wren (South Peruvian)',
   'Troglodytes musculus [musculus Group]': 'Southern House Wren (cis-Andean)',
@@ -13697,9 +14714,12 @@ const Map<String, String> scientificToCommon = {
   'Cistothorus stellaris/palustris': 'Sedge/Marsh Wren',
   'Thryothorus ludovicianus': 'Carolina Wren',
   'Thryothorus ludovicianus [ludovicianus Group]': 'Carolina Wren (Northern)',
-  'Thryothorus ludovicianus [berlandieri Group]': 'Carolina Wren (Northeast Mexico/South Texas)',
-  'Thryothorus ludovicianus albinucha/subfulvus': 'Carolina Wren (White-browed)',
-  'Troglodytes aedon x Thryothorus ludovicianus': 'Northern House x Carolina Wren (hybrid)',
+  'Thryothorus ludovicianus [berlandieri Group]':
+      'Carolina Wren (Northeast Mexico/South Texas)',
+  'Thryothorus ludovicianus albinucha/subfulvus':
+      'Carolina Wren (White-browed)',
+  'Troglodytes aedon x Thryothorus ludovicianus':
+      'Northern House x Carolina Wren (hybrid)',
   'Thryomanes bewickii': 'Bewick\'s Wren',
   'Thryomanes bewickii bewickii': 'Bewick\'s Wren (bewickii)',
   'Thryomanes bewickii [mexicanus Group]': 'Bewick\'s Wren (mexicanus Group)',
@@ -13707,28 +14727,35 @@ const Map<String, String> scientificToCommon = {
   'Campylorhynchus albobrunneus': 'White-headed Wren',
   'Campylorhynchus zonatus': 'Band-backed Wren',
   'Campylorhynchus zonatus [zonatus Group]': 'Band-backed Wren (Mesoamerican)',
-  'Campylorhynchus zonatus costaricensis/panamensis': 'Band-backed Wren (Costa Rican)',
-  'Campylorhynchus zonatus brevirostris/curvirostris': 'Band-backed Wren (Colombian)',
-  'Campylorhynchus albobrunneus x zonatus': 'White-headed x Band-backed Wren (hybrid)',
+  'Campylorhynchus zonatus costaricensis/panamensis':
+      'Band-backed Wren (Costa Rican)',
+  'Campylorhynchus zonatus brevirostris/curvirostris':
+      'Band-backed Wren (Colombian)',
+  'Campylorhynchus albobrunneus x zonatus':
+      'White-headed x Band-backed Wren (hybrid)',
   'Campylorhynchus megalopterus': 'Gray-barred Wren',
   'Campylorhynchus chiapensis': 'Giant Wren',
   'Campylorhynchus humilis': 'Russet-naped Wren',
   'Campylorhynchus rufinucha': 'Veracruz Wren',
   'Campylorhynchus capistratus': 'Rufous-backed Wren',
   'Campylorhynchus capistratus castaneus': 'Rufous-backed Wren (Sula Valley)',
-  'Campylorhynchus capistratus [capistratus Group]': 'Rufous-backed Wren (Rufous-backed)',
+  'Campylorhynchus capistratus [capistratus Group]':
+      'Rufous-backed Wren (Rufous-backed)',
   'Campylorhynchus humilis/capistratus': 'Russet-naped/Rufous-backed Wren',
   'Campylorhynchus gularis': 'Spotted Wren',
   'Campylorhynchus jocosus': 'Boucard\'s Wren',
   'Campylorhynchus yucatanicus': 'Yucatan Wren',
   'Campylorhynchus brunneicapillus': 'Cactus Wren',
-  'Campylorhynchus brunneicapillus [brunneicapillus Group]': 'Cactus Wren (brunneicapillus Group)',
-  'Campylorhynchus brunneicapillus [affinis Group]': 'Cactus Wren (affinis Group)',
+  'Campylorhynchus brunneicapillus [brunneicapillus Group]':
+      'Cactus Wren (brunneicapillus Group)',
+  'Campylorhynchus brunneicapillus [affinis Group]':
+      'Cactus Wren (affinis Group)',
   'Campylorhynchus nuchalis': 'Stripe-backed Wren',
   'Campylorhynchus fasciatus': 'Fasciated Wren',
   'Campylorhynchus griseus': 'Bicolored Wren',
   'Campylorhynchus turdinus': 'Thrush-like Wren',
-  'Campylorhynchus turdinus turdinus/hypostictus': 'Thrush-like Wren (Spot-breasted)',
+  'Campylorhynchus turdinus turdinus/hypostictus':
+      'Thrush-like Wren (Spot-breasted)',
   'Campylorhynchus turdinus unicolor': 'Thrush-like Wren (Unspotted)',
   'Pheugopedius spadix': 'Sooty-headed Wren',
   'Pheugopedius fasciatoventris': 'Black-bellied Wren',
@@ -13747,7 +14774,8 @@ const Map<String, String> scientificToCommon = {
   'Pheugopedius maculipectus': 'Spot-breasted Wren',
   'Pheugopedius sclateri': 'Speckle-breasted Wren',
   'Pheugopedius sclateri columbianus': 'Speckle-breasted Wren (Colombian)',
-  'Pheugopedius sclateri paucimaculatus': 'Speckle-breasted Wren (Speckle-breasted)',
+  'Pheugopedius sclateri paucimaculatus':
+      'Speckle-breasted Wren (Speckle-breasted)',
   'Pheugopedius sclateri sclateri': 'Speckle-breasted Wren (Marañon)',
   'Pheugopedius felix': 'Happy Wren',
   'Pheugopedius felix [felix Group]': 'Happy Wren (Mainland)',
@@ -13769,7 +14797,8 @@ const Map<String, String> scientificToCommon = {
   'Cantorchilus semibadius': 'Riverside Wren',
   'Cantorchilus nigricapillus': 'Bay Wren',
   'Cantorchilus nigricapillus [castaneus Group]': 'Bay Wren (Central American)',
-  'Cantorchilus nigricapillus nigricapillus/connectens': 'Bay Wren (South American)',
+  'Cantorchilus nigricapillus nigricapillus/connectens':
+      'Bay Wren (South American)',
   'Cantorchilus superciliaris': 'Superciliated Wren',
   'Cantorchilus leucotis': 'Buff-breasted Wren',
   'Cantorchilus longirostris': 'Long-billed Wren',
@@ -13782,23 +14811,31 @@ const Map<String, String> scientificToCommon = {
   'Cinnycerthia fulva': 'Fulvous Wren',
   'Cinnycerthia sp.': 'Cinnycerthia sp.',
   'Uropsila leucogastra': 'White-bellied Wren',
-  'Uropsila leucogastra [leucogastra Group]': 'White-bellied Wren (Middle American)',
+  'Uropsila leucogastra [leucogastra Group]':
+      'White-bellied Wren (Middle American)',
   'Uropsila leucogastra pacifica': 'White-bellied Wren (West Mexico)',
   'Henicorhina leucosticta': 'White-breasted Wood-Wren',
-  'Henicorhina leucosticta [prostheleuca Group]': 'White-breasted Wood-Wren (Sclater\'s)',
-  'Henicorhina leucosticta pittieri/costaricensis': 'White-breasted Wood-Wren (Cherrie\'s)',
-  'Henicorhina leucosticta inornata/eucharis': 'White-breasted Wood-Wren (Choco)',
-  'Henicorhina leucosticta [leucosticta Group]': 'White-breasted Wood-Wren (Black-capped)',
+  'Henicorhina leucosticta [prostheleuca Group]':
+      'White-breasted Wood-Wren (Sclater\'s)',
+  'Henicorhina leucosticta pittieri/costaricensis':
+      'White-breasted Wood-Wren (Cherrie\'s)',
+  'Henicorhina leucosticta inornata/eucharis':
+      'White-breasted Wood-Wren (Choco)',
+  'Henicorhina leucosticta [leucosticta Group]':
+      'White-breasted Wood-Wren (Black-capped)',
   'Henicorhina leucoptera': 'Bar-winged Wood-Wren',
   'Henicorhina leucophrys': 'Gray-breasted Wood-Wren',
-  'Henicorhina leucophrys [mexicana Group]': 'Gray-breasted Wood-Wren (Central American)',
+  'Henicorhina leucophrys [mexicana Group]':
+      'Gray-breasted Wood-Wren (Central American)',
   'Henicorhina leucophrys brunneiceps': 'Gray-breasted Wood-Wren (Choco)',
   'Henicorhina leucophrys bangsi': 'Gray-breasted Wood-Wren (bangsi)',
   'Henicorhina leucophrys manastarae': 'Gray-breasted Wood-Wren (Perija)',
   'Henicorhina leucophrys meridana': 'Gray-breasted Wood-Wren (meridana)',
-  'Henicorhina leucophrys venezuelensis': 'Gray-breasted Wood-Wren (venezuelensis)',
+  'Henicorhina leucophrys venezuelensis':
+      'Gray-breasted Wood-Wren (venezuelensis)',
   'Henicorhina leucophrys hilaris': 'Gray-breasted Wood-Wren (hilaris)',
-  'Henicorhina leucophrys leucophrys/boliviana': 'Gray-breasted Wood-Wren (Andean)',
+  'Henicorhina leucophrys leucophrys/boliviana':
+      'Gray-breasted Wood-Wren (Andean)',
   'Henicorhina anachoreta': 'Hermit Wood-Wren',
   'Henicorhina negreti': 'Munchique Wood-Wren',
   'Henicorhina sp.': 'wood-wren sp.',
@@ -13826,7 +14863,8 @@ const Map<String, String> scientificToCommon = {
   'Cinclus schulzii': 'Rufous-throated Dipper',
   'Buphagus erythroryncha': 'Red-billed Oxpecker',
   'Buphagus africanus': 'Yellow-billed Oxpecker',
-  'Buphagus erythroryncha x africanus': 'Red-billed x Yellow-billed Oxpecker (hybrid)',
+  'Buphagus erythroryncha x africanus':
+      'Red-billed x Yellow-billed Oxpecker (hybrid)',
   'Buphagus erythroryncha/africanus': 'Red-billed/Yellow-billed Oxpecker',
   'Rhabdornis mystacalis': 'Stripe-sided Rhabdornis',
   'Rhabdornis grandis': 'Long-billed Rhabdornis',
@@ -13907,7 +14945,8 @@ const Map<String, String> scientificToCommon = {
   'Sturnia malabarica': 'Chestnut-tailed Starling',
   'Sturnia malabarica malabarica': 'Chestnut-tailed Starling (Western)',
   'Sturnia malabarica nemoricola': 'Chestnut-tailed Starling (Eastern)',
-  'Gracupica contra x Sturnia malabarica': 'Indian Pied x Chestnut-tailed Starling (hybrid)',
+  'Gracupica contra x Sturnia malabarica':
+      'Indian Pied x Chestnut-tailed Starling (hybrid)',
   'Sturnia blythii': 'Malabar Starling',
   'Sturnia malabarica/blythii': 'Chestnut-tailed/Malabar Starling',
   'Sturnia erythropygia': 'White-headed Starling',
@@ -13932,14 +14971,18 @@ const Map<String, String> scientificToCommon = {
   'Acridotheres cinereus': 'Pale-bellied Myna',
   'Acridotheres albocinctus': 'Collared Myna',
   'Acridotheres grandis': 'Great Myna',
-  'Gracupica nigricollis x Acridotheres grandis': 'Black-collared Starling x Great Myna (hybrid)',
-  'Gracupica floweri x Acridotheres grandis': 'Siamese Pied Starling x Great Myna (hybrid)',
+  'Gracupica nigricollis x Acridotheres grandis':
+      'Black-collared Starling x Great Myna (hybrid)',
+  'Gracupica floweri x Acridotheres grandis':
+      'Siamese Pied Starling x Great Myna (hybrid)',
   'Acridotheres tristis x grandis': 'Common x Great Myna (hybrid)',
-  'Acridotheres leucocephalus x grandis': 'Vinous-breasted x Great Myna (hybrid)',
+  'Acridotheres leucocephalus x grandis':
+      'Vinous-breasted x Great Myna (hybrid)',
   'Acridotheres fuscus x grandis': 'Jungle x Great Myna (hybrid)',
   'Acridotheres javanicus x grandis': 'Javan x Great Myna (hybrid)',
   'Acridotheres cristatellus': 'Crested Myna',
-  'Spodiopsar cineraceus x Acridotheres cristatellus': 'White-cheeked Starling x Crested Myna (hybrid)',
+  'Spodiopsar cineraceus x Acridotheres cristatellus':
+      'White-cheeked Starling x Crested Myna (hybrid)',
   'Acridotheres tristis x cristatellus': 'Common x Crested Myna (hybrid)',
   'Acridotheres albocinctus x cristatellus': 'Collared x Crested Myna (hybrid)',
   'Acridotheres fuscus/cristatellus': 'Jungle/Crested Myna',
@@ -13952,8 +14995,10 @@ const Map<String, String> scientificToCommon = {
   'Onychognathus neumanni': 'Neumann\'s Starling',
   'Onychognathus morio': 'Red-winged Starling',
   'Onychognathus fulgidus': 'Chestnut-winged Starling',
-  'Onychognathus fulgidus fulgidus': 'Chestnut-winged Starling (Chestnut-winged)',
-  'Onychognathus fulgidus hartlaubii/intermedius': 'Chestnut-winged Starling (Hartlaub\'s)',
+  'Onychognathus fulgidus fulgidus':
+      'Chestnut-winged Starling (Chestnut-winged)',
+  'Onychognathus fulgidus hartlaubii/intermedius':
+      'Chestnut-winged Starling (Hartlaub\'s)',
   'Onychognathus walleri': 'Waller\'s Starling',
   'Onychognathus walleri preussi': 'Waller\'s Starling (Preuss\'s)',
   'Onychognathus walleri elgonensis': 'Waller\'s Starling (Albertine)',
@@ -13996,7 +15041,8 @@ const Map<String, String> scientificToCommon = {
   'Lamprotornis albicapillus': 'White-crowned Starling',
   'Lamprotornis fischeri': 'Fischer\'s Starling',
   'Lamprotornis chloropterus': 'Lesser Blue-eared Starling',
-  'Lamprotornis chloropterus chloropterus': 'Lesser Blue-eared Starling (Lesser)',
+  'Lamprotornis chloropterus chloropterus':
+      'Lesser Blue-eared Starling (Lesser)',
   'Lamprotornis chloropterus elisabeth': 'Lesser Blue-eared Starling (Miombo)',
   'Lamprotornis acuticaudus': 'Sharp-tailed Starling',
   'Lamprotornis chalybaeus': 'Greater Blue-eared Starling',
@@ -14020,12 +15066,15 @@ const Map<String, String> scientificToCommon = {
   'Cinclocerthia gutturalis': 'Gray Trembler',
   'Cinclocerthia ruficauda/gutturalis': 'Brown/Gray Trembler',
   'Toxostoma curvirostre': 'Curve-billed Thrasher',
-  'Toxostoma curvirostre [curvirostre Group]': 'Curve-billed Thrasher (curvirostre Group)',
-  'Toxostoma curvirostre [palmeri Group]': 'Curve-billed Thrasher (palmeri Group)',
+  'Toxostoma curvirostre [curvirostre Group]':
+      'Curve-billed Thrasher (curvirostre Group)',
+  'Toxostoma curvirostre [palmeri Group]':
+      'Curve-billed Thrasher (palmeri Group)',
   'Toxostoma ocellatum': 'Ocellated Thrasher',
   'Toxostoma rufum': 'Brown Thrasher',
   'Toxostoma longirostre': 'Long-billed Thrasher',
-  'Toxostoma curvirostre x longirostre': 'Curve-billed x Long-billed Thrasher (hybrid)',
+  'Toxostoma curvirostre x longirostre':
+      'Curve-billed x Long-billed Thrasher (hybrid)',
   'Toxostoma rufum/longirostre': 'Brown/Long-billed Thrasher',
   'Toxostoma guttatum': 'Cozumel Thrasher',
   'Toxostoma bendirei': 'Bendire\'s Thrasher',
@@ -14033,7 +15082,8 @@ const Map<String, String> scientificToCommon = {
   'Toxostoma cinereum': 'Gray Thrasher',
   'Toxostoma redivivum': 'California Thrasher',
   'Toxostoma lecontei': 'LeConte\'s Thrasher',
-  'Toxostoma lecontei lecontei/macmillanorum': 'LeConte\'s Thrasher (LeConte\'s)',
+  'Toxostoma lecontei lecontei/macmillanorum':
+      'LeConte\'s Thrasher (LeConte\'s)',
   'Toxostoma lecontei arenicola': 'LeConte\'s Thrasher (Vizcaino)',
   'Toxostoma crissale': 'Crissal Thrasher',
   'Toxostoma redivivum x crissale': 'California x Crissal Thrasher (hybrid)',
@@ -14086,14 +15136,16 @@ const Map<String, String> scientificToCommon = {
   'Myadestes occidentalis': 'Brown-backed Solitaire',
   'Myadestes elisabeth': 'Cuban Solitaire',
   'Myadestes genibarbis': 'Rufous-throated Solitaire',
-  'Myadestes genibarbis [genibarbis Group]': 'Rufous-throated Solitaire (Rufous-throated)',
+  'Myadestes genibarbis [genibarbis Group]':
+      'Rufous-throated Solitaire (Rufous-throated)',
   'Myadestes genibarbis sibilans': 'Rufous-throated Solitaire (St. Vincent)',
   'Myadestes melanops': 'Black-faced Solitaire',
   'Myadestes coloratus': 'Varied Solitaire',
   'Myadestes unicolor': 'Slate-colored Solitaire',
   'Myadestes ralloides': 'Andean Solitaire',
   'Myadestes ralloides plumbeiceps': 'Andean Solitaire (plumbeiceps)',
-  'Myadestes ralloides venezuelensis/candelae': 'Andean Solitaire (venezuelensis/candelae)',
+  'Myadestes ralloides venezuelensis/candelae':
+      'Andean Solitaire (venezuelensis/candelae)',
   'Myadestes ralloides ralloides': 'Andean Solitaire (ralloides)',
   'Myadestes myadestinus': 'Kamao',
   'Myadestes woahensis': 'Amaui',
@@ -14144,16 +15196,22 @@ const Map<String, String> scientificToCommon = {
   'Ixoreus naevius': 'Varied Thrush',
   'Catharus gracilirostris': 'Black-billed Nightingale-Thrush',
   'Catharus aurantiirostris': 'Orange-billed Nightingale-Thrush',
-  'Catharus aurantiirostris [melpomene Group]': 'Orange-billed Nightingale-Thrush (Brown-headed)',
-  'Catharus aurantiirostris [griseiceps Group]': 'Orange-billed Nightingale-Thrush (Gray-headed)',
-  'Catharus aurantiirostris [aurantiirostris Group]': 'Orange-billed Nightingale-Thrush (Orange-billed)',
+  'Catharus aurantiirostris [melpomene Group]':
+      'Orange-billed Nightingale-Thrush (Brown-headed)',
+  'Catharus aurantiirostris [griseiceps Group]':
+      'Orange-billed Nightingale-Thrush (Gray-headed)',
+  'Catharus aurantiirostris [aurantiirostris Group]':
+      'Orange-billed Nightingale-Thrush (Orange-billed)',
   'Catharus fuscater': 'Slaty-backed Nightingale-Thrush',
   'Catharus fuscater hellmayri': 'Slaty-backed Nightingale-Thrush (Talamanca)',
   'Catharus fuscater mirabilis': 'Slaty-backed Nightingale-Thrush (Pirre)',
   'Catharus fuscater arcanus': 'Slaty-backed Nightingale-Thrush (Darien)',
-  'Catharus fuscater fuscater/sanctaemartae': 'Slaty-backed Nightingale-Thrush (Cordilleran)',
-  'Catharus fuscater opertaneus/tenebris': 'Slaty-backed Nightingale-Thrush (Antioquia)',
-  'Catharus fuscater [berlepschi Group]': 'Slaty-backed Nightingale-Thrush (Trans-Andean)',
+  'Catharus fuscater fuscater/sanctaemartae':
+      'Slaty-backed Nightingale-Thrush (Cordilleran)',
+  'Catharus fuscater opertaneus/tenebris':
+      'Slaty-backed Nightingale-Thrush (Antioquia)',
+  'Catharus fuscater [berlepschi Group]':
+      'Slaty-backed Nightingale-Thrush (Trans-Andean)',
   'Catharus fuscater mentalis': 'Slaty-backed Nightingale-Thrush (Bolivian)',
   'Catharus occidentalis': 'Russet Nightingale-Thrush',
   'Catharus frantzii': 'Ruddy-capped Nightingale-Thrush',
@@ -14202,7 +15260,8 @@ const Map<String, String> scientificToCommon = {
   'Geokichla crossleyi pilettei': 'Crossley\'s Ground-Thrush (Itombwe)',
   'Geokichla oberlaenderi': 'Oberländer\'s Ground-Thrush',
   'Geokichla piaggiae': 'Abyssinian Ground-Thrush',
-  'Geokichla piaggiae [piaggiae Group]': 'Abyssinian Ground-Thrush (Abyssinian)',
+  'Geokichla piaggiae [piaggiae Group]':
+      'Abyssinian Ground-Thrush (Abyssinian)',
   'Geokichla piaggiae tanganjicae': 'Abyssinian Ground-Thrush (Kivu)',
   'Geokichla gurneyi': 'Orange Ground-Thrush',
   'Geokichla spiloptera': 'Spot-winged Thrush',
@@ -14219,8 +15278,10 @@ const Map<String, String> scientificToCommon = {
   'Geokichla citrina': 'Orange-headed Thrush',
   'Geokichla citrina [citrina Group]': 'Orange-headed Thrush (Orange-headed)',
   'Geokichla citrina cyanota': 'Orange-headed Thrush (White-throated)',
-  'Geokichla citrina albogularis/andamanensis': 'Orange-headed Thrush (Plain-winged)',
-  'Geokichla citrina [aurimacula Group]': 'Orange-headed Thrush (Buff-throated)',
+  'Geokichla citrina albogularis/andamanensis':
+      'Orange-headed Thrush (Plain-winged)',
+  'Geokichla citrina [aurimacula Group]':
+      'Orange-headed Thrush (Buff-throated)',
   'Geokichla sp.': 'Geokichla sp.',
   'Turdus mupinensis': 'Chinese Thrush',
   'Turdus simensis': 'Ethiopian Thrush',
@@ -14265,14 +15326,17 @@ const Map<String, String> scientificToCommon = {
   'Turdus dissimilis x cardis': 'Black-breasted x Japanese Thrush (hybrid)',
   'Turdus mindorensis': 'Mindoro Island-Thrush',
   'Turdus thomassoni': 'Luzon Island-Thrush',
-  'Turdus thomassoni [undescribed Sibuyan form]': 'Luzon Island-Thrush (undescribed Sibuyan form)',
+  'Turdus thomassoni [undescribed Sibuyan form]':
+      'Luzon Island-Thrush (undescribed Sibuyan form)',
   'Turdus nigrorum': 'Mindanao Island-Thrush',
   'Turdus nigrorum nigrorum': 'Mindanao Island-Thrush (Negros)',
   'Turdus nigrorum malindangensis': 'Mindanao Island-Thrush (Malindang)',
   'Turdus nigrorum katanglad': 'Mindanao Island-Thrush (Katanglad)',
   'Turdus nigrorum kelleri': 'Mindanao Island-Thrush (Apo)',
-  'Turdus nigrorum [undescribed Mt. Busa form]': 'Mindanao Island-Thrush (undescribed Mt. Busa form)',
-  'Turdus [undescribed Panay form]': 'Panay Island-Thrush (undescribed Panay form)',
+  'Turdus nigrorum [undescribed Mt. Busa form]':
+      'Mindanao Island-Thrush (undescribed Mt. Busa form)',
+  'Turdus [undescribed Panay form]':
+      'Panay Island-Thrush (undescribed Panay form)',
   'Turdus erythropleurus': 'Christmas Island-Thrush',
   'Turdus schlegelii': 'Wallacean Island-Thrush',
   'Turdus schlegelii hygroscopus': 'Wallacean Island-Thrush (Latimojong)',
@@ -14284,7 +15348,8 @@ const Map<String, String> scientificToCommon = {
   'Turdus javanicus indrapurae': 'Sundaic Island-Thrush (Sumatran)',
   'Turdus javanicus fumidus/biesenbachi': 'Sundaic Island-Thrush (Sooty)',
   'Turdus javanicus javanicus': 'Sundaic Island-Thrush (Central Javan)',
-  'Turdus javanicus whiteheadi/stresemanni': 'Sundaic Island-Thrush (Stresemann\'s)',
+  'Turdus javanicus whiteheadi/stresemanni':
+      'Sundaic Island-Thrush (Stresemann\'s)',
   'Turdus javanicus seebohmi': 'Sundaic Island-Thrush (Bornean)',
   'Turdus deningeri': 'Moluccan Island-Thrush',
   'Turdus deningeri sukahujan': 'Moluccan Island-Thrush (Taliabu)',
@@ -14303,7 +15368,8 @@ const Map<String, String> scientificToCommon = {
   'Turdus vanikorensis': 'Vanikoro Island-Thrush',
   'Turdus vanikorensis rennellianus': 'Vanikoro Island-Thrush (Rennell)',
   'Turdus vanikorensis mareensis': 'Vanikoro Island-Thrush (Mare)',
-  'Turdus vanikorensis [vanikorensis Group]': 'Vanikoro Island-Thrush (Vanuatu)',
+  'Turdus vanikorensis [vanikorensis Group]':
+      'Vanikoro Island-Thrush (Vanuatu)',
   'Turdus vanikorensis placens': 'Vanikoro Island-Thrush (Ureparapara)',
   'Turdus vanikorensis efatensis': 'Vanikoro Island-Thrush (Efate)',
   'Turdus pritzbueri': 'White-headed Island-Thrush',
@@ -14337,11 +15403,13 @@ const Map<String, String> scientificToCommon = {
   'Turdus torquatus amicorum': 'Ring Ouzel (Caucasian)',
   'Turdus atrogularis': 'Black-throated Thrush',
   'Turdus ruficollis': 'Red-throated Thrush',
-  'Turdus atrogularis x ruficollis': 'Black-throated x Red-throated Thrush (hybrid)',
+  'Turdus atrogularis x ruficollis':
+      'Black-throated x Red-throated Thrush (hybrid)',
   'Turdus atrogularis/ruficollis': 'Black-throated/Red-throated Thrush',
   'Turdus eunomus': 'Dusky Thrush',
   'Turdus naumanni': 'Naumann\'s Thrush',
-  'Turdus atrogularis x naumanni': 'Black-throated x Naumann\'s Thrush (hybrid)',
+  'Turdus atrogularis x naumanni':
+      'Black-throated x Naumann\'s Thrush (hybrid)',
   'Turdus ruficollis x naumanni': 'Red-throated x Naumann\'s Thrush (hybrid)',
   'Turdus eunomus x naumanni': 'Dusky x Naumann\'s Thrush (hybrid)',
   'Turdus eunomus/naumanni': 'Dusky/Naumann\'s Thrush',
@@ -14350,16 +15418,19 @@ const Map<String, String> scientificToCommon = {
   'Turdus aurantius': 'White-chinned Thrush',
   'Turdus plumbeus': 'Western Red-legged Thrush',
   'Turdus plumbeus plumbeus': 'Western Red-legged Thrush (Bahamas)',
-  'Turdus plumbeus [rubripes Group]': 'Western Red-legged Thrush (Rusty-bellied)',
+  'Turdus plumbeus [rubripes Group]':
+      'Western Red-legged Thrush (Rusty-bellied)',
   'Turdus plumbeus schistaceus': 'Western Red-legged Thrush (Cuban Slaty)',
-  'Turdus plumbeus rubripes x schistaceus': 'Western Red-legged Thrush (Rusty-bellied x Cuban Slaty)',
+  'Turdus plumbeus rubripes x schistaceus':
+      'Western Red-legged Thrush (Rusty-bellied x Cuban Slaty)',
   'Turdus ardosiaceus': 'Eastern Red-legged Thrush',
   'Turdus infuscatus': 'Black Thrush',
   'Turdus nigrescens': 'Sooty Thrush',
   'Turdus rufitorques': 'Rufous-collared Robin',
   'Turdus migratorius': 'American Robin',
   'Turdus migratorius nigrideus': 'American Robin (nigrideus)',
-  'Turdus migratorius [migratorius Group]': 'American Robin (migratorius Group)',
+  'Turdus migratorius [migratorius Group]':
+      'American Robin (migratorius Group)',
   'Turdus migratorius confinis': 'American Robin (San Lucas)',
   'Ixoreus naevius/Turdus migratorius': 'Varied Thrush/American Robin',
   'Turdus rufopalliatus': 'Rufous-backed Robin',
@@ -14405,7 +15476,8 @@ const Map<String, String> scientificToCommon = {
   'Turdus daguae': 'Dagua Thrush',
   'Turdus albicollis': 'White-necked Thrush',
   'Turdus albicollis [phaeopygus Group]': 'White-necked Thrush (Gray-flanked)',
-  'Turdus albicollis [albicollis Group]': 'White-necked Thrush (Rufous-flanked)',
+  'Turdus albicollis [albicollis Group]':
+      'White-necked Thrush (Rufous-flanked)',
   'Turdus leucomelas': 'Pale-breasted Thrush',
   'Turdus hauxwelli': 'Hauxwell\'s Thrush',
   'Turdus fumigatus': 'Cocoa Thrush',
@@ -14435,7 +15507,8 @@ const Map<String, String> scientificToCommon = {
   'Muscicapa dauurica/muttui': 'Asian Brown/Brown-breasted Flycatcher',
   'Muscicapa sodhii': 'Sulawesi Brown Flycatcher',
   'Muscicapa williamsoni': 'Brown-streaked Flycatcher',
-  'Muscicapa williamsoni williamsoni': 'Brown-streaked Flycatcher (Brown-streaked)',
+  'Muscicapa williamsoni williamsoni':
+      'Brown-streaked Flycatcher (Brown-streaked)',
   'Muscicapa williamsoni umbrosa': 'Brown-streaked Flycatcher (Umber)',
   'Muscicapa dauurica/williamsoni': 'Asian Brown/Brown-streaked Flycatcher',
   'Muscicapa adusta': 'African Dusky Flycatcher',
@@ -14444,11 +15517,13 @@ const Map<String, String> scientificToCommon = {
   'Muscicapa epulata/sethsmithi': 'Little/Yellow-footed Flycatcher',
   'Muscicapa striata': 'Spotted Flycatcher',
   'Muscicapa striata [striata Group]': 'Spotted Flycatcher (Spotted)',
-  'Muscicapa striata tyrrhenica/balearica': 'Spotted Flycatcher (Mediterranean)',
+  'Muscicapa striata tyrrhenica/balearica':
+      'Spotted Flycatcher (Mediterranean)',
   'Muscicapa adusta/striata': 'African Dusky/Spotted Flycatcher',
   'Muscicapa gambagae': 'Gambaga Flycatcher',
   'Muscicapa striata/gambagae': 'Spotted/Gambaga Flycatcher',
-  'Muscicapa adusta/striata/gambagae': 'African Dusky/Spotted/Gambaga Flycatcher',
+  'Muscicapa adusta/striata/gambagae':
+      'African Dusky/Spotted/Gambaga Flycatcher',
   'Muscicapa aquatica': 'Swamp Flycatcher',
   'Muscicapa cassini': 'Cassin\'s Flycatcher',
   'Muscicapa sp.': 'Muscicapa sp.',
@@ -14459,8 +15534,10 @@ const Map<String, String> scientificToCommon = {
   'Bradornis mariquensis': 'Marico Flycatcher',
   'Bradornis microrhynchus': 'African Gray Flycatcher',
   'Bradornis microrhynchus pumilus': 'African Gray Flycatcher (Ethiopian)',
-  'Bradornis microrhynchus [microrhynchus Group]': 'African Gray Flycatcher (African Gray)',
-  'Muscicapa gambagae/Bradornis microrhynchus': 'Gambaga/African Gray Flycatcher',
+  'Bradornis microrhynchus [microrhynchus Group]':
+      'African Gray Flycatcher (African Gray)',
+  'Muscicapa gambagae/Bradornis microrhynchus':
+      'Gambaga/African Gray Flycatcher',
   'Bradornis sp.': 'Bradornis sp.',
   'Muscicapa/Bradornis sp.': 'Muscicapa/Bradornis sp.',
   'Agricola pallidus': 'Pale Flycatcher',
@@ -14507,13 +15584,17 @@ const Map<String, String> scientificToCommon = {
   'Tychaedon barbata': 'Miombo Scrub-Robin',
   'Cercotrichas podobe': 'Black Scrub-Robin',
   'Cercotrichas galactotes': 'Rufous-tailed Scrub-Robin',
-  'Cercotrichas galactotes [galactotes Group]': 'Rufous-tailed Scrub-Robin (Rufous-tailed)',
-  'Cercotrichas galactotes minor/hamertoni': 'Rufous-tailed Scrub-Robin (African)',
+  'Cercotrichas galactotes [galactotes Group]':
+      'Rufous-tailed Scrub-Robin (Rufous-tailed)',
+  'Cercotrichas galactotes minor/hamertoni':
+      'Rufous-tailed Scrub-Robin (African)',
   'Cercotrichas paena': 'Kalahari Scrub-Robin',
   'Cercotrichas hartlaubi': 'Brown-backed Scrub-Robin',
   'Cercotrichas leucophrys': 'White-browed Scrub-Robin',
-  'Cercotrichas leucophrys [leucoptera Group]': 'White-browed Scrub-Robin (White-winged)',
-  'Cercotrichas leucophrys [leucophrys Group]': 'White-browed Scrub-Robin (Red-backed)',
+  'Cercotrichas leucophrys [leucoptera Group]':
+      'White-browed Scrub-Robin (White-winged)',
+  'Cercotrichas leucophrys [leucophrys Group]':
+      'White-browed Scrub-Robin (Red-backed)',
   'Cercotrichas sp.': 'african scrub-robin sp.',
   'Copsychus fulicatus': 'Indian Robin',
   'Copsychus saularis': 'Oriental Magpie-Robin',
@@ -14521,13 +15602,16 @@ const Map<String, String> scientificToCommon = {
   'Copsychus saularis [amoenus Group]': 'Oriental Magpie-Robin (Black)',
   'Copsychus pyrropygus': 'Rufous-tailed Shama',
   'Copsychus albospecularis': 'Madagascar Magpie-Robin',
-  'Copsychus albospecularis albospecularis': 'Madagascar Magpie-Robin (Black-bellied)',
-  'Copsychus albospecularis inexspectatus': 'Madagascar Magpie-Robin (White-bellied)',
+  'Copsychus albospecularis albospecularis':
+      'Madagascar Magpie-Robin (Black-bellied)',
+  'Copsychus albospecularis inexspectatus':
+      'Madagascar Magpie-Robin (White-bellied)',
   'Copsychus albospecularis pica': 'Madagascar Magpie-Robin (White-winged)',
   'Copsychus sechellarum': 'Seychelles Magpie-Robin',
   'Copsychus mindanensis': 'Philippine Magpie-Robin',
   'Copsychus malabaricus': 'White-rumped Shama',
-  'Copsychus malabaricus [malabaricus Group]': 'White-rumped Shama (White-rumped)',
+  'Copsychus malabaricus [malabaricus Group]':
+      'White-rumped Shama (White-rumped)',
   'Copsychus malabaricus ngae': 'White-rumped Shama (Long-tailed)',
   'Copsychus malabaricus [melanurus Group]': 'White-rumped Shama (Barusan)',
   'Copsychus leggei': 'Sri Lanka Shama',
@@ -14552,7 +15636,8 @@ const Map<String, String> scientificToCommon = {
   'Niltava sundara': 'Rufous-bellied Niltava',
   'Niltava sumatrana': 'Rufous-vented Niltava',
   'Niltava oatesi': 'Chinese Vivid Niltava',
-  'Niltava davidi/sundara/oatesi': 'Fujian/Rufous-bellied/Chinese Vivid Niltava',
+  'Niltava davidi/sundara/oatesi':
+      'Fujian/Rufous-bellied/Chinese Vivid Niltava',
   'Niltava vivida': 'Taiwan Vivid Niltava',
   'Niltava sp.': 'niltava sp.',
   'Cyanoptila cyanomelana': 'Blue-and-white Flycatcher',
@@ -14566,7 +15651,8 @@ const Map<String, String> scientificToCommon = {
   'Eumyias sordidus': 'Dull-blue Flycatcher',
   'Eumyias albicaudatus': 'Nilgiri Flycatcher',
   'Eumyias indigo': 'Indigo Flycatcher',
-  'Eumyias indigo ruficrissa/cerviniventris': 'Indigo Flycatcher (Rufous-vented)',
+  'Eumyias indigo ruficrissa/cerviniventris':
+      'Indigo Flycatcher (Rufous-vented)',
   'Eumyias indigo indigo': 'Indigo Flycatcher (Javan)',
   'Eumyias thalassinus': 'Verditer Flycatcher',
   'Eumyias albicaudatus/thalassinus': 'Nilgiri/Verditer Flycatcher',
@@ -14577,9 +15663,11 @@ const Map<String, String> scientificToCommon = {
   'Cyornis ruckii': 'Rück\'s Blue Flycatcher',
   'Cyornis herioti': 'Blue-breasted Blue Flycatcher',
   'Cyornis camarinensis': 'Rufous-breasted Blue Flycatcher',
-  'Cyornis herioti/camarinensis': 'Blue-breasted/Rufous-breasted Blue Flycatcher',
+  'Cyornis herioti/camarinensis':
+      'Blue-breasted/Rufous-breasted Blue Flycatcher',
   'Cyornis hainanus': 'Hainan Blue Flycatcher',
-  'Cyornis hainanus dialilaemus': 'Hainan Blue Flycatcher (Western Orange-breasted)',
+  'Cyornis hainanus dialilaemus':
+      'Hainan Blue Flycatcher (Western Orange-breasted)',
   'Cyornis hainanus hainanus': 'Hainan Blue Flycatcher (Blue-breasted)',
   'Cyornis hainanus klossi': 'Hainan Blue Flycatcher (Eastern Orange-breasted)',
   'Cyornis pallidipes': 'White-bellied Blue Flycatcher',
@@ -14591,7 +15679,8 @@ const Map<String, String> scientificToCommon = {
   'Cyornis rubeculoides': 'Blue-throated Flycatcher',
   'Cyornis glaucicomans': 'Chinese Blue Flycatcher',
   'Cyornis rubeculoides/glaucicomans': 'Blue-throated/Chinese Blue Flycatcher',
-  'Cyornis hainanus/rubeculoides/glaucicomans': 'Hainan Blue/Blue-throated/Chinese Blue Flycatcher',
+  'Cyornis hainanus/rubeculoides/glaucicomans':
+      'Hainan Blue/Blue-throated/Chinese Blue Flycatcher',
   'Cyornis magnirostris': 'Large Blue Flycatcher',
   'Cyornis whitei': 'Hill Blue Flycatcher',
   'Cyornis magnirostris/whitei': 'Large/Hill Blue Flycatcher',
@@ -14603,11 +15692,13 @@ const Map<String, String> scientificToCommon = {
   'Cyornis lemprieri': 'Palawan Blue Flycatcher',
   'Cyornis superbus': 'Bornean Blue Flycatcher',
   'Cyornis tickelliae': 'Tickell\'s Blue Flycatcher',
-  'Cyornis poliogenys x tickelliae': 'Pale-chinned x Tickell\'s Blue Flycatcher (hybrid)',
+  'Cyornis poliogenys x tickelliae':
+      'Pale-chinned x Tickell\'s Blue Flycatcher (hybrid)',
   'Cyornis rubeculoides/tickelliae': 'Blue-throated/Tickell\'s Blue Flycatcher',
   'Cyornis sumatrensis': 'Indochinese Blue Flycatcher',
   'Cyornis rufigastra': 'Mangrove Blue Flycatcher',
-  'Cyornis rufigastra [rufigastra Group]': 'Mangrove Blue Flycatcher (Mangrove)',
+  'Cyornis rufigastra [rufigastra Group]':
+      'Mangrove Blue Flycatcher (Mangrove)',
   'Cyornis rufigastra [blythi Group]': 'Mangrove Blue Flycatcher (Philippine)',
   'Cyornis omissus': 'Sulawesi Blue Flycatcher',
   'Cyornis omissus [omissus Group]': 'Sulawesi Blue Flycatcher (Sulawesi)',
@@ -14635,7 +15726,8 @@ const Map<String, String> scientificToCommon = {
   'Dessonornis anomalus': 'Olive-flanked Robin-Chat',
   'Dessonornis anomalus grotei': 'Olive-flanked Robin-Chat (White-bellied)',
   'Dessonornis anomalus mbuluensis': 'Olive-flanked Robin-Chat (Black)',
-  'Dessonornis anomalus [anomalus Group]': 'Olive-flanked Robin-Chat (Olive-flanked)',
+  'Dessonornis anomalus [anomalus Group]':
+      'Olive-flanked Robin-Chat (Olive-flanked)',
   'Dessonornis caffer': 'Cape Robin-Chat',
   'Dessonornis humeralis': 'White-throated Robin-Chat',
   'Cossypha cyanocampter': 'Blue-shouldered Robin-Chat',
@@ -14660,8 +15752,10 @@ const Map<String, String> scientificToCommon = {
   'Chamaetylas poliocephala': 'Brown-chested Alethe',
   'Chamaetylas poliocephala poliocephala': 'Brown-chested Alethe (Gray-headed)',
   'Chamaetylas poliocephala hallae': 'Brown-chested Alethe (Gabela)',
-  'Chamaetylas poliocephala compsonota': 'Brown-chested Alethe (Chestnut-backed)',
-  'Chamaetylas poliocephala [carruthersi Group]': 'Brown-chested Alethe (Brown-chested)',
+  'Chamaetylas poliocephala compsonota':
+      'Brown-chested Alethe (Chestnut-backed)',
+  'Chamaetylas poliocephala [carruthersi Group]':
+      'Brown-chested Alethe (Brown-chested)',
   'Chamaetylas poliophrys': 'Red-throated Alethe',
   'Chamaetylas choloensis': 'Thyolo Alethe',
   'Chamaetylas fuelleborni': 'White-chested Alethe',
@@ -14670,7 +15764,8 @@ const Map<String, String> scientificToCommon = {
   'Stiphrornis mabirae': 'Yellow-breasted Forest Robin',
   'Stiphrornis sp.': 'forest robin sp.',
   'Sheppardia polioptera': 'Gray-winged Robin-Chat',
-  'Sheppardia polioptera nigriceps/tessmanni': 'Gray-winged Robin-Chat (Black-capped)',
+  'Sheppardia polioptera nigriceps/tessmanni':
+      'Gray-winged Robin-Chat (Black-capped)',
   'Sheppardia polioptera polioptera': 'Gray-winged Robin-Chat (Gray-winged)',
   'Sheppardia poensis': 'Short-tailed Akalat',
   'Sheppardia poensis granti': 'Short-tailed Akalat (Grant\'s)',
@@ -14708,7 +15803,8 @@ const Map<String, String> scientificToCommon = {
   'Brachypteryx saturata': 'Sumatran Shortwing',
   'Brachypteryx montana': 'Javan Shortwing',
   'Brachypteryx floris': 'Flores Shortwing',
-  'Brachypteryx [undescribed submontane Mindanao form]': 'Mindanao Shortwing (undescribed form)',
+  'Brachypteryx [undescribed submontane Mindanao form]':
+      'Mindanao Shortwing (undescribed form)',
   'Brachypteryx sp.': 'Brachypteryx sp.',
   'Heteroxenicus stellatus': 'Gould\'s Shortwing',
   'Larvivora sibilans': 'Rufous-tailed Robin',
@@ -14724,7 +15820,8 @@ const Map<String, String> scientificToCommon = {
   'Irania gutturalis': 'White-throated Robin',
   'Luscinia luscinia': 'Thrush Nightingale',
   'Luscinia megarhynchos': 'Common Nightingale',
-  'Luscinia megarhynchos megarhynchos/africana': 'Common Nightingale (megarhynchos/africana)',
+  'Luscinia megarhynchos megarhynchos/africana':
+      'Common Nightingale (megarhynchos/africana)',
   'Luscinia megarhynchos golzii': 'Common Nightingale (golzii)',
   'Luscinia luscinia x megarhynchos': 'Thrush x Common Nightingale (hybrid)',
   'Luscinia luscinia/megarhynchos': 'Thrush/Common Nightingale',
@@ -14744,12 +15841,14 @@ const Map<String, String> scientificToCommon = {
   'Myophonus insularis': 'Taiwan Whistling-Thrush',
   'Myophonus caeruleus': 'Blue Whistling-Thrush',
   'Myophonus caeruleus caeruleus': 'Blue Whistling-Thrush (Black-billed)',
-  'Myophonus caeruleus [flavirostris Group]': 'Blue Whistling-Thrush (Yellow-billed)',
+  'Myophonus caeruleus [flavirostris Group]':
+      'Blue Whistling-Thrush (Yellow-billed)',
   'Myophonus sp.': 'whistling-thrush sp.',
   'Enicurus scouleri': 'Little Forktail',
   'Enicurus leschenaulti': 'White-crowned Forktail',
   'Enicurus leschenaulti sinensis/indicus': 'White-crowned Forktail (Northern)',
-  'Enicurus leschenaulti frontalis/chaseni': 'White-crowned Forktail (Malaysian)',
+  'Enicurus leschenaulti frontalis/chaseni':
+      'White-crowned Forktail (Malaysian)',
   'Enicurus leschenaulti leschenaulti': 'White-crowned Forktail (Javan)',
   'Enicurus borneensis': 'Bornean Forktail',
   'Enicurus leschenaulti/borneensis': 'White-crowned/Bornean Forktail',
@@ -14765,7 +15864,8 @@ const Map<String, String> scientificToCommon = {
   'Calliope calliope': 'Siberian Rubythroat',
   'Calliope pectoralis': 'Himalayan Rubythroat',
   'Calliope tschebaiewi': 'Chinese Rubythroat',
-  'Calliope pectoralis/tschebaiewi': 'Himalayan/Chinese Rubythroat (White-tailed Rubythroat)',
+  'Calliope pectoralis/tschebaiewi':
+      'Himalayan/Chinese Rubythroat (White-tailed Rubythroat)',
   'Myiomela leucura': 'White-tailed Robin',
   'Myiomela leucura leucura/montium': 'White-tailed Robin (White-tailed)',
   'Myiomela leucura cambodiana': 'White-tailed Robin (Cambodian)',
@@ -14788,7 +15888,8 @@ const Map<String, String> scientificToCommon = {
   'Ficedula elisae': 'Green-backed Flycatcher',
   'Ficedula narcissina': 'Narcissus Flycatcher',
   'Ficedula owstoni': 'Ryukyu Flycatcher',
-  'Ficedula zanthopygia/elisae/narcissina/owstoni': 'Yellow-rumped/Green-backed/Narcissus/Ryukyu Flycatcher',
+  'Ficedula zanthopygia/elisae/narcissina/owstoni':
+      'Yellow-rumped/Green-backed/Narcissus/Ryukyu Flycatcher',
   'Ficedula narcissina/owstoni': 'Narcissus/Ryukyu Flycatcher',
   'Ficedula mugimaki': 'Mugimaki Flycatcher',
   'Ficedula erithacus': 'Slaty-backed Flycatcher',
@@ -14809,14 +15910,18 @@ const Map<String, String> scientificToCommon = {
   'Ficedula albicilla/parva': 'Taiga/Red-breasted Flycatcher',
   'Ficedula semitorquata': 'Semicollared Flycatcher',
   'Ficedula hypoleuca': 'European Pied Flycatcher',
-  'Ficedula semitorquata x hypoleuca': 'Semicollared x European Pied Flycatcher (hybrid)',
+  'Ficedula semitorquata x hypoleuca':
+      'Semicollared x European Pied Flycatcher (hybrid)',
   'Ficedula speculigera': 'Atlas Flycatcher',
   'Ficedula hypoleuca/speculigera': 'European Pied/Atlas Flycatcher',
   'Ficedula albicollis': 'Collared Flycatcher',
-  'Ficedula semitorquata x albicollis': 'Semicollared x Collared Flycatcher (hybrid)',
-  'Ficedula hypoleuca x albicollis': 'European Pied x Collared Flycatcher (hybrid)',
+  'Ficedula semitorquata x albicollis':
+      'Semicollared x Collared Flycatcher (hybrid)',
+  'Ficedula hypoleuca x albicollis':
+      'European Pied x Collared Flycatcher (hybrid)',
   'Ficedula hypoleuca/albicollis': 'European Pied/Collared Flycatcher',
-  'Ficedula hypoleuca/albicollis/semitorquata': 'European Pied/Collared/Semicollared Flycatcher',
+  'Ficedula hypoleuca/albicollis/semitorquata':
+      'European Pied/Collared/Semicollared Flycatcher',
   'Ficedula riedeli': 'Tanimbar Flycatcher',
   'Ficedula dumetoria': 'Rufous-chested Flycatcher',
   'Ficedula platenae': 'Palawan Flycatcher',
@@ -14869,17 +15974,20 @@ const Map<String, String> scientificToCommon = {
   'Monticola sharpei bensoni': 'Forest Rock-Thrush (Benson\'s)',
   'Monticola saxatilis': 'Rufous-tailed Rock-Thrush',
   'Monticola solitarius': 'Blue Rock-Thrush',
-  'Monticola solitarius solitarius/longirostris': 'Blue Rock-Thrush (solitarius/longirostris)',
+  'Monticola solitarius solitarius/longirostris':
+      'Blue Rock-Thrush (solitarius/longirostris)',
   'Monticola solitarius pandoo': 'Blue Rock-Thrush (pandoo)',
   'Monticola solitarius philippensis': 'Blue Rock-Thrush (philippensis)',
-  'Monticola solitarius pandoo x philippensis': 'Blue Rock-Thrush (pandoo x philippensis)',
+  'Monticola solitarius pandoo x philippensis':
+      'Blue Rock-Thrush (pandoo x philippensis)',
   'Monticola solitarius madoci': 'Blue Rock-Thrush (madoci)',
   'Monticola angolensis': 'Miombo Rock-Thrush',
   'Monticola rupestris': 'Cape Rock-Thrush',
   'Monticola semirufus': 'White-winged Cliff-Chat',
   'Monticola sp.': 'rock-thrush sp.',
   'Saxicola rubetra': 'Whinchat',
-  'Phoenicurus phoenicurus x Saxicola rubetra': 'Common Redstart x Whinchat (hybrid)',
+  'Phoenicurus phoenicurus x Saxicola rubetra':
+      'Common Redstart x Whinchat (hybrid)',
   'Saxicola macrorhynchus': 'White-browed Bushchat',
   'Saxicola insignis': 'White-throated Bushchat',
   'Saxicola dacotiae': 'Fuerteventura Stonechat',
@@ -14942,11 +16050,13 @@ const Map<String, String> scientificToCommon = {
   'Oenanthe hispanica': 'Western Black-eared Wheatear',
   'Oenanthe cypriaca': 'Cyprus Wheatear',
   'Oenanthe melanoleuca': 'Eastern Black-eared Wheatear',
-  'Oenanthe oenanthe/hispanica/melanoleuca': 'Northern/Western Black-eared/Eastern Black-eared Wheatear',
+  'Oenanthe oenanthe/hispanica/melanoleuca':
+      'Northern/Western Black-eared/Eastern Black-eared Wheatear',
   'Oenanthe hispanica/melanoleuca': 'Western/Eastern Black-eared Wheatear',
   'Oenanthe pleschanka': 'Pied Wheatear',
   'Oenanthe pleschanka (vittata form)': 'Pied Wheatear (vittata)',
-  'Oenanthe melanoleuca x pleschanka': 'Eastern Black-eared x Pied Wheatear (hybrid)',
+  'Oenanthe melanoleuca x pleschanka':
+      'Eastern Black-eared x Pied Wheatear (hybrid)',
   'Oenanthe cypriaca/pleschanka': 'Cyprus/Pied Wheatear',
   'Oenanthe melanoleuca/pleschanka': 'Eastern Black-eared/Pied Wheatear',
   'Oenanthe albifrons': 'White-fronted Black-Chat',
@@ -14977,7 +16087,8 @@ const Map<String, String> scientificToCommon = {
   'Oenanthe lugentoides/lugens': 'Arabian/Mourning Wheatear',
   'Oenanthe xanthoprymna': 'Kurdish Wheatear',
   'Oenanthe chrysopygia': 'Persian Wheatear',
-  'Oenanthe xanthoprymna/chrysopygia': 'Kurdish/Persian Wheatear (Red-tailed Wheatear)',
+  'Oenanthe xanthoprymna/chrysopygia':
+      'Kurdish/Persian Wheatear (Red-tailed Wheatear)',
   'Oenanthe sp.': 'wheatear sp.',
   'Muscicapidae sp.': 'muscicapid sp.',
   'Bombycilla garrulus': 'Bohemian Waxwing',
@@ -15013,11 +16124,14 @@ const Map<String, String> scientificToCommon = {
   'Prionochilus sp.': 'Prionochilus sp.',
   'Pachyglossa olivacea': 'Olive-backed Flowerpecker',
   'Pachyglossa olivacea parsonsi': 'Olive-backed Flowerpecker (Luzon)',
-  'Pachyglossa olivacea olivacea/samarensis': 'Olive-backed Flowerpecker (Mindanao)',
+  'Pachyglossa olivacea olivacea/samarensis':
+      'Olive-backed Flowerpecker (Mindanao)',
   'Pachyglossa agilis': 'Thick-billed Flowerpecker',
   'Pachyglossa agilis agilis/zeylonica': 'Thick-billed Flowerpecker (Indian)',
-  'Pachyglossa agilis [obsoleta Group]': 'Thick-billed Flowerpecker (obsoleta Group)',
-  'Pachyglossa agilis [aeruginosa Group]': 'Thick-billed Flowerpecker (Striped)',
+  'Pachyglossa agilis [obsoleta Group]':
+      'Thick-billed Flowerpecker (obsoleta Group)',
+  'Pachyglossa agilis [aeruginosa Group]':
+      'Thick-billed Flowerpecker (Striped)',
   'Pachyglossa everetti': 'Brown-backed Flowerpecker',
   'Pachyglossa propria': 'Whiskered Flowerpecker',
   'Pachyglossa chrysorrhea': 'Yellow-vented Flowerpecker',
@@ -15035,17 +16149,25 @@ const Map<String, String> scientificToCommon = {
   'Dicaeum haematostictum': 'Black-belted Flowerpecker',
   'Dicaeum retrocinctum': 'Scarlet-collared Flowerpecker',
   'Dicaeum trigonostigma': 'Orange-bellied Flowerpecker',
-  'Dicaeum trigonostigma [trigonostigma Group]': 'Orange-bellied Flowerpecker (Orange-bellied)',
-  'Dicaeum trigonostigma xanthopygium/dorsale': 'Orange-bellied Flowerpecker (Orange-breasted)',
-  'Dicaeum trigonostigma [sibuyanicum Group]': 'Orange-bellied Flowerpecker (Sibuyan)',
-  'Dicaeum trigonostigma [cinereigulare Group]': 'Orange-bellied Flowerpecker (Gray-throated)',
-  'Dicaeum trigonostigma sibutuense/assimile': 'Orange-bellied Flowerpecker (Sulu)',
+  'Dicaeum trigonostigma [trigonostigma Group]':
+      'Orange-bellied Flowerpecker (Orange-bellied)',
+  'Dicaeum trigonostigma xanthopygium/dorsale':
+      'Orange-bellied Flowerpecker (Orange-breasted)',
+  'Dicaeum trigonostigma [sibuyanicum Group]':
+      'Orange-bellied Flowerpecker (Sibuyan)',
+  'Dicaeum trigonostigma [cinereigulare Group]':
+      'Orange-bellied Flowerpecker (Gray-throated)',
+  'Dicaeum trigonostigma sibutuense/assimile':
+      'Orange-bellied Flowerpecker (Sulu)',
   'Dicaeum hypoleucum': 'Buzzing Flowerpecker',
-  'Dicaeum hypoleucum obscurum/cagayanense': 'Buzzing Flowerpecker (obscurum/cagayanense)',
+  'Dicaeum hypoleucum obscurum/cagayanense':
+      'Buzzing Flowerpecker (obscurum/cagayanense)',
   'Dicaeum hypoleucum pontifex': 'Buzzing Flowerpecker (pontifex)',
-  'Dicaeum hypoleucum hypoleucum/mindanense': 'Buzzing Flowerpecker (hypoleucum/mindanense)',
+  'Dicaeum hypoleucum hypoleucum/mindanense':
+      'Buzzing Flowerpecker (hypoleucum/mindanense)',
   'Dicaeum erythrorhynchos': 'Pale-billed Flowerpecker',
-  'Pachyglossa agilis/Dicaeum erythrorhynchos': 'Thick-billed/Pale-billed Flowerpecker',
+  'Pachyglossa agilis/Dicaeum erythrorhynchos':
+      'Thick-billed/Pale-billed Flowerpecker',
   'Dicaeum concolor': 'Nilgiri Flowerpecker',
   'Dicaeum erythrorhynchos/concolor': 'Pale-billed/Nilgiri Flowerpecker',
   'Dicaeum minullum': 'Plain Flowerpecker',
@@ -15071,13 +16193,15 @@ const Map<String, String> scientificToCommon = {
   'Dicaeum igniferum': 'Black-fronted Flowerpecker',
   'Dicaeum maugei': 'Red-chested Flowerpecker',
   'Dicaeum ignipectus': 'Fire-breasted Flowerpecker',
-  'Dicaeum ignipectus ignipectus/dolichorhynchum': 'Fire-breasted Flowerpecker (Fire-breasted)',
+  'Dicaeum ignipectus ignipectus/dolichorhynchum':
+      'Fire-breasted Flowerpecker (Fire-breasted)',
   'Dicaeum ignipectus formosum': 'Fire-breasted Flowerpecker (Taiwan)',
   'Dicaeum cambodianum': 'Cambodian Flowerpecker',
   'Dicaeum luzoniense': 'Fire-throated Flowerpecker',
   'Dicaeum beccarii': 'Sumatran Flowerpecker',
   'Dicaeum monticolum': 'Black-sided Flowerpecker',
-  'Dicaeum [undescribed Meratus form]': 'Meratus Flowerpecker (undescribed form)',
+  'Dicaeum [undescribed Meratus form]':
+      'Meratus Flowerpecker (undescribed form)',
   'Dicaeum celebicum': 'Gray-sided Flowerpecker',
   'Dicaeum celebicum [celebicum Group]': 'Gray-sided Flowerpecker (Gray-sided)',
   'Dicaeum celebicum kuehni': 'Gray-sided Flowerpecker (Wakatobi)',
@@ -15106,8 +16230,10 @@ const Map<String, String> scientificToCommon = {
   'Anthreptes malacensis/rhodolaemus': 'Brown-throated/Red-throated Sunbird',
   'Anthreptes gabonicus': 'Mouse-brown Sunbird',
   'Anthreptes longuemarei': 'Western Violet-backed Sunbird',
-  'Anthreptes longuemarei longuemarei/haussarum': 'Western Violet-backed Sunbird (Northern)',
-  'Anthreptes longuemarei angolensis/nyassae': 'Western Violet-backed Sunbird (Southern)',
+  'Anthreptes longuemarei longuemarei/haussarum':
+      'Western Violet-backed Sunbird (Northern)',
+  'Anthreptes longuemarei angolensis/nyassae':
+      'Western Violet-backed Sunbird (Southern)',
   'Anthreptes orientalis': 'Eastern Violet-backed Sunbird',
   'Anthreptes neglectus': 'Uluguru Violet-backed Sunbird',
   'Anthreptes aurantius': 'Violet-tailed Sunbird',
@@ -15126,8 +16252,10 @@ const Map<String, String> scientificToCommon = {
   'Dreptes thomensis': 'Sao Tome Sunbird',
   'Anthobaphes violacea': 'Orange-breasted Sunbird',
   'Cyanomitra verticalis': 'Green-headed Sunbird',
-  'Cyanomitra verticalis verticalis/viridisplendens': 'Green-headed Sunbird (Green-headed)',
-  'Cyanomitra verticalis cyanocephala/bohndorffi': 'Green-headed Sunbird (Blue-headed)',
+  'Cyanomitra verticalis verticalis/viridisplendens':
+      'Green-headed Sunbird (Green-headed)',
+  'Cyanomitra verticalis cyanocephala/bohndorffi':
+      'Green-headed Sunbird (Blue-headed)',
   'Cyanomitra bannermani': 'Bannerman\'s Sunbird',
   'Cyanomitra cyanolaema': 'Blue-throated Brown Sunbird',
   'Cyanomitra oritis': 'Cameroon Sunbird',
@@ -15149,7 +16277,8 @@ const Map<String, String> scientificToCommon = {
   'Leptocoma zeylonica/minima': 'Purple-rumped Sunbird/Crimson-backed Sunbird',
   'Leptocoma brasiliana': 'Van Hasselt\'s Sunbird',
   'Leptocoma sperata': 'Purple-throated Sunbird',
-  'Leptocoma sperata [sperata Group]': 'Purple-throated Sunbird (Purple-throated)',
+  'Leptocoma sperata [sperata Group]':
+      'Purple-throated Sunbird (Purple-throated)',
   'Leptocoma sperata juliae': 'Purple-throated Sunbird (Orange-lined)',
   'Leptocoma aspasia': 'Black Sunbird',
   'Leptocoma aspasia talautensis/sangirensis': 'Black Sunbird (Sangihe)',
@@ -15178,11 +16307,14 @@ const Map<String, String> scientificToCommon = {
   'Cinnyris stuhlmanni': 'Stuhlmann\'s Sunbird',
   'Cinnyris prigoginei': 'Prigogine\'s Sunbird',
   'Cinnyris ludovicensis': 'Montane Double-collared Sunbird',
-  'Cinnyris ludovicensis ludovicensis': 'Montane Double-collared Sunbird (Western)',
-  'Cinnyris ludovicensis whytei/skye': 'Montane Double-collared Sunbird (Eastern)',
+  'Cinnyris ludovicensis ludovicensis':
+      'Montane Double-collared Sunbird (Western)',
+  'Cinnyris ludovicensis whytei/skye':
+      'Montane Double-collared Sunbird (Eastern)',
   'Cinnyris reichenowi': 'Northern Double-collared Sunbird',
   'Cinnyris reichenowi preussi': 'Northern Double-collared Sunbird (Western)',
-  'Cinnyris reichenowi reichenowi': 'Northern Double-collared Sunbird (Eastern)',
+  'Cinnyris reichenowi reichenowi':
+      'Northern Double-collared Sunbird (Eastern)',
   'Cinnyris afer': 'Greater Double-collared Sunbird',
   'Cinnyris regius': 'Regal Sunbird',
   'Cinnyris rockefelleri': 'Rockefeller\'s Sunbird',
@@ -15193,7 +16325,8 @@ const Map<String, String> scientificToCommon = {
   'Cinnyris loveridgei': 'Loveridge\'s Sunbird',
   'Cinnyris pulchellus': 'Beautiful Sunbird',
   'Cinnyris melanogastrus': 'Gorgeous Sunbird',
-  'Cinnyris pulchellus x melanogastrus': 'Beautiful x Gorgeous Sunbird (hybrid)',
+  'Cinnyris pulchellus x melanogastrus':
+      'Beautiful x Gorgeous Sunbird (hybrid)',
   'Cinnyris mariquensis': 'Marico Sunbird',
   'Cinnyris shelleyi': 'Shelley\'s Sunbird',
   'Cinnyris shelleyi shelleyi': 'Shelley\'s Sunbird (Shelley\'s)',
@@ -15259,14 +16392,17 @@ const Map<String, String> scientificToCommon = {
   'Aethopyga duyvenbodei': 'Elegant Sunbird',
   'Aethopyga ignicauda': 'Fire-tailed Sunbird',
   'Aethopyga saturata': 'Black-throated Sunbird',
-  'Aethopyga saturata [saturata Group]': 'Black-throated Sunbird (Black-throated)',
+  'Aethopyga saturata [saturata Group]':
+      'Black-throated Sunbird (Black-throated)',
   'Aethopyga saturata johnsi': 'Black-throated Sunbird (Dalat)',
   'Aethopyga gouldiae': 'Mrs. Gould\'s Sunbird',
-  'Aethopyga gouldiae gouldiae/isolata': 'Mrs. Gould\'s Sunbird (Yellow-breasted)',
+  'Aethopyga gouldiae gouldiae/isolata':
+      'Mrs. Gould\'s Sunbird (Yellow-breasted)',
   'Aethopyga gouldiae dabryii': 'Mrs. Gould\'s Sunbird (Scarlet-breasted)',
   'Aethopyga gouldiae annamensis': 'Mrs. Gould\'s Sunbird (Purple-rumped)',
   'Aethopyga nipalensis': 'Green-tailed Sunbird',
-  'Aethopyga nipalensis [nipalensis Group]': 'Green-tailed Sunbird (Green-tailed)',
+  'Aethopyga nipalensis [nipalensis Group]':
+      'Green-tailed Sunbird (Green-tailed)',
   'Aethopyga nipalensis angkanensis': 'Green-tailed Sunbird (Doi Inthanon)',
   'Aethopyga shelleyi': 'Lovely Sunbird',
   'Aethopyga temminckii': 'Temminck\'s Sunbird',
@@ -15279,7 +16415,8 @@ const Map<String, String> scientificToCommon = {
   'Aethopyga temminckii/siparaja': 'Temminck\'s/Crimson Sunbird',
   'Aethopyga magnifica': 'Magnificent Sunbird',
   'Aethopyga christinae': 'Fork-tailed Sunbird',
-  'Aethopyga christinae latouchii/sokolovi': 'Fork-tailed Sunbird (Fork-tailed)',
+  'Aethopyga christinae latouchii/sokolovi':
+      'Fork-tailed Sunbird (Fork-tailed)',
   'Aethopyga christinae christinae': 'Fork-tailed Sunbird (Hainan)',
   'Aethopyga bella': 'Handsome Sunbird',
   'Aethopyga eximia': 'White-flanked Sunbird',
@@ -15315,7 +16452,8 @@ const Map<String, String> scientificToCommon = {
   'Irena cyanogastra': 'Philippine Fairy-bluebird',
   'Irena cyanogastra cyanogastra': 'Philippine Fairy-bluebird (cyanogastra)',
   'Irena cyanogastra ellae': 'Philippine Fairy-bluebird (ellae)',
-  'Irena cyanogastra melanochlamys/hoogstraali': 'Philippine Fairy-bluebird (melanochlamys/hoogstraali)',
+  'Irena cyanogastra melanochlamys/hoogstraali':
+      'Philippine Fairy-bluebird (melanochlamys/hoogstraali)',
   'Chloropsis flavipennis': 'Philippine Leafbird',
   'Chloropsis palawanensis': 'Yellow-throated Leafbird',
   'Chloropsis sonnerati': 'Greater Green Leafbird',
@@ -15329,8 +16467,10 @@ const Map<String, String> scientificToCommon = {
   'Chloropsis jerdoni/aurifrons': 'Jerdon\'s/Golden-fronted Leafbird',
   'Chloropsis media': 'Sumatran Leafbird',
   'Chloropsis hardwickii': 'Orange-bellied Leafbird',
-  'Chloropsis hardwickii hardwickii/malayana': 'Orange-bellied Leafbird (Orange-bellied)',
-  'Chloropsis hardwickii lazulina/melliana': 'Orange-bellied Leafbird (Grayish-crowned)',
+  'Chloropsis hardwickii hardwickii/malayana':
+      'Orange-bellied Leafbird (Orange-bellied)',
+  'Chloropsis hardwickii lazulina/melliana':
+      'Orange-bellied Leafbird (Grayish-crowned)',
   'Chloropsis venusta': 'Blue-masked Leafbird',
   'Chloropsis sp.': 'leafbird sp.',
   'Peucedramus taeniatus': 'Olive Warbler',
@@ -15341,7 +16481,8 @@ const Map<String, String> scientificToCommon = {
   'Sporopipes frontalis': 'Speckle-fronted Weaver',
   'Sporopipes squamifrons': 'Scaly Weaver',
   'Plocepasser mahali': 'White-browed Sparrow-Weaver',
-  'Plocepasser mahali melanorhynchus': 'White-browed Sparrow-Weaver (Black-billed)',
+  'Plocepasser mahali melanorhynchus':
+      'White-browed Sparrow-Weaver (Black-billed)',
   'Plocepasser mahali ansorgei': 'White-browed Sparrow-Weaver (White-tailed)',
   'Plocepasser mahali pectoralis': 'White-browed Sparrow-Weaver (Spot-chested)',
   'Plocepasser mahali mahali': 'White-browed Sparrow-Weaver (White-breasted)',
@@ -15383,7 +16524,8 @@ const Map<String, String> scientificToCommon = {
   'Ploceus subpersonatus': 'Loango Weaver',
   'Ploceus brachypterus': 'Olive-naped Weaver',
   'Ploceus nigricollis': 'Black-necked Weaver',
-  'Ploceus brachypterus x nigricollis': 'Olive-naped x Black-necked Weaver (hybrid)',
+  'Ploceus brachypterus x nigricollis':
+      'Olive-naped x Black-necked Weaver (hybrid)',
   'Ploceus brachypterus/nigricollis': 'Olive-naped/Black-necked Weaver',
   'Ploceus ocularis': 'Spectacled Weaver',
   'Ploceus ocularis crocatus': 'Spectacled Weaver (Yellow-throated)',
@@ -15421,7 +16563,8 @@ const Map<String, String> scientificToCommon = {
   'Ploceus spekeoides': 'Fox\'s Weaver',
   'Ploceus castaneofuscus': 'Chestnut-and-black Weaver',
   'Ploceus nigerrimus': 'Vieillot\'s Black Weaver',
-  'Ploceus castaneofuscus/nigerrimus': 'Chestnut-and-black/Vieillot\'s Black Weaver',
+  'Ploceus castaneofuscus/nigerrimus':
+      'Chestnut-and-black/Vieillot\'s Black Weaver',
   'Ploceus cucullatus': 'Village Weaver',
   'Ploceus cucullatus collaris': 'Village Weaver (Mottled)',
   'Ploceus cucullatus [cucullatus Group]': 'Village Weaver (Black-headed)',
@@ -15441,7 +16584,8 @@ const Map<String, String> scientificToCommon = {
   'Ploceus tricolor': 'Yellow-mantled Weaver',
   'Ploceus albinucha': 'Maxwell\'s Black Weaver',
   'Ploceus albinucha albinucha': 'Maxwell\'s Black Weaver (White-naped)',
-  'Ploceus albinucha maxwelli/holomelas': 'Maxwell\'s Black Weaver (Maxwell\'s)',
+  'Ploceus albinucha maxwelli/holomelas':
+      'Maxwell\'s Black Weaver (Maxwell\'s)',
   'Ploceus bicolor': 'Dark-backed Weaver',
   'Ploceus insignis': 'Brown-capped Weaver',
   'Ploceus dorsomaculatus': 'Yellow-capped Weaver',
@@ -15470,7 +16614,8 @@ const Map<String, String> scientificToCommon = {
   'Foudia aldabrana': 'Aldabra Fody',
   'Foudia eminentissima': 'Red-headed Fody',
   'Foudia eminentissima consobrina': 'Red-headed Fody (Grande Comore)',
-  'Foudia eminentissima [eminentissima Group]': 'Red-headed Fody (Southern Comoros)',
+  'Foudia eminentissima [eminentissima Group]':
+      'Red-headed Fody (Southern Comoros)',
   'Foudia omissa': 'Forest Fody',
   'Foudia madagascariensis/omissa': 'Red/Forest Fody',
   'Foudia delloni': 'Reunion Fody',
@@ -15492,8 +16637,10 @@ const Map<String, String> scientificToCommon = {
   'Euplectes sp. (bishop sp.)': 'bishop sp.',
   'Euplectes albonotatus': 'White-winged Widowbird',
   'Euplectes macroura': 'Yellow-mantled Widowbird',
-  'Euplectes macroura macrocercus': 'Yellow-mantled Widowbird (Yellow-shouldered)',
-  'Euplectes macroura macroura/conradsi': 'Yellow-mantled Widowbird (Yellow-mantled)',
+  'Euplectes macroura macrocercus':
+      'Yellow-mantled Widowbird (Yellow-shouldered)',
+  'Euplectes macroura macroura/conradsi':
+      'Yellow-mantled Widowbird (Yellow-mantled)',
   'Euplectes laticauda': 'Red-cowled Widowbird',
   'Euplectes ardens': 'Red-collared Widowbird',
   'Euplectes laticauda/ardens': 'Red-cowled/Red-collared Widowbird',
@@ -15526,7 +16673,8 @@ const Map<String, String> scientificToCommon = {
   'Taeniopygia guttata guttata': 'Zebra Finch (Lesser Sundas)',
   'Taeniopygia guttata castanotis': 'Zebra Finch (Australian)',
   'Taeniopygia guttata (Domestic type)': 'Zebra Finch (Domestic type)',
-  'Stizoptera bichenovii x Taeniopygia guttata': 'Double-barred x Zebra Finch (hybrid)',
+  'Stizoptera bichenovii x Taeniopygia guttata':
+      'Double-barred x Zebra Finch (hybrid)',
   'Poephila personata': 'Masked Finch',
   'Poephila personata personata': 'Masked Finch (Masked)',
   'Poephila personata leucotis': 'Masked Finch (White-eared)',
@@ -15540,8 +16688,10 @@ const Map<String, String> scientificToCommon = {
   'Spermestes cucullata': 'Bronze Mannikin',
   'Spermestes fringilloides': 'Magpie Mannikin',
   'Spermestes bicolor': 'Black-and-white Mannikin',
-  'Spermestes bicolor bicolor/poensis': 'Black-and-white Mannikin (Black-and-white)',
-  'Spermestes bicolor nigriceps/woltersi': 'Black-and-white Mannikin (Red-backed)',
+  'Spermestes bicolor bicolor/poensis':
+      'Black-and-white Mannikin (Black-and-white)',
+  'Spermestes bicolor nigriceps/woltersi':
+      'Black-and-white Mannikin (Red-backed)',
   'Lepidopygia nana': 'Madagascar Munia',
   'Euodice cantans': 'African Silverbill',
   'Euodice malabarica': 'Indian Silverbill',
@@ -15549,7 +16699,8 @@ const Map<String, String> scientificToCommon = {
   'Padda fuscata': 'Timor Sparrow',
   'Mayrimunia tristissima': 'Streak-headed Munia',
   'Mayrimunia leucosticta': 'White-spotted Munia',
-  'Mayrimunia tristissima x leucosticta': 'Streak-headed x White-spotted Munia (hybrid)',
+  'Mayrimunia tristissima x leucosticta':
+      'Streak-headed x White-spotted Munia (hybrid)',
   'Mayrimunia tristissima/leucosticta': 'Streak-headed/White-spotted Munia',
   'Lonchura punctulata': 'Scaly-breasted Munia',
   'Lonchura punctulata punctulata': 'Scaly-breasted Munia (Checkered)',
@@ -15558,7 +16709,8 @@ const Map<String, String> scientificToCommon = {
   'Lonchura molucca': 'Black-faced Munia',
   'Lonchura striata': 'White-rumped Munia',
   'Lonchura striata (Domestic type)': 'White-rumped Munia (Domestic type)',
-  'Lonchura punctulata x striata': 'Scaly-breasted x White-rumped Munia (hybrid)',
+  'Lonchura punctulata x striata':
+      'Scaly-breasted x White-rumped Munia (hybrid)',
   'Lonchura fuscans': 'Dusky Munia',
   'Lonchura leucogastra': 'White-bellied Munia',
   'Lonchura leucogastroides': 'Javan Munia',
@@ -15568,7 +16720,8 @@ const Map<String, String> scientificToCommon = {
   'Lonchura atricapilla': 'Chestnut Munia',
   'Lonchura atricapilla [atricapilla Group]': 'Chestnut Munia (Chestnut)',
   'Lonchura atricapilla formosana': 'Chestnut Munia (formosana)',
-  'Lonchura punctulata x atricapilla': 'Scaly-breasted x Chestnut Munia (hybrid)',
+  'Lonchura punctulata x atricapilla':
+      'Scaly-breasted x Chestnut Munia (hybrid)',
   'Lonchura malacca x atricapilla': 'Tricolored x Chestnut Munia (hybrid)',
   'Lonchura malacca/atricapilla': 'Tricolored/Chestnut Munia',
   'Lonchura ferruginosa': 'White-capped Munia',
@@ -15588,8 +16741,10 @@ const Map<String, String> scientificToCommon = {
   'Lonchura flaviprymna': 'Yellow-rumped Munia',
   'Lonchura quinticolor': 'Five-colored Munia',
   'Lonchura castaneothorax': 'Chestnut-breasted Munia',
-  'Lonchura caniceps x castaneothorax': 'Gray-headed x Chestnut-breasted Munia (hybrid)',
-  'Lonchura flaviprymna x castaneothorax': 'Yellow-rumped x Chestnut-breasted Munia (hybrid)',
+  'Lonchura caniceps x castaneothorax':
+      'Gray-headed x Chestnut-breasted Munia (hybrid)',
+  'Lonchura flaviprymna x castaneothorax':
+      'Yellow-rumped x Chestnut-breasted Munia (hybrid)',
   'Lonchura stygia': 'Black Munia',
   'Lonchura melaena': 'Bismarck Munia',
   'Lonchura sp.': 'Lonchura sp.',
@@ -15616,14 +16771,17 @@ const Map<String, String> scientificToCommon = {
   'Coccopygia bocagei': 'Angola Waxbill',
   'Coccopygia melanotis': 'Swee Waxbill',
   'Mandingoa nitidula': 'Green-backed Twinspot',
-  'Mandingoa nitidula schlegeli/virginiae': 'Green-backed Twinspot (Orange-breasted)',
-  'Mandingoa nitidula nitidula/chubbi': 'Green-backed Twinspot (Green-breasted)',
+  'Mandingoa nitidula schlegeli/virginiae':
+      'Green-backed Twinspot (Orange-breasted)',
+  'Mandingoa nitidula nitidula/chubbi':
+      'Green-backed Twinspot (Green-breasted)',
   'Cryptospiza shelleyi': 'Shelley\'s Crimsonwing',
   'Cryptospiza jacksoni': 'Dusky Crimsonwing',
   'Cryptospiza salvadorii': 'Abyssinian Crimsonwing',
   'Cryptospiza reichenovii': 'Red-faced Crimsonwing',
   'Cryptospiza reichenovii reichenovii': 'Red-faced Crimsonwing (Western)',
-  'Cryptospiza reichenovii australis/ocularis': 'Red-faced Crimsonwing (Eastern)',
+  'Cryptospiza reichenovii australis/ocularis':
+      'Red-faced Crimsonwing (Eastern)',
   'Parmoptila rubrifrons': 'Red-fronted Antpecker',
   'Parmoptila woodhousei': 'Woodhouse\'s Antpecker',
   'Parmoptila jamesoni': 'Jameson\'s Antpecker',
@@ -15645,7 +16803,8 @@ const Map<String, String> scientificToCommon = {
   'Estrilda poliopareia': 'Anambra Waxbill',
   'Estrilda paludicola': 'Fawn-breasted Waxbill',
   'Estrilda paludicola ochrogaster': 'Fawn-breasted Waxbill (Abyssinian)',
-  'Estrilda paludicola [paludicola Group]': 'Fawn-breasted Waxbill (Fawn-breasted)',
+  'Estrilda paludicola [paludicola Group]':
+      'Fawn-breasted Waxbill (Fawn-breasted)',
   'Estrilda paludicola benguellensis': 'Fawn-breasted Waxbill (benguellensis)',
   'Estrilda astrild': 'Common Waxbill',
   'Estrilda nigriloris': 'Black-lored Waxbill',
@@ -15788,7 +16947,8 @@ const Map<String, String> scientificToCommon = {
   'Passer zarudnyi': 'Zarudny\'s Sparrow',
   'Passer montanus': 'Eurasian Tree Sparrow',
   'Passer domesticus x montanus': 'House x Eurasian Tree Sparrow (hybrid)',
-  'Passer hispaniolensis x montanus': 'Spanish x Eurasian Tree Sparrow (hybrid)',
+  'Passer hispaniolensis x montanus':
+      'Spanish x Eurasian Tree Sparrow (hybrid)',
   'Passer domesticus/montanus': 'House/Eurasian Tree Sparrow',
   'Passer luteus': 'Sudan Golden Sparrow',
   'Passer euchlorus': 'Arabian Golden Sparrow',
@@ -15818,23 +16978,30 @@ const Map<String, String> scientificToCommon = {
   'Motacilla flava': 'Western Yellow Wagtail',
   'Motacilla flava flavissima': 'Western Yellow Wagtail (flavissima)',
   'Motacilla flava lutea': 'Western Yellow Wagtail (lutea)',
-  'Motacilla flava flavissima/lutea': 'Western Yellow Wagtail (flavissima/lutea)',
+  'Motacilla flava flavissima/lutea':
+      'Western Yellow Wagtail (flavissima/lutea)',
   'Motacilla flava thunbergi': 'Western Yellow Wagtail (thunbergi)',
   'Motacilla flava flava': 'Western Yellow Wagtail (flava)',
-  'Motacilla flava flavissima x flava': 'Western Yellow Wagtail (Channel Wagtail intergrade)',
+  'Motacilla flava flavissima x flava':
+      'Western Yellow Wagtail (Channel Wagtail intergrade)',
   'Motacilla flava beema': 'Western Yellow Wagtail (beema)',
   'Motacilla flava flava/beema': 'Western Yellow Wagtail (flava/beema)',
   'Motacilla flava iberiae': 'Western Yellow Wagtail (iberiae)',
   'Motacilla flava cinereocapilla': 'Western Yellow Wagtail (cinereocapilla)',
-  'Motacilla flava [cinereocapilla Group]': 'Western Yellow Wagtail (iberiae/cinereocapilla/pygmaea)',
+  'Motacilla flava [cinereocapilla Group]':
+      'Western Yellow Wagtail (iberiae/cinereocapilla/pygmaea)',
   'Motacilla flava pygmaea': 'Western Yellow Wagtail (pygmaea)',
   'Motacilla flava feldegg': 'Western Yellow Wagtail (feldegg)',
   'Motacilla flava leucocephala': 'Western Yellow Wagtail (leucocephala)',
-  'Motacilla flava (superciliaris intergrade)': 'Western Yellow Wagtail (superciliaris-type intergrade)',
-  'Motacilla flava (dombrowskii intergrade)': 'Western Yellow Wagtail (dombrowskii-type intergrade)',
-  'Motacilla flava (xanthophrys intergrade)': 'Western Yellow Wagtail (xanthophrys-type intergrade)',
+  'Motacilla flava (superciliaris intergrade)':
+      'Western Yellow Wagtail (superciliaris-type intergrade)',
+  'Motacilla flava (dombrowskii intergrade)':
+      'Western Yellow Wagtail (dombrowskii-type intergrade)',
+  'Motacilla flava (xanthophrys intergrade)':
+      'Western Yellow Wagtail (xanthophrys-type intergrade)',
   'Motacilla tschutschensis': 'Eastern Yellow Wagtail',
-  'Motacilla tschutschensis tschutschensis/plexa': 'Eastern Yellow Wagtail (Eastern)',
+  'Motacilla tschutschensis tschutschensis/plexa':
+      'Eastern Yellow Wagtail (Eastern)',
   'Motacilla tschutschensis taivana': 'Eastern Yellow Wagtail (Green-headed)',
   'Motacilla tschutschensis macronyx': 'Eastern Yellow Wagtail (Manchurian)',
   'Motacilla flava/tschutschensis': 'Western/Eastern Yellow Wagtail',
@@ -15854,7 +17021,8 @@ const Map<String, String> scientificToCommon = {
   'Motacilla alba subpersonata': 'White Wagtail (Moroccan)',
   'Motacilla alba personata': 'White Wagtail (Masked)',
   'Motacilla alba baicalensis': 'White Wagtail (Transbaikalian)',
-  'Motacilla alba alba/dukhunensis/baicalensis': 'White Wagtail (White-faced/Transbaikalian)',
+  'Motacilla alba alba/dukhunensis/baicalensis':
+      'White Wagtail (White-faced/Transbaikalian)',
   'Motacilla alba lugens': 'White Wagtail (Black-backed)',
   'Motacilla alba ocularis/lugens': 'White Wagtail (ocularis/Black-backed)',
   'Motacilla alba leucopsis': 'White Wagtail (Chinese)',
@@ -15867,7 +17035,8 @@ const Map<String, String> scientificToCommon = {
   'Anthus australis rogersi/exiguus': 'Australian Pipit (Papuan)',
   'Anthus australis [australis Group]': 'Australian Pipit (Australian)',
   'Anthus novaeseelandiae': 'New Zealand Pipit',
-  'Anthus novaeseelandiae [novaeseelandiae Group]': 'New Zealand Pipit (New Zealand)',
+  'Anthus novaeseelandiae [novaeseelandiae Group]':
+      'New Zealand Pipit (New Zealand)',
   'Anthus novaeseelandiae steindachneri': 'New Zealand Pipit (Antipodes)',
   'Anthus richardi': 'Richard\'s Pipit',
   'Anthus rufulus': 'Paddyfield Pipit',
@@ -15963,7 +17132,8 @@ const Map<String, String> scientificToCommon = {
   'Fringilla moreletti': 'Azores Chaffinch',
   'Fringilla maderensis': 'Madeira Chaffinch',
   'Fringilla canariensis': 'Canary Islands Chaffinch',
-  'Fringilla canariensis canariensis/ombriosa': 'Canary Islands Chaffinch (Canary Is.)',
+  'Fringilla canariensis canariensis/ombriosa':
+      'Canary Islands Chaffinch (Canary Is.)',
   'Fringilla canariensis palmae': 'Canary Islands Chaffinch (La Palma)',
   'Fringilla spodiogenys': 'African Chaffinch',
   'Fringilla spodiogenys africana': 'African Chaffinch (African)',
@@ -16003,8 +17173,10 @@ const Map<String, String> scientificToCommon = {
   'Euphonia violacea': 'Violaceous Euphonia',
   'Euphonia hirundinacea': 'Yellow-throated Euphonia',
   'Euphonia laniirostris': 'Thick-billed Euphonia',
-  'Euphonia laniirostris melanura/crassirostris': 'Thick-billed Euphonia (Black-tailed)',
-  'Euphonia laniirostris [laniirostris Group]': 'Thick-billed Euphonia (Thick-billed)',
+  'Euphonia laniirostris melanura/crassirostris':
+      'Thick-billed Euphonia (Black-tailed)',
+  'Euphonia laniirostris [laniirostris Group]':
+      'Thick-billed Euphonia (Thick-billed)',
   'Euphonia imitans': 'Spot-crowned Euphonia',
   'Euphonia gouldi': 'Olive-backed Euphonia',
   'Euphonia fulvicrissa': 'Fulvous-vented Euphonia',
@@ -16023,9 +17195,12 @@ const Map<String, String> scientificToCommon = {
   'Mycerobas sp.': 'Mycerobas sp.',
   'Hesperiphona abeillei': 'Hooded Grosbeak',
   'Hesperiphona vespertina': 'Evening Grosbeak',
-  'Hesperiphona vespertina brooksi': 'Evening Grosbeak (Northwestern or type 1)',
-  'Hesperiphona vespertina californica': 'Evening Grosbeak (Sierra Nevada or type 2)',
-  'Hesperiphona vespertina warreni': 'Evening Grosbeak (Rocky Mountains or type 4)',
+  'Hesperiphona vespertina brooksi':
+      'Evening Grosbeak (Northwestern or type 1)',
+  'Hesperiphona vespertina californica':
+      'Evening Grosbeak (Sierra Nevada or type 2)',
+  'Hesperiphona vespertina warreni':
+      'Evening Grosbeak (Rocky Mountains or type 4)',
   'Hesperiphona vespertina vespertina': 'Evening Grosbeak (Eastern or type 3)',
   'Hesperiphona vespertina montana': 'Evening Grosbeak (Mexican or type 5)',
   'Coccothraustes coccothraustes': 'Hawfinch',
@@ -16148,12 +17323,16 @@ const Map<String, String> scientificToCommon = {
   'Leucosticte arctoa brunneonucha/gigliolii': 'Asian Rosy-Finch (Tawny-naped)',
   'Leucosticte tephrocotis': 'Gray-crowned Rosy-Finch',
   'Leucosticte tephrocotis umbrina': 'Gray-crowned Rosy-Finch (Pribilof Is.)',
-  'Leucosticte tephrocotis griseonucha': 'Gray-crowned Rosy-Finch (Aleutian and Kodiak Is.)',
+  'Leucosticte tephrocotis griseonucha':
+      'Gray-crowned Rosy-Finch (Aleutian and Kodiak Is.)',
   'Leucosticte tephrocotis littoralis': 'Gray-crowned Rosy-Finch (Hepburn\'s)',
-  'Leucosticte tephrocotis [tephrocotis Group]': 'Gray-crowned Rosy-Finch (Gray-crowned)',
-  'Leucosticte tephrocotis littoralis x [tephrocotis Group]': 'Gray-crowned Rosy-Finch (Hepburn\'s x Gray-crowned)',
+  'Leucosticte tephrocotis [tephrocotis Group]':
+      'Gray-crowned Rosy-Finch (Gray-crowned)',
+  'Leucosticte tephrocotis littoralis x [tephrocotis Group]':
+      'Gray-crowned Rosy-Finch (Hepburn\'s x Gray-crowned)',
   'Leucosticte atrata': 'Black Rosy-Finch',
-  'Leucosticte tephrocotis x atrata': 'Gray-crowned x Black Rosy-Finch (hybrid)',
+  'Leucosticte tephrocotis x atrata':
+      'Gray-crowned x Black Rosy-Finch (hybrid)',
   'Leucosticte australis': 'Brown-capped Rosy-Finch',
   'Leucosticte sp.': 'rosy-finch sp.',
   'Haemorhous mexicanus': 'House Finch',
@@ -16233,8 +17412,10 @@ const Map<String, String> scientificToCommon = {
   'Acanthis flammea hornemanni/exilipes': 'Redpoll (Hoary)',
   'Acanthis flammea exilipes': 'Redpoll (exilipes)',
   'Acanthis flammea hornemanni': 'Redpoll (hornemanni)',
-  'Acanthis flammea [flammea Group x hornemanni/exilipes]': 'Redpoll (Common x Hoary)',
-  'Acanthis flammea [flammea Group/hornemanni/exilipes]': 'Redpoll (Common/Hoary)',
+  'Acanthis flammea [flammea Group x hornemanni/exilipes]':
+      'Redpoll (Common x Hoary)',
+  'Acanthis flammea [flammea Group/hornemanni/exilipes]':
+      'Redpoll (Common/Hoary)',
   'Loxia pytyopsittacus': 'Parrot Crossbill',
   'Loxia scotica': 'Scottish Crossbill',
   'Loxia curvirostra': 'Red Crossbill',
@@ -16265,7 +17446,8 @@ const Map<String, String> scientificToCommon = {
   'Loxia curvirostra (type 7)': 'Red Crossbill (Enigmatic or type 7)',
   'Loxia curvirostra (type 8)': 'Red Crossbill (Newfoundland or type 8)',
   'Loxia curvirostra (type 10)': 'Red Crossbill (Sitka Spruce or type 10)',
-  'Loxia curvirostra mesamericana': 'Red Crossbill (Central American or type 11)',
+  'Loxia curvirostra mesamericana':
+      'Red Crossbill (Central American or type 11)',
   'Loxia curvirostra (type 12)': 'Red Crossbill (Northeastern or type 12)',
   'Loxia pytyopsittacus/curvirostra': 'Parrot/Red Crossbill',
   'Loxia scotica/curvirostra': 'Scottish/Red Crossbill',
@@ -16280,7 +17462,8 @@ const Map<String, String> scientificToCommon = {
   'Chrysocorythus mindanensis': 'Mindanao Serin',
   'Carduelis carduelis': 'European Goldfinch',
   'Carduelis caniceps': 'Gray-crowned Goldfinch',
-  'Carduelis carduelis x caniceps': 'European x Gray-crowned Goldfinch (hybrid)',
+  'Carduelis carduelis x caniceps':
+      'European x Gray-crowned Goldfinch (hybrid)',
   'Carduelis carduelis/caniceps': 'European/Gray-crowned Goldfinch',
   'Carduelis citrinella': 'Citril Finch',
   'Carduelis corsicana': 'Corsican Finch',
@@ -16288,7 +17471,8 @@ const Map<String, String> scientificToCommon = {
   'Carduelis citrinella/Serinus serinus': 'Citril Finch/European Serin',
   'Serinus canaria': 'Island Canary',
   'Serinus canaria (Domestic type)': 'Island Canary (Domestic type)',
-  'Carduelis carduelis x Serinus canaria': 'European Goldfinch x Island Canary (hybrid)',
+  'Carduelis carduelis x Serinus canaria':
+      'European Goldfinch x Island Canary (hybrid)',
   'Serinus pusillus': 'Fire-fronted Serin',
   'Serinus syriacus': 'Syrian Serin',
   'Serinus serinus/pusillus/syriacus': 'European/Fire-fronted/Syrian Serin',
@@ -16311,11 +17495,13 @@ const Map<String, String> scientificToCommon = {
   'Spinus notatus': 'Black-headed Siskin',
   'Spinus dominicensis': 'Antillean Siskin',
   'Spinus psaltria': 'Lesser Goldfinch',
-  'Carduelis carduelis x Spinus psaltria': 'European x Lesser Goldfinch (hybrid)',
+  'Carduelis carduelis x Spinus psaltria':
+      'European x Lesser Goldfinch (hybrid)',
   'Spinus lawrencei': 'Lawrence\'s Goldfinch',
   'Spinus tristis': 'American Goldfinch',
   'Acanthis flammea x Spinus tristis': 'Redpoll x American Goldfinch (hybrid)',
-  'Carduelis carduelis x Spinus tristis': 'European x American Goldfinch (hybrid)',
+  'Carduelis carduelis x Spinus tristis':
+      'European x American Goldfinch (hybrid)',
   'Spinus pinus x tristis': 'Pine Siskin x American Goldfinch (hybrid)',
   'Spinus psaltria x tristis': 'Lesser x American Goldfinch (hybrid)',
   'Spinus sp. (goldfinch sp.)': 'new world goldfinch sp.',
@@ -16345,7 +17531,8 @@ const Map<String, String> scientificToCommon = {
   'Rhynchophanes mccownii': 'Thick-billed Longspur',
   'Calcarius/Rhynchophanes sp.': 'longspur sp.',
   'Plectrophenax nivalis': 'Snow Bunting',
-  'Calcarius lapponicus x Plectrophenax nivalis': 'Lapland Longspur x Snow Bunting (hybrid)',
+  'Calcarius lapponicus x Plectrophenax nivalis':
+      'Lapland Longspur x Snow Bunting (hybrid)',
   'Plectrophenax hyperboreus': 'McKay\'s Bunting',
   'Plectrophenax nivalis x hyperboreus': 'Snow x McKay\'s Bunting (hybrid)',
   'Plectrophenax nivalis/hyperboreus': 'Snow/McKay\'s Bunting',
@@ -16357,7 +17544,8 @@ const Map<String, String> scientificToCommon = {
   'Emberiza lathami': 'Crested Bunting',
   'Emberiza melanocephala': 'Black-headed Bunting',
   'Emberiza bruniceps': 'Red-headed Bunting',
-  'Emberiza melanocephala x bruniceps': 'Black-headed x Red-headed Bunting (hybrid)',
+  'Emberiza melanocephala x bruniceps':
+      'Black-headed x Red-headed Bunting (hybrid)',
   'Emberiza melanocephala/bruniceps': 'Black-headed/Red-headed Bunting',
   'Emberiza calandra': 'Corn Bunting',
   'Emberiza fucata': 'Chestnut-eared Bunting',
@@ -16365,8 +17553,10 @@ const Map<String, String> scientificToCommon = {
   'Emberiza jankowskii': 'Rufous-backed Bunting',
   'Emberiza cia': 'Rock Bunting',
   'Emberiza godlewskii': 'Godlewski\'s Bunting',
-  'Emberiza godlewskii [godlewskii Group]': 'Godlewski\'s Bunting (godlewskii Group)',
-  'Emberiza godlewskii yunnanensis/khamensis': 'Godlewski\'s Bunting (yunnanensis/khamensis)',
+  'Emberiza godlewskii [godlewskii Group]':
+      'Godlewski\'s Bunting (godlewskii Group)',
+  'Emberiza godlewskii yunnanensis/khamensis':
+      'Godlewski\'s Bunting (yunnanensis/khamensis)',
   'Emberiza cioides': 'Meadow Bunting',
   'Emberiza cioides [cioides Group]': 'Meadow Bunting (Rufous-eared)',
   'Emberiza cioides ciopsis': 'Meadow Bunting (Black-eared)',
@@ -16396,7 +17586,8 @@ const Map<String, String> scientificToCommon = {
   'Emberiza socotrana': 'Socotra Bunting',
   'Emberiza tahapisi': 'Cinnamon-breasted Bunting',
   'Emberiza goslingi': 'Gosling\'s Bunting',
-  'Emberiza tahapisi x goslingi': 'Cinnamon-breasted x Gosling\'s Bunting (hybrid)',
+  'Emberiza tahapisi x goslingi':
+      'Cinnamon-breasted x Gosling\'s Bunting (hybrid)',
   'Emberiza sahari': 'House Bunting',
   'Emberiza striolata': 'Striolated Bunting',
   'Emberiza siemsseni': 'Slaty Bunting',
@@ -16419,25 +17610,40 @@ const Map<String, String> scientificToCommon = {
   'Emberiza sp.': 'Emberiza sp.',
   'Oreothraupis arremonops': 'Tanager Finch',
   'Chlorospingus flavigularis': 'Yellow-throated Chlorospingus',
-  'Chlorospingus flavigularis hypophaeus': 'Yellow-throated Chlorospingus (Drab-breasted)',
-  'Chlorospingus flavigularis flavigularis/marginatus': 'Yellow-throated Chlorospingus (Yellow-throated)',
+  'Chlorospingus flavigularis hypophaeus':
+      'Yellow-throated Chlorospingus (Drab-breasted)',
+  'Chlorospingus flavigularis flavigularis/marginatus':
+      'Yellow-throated Chlorospingus (Yellow-throated)',
   'Chlorospingus parvirostris': 'Short-billed Chlorospingus',
-  'Chlorospingus flavigularis/parvirostris': 'Yellow-throated/Short-billed Chlorospingus',
+  'Chlorospingus flavigularis/parvirostris':
+      'Yellow-throated/Short-billed Chlorospingus',
   'Chlorospingus canigularis': 'Ashy-throated Chlorospingus',
-  'Chlorospingus canigularis olivaceiceps': 'Ashy-throated Chlorospingus (Olive-crowned)',
-  'Chlorospingus canigularis [canigularis Group]': 'Ashy-throated Chlorospingus (Ashy-throated)',
+  'Chlorospingus canigularis olivaceiceps':
+      'Ashy-throated Chlorospingus (Olive-crowned)',
+  'Chlorospingus canigularis [canigularis Group]':
+      'Ashy-throated Chlorospingus (Ashy-throated)',
   'Chlorospingus pileatus': 'Sooty-capped Chlorospingus',
   'Chlorospingus flavopectus': 'Common Chlorospingus',
-  'Chlorospingus flavopectus ophthalmicus': 'Common Chlorospingus (Northeast Mexico)',
-  'Chlorospingus flavopectus albifrons': 'Common Chlorospingus (Southwest Mexico)',
-  'Chlorospingus flavopectus [postocularis Group]': 'Common Chlorospingus (Middle American)',
-  'Chlorospingus flavopectus punctulatus': 'Common Chlorospingus (Central Panama)',
-  'Chlorospingus flavopectus [venezuelanus Group]': 'Common Chlorospingus (Venezuela)',
-  'Chlorospingus flavopectus [flavopectus Group]': 'Common Chlorospingus (Northern Andes)',
-  'Chlorospingus flavopectus cinereocephalus': 'Common Chlorospingus (cinereocephalus)',
-  'Chlorospingus flavopectus peruvianus': 'Common Chlorospingus (Southern Peru)',
-  'Chlorospingus flavopectus bolivianus': 'Common Chlorospingus (Northern Bolivia)',
-  'Chlorospingus flavopectus fulvigularis': 'Common Chlorospingus (Southern Bolivia)',
+  'Chlorospingus flavopectus ophthalmicus':
+      'Common Chlorospingus (Northeast Mexico)',
+  'Chlorospingus flavopectus albifrons':
+      'Common Chlorospingus (Southwest Mexico)',
+  'Chlorospingus flavopectus [postocularis Group]':
+      'Common Chlorospingus (Middle American)',
+  'Chlorospingus flavopectus punctulatus':
+      'Common Chlorospingus (Central Panama)',
+  'Chlorospingus flavopectus [venezuelanus Group]':
+      'Common Chlorospingus (Venezuela)',
+  'Chlorospingus flavopectus [flavopectus Group]':
+      'Common Chlorospingus (Northern Andes)',
+  'Chlorospingus flavopectus cinereocephalus':
+      'Common Chlorospingus (cinereocephalus)',
+  'Chlorospingus flavopectus peruvianus':
+      'Common Chlorospingus (Southern Peru)',
+  'Chlorospingus flavopectus bolivianus':
+      'Common Chlorospingus (Northern Bolivia)',
+  'Chlorospingus flavopectus fulvigularis':
+      'Common Chlorospingus (Southern Bolivia)',
   'Chlorospingus flavopectus argentinus': 'Common Chlorospingus (Argentina)',
   'Chlorospingus tacarcunae': 'Tacarcuna Chlorospingus',
   'Chlorospingus inornatus': 'Pirre Chlorospingus',
@@ -16486,7 +17692,8 @@ const Map<String, String> scientificToCommon = {
   'Spizella breweri breweri': 'Brewer\'s Sparrow (breweri)',
   'Spizella breweri taverneri': 'Brewer\'s Sparrow (taverneri)',
   'Spizella pallida x breweri': 'Clay-colored x Brewer\'s Sparrow (hybrid)',
-  'Spizella atrogularis x breweri': 'Black-chinned x Brewer\'s Sparrow (hybrid)',
+  'Spizella atrogularis x breweri':
+      'Black-chinned x Brewer\'s Sparrow (hybrid)',
   'Spizella pallida/breweri': 'Clay-colored/Brewer\'s Sparrow',
   'Spizella wortheni': 'Worthen\'s Sparrow',
   'Spizella sp.': 'Spizella sp.',
@@ -16504,14 +17711,17 @@ const Map<String, String> scientificToCommon = {
   'Arremon torquatus': 'White-browed Brushfinch',
   'Arremon sp. (torquatus complex)': 'stripe-headed brushfinch sp.',
   'Arremon aurantiirostris': 'Orange-billed Sparrow',
-  'Arremon aurantiirostris [aurantiirostris Group]': 'Orange-billed Sparrow (aurantiirostris Group)',
-  'Arremon aurantiirostris erythrorhynchus': 'Orange-billed Sparrow (erythrorhynchus)',
+  'Arremon aurantiirostris [aurantiirostris Group]':
+      'Orange-billed Sparrow (aurantiirostris Group)',
+  'Arremon aurantiirostris erythrorhynchus':
+      'Orange-billed Sparrow (erythrorhynchus)',
   'Arremon aurantiirostris spectabilis': 'Orange-billed Sparrow (spectabilis)',
   'Arremon abeillei': 'Black-capped Sparrow',
   'Arremon nigriceps': 'Marañon Sparrow',
   'Arremon schlegeli': 'Golden-winged Sparrow',
   'Arremon schlegeli canidorsum': 'Golden-winged Sparrow (Gray-backed)',
-  'Arremon schlegeli schlegeli/fratruelis': 'Golden-winged Sparrow (Green-backed)',
+  'Arremon schlegeli schlegeli/fratruelis':
+      'Golden-winged Sparrow (Green-backed)',
   'Arremon axillaris': 'Yellow-mandibled Sparrow',
   'Arremon taciturnus': 'Pectoral Sparrow',
   'Arremon franciscanus': 'Sao Francisco Sparrow',
@@ -16519,11 +17729,13 @@ const Map<String, String> scientificToCommon = {
   'Arremon dorbignii': 'Moss-backed Sparrow',
   'Arremon flavirostris': 'Saffron-billed Sparrow',
   'Arremon flavirostris polionotus': 'Saffron-billed Sparrow (Gray-backed)',
-  'Arremon flavirostris flavirostris': 'Saffron-billed Sparrow (Saffron-billed)',
+  'Arremon flavirostris flavirostris':
+      'Saffron-billed Sparrow (Saffron-billed)',
   'Arremon virenticeps': 'Green-striped Brushfinch',
   'Arremon brunneinucha': 'Chestnut-capped Brushfinch',
   'Arremon brunneinucha apertus': 'Chestnut-capped Brushfinch (Plain-breasted)',
-  'Arremon brunneinucha [brunneinucha Group]': 'Chestnut-capped Brushfinch (Chestnut-capped)',
+  'Arremon brunneinucha [brunneinucha Group]':
+      'Chestnut-capped Brushfinch (Chestnut-capped)',
   'Arremon crassirostris': 'Sooty-faced Finch',
   'Arremon castaneiceps': 'Olive Finch',
   'Spizelloides arborea': 'American Tree Sparrow',
@@ -16533,21 +17745,28 @@ const Map<String, String> scientificToCommon = {
   'Passerella iliaca [megarhyncha Group]': 'Fox Sparrow (Thick-billed)',
   'Passerella iliaca [schistacea Group]': 'Fox Sparrow (Slate-colored)',
   'Passerella iliaca iliaca/zaboria': 'Fox Sparrow (Red)',
-  'Passerella iliaca [unalaschcensis Group] x zaboria': 'Fox Sparrow (Sooty x Red)',
+  'Passerella iliaca [unalaschcensis Group] x zaboria':
+      'Fox Sparrow (Sooty x Red)',
   'Junco hyemalis': 'Dark-eyed Junco',
-  'Junco hyemalis hyemalis/carolinensis/cismontanus': 'Dark-eyed Junco (Slate-colored/cismontanus)',
+  'Junco hyemalis hyemalis/carolinensis/cismontanus':
+      'Dark-eyed Junco (Slate-colored/cismontanus)',
   'Junco hyemalis hyemalis/carolinensis': 'Dark-eyed Junco (Slate-colored)',
   'Junco hyemalis cismontanus': 'Dark-eyed Junco (cismontanus)',
   'Junco hyemalis [oreganus Group]': 'Dark-eyed Junco (Oregon)',
   'Junco hyemalis mearnsi': 'Dark-eyed Junco (Pink-sided)',
-  'Junco hyemalis [oreganus Group] x mearnsi': 'Dark-eyed Junco (Oregon x Pink-sided)',
+  'Junco hyemalis [oreganus Group] x mearnsi':
+      'Dark-eyed Junco (Oregon x Pink-sided)',
   'Junco hyemalis aikeni': 'Dark-eyed Junco (White-winged)',
-  'Junco hyemalis mearnsi x aikeni': 'Dark-eyed Junco (Pink-sided x White-winged)',
+  'Junco hyemalis mearnsi x aikeni':
+      'Dark-eyed Junco (Pink-sided x White-winged)',
   'Junco hyemalis caniceps': 'Dark-eyed Junco (Gray-headed)',
-  'Junco hyemalis [oreganus Group] x caniceps': 'Dark-eyed Junco (Oregon x Gray-headed)',
-  'Junco hyemalis mearnsi x caniceps': 'Dark-eyed Junco (Pink-sided x Gray-headed)',
+  'Junco hyemalis [oreganus Group] x caniceps':
+      'Dark-eyed Junco (Oregon x Gray-headed)',
+  'Junco hyemalis mearnsi x caniceps':
+      'Dark-eyed Junco (Pink-sided x Gray-headed)',
   'Junco hyemalis dorsalis': 'Dark-eyed Junco (Red-backed)',
-  'Junco hyemalis caniceps x dorsalis': 'Dark-eyed Junco (Gray-headed x Red-backed)',
+  'Junco hyemalis caniceps x dorsalis':
+      'Dark-eyed Junco (Gray-headed x Red-backed)',
   'Junco insularis': 'Guadalupe Junco',
   'Junco phaeonotus': 'Yellow-eyed Junco',
   'Junco phaeonotus phaeonotus/palliatus': 'Yellow-eyed Junco (Mexican)',
@@ -16558,26 +17777,36 @@ const Map<String, String> scientificToCommon = {
   'Junco bairdi': 'Baird\'s Junco',
   'Junco vulcani': 'Volcano Junco',
   'Zonotrichia capensis': 'Rufous-collared Sparrow',
-  'Zonotrichia capensis [capensis Group]': 'Rufous-collared Sparrow (Rufous-collared)',
+  'Zonotrichia capensis [capensis Group]':
+      'Rufous-collared Sparrow (Rufous-collared)',
   'Zonotrichia capensis australis': 'Rufous-collared Sparrow (Patagonian)',
   'Zonotrichia leucophrys': 'White-crowned Sparrow',
-  'Zonotrichia leucophrys leucophrys/oriantha': 'White-crowned Sparrow (Dark-lored)',
+  'Zonotrichia leucophrys leucophrys/oriantha':
+      'White-crowned Sparrow (Dark-lored)',
   'Zonotrichia leucophrys leucophrys': 'White-crowned Sparrow (leucophrys)',
   'Zonotrichia leucophrys oriantha': 'White-crowned Sparrow (oriantha)',
   'Zonotrichia leucophrys gambelii': 'White-crowned Sparrow (Gambel\'s)',
-  'Zonotrichia leucophrys nuttalli/pugetensis': 'White-crowned Sparrow (Yellow-billed)',
+  'Zonotrichia leucophrys nuttalli/pugetensis':
+      'White-crowned Sparrow (Yellow-billed)',
   'Zonotrichia leucophrys nuttalli': 'White-crowned Sparrow (nuttalli)',
   'Zonotrichia leucophrys pugetensis': 'White-crowned Sparrow (pugetensis)',
-  'Junco hyemalis x Zonotrichia leucophrys': 'Dark-eyed Junco x White-crowned Sparrow (hybrid)',
+  'Junco hyemalis x Zonotrichia leucophrys':
+      'Dark-eyed Junco x White-crowned Sparrow (hybrid)',
   'Zonotrichia atricapilla': 'Golden-crowned Sparrow',
-  'Zonotrichia leucophrys x atricapilla': 'White-crowned x Golden-crowned Sparrow (hybrid)',
+  'Zonotrichia leucophrys x atricapilla':
+      'White-crowned x Golden-crowned Sparrow (hybrid)',
   'Zonotrichia querula': 'Harris\'s Sparrow',
-  'Spizelloides arborea x Zonotrichia querula': 'American Tree x Harris\'s Sparrow (hybrid)',
-  'Zonotrichia leucophrys x querula': 'White-crowned x Harris\'s Sparrow (hybrid)',
+  'Spizelloides arborea x Zonotrichia querula':
+      'American Tree x Harris\'s Sparrow (hybrid)',
+  'Zonotrichia leucophrys x querula':
+      'White-crowned x Harris\'s Sparrow (hybrid)',
   'Zonotrichia albicollis': 'White-throated Sparrow',
-  'Zonotrichia leucophrys x albicollis': 'White-crowned x White-throated Sparrow (hybrid)',
-  'Zonotrichia atricapilla x albicollis': 'Golden-crowned x White-throated Sparrow (hybrid)',
-  'Junco hyemalis x Zonotrichia albicollis': 'Dark-eyed Junco x White-throated Sparrow (hybrid)',
+  'Zonotrichia leucophrys x albicollis':
+      'White-crowned x White-throated Sparrow (hybrid)',
+  'Zonotrichia atricapilla x albicollis':
+      'Golden-crowned x White-throated Sparrow (hybrid)',
+  'Junco hyemalis x Zonotrichia albicollis':
+      'Dark-eyed Junco x White-throated Sparrow (hybrid)',
   'Zonotrichia leucophrys/albicollis': 'White-crowned/White-throated Sparrow',
   'Zonotrichia sp.': 'Zonotrichia sp.',
   'Artemisiospiza nevadensis': 'Sagebrush Sparrow',
@@ -16601,15 +17830,19 @@ const Map<String, String> scientificToCommon = {
   'Ammospiza leconteii/nelsoni': 'LeConte\'s/Nelson\'s Sparrow',
   'Ammospiza caudacuta': 'Saltmarsh Sparrow',
   'Ammospiza nelsoni x caudacuta': 'Nelson\'s x Saltmarsh Sparrow (hybrid)',
-  'Ammospiza nelsoni/caudacuta': 'Nelson\'s/Saltmarsh Sparrow (Sharp-tailed Sparrow)',
+  'Ammospiza nelsoni/caudacuta':
+      'Nelson\'s/Saltmarsh Sparrow (Sharp-tailed Sparrow)',
   'Ammospiza sp.': 'Ammospiza sp.',
   'Passerculus sandwichensis': 'Savannah Sparrow',
-  'Passerculus sandwichensis [sandwichensis Group]': 'Savannah Sparrow (Savannah)',
+  'Passerculus sandwichensis [sandwichensis Group]':
+      'Savannah Sparrow (Savannah)',
   'Passerculus sandwichensis princeps': 'Savannah Sparrow (Ipswich)',
   'Passerculus sandwichensis [guttatus Group]': 'Savannah Sparrow (Belding\'s)',
   'Passerculus sandwichensis sanctorum': 'Savannah Sparrow (San Benito)',
-  'Passerculus sandwichensis rostratus/atratus': 'Savannah Sparrow (Large-billed)',
-  'Ammodramus savannarum x Passerculus sandwichensis': 'Grasshopper x Savannah Sparrow (hybrid)',
+  'Passerculus sandwichensis rostratus/atratus':
+      'Savannah Sparrow (Large-billed)',
+  'Ammodramus savannarum x Passerculus sandwichensis':
+      'Grasshopper x Savannah Sparrow (hybrid)',
   'Centronyx bairdii': 'Baird\'s Sparrow',
   'Ammodramus savannarum/Centronyx bairdii': 'Grasshopper/Baird\'s Sparrow',
   'Centronyx henslowii': 'Henslow\'s Sparrow',
@@ -16654,15 +17887,19 @@ const Map<String, String> scientificToCommon = {
   'Pipilo maculatus [maculatus Group]': 'Spotted Towhee (maculatus Group)',
   'Pipilo maculatus macronyx': 'Spotted Towhee (Olive-backed)',
   'Pipilo maculatus socorroensis': 'Spotted Towhee (Socorro)',
-  'Arremon brunneinucha x Pipilo maculatus': 'Chestnut-capped Brushfinch x Spotted Towhee (hybrid)',
+  'Arremon brunneinucha x Pipilo maculatus':
+      'Chestnut-capped Brushfinch x Spotted Towhee (hybrid)',
   'Melozone fusca x Pipilo maculatus': 'Canyon x Spotted Towhee (hybrid)',
-  'Melozone crissalis x Pipilo maculatus': 'California x Spotted Towhee (hybrid)',
+  'Melozone crissalis x Pipilo maculatus':
+      'California x Spotted Towhee (hybrid)',
   'Pipilo chlorurus x maculatus': 'Green-tailed x Spotted Towhee (hybrid)',
   'Pipilo erythrophthalmus': 'Eastern Towhee',
-  'Pipilo erythrophthalmus erythrophthalmus/canaster': 'Eastern Towhee (Red-eyed)',
+  'Pipilo erythrophthalmus erythrophthalmus/canaster':
+      'Eastern Towhee (Red-eyed)',
   'Pipilo erythrophthalmus alleni/rileyi': 'Eastern Towhee (White-eyed)',
   'Pipilo maculatus x erythrophthalmus': 'Spotted x Eastern Towhee (hybrid)',
-  'Pipilo maculatus/erythrophthalmus': 'Spotted/Eastern Towhee (Rufous-sided Towhee)',
+  'Pipilo maculatus/erythrophthalmus':
+      'Spotted/Eastern Towhee (Rufous-sided Towhee)',
   'Pipilo naufragus': 'Bermuda Towhee',
   'Pipilo ocai': 'Collared Towhee',
   'Pipilo maculatus x ocai': 'Spotted x Collared Towhee (hybrid)',
@@ -16670,7 +17907,8 @@ const Map<String, String> scientificToCommon = {
   'Atlapetes pileatus': 'Rufous-capped Brushfinch',
   'Atlapetes albinucha': 'White-naped Brushfinch',
   'Atlapetes albinucha albinucha': 'White-naped Brushfinch (White-naped)',
-  'Atlapetes albinucha [gutturalis Group]': 'White-naped Brushfinch (Yellow-throated)',
+  'Atlapetes albinucha [gutturalis Group]':
+      'White-naped Brushfinch (Yellow-throated)',
   'Atlapetes tibialis': 'Yellow-thighed Brushfinch',
   'Atlapetes luteoviridis': 'Yellow-green Brushfinch',
   'Atlapetes albofrenatus': 'Moustached Brushfinch',
@@ -16681,7 +17919,8 @@ const Map<String, String> scientificToCommon = {
   'Atlapetes semirufus': 'Ochre-breasted Brushfinch',
   'Atlapetes flaviceps': 'Yellow-headed Brushfinch',
   'Atlapetes fuscoolivaceus': 'Dusky-headed Brushfinch',
-  'Atlapetes albinucha x fuscoolivaceus': 'White-naped x Dusky-headed Brushfinch (hybrid)',
+  'Atlapetes albinucha x fuscoolivaceus':
+      'White-naped x Dusky-headed Brushfinch (hybrid)',
   'Atlapetes leucopis': 'White-rimmed Brushfinch',
   'Atlapetes albiceps': 'White-headed Brushfinch',
   'Atlapetes rufigenis': 'Rufous-eared Brushfinch',
@@ -16692,10 +17931,12 @@ const Map<String, String> scientificToCommon = {
   'Atlapetes pallidinucha': 'Pale-naped Brushfinch',
   'Atlapetes blancae': 'Antioquia Brushfinch',
   'Atlapetes nigrifrons': 'Black-fronted Brushfinch',
-  'Atlapetes albofrenatus x nigrifrons': 'Moustached x Black-fronted Brushfinch (hybrid)',
+  'Atlapetes albofrenatus x nigrifrons':
+      'Moustached x Black-fronted Brushfinch (hybrid)',
   'Atlapetes latinuchus': 'Yellow-breasted Brushfinch',
   'Atlapetes leucopterus': 'White-winged Brushfinch',
-  'Atlapetes leucopterus leucopterus/dresseri': 'White-winged Brushfinch (White-winged)',
+  'Atlapetes leucopterus leucopterus/dresseri':
+      'White-winged Brushfinch (White-winged)',
   'Atlapetes leucopterus paynteri': 'White-winged Brushfinch (Paynter\'s)',
   'Atlapetes pallidiceps': 'Pale-headed Brushfinch',
   'Atlapetes seebohmi': 'Bay-crowned Brushfinch',
@@ -16706,7 +17947,8 @@ const Map<String, String> scientificToCommon = {
   'Atlapetes canigenis': 'Cuzco Brushfinch',
   'Atlapetes melanolaemus': 'Black-faced Brushfinch',
   'Atlapetes rufinucha': 'Bolivian Brushfinch',
-  'Atlapetes melanolaemus x rufinucha': 'Black-faced x Bolivian Brushfinch (hybrid)',
+  'Atlapetes melanolaemus x rufinucha':
+      'Black-faced x Bolivian Brushfinch (hybrid)',
   'Atlapetes fulviceps': 'Fulvous-headed Brushfinch',
   'Atlapetes citrinellus': 'Yellow-striped Brushfinch',
   'Atlapetes sp.': 'Atlapetes sp.',
@@ -16715,8 +17957,10 @@ const Map<String, String> scientificToCommon = {
   'Calyptophilus frugivorus': 'Eastern Chat-Tanager',
   'Phaenicophilus palmarum': 'Black-crowned Palm-Tanager',
   'Phaenicophilus poliocephalus': 'Gray-crowned Palm-Tanager',
-  'Phaenicophilus palmarum x poliocephalus': 'Black-crowned x Gray-crowned Palm-Tanager (hybrid)',
-  'Phaenicophilus palmarum/poliocephalus': 'Black-crowned/Gray-crowned Palm-Tanager',
+  'Phaenicophilus palmarum x poliocephalus':
+      'Black-crowned x Gray-crowned Palm-Tanager (hybrid)',
+  'Phaenicophilus palmarum/poliocephalus':
+      'Black-crowned/Gray-crowned Palm-Tanager',
   'Xenoligea montana': 'White-winged Warbler',
   'Microligea palustris': 'Green-tailed Warbler',
   'Nesospingus speculiferus': 'Puerto Rican Tanager',
@@ -16732,7 +17976,8 @@ const Map<String, String> scientificToCommon = {
   'Zeledonia coronata': 'Wrenthrush',
   'Teretistris fernandinae': 'Yellow-headed Warbler',
   'Teretistris fornsi': 'Oriente Warbler',
-  'Teretistris fernandinae x fornsi': 'Yellow-headed x Oriente Warbler (hybrid)',
+  'Teretistris fernandinae x fornsi':
+      'Yellow-headed x Oriente Warbler (hybrid)',
   'Teretistris fernandinae/fornsi': 'Yellow-headed/Oriente Warbler',
   'Icteria virens': 'Yellow-breasted Chat',
   'Icteria virens virens': 'Yellow-breasted Chat (virens)',
@@ -16759,12 +18004,15 @@ const Map<String, String> scientificToCommon = {
   'Leistes loyca [loyca Group]': 'Long-tailed Meadowlark (Long-tailed)',
   'Leistes sp.': 'Leistes sp.',
   'Amblycercus holosericeus': 'Yellow-billed Cacique',
-  'Amblycercus holosericeus holosericeus/flavirostris': 'Yellow-billed Cacique (Prevost\'s)',
+  'Amblycercus holosericeus holosericeus/flavirostris':
+      'Yellow-billed Cacique (Prevost\'s)',
   'Amblycercus holosericeus australis': 'Yellow-billed Cacique (Chapman\'s)',
   'Cassiculus melanicterus': 'Yellow-winged Cacique',
   'Psarocolius angustifrons': 'Russet-backed Oropendola',
-  'Psarocolius angustifrons [angustifrons Group]': 'Russet-backed Oropendola (Russet-backed)',
-  'Psarocolius angustifrons oleagineus': 'Russet-backed Oropendola (Green-billed)',
+  'Psarocolius angustifrons [angustifrons Group]':
+      'Russet-backed Oropendola (Russet-backed)',
+  'Psarocolius angustifrons oleagineus':
+      'Russet-backed Oropendola (Green-billed)',
   'Psarocolius atrovirens': 'Dusky-green Oropendola',
   'Psarocolius viridis': 'Green Oropendola',
   'Psarocolius decumanus': 'Crested Oropendola',
@@ -16781,14 +18029,16 @@ const Map<String, String> scientificToCommon = {
   'Cacicus sclateri': 'Ecuadorian Cacique',
   'Cacicus koepckeae': 'Selva Cacique',
   'Cacicus uropygialis': 'Scarlet-rumped Cacique',
-  'Cacicus uropygialis microrhynchus': 'Scarlet-rumped Cacique (Scarlet-rumped)',
+  'Cacicus uropygialis microrhynchus':
+      'Scarlet-rumped Cacique (Scarlet-rumped)',
   'Cacicus uropygialis pacificus': 'Scarlet-rumped Cacique (Pacific)',
   'Cacicus uropygialis uropygialis': 'Scarlet-rumped Cacique (Subtropical)',
   'Cacicus cela': 'Yellow-rumped Cacique',
   'Cacicus cela flavicrissus/vitellinus': 'Yellow-rumped Cacique (Western)',
   'Cacicus cela cela': 'Yellow-rumped Cacique (Amazonian)',
   'Cacicus chrysonotus': 'Mountain Cacique',
-  'Cacicus chrysonotus leucoramphus/peruvianus': 'Mountain Cacique (Golden-shouldered)',
+  'Cacicus chrysonotus leucoramphus/peruvianus':
+      'Mountain Cacique (Golden-shouldered)',
   'Cacicus chrysonotus chrysonotus': 'Mountain Cacique (Bolivian)',
   'Cacicus latirostris': 'Band-tailed Cacique',
   'Cacicus haemorrhous': 'Red-rumped Cacique',
@@ -16808,10 +18058,12 @@ const Map<String, String> scientificToCommon = {
   'Icterus spurius spurius': 'Orchard Oriole (Orchard)',
   'Icterus spurius fuertesi': 'Orchard Oriole (Fuertes\'s)',
   'Icterus cucullatus': 'Hooded Oriole',
-  'Icterus cucullatus cucullatus/sennetti': 'Hooded Oriole (cucullatus/sennetti)',
+  'Icterus cucullatus cucullatus/sennetti':
+      'Hooded Oriole (cucullatus/sennetti)',
   'Icterus cucullatus [nelsoni Group]': 'Hooded Oriole (nelsoni Group)',
   'Icterus cucullatus igneus': 'Hooded Oriole (igneus)',
-  'Icteria virens x Icterus cucullatus': 'Yellow-breasted Chat x Hooded Oriole (hybrid)',
+  'Icteria virens x Icterus cucullatus':
+      'Yellow-breasted Chat x Hooded Oriole (hybrid)',
   'Icterus spurius x cucullatus': 'Orchard x Hooded Oriole (hybrid)',
   'Icterus spurius/cucullatus': 'Orchard/Hooded Oriole',
   'Icterus chrysater': 'Yellow-backed Oriole',
@@ -16824,16 +18076,19 @@ const Map<String, String> scientificToCommon = {
   'Icterus cayanensis cayanensis': 'Epaulet Oriole (Epaulet)',
   'Icterus pyrrhopterus': 'Variable Oriole',
   'Icterus pyrrhopterus tibialis': 'Variable Oriole (Yellow-shouldered)',
-  'Icterus pyrrhopterus [pyrrhopterus Group]': 'Variable Oriole (Chestnut-shouldered)',
+  'Icterus pyrrhopterus [pyrrhopterus Group]':
+      'Variable Oriole (Chestnut-shouldered)',
   'Icterus icterus': 'Venezuelan Troupial',
   'Icterus jamacaii': 'Campo Troupial',
   'Icterus croconotus': 'Orange-backed Troupial',
   'Icterus icterus/croconotus/jamacaii': 'troupial sp.',
   'Icterus pustulatus': 'Streak-backed Oriole',
-  'Icterus pustulatus [pustulatus Group]': 'Streak-backed Oriole (West Mexican)',
+  'Icterus pustulatus [pustulatus Group]':
+      'Streak-backed Oriole (West Mexican)',
   'Icterus pustulatus [sclateri Group]': 'Streak-backed Oriole (Streak-backed)',
   'Icterus pustulatus graysonii': 'Streak-backed Oriole (Tres Marias Is.)',
-  'Icterus wagleri x pustulatus': 'Black-vented x Streak-backed Oriole (hybrid)',
+  'Icterus wagleri x pustulatus':
+      'Black-vented x Streak-backed Oriole (hybrid)',
   'Icterus bullockii': 'Bullock\'s Oriole',
   'Icterus cucullatus x bullockii': 'Hooded x Bullock\'s Oriole (hybrid)',
   'Icterus auratus': 'Orange Oriole',
@@ -16856,7 +18111,8 @@ const Map<String, String> scientificToCommon = {
   'Nesopsar nigerrimus': 'Jamaican Blackbird',
   'Agelaius phoeniceus': 'Red-winged Blackbird',
   'Agelaius phoeniceus [phoeniceus Group]': 'Red-winged Blackbird (Red-winged)',
-  'Agelaius phoeniceus californicus/mailliardorum': 'Red-winged Blackbird (California Bicolored)',
+  'Agelaius phoeniceus californicus/mailliardorum':
+      'Red-winged Blackbird (California Bicolored)',
   'Agelaius phoeniceus gubernator': 'Red-winged Blackbird (Mexican Bicolored)',
   'Agelaius assimilis': 'Red-shouldered Blackbird',
   'Agelaius tricolor': 'Tricolored Blackbird',
@@ -16888,12 +18144,15 @@ const Map<String, String> scientificToCommon = {
   'Quiscalus quiscula versicolor': 'Common Grackle (Bronzed)',
   'Quiscalus major': 'Boat-tailed Grackle',
   'Quiscalus major major': 'Boat-tailed Grackle (major)',
-  'Quiscalus major torreyi/alabamensis': 'Boat-tailed Grackle (torreyi/alabamensis)',
+  'Quiscalus major torreyi/alabamensis':
+      'Boat-tailed Grackle (torreyi/alabamensis)',
   'Quiscalus major westoni': 'Boat-tailed Grackle (westoni)',
   'Quiscalus mexicanus': 'Great-tailed Grackle',
   'Quiscalus mexicanus [graysoni Group]': 'Great-tailed Grackle (Western)',
-  'Quiscalus mexicanus [mexicanus Group]': 'Great-tailed Grackle (Great-tailed)',
-  'Euphagus cyanocephalus x Quiscalus mexicanus': 'Brewer\'s Blackbird x Great-tailed Grackle (hybrid)',
+  'Quiscalus mexicanus [mexicanus Group]':
+      'Great-tailed Grackle (Great-tailed)',
+  'Euphagus cyanocephalus x Quiscalus mexicanus':
+      'Brewer\'s Blackbird x Great-tailed Grackle (hybrid)',
   'Quiscalus quiscula x mexicanus': 'Common x Great-tailed Grackle (hybrid)',
   'Quiscalus major x mexicanus': 'Boat-tailed x Great-tailed Grackle (hybrid)',
   'Quiscalus major/mexicanus': 'Boat-tailed/Great-tailed Grackle',
@@ -16919,7 +18178,8 @@ const Map<String, String> scientificToCommon = {
   'Agelaioides badius/fringillarius': 'Grayish/Pale Baywing',
   'Agelasticus xanthophthalmus': 'Pale-eyed Blackbird',
   'Agelasticus cyanopus': 'Unicolored Blackbird',
-  'Agelasticus cyanopus atroolivaceus/unicolor': 'Unicolored Blackbird (Azara\'s)',
+  'Agelasticus cyanopus atroolivaceus/unicolor':
+      'Unicolored Blackbird (Azara\'s)',
   'Agelasticus cyanopus cyanopus': 'Unicolored Blackbird (Yellow-breasted)',
   'Agelasticus thilius': 'Yellow-winged Blackbird',
   'Chrysomus ruficapillus': 'Chestnut-capped Blackbird',
@@ -16930,16 +18190,20 @@ const Map<String, String> scientificToCommon = {
   'Icteridae sp.': 'blackbird sp.',
   'Seiurus aurocapilla': 'Ovenbird',
   'Helmitheros vermivorum': 'Worm-eating Warbler',
-  'Spizella passerina/Helmitheros vermivorum': 'Chipping Sparrow/Worm-eating Warbler',
+  'Spizella passerina/Helmitheros vermivorum':
+      'Chipping Sparrow/Worm-eating Warbler',
   'Parkesia motacilla': 'Louisiana Waterthrush',
   'Parkesia noveboracensis': 'Northern Waterthrush',
   'Parkesia motacilla/noveboracensis': 'Louisiana/Northern Waterthrush',
   'Vermivora bachmanii': 'Bachman\'s Warbler',
   'Vermivora chrysoptera': 'Golden-winged Warbler',
   'Vermivora cyanoptera': 'Blue-winged Warbler',
-  'Vermivora chrysoptera x cyanoptera': 'Golden-winged x Blue-winged Warbler (hybrid)',
-  'Vermivora chrysoptera x cyanoptera (F1 hybrid)': 'Brewster\'s Warbler (hybrid)',
-  'Vermivora chrysoptera x cyanoptera (F2 backcross)': 'Lawrence\'s Warbler (hybrid)',
+  'Vermivora chrysoptera x cyanoptera':
+      'Golden-winged x Blue-winged Warbler (hybrid)',
+  'Vermivora chrysoptera x cyanoptera (F1 hybrid)':
+      'Brewster\'s Warbler (hybrid)',
+  'Vermivora chrysoptera x cyanoptera (F2 backcross)':
+      'Lawrence\'s Warbler (hybrid)',
   'Vermivora chrysoptera/cyanoptera': 'Golden-winged/Blue-winged Warbler',
   'Mniotilta varia': 'Black-and-white Warbler',
   'Protonotaria citrea': 'Prothonotary Warbler',
@@ -16958,8 +18222,10 @@ const Map<String, String> scientificToCommon = {
   'Leiothlypis ruficapilla': 'Nashville Warbler',
   'Leiothlypis ruficapilla ruficapilla': 'Nashville Warbler (ruficapilla)',
   'Leiothlypis ruficapilla ridgwayi': 'Nashville Warbler (ridgwayi)',
-  'Leiothlypis peregrina x ruficapilla': 'Tennessee x Nashville Warbler (hybrid)',
-  'Leiothlypis celata x ruficapilla': 'Orange-crowned x Nashville Warbler (hybrid)',
+  'Leiothlypis peregrina x ruficapilla':
+      'Tennessee x Nashville Warbler (hybrid)',
+  'Leiothlypis celata x ruficapilla':
+      'Orange-crowned x Nashville Warbler (hybrid)',
   'Leiothlypis virginiae': 'Virginia\'s Warbler',
   'Leiothlypis crissalis x virginiae': 'Colima x Virginia\'s Warbler (hybrid)',
   'Leiothlypis crissalis/virginiae': 'Colima/Virginia\'s Warbler',
@@ -16973,16 +18239,20 @@ const Map<String, String> scientificToCommon = {
   'Geothlypis aequinoctialis/auricularis/velata': 'masked yellowthroat sp.',
   'Geothlypis tolmiei': 'MacGillivray\'s Warbler',
   'Geothlypis philadelphia': 'Mourning Warbler',
-  'Oporornis agilis x Geothlypis philadelphia': 'Connecticut x Mourning Warbler (hybrid)',
-  'Geothlypis tolmiei x philadelphia': 'MacGillivray\'s x Mourning Warbler (hybrid)',
-  'Oporornis/Geothlypis sp. (Mourning-type)': 'Connecticut/MacGillivray\'s/Mourning Warbler',
+  'Oporornis agilis x Geothlypis philadelphia':
+      'Connecticut x Mourning Warbler (hybrid)',
+  'Geothlypis tolmiei x philadelphia':
+      'MacGillivray\'s x Mourning Warbler (hybrid)',
+  'Oporornis/Geothlypis sp. (Mourning-type)':
+      'Connecticut/MacGillivray\'s/Mourning Warbler',
   'Geothlypis tolmiei/philadelphia': 'MacGillivray\'s/Mourning Warbler',
   'Geothlypis formosa': 'Kentucky Warbler',
   'Geothlypis philadelphia x formosa': 'Mourning x Kentucky Warbler (hybrid)',
   'Geothlypis semiflava': 'Olive-crowned Yellowthroat',
   'Geothlypis semiflava bairdi': 'Olive-crowned Yellowthroat (Baird\'s)',
   'Geothlypis semiflava chiriquensis': 'Olive-crowned Yellowthroat (Chiriqui)',
-  'Geothlypis semiflava semiflava': 'Olive-crowned Yellowthroat (Olive-crowned)',
+  'Geothlypis semiflava semiflava':
+      'Olive-crowned Yellowthroat (Olive-crowned)',
   'Geothlypis speciosa': 'Black-polled Yellowthroat',
   'Geothlypis beldingi': 'Belding\'s Yellowthroat',
   'Geothlypis rostrata': 'Bahama Yellowthroat',
@@ -16993,10 +18263,14 @@ const Map<String, String> scientificToCommon = {
   'Geothlypis trichas [trichas Group]': 'Common Yellowthroat (trichas Group)',
   'Geothlypis trichas insperata': 'Common Yellowthroat (insperata)',
   'Geothlypis trichas chapalensis': 'Common Yellowthroat (chapalensis)',
-  'Geothlypis poliocephala x trichas': 'Gray-crowned x Common Yellowthroat (hybrid)',
-  'Geothlypis tolmiei x trichas': 'MacGillivray\'s Warbler x Common Yellowthroat (hybrid)',
-  'Geothlypis philadelphia x trichas': 'Mourning Warbler x Common Yellowthroat (hybrid)',
-  'Geothlypis formosa x trichas': 'Kentucky Warbler x Common Yellowthroat (hybrid)',
+  'Geothlypis poliocephala x trichas':
+      'Gray-crowned x Common Yellowthroat (hybrid)',
+  'Geothlypis tolmiei x trichas':
+      'MacGillivray\'s Warbler x Common Yellowthroat (hybrid)',
+  'Geothlypis philadelphia x trichas':
+      'Mourning Warbler x Common Yellowthroat (hybrid)',
+  'Geothlypis formosa x trichas':
+      'Kentucky Warbler x Common Yellowthroat (hybrid)',
   'Geothlypis nelsoni': 'Hooded Yellowthroat',
   'Geothlypis sp. (yellowthroat sp.)': 'yellowthroat sp.',
   'Catharopeza bishopi': 'Whistling Warbler',
@@ -17008,10 +18282,13 @@ const Map<String, String> scientificToCommon = {
   'Setophaga kirtlandii': 'Kirtland\'s Warbler',
   'Setophaga tigrina': 'Cape May Warbler',
   'Setophaga cerulea': 'Cerulean Warbler',
-  'Vermivora cyanoptera x Setophaga cerulea': 'Blue-winged x Cerulean Warbler (hybrid)',
+  'Vermivora cyanoptera x Setophaga cerulea':
+      'Blue-winged x Cerulean Warbler (hybrid)',
   'Setophaga americana': 'Northern Parula',
-  'Setophaga ruticilla x americana': 'American Redstart x Northern Parula (hybrid)',
-  'Setophaga cerulea x americana': 'Cerulean Warbler x Northern Parula (hybrid)',
+  'Setophaga ruticilla x americana':
+      'American Redstart x Northern Parula (hybrid)',
+  'Setophaga cerulea x americana':
+      'Cerulean Warbler x Northern Parula (hybrid)',
   'Setophaga pitiayumi': 'Tropical Parula',
   'Setophaga pitiayumi nigrilora': 'Tropical Parula (Northeast Mexico)',
   'Setophaga pitiayumi pulchra': 'Tropical Parula (West Mexico)',
@@ -17023,42 +18300,60 @@ const Map<String, String> scientificToCommon = {
   'Setophaga americana x pitiayumi': 'Northern x Tropical Parula (hybrid)',
   'Setophaga americana/pitiayumi': 'Northern/Tropical Parula',
   'Setophaga magnolia': 'Magnolia Warbler',
-  'Leiothlypis ruficapilla x Setophaga magnolia': 'Nashville x Magnolia Warbler (hybrid)',
-  'Setophaga ruticilla x magnolia': 'American Redstart x Magnolia Warbler (hybrid)',
+  'Leiothlypis ruficapilla x Setophaga magnolia':
+      'Nashville x Magnolia Warbler (hybrid)',
+  'Setophaga ruticilla x magnolia':
+      'American Redstart x Magnolia Warbler (hybrid)',
   'Setophaga tigrina x magnolia': 'Cape May x Magnolia Warbler (hybrid)',
   'Setophaga castanea': 'Bay-breasted Warbler',
   'Setophaga fusca': 'Blackburnian Warbler',
-  'Mniotilta varia x Setophaga fusca': 'Black-and-white x Blackburnian Warbler (hybrid)',
+  'Mniotilta varia x Setophaga fusca':
+      'Black-and-white x Blackburnian Warbler (hybrid)',
   'Setophaga castanea x fusca': 'Bay-breasted x Blackburnian Warbler (hybrid)',
   'Setophaga aestiva': 'Northern Yellow Warbler',
-  'Geothlypis trichas x Setophaga aestiva': 'Common Yellowthroat x Northern Yellow Warbler (hybrid)',
+  'Geothlypis trichas x Setophaga aestiva':
+      'Common Yellowthroat x Northern Yellow Warbler (hybrid)',
   'Setophaga citrina x aestiva': 'Hooded x Northern Yellow Warbler (hybrid)',
-  'Setophaga ruticilla x aestiva': 'American Redstart x Northern Yellow Warbler (hybrid)',
+  'Setophaga ruticilla x aestiva':
+      'American Redstart x Northern Yellow Warbler (hybrid)',
   'Setophaga petechia': 'Mangrove Yellow Warbler',
-  'Setophaga petechia [castaneiceps Group]': 'Mangrove Yellow Warbler (Mexican)',
-  'Setophaga petechia [erithachorides Group]': 'Mangrove Yellow Warbler (Panama)',
+  'Setophaga petechia [castaneiceps Group]':
+      'Mangrove Yellow Warbler (Mexican)',
+  'Setophaga petechia [erithachorides Group]':
+      'Mangrove Yellow Warbler (Panama)',
   'Setophaga petechia peruviana': 'Mangrove Yellow Warbler (Ecuadorian)',
   'Setophaga petechia aureola': 'Mangrove Yellow Warbler (Galapagos)',
   'Setophaga petechia rufivertex': 'Mangrove Yellow Warbler (Cozumel)',
   'Setophaga petechia flavida/armouri': 'Mangrove Yellow Warbler (San Andres)',
-  'Setophaga petechia [albicollis Group]': 'Mangrove Yellow Warbler (Greater Antillean)',
-  'Setophaga petechia [petechia Group]': 'Mangrove Yellow Warbler (Lesser Antillean)',
+  'Setophaga petechia [albicollis Group]':
+      'Mangrove Yellow Warbler (Greater Antillean)',
+  'Setophaga petechia [petechia Group]':
+      'Mangrove Yellow Warbler (Lesser Antillean)',
   'Setophaga petechia ruficapilla': 'Mangrove Yellow Warbler (Martinique)',
-  'Setophaga petechia [castaneiceps Group] x rufivertex': 'Mangrove Yellow Warbler (Mexican x Cozumel)',
+  'Setophaga petechia [castaneiceps Group] x rufivertex':
+      'Mangrove Yellow Warbler (Mexican x Cozumel)',
   'Setophaga aestiva/petechia': 'Northern/Mangrove Yellow Warbler',
   'Setophaga pensylvanica': 'Chestnut-sided Warbler',
-  'Vermivora chrysoptera x cyanoptera (F1 hybrid) x Setophaga pensylvanica': 'Brewster\'s x Chestnut-sided Warbler (hybrid)',
-  'Mniotilta varia x Setophaga pensylvanica': 'Black-and-white x Chestnut-sided Warbler (hybrid)',
-  'Setophaga ruticilla x pensylvanica': 'American Redstart x Chestnut-sided Warbler (hybrid)',
-  'Setophaga magnolia x pensylvanica': 'Magnolia x Chestnut-sided Warbler (hybrid)',
+  'Vermivora chrysoptera x cyanoptera (F1 hybrid) x Setophaga pensylvanica':
+      'Brewster\'s x Chestnut-sided Warbler (hybrid)',
+  'Mniotilta varia x Setophaga pensylvanica':
+      'Black-and-white x Chestnut-sided Warbler (hybrid)',
+  'Setophaga ruticilla x pensylvanica':
+      'American Redstart x Chestnut-sided Warbler (hybrid)',
+  'Setophaga magnolia x pensylvanica':
+      'Magnolia x Chestnut-sided Warbler (hybrid)',
   'Setophaga striata': 'Blackpoll Warbler',
   'Setophaga castanea x striata': 'Bay-breasted x Blackpoll Warbler (hybrid)',
   'Setophaga castanea/striata': 'Bay-breasted/Blackpoll Warbler',
   'Setophaga caerulescens': 'Black-throated Blue Warbler',
-  'Setophaga cerulea x caerulescens': 'Cerulean x Black-throated Blue Warbler (hybrid)',
-  'Setophaga magnolia x caerulescens': 'Magnolia x Black-throated Blue Warbler (hybrid)',
-  'Setophaga aestiva x caerulescens': 'Northern Yellow x Black-throated Blue Warbler (hybrid)',
-  'Setophaga pensylvanica x caerulescens': 'Chestnut-sided x Black-throated Blue Warbler (hybrid)',
+  'Setophaga cerulea x caerulescens':
+      'Cerulean x Black-throated Blue Warbler (hybrid)',
+  'Setophaga magnolia x caerulescens':
+      'Magnolia x Black-throated Blue Warbler (hybrid)',
+  'Setophaga aestiva x caerulescens':
+      'Northern Yellow x Black-throated Blue Warbler (hybrid)',
+  'Setophaga pensylvanica x caerulescens':
+      'Chestnut-sided x Black-throated Blue Warbler (hybrid)',
   'Setophaga palmarum': 'Palm Warbler',
   'Setophaga palmarum palmarum': 'Palm Warbler (Western)',
   'Setophaga palmarum hypochrysea': 'Palm Warbler (Yellow)',
@@ -17069,58 +18364,79 @@ const Map<String, String> scientificToCommon = {
   'Setophaga coronata': 'Yellow-rumped Warbler',
   'Setophaga coronata coronata': 'Yellow-rumped Warbler (Myrtle)',
   'Setophaga coronata auduboni': 'Yellow-rumped Warbler (Audubon\'s)',
-  'Setophaga coronata coronata x auduboni': 'Yellow-rumped Warbler (Myrtle x Audubon\'s)',
+  'Setophaga coronata coronata x auduboni':
+      'Yellow-rumped Warbler (Myrtle x Audubon\'s)',
   'Setophaga coronata nigrifrons': 'Yellow-rumped Warbler (West Mexico)',
   'Setophaga coronata goldmani': 'Yellow-rumped Warbler (Goldman\'s)',
   'Setophaga tigrina x coronata': 'Cape May x Yellow-rumped Warbler (hybrid)',
-  'Setophaga americana x coronata': 'Northern Parula x Yellow-rumped Warbler (hybrid)',
+  'Setophaga americana x coronata':
+      'Northern Parula x Yellow-rumped Warbler (hybrid)',
   'Setophaga magnolia x coronata': 'Magnolia x Yellow-rumped Warbler (hybrid)',
-  'Setophaga pensylvanica x coronata': 'Chestnut-sided x Yellow-rumped Warbler (hybrid)',
-  'Setophaga caerulescens x coronata': 'Black-throated Blue x Yellow-rumped Warbler (hybrid)',
+  'Setophaga pensylvanica x coronata':
+      'Chestnut-sided x Yellow-rumped Warbler (hybrid)',
+  'Setophaga caerulescens x coronata':
+      'Black-throated Blue x Yellow-rumped Warbler (hybrid)',
   'Setophaga palmarum x coronata': 'Palm x Yellow-rumped Warbler (hybrid)',
   'Setophaga dominica': 'Yellow-throated Warbler',
   'Setophaga dominica albilora': 'Yellow-throated Warbler (albilora)',
-  'Setophaga dominica dominica/stoddardi': 'Yellow-throated Warbler (dominica/stoddardi)',
-  'Setophaga americana x dominica': 'Northern Parula x Yellow-throated Warbler (hybrid)',
+  'Setophaga dominica dominica/stoddardi':
+      'Yellow-throated Warbler (dominica/stoddardi)',
+  'Setophaga americana x dominica':
+      'Northern Parula x Yellow-throated Warbler (hybrid)',
   'Setophaga pinus x dominica': 'Pine x Yellow-throated Warbler (hybrid)',
-  'Setophaga coronata x dominica': 'Yellow-rumped x Yellow-throated Warbler (hybrid)',
+  'Setophaga coronata x dominica':
+      'Yellow-rumped x Yellow-throated Warbler (hybrid)',
   'Setophaga cerulea x dominica': 'Cerulean x Yellow-throated Warbler (hybrid)',
   'Setophaga flavescens': 'Bahama Warbler',
   'Setophaga vitellina': 'Vitelline Warbler',
   'Setophaga discolor': 'Prairie Warbler',
-  'Vermivora cyanoptera x Setophaga discolor': 'Blue-winged x Prairie Warbler (hybrid)',
+  'Vermivora cyanoptera x Setophaga discolor':
+      'Blue-winged x Prairie Warbler (hybrid)',
   'Setophaga aestiva x discolor': 'Northern Yellow x Prairie Warbler (hybrid)',
-  'Setophaga ruticilla x discolor': 'American Redstart x Prairie Warbler (hybrid)',
+  'Setophaga ruticilla x discolor':
+      'American Redstart x Prairie Warbler (hybrid)',
   'Setophaga adelaidae': 'Adelaide\'s Warbler',
   'Setophaga subita': 'Barbuda Warbler',
   'Setophaga delicata': 'St. Lucia Warbler',
   'Setophaga graciae': 'Grace\'s Warbler',
   'Setophaga coronata x graciae': 'Yellow-rumped x Grace\'s Warbler (hybrid)',
   'Setophaga nigrescens': 'Black-throated Gray Warbler',
-  'Setophaga americana x nigrescens': 'Northern Parula x Black-throated Gray Warbler (hybrid)',
-  'Setophaga coronata x nigrescens': 'Yellow-rumped x Black-throated Gray Warbler (hybrid)',
-  'Setophaga graciae x nigrescens': 'Grace\'s x Black-throated Gray Warbler (hybrid)',
+  'Setophaga americana x nigrescens':
+      'Northern Parula x Black-throated Gray Warbler (hybrid)',
+  'Setophaga coronata x nigrescens':
+      'Yellow-rumped x Black-throated Gray Warbler (hybrid)',
+  'Setophaga graciae x nigrescens':
+      'Grace\'s x Black-throated Gray Warbler (hybrid)',
   'Setophaga townsendi': 'Townsend\'s Warbler',
-  'Setophaga coronata x townsendi': 'Yellow-rumped x Townsend\'s Warbler (hybrid)',
-  'Setophaga nigrescens x townsendi': 'Black-throated Gray x Townsend\'s Warbler (hybrid)',
+  'Setophaga coronata x townsendi':
+      'Yellow-rumped x Townsend\'s Warbler (hybrid)',
+  'Setophaga nigrescens x townsendi':
+      'Black-throated Gray x Townsend\'s Warbler (hybrid)',
   'Setophaga nigrescens/townsendi': 'Black-throated Gray/Townsend\'s Warbler',
   'Setophaga occidentalis': 'Hermit Warbler',
-  'Setophaga coronata x occidentalis': 'Yellow-rumped x Hermit Warbler (hybrid)',
-  'Setophaga nigrescens x occidentalis': 'Black-throated Gray x Hermit Warbler (hybrid)',
+  'Setophaga coronata x occidentalis':
+      'Yellow-rumped x Hermit Warbler (hybrid)',
+  'Setophaga nigrescens x occidentalis':
+      'Black-throated Gray x Hermit Warbler (hybrid)',
   'Setophaga townsendi x occidentalis': 'Townsend\'s x Hermit Warbler (hybrid)',
   'Setophaga nigrescens/occidentalis': 'Black-throated Gray/Hermit Warbler',
-  'Setophaga nigrescens/townsendi/occidentalis': 'Black-throated Gray/Townsend\'s/Hermit Warbler',
+  'Setophaga nigrescens/townsendi/occidentalis':
+      'Black-throated Gray/Townsend\'s/Hermit Warbler',
   'Setophaga townsendi/occidentalis': 'Townsend\'s/Hermit Warbler',
   'Setophaga chrysoparia': 'Golden-cheeked Warbler',
   'Setophaga virens': 'Black-throated Green Warbler',
-  'Setophaga coronata x virens': 'Yellow-rumped x Black-throated Green Warbler (hybrid)',
-  'Setophaga townsendi x virens': 'Townsend\'s x Black-throated Green Warbler (hybrid)',
+  'Setophaga coronata x virens':
+      'Yellow-rumped x Black-throated Green Warbler (hybrid)',
+  'Setophaga townsendi x virens':
+      'Townsend\'s x Black-throated Green Warbler (hybrid)',
   'Setophaga sp.': 'Setophaga sp.',
   'Euthlypis lachrymosa': 'Fan-tailed Warbler',
   'Basileuterus rufifrons': 'Rufous-capped Warbler',
-  'Basileuterus rufifrons [rufifrons Group]': 'Rufous-capped Warbler (rufifrons Group)',
+  'Basileuterus rufifrons [rufifrons Group]':
+      'Rufous-capped Warbler (rufifrons Group)',
   'Basileuterus rufifrons salvini': 'Rufous-capped Warbler (salvini)',
-  'Geothlypis trichas x Basileuterus rufifrons': 'Common Yellowthroat x Rufous-capped Warbler (hybrid)',
+  'Geothlypis trichas x Basileuterus rufifrons':
+      'Common Yellowthroat x Rufous-capped Warbler (hybrid)',
   'Basileuterus delattrii': 'Chestnut-capped Warbler',
   'Basileuterus rufifrons/delattrii': 'Rufous-capped/Chestnut-capped Warbler',
   'Basileuterus melanogenys': 'Black-cheeked Warbler',
@@ -17128,19 +18444,25 @@ const Map<String, String> scientificToCommon = {
   'Basileuterus ignotus': 'Pirre Warbler',
   'Basileuterus belli': 'Golden-browed Warbler',
   'Basileuterus culicivorus': 'Golden-crowned Warbler',
-  'Basileuterus culicivorus [culicivorus Group]': 'Golden-crowned Warbler (Stripe-crowned)',
-  'Basileuterus culicivorus [cabanisi Group]': 'Golden-crowned Warbler (Cabanis\'s)',
-  'Basileuterus culicivorus [auricapilla Group]': 'Golden-crowned Warbler (Golden-crowned)',
-  'Basileuterus culicivorus hypoleucus': 'Golden-crowned Warbler (White-bellied)',
+  'Basileuterus culicivorus [culicivorus Group]':
+      'Golden-crowned Warbler (Stripe-crowned)',
+  'Basileuterus culicivorus [cabanisi Group]':
+      'Golden-crowned Warbler (Cabanis\'s)',
+  'Basileuterus culicivorus [auricapilla Group]':
+      'Golden-crowned Warbler (Golden-crowned)',
+  'Basileuterus culicivorus hypoleucus':
+      'Golden-crowned Warbler (White-bellied)',
   'Basileuterus melanotis': 'Costa Rican Warbler',
   'Basileuterus tacarcunae': 'Tacarcuna Warbler',
   'Basileuterus tristriatus': 'Three-striped Warbler',
   'Basileuterus tristriatus sanlucasensis': 'Three-striped Warbler (San Lucas)',
   'Basileuterus tristriatus daedalus': 'Three-striped Warbler (daedalus)',
   'Basileuterus tristriatus auricularis': 'Three-striped Warbler (auricularis)',
-  'Basileuterus tristriatus meridanus/bessereri': 'Three-striped Warbler (Venezuelan)',
+  'Basileuterus tristriatus meridanus/bessereri':
+      'Three-striped Warbler (Venezuelan)',
   'Basileuterus tristriatus pariae': 'Three-striped Warbler (Paria)',
-  'Basileuterus tristriatus tristriatus/baezae': 'Three-striped Warbler (Three-striped)',
+  'Basileuterus tristriatus tristriatus/baezae':
+      'Three-striped Warbler (Three-striped)',
   'Basileuterus punctipectus': 'Yungas Warbler',
   'Basileuterus trifasciatus': 'Three-banded Warbler',
   'Basileuterus sp.': 'Basileuterus sp.',
@@ -17152,7 +18474,8 @@ const Map<String, String> scientificToCommon = {
   'Myiothlypis luteoviridis euophrys': 'Citrine Warbler (Bolivian)',
   'Myiothlypis leucophrys': 'White-striped Warbler',
   'Myiothlypis flaveola': 'Flavescent Warbler',
-  'Basileuterus culicivorus x Myiothlypis flaveola': 'Golden-crowned x Flavescent Warbler (hybrid)',
+  'Basileuterus culicivorus x Myiothlypis flaveola':
+      'Golden-crowned x Flavescent Warbler (hybrid)',
   'Myiothlypis leucoblephara': 'White-browed Warbler',
   'Myiothlypis signata': 'Pale-legged Warbler',
   'Myiothlypis nigrocristata': 'Black-crested Warbler',
@@ -17163,7 +18486,8 @@ const Map<String, String> scientificToCommon = {
   'Myiothlypis rivularis rivularis': 'Riverbank Warbler (Southern)',
   'Myiothlypis bivittata': 'Two-banded Warbler',
   'Myiothlypis bivittata roraimae': 'Two-banded Warbler (Roraiman)',
-  'Myiothlypis bivittata bivittata/argentinae': 'Two-banded Warbler (Two-banded)',
+  'Myiothlypis bivittata bivittata/argentinae':
+      'Two-banded Warbler (Two-banded)',
   'Myiothlypis chlorophrys': 'Choco Warbler',
   'Myiothlypis chrysogaster': 'Cuzco Warbler',
   'Myiothlypis cinereicollis': 'Gray-throated Warbler',
@@ -17172,7 +18496,8 @@ const Map<String, String> scientificToCommon = {
   'Myiothlypis coronata': 'Russet-crowned Warbler',
   'Myiothlypis sp.': 'Myiothlypis sp.',
   'Cardellina canadensis': 'Canada Warbler',
-  'Setophaga caerulescens x Cardellina canadensis': 'Black-throated Blue x Canada Warbler (hybrid)',
+  'Setophaga caerulescens x Cardellina canadensis':
+      'Black-throated Blue x Canada Warbler (hybrid)',
   'Cardellina pusilla': 'Wilson\'s Warbler',
   'Cardellina pusilla pileolata': 'Wilson\'s Warbler (pileolata)',
   'Cardellina pusilla pusilla': 'Wilson\'s Warbler (pusilla)',
@@ -17196,12 +18521,14 @@ const Map<String, String> scientificToCommon = {
   'Myioborus ornatus chrysops': 'Golden-fronted Redstart (Golden-fronted)',
   'Myioborus ornatus ornatus': 'Golden-fronted Redstart (Yellow-fronted)',
   'Myioborus melanocephalus': 'Spectacled Redstart',
-  'Myioborus ornatus x melanocephalus': 'Golden-fronted x Spectacled Redstart (hybrid)',
+  'Myioborus ornatus x melanocephalus':
+      'Golden-fronted x Spectacled Redstart (hybrid)',
   'Myioborus ornatus/melanocephalus': 'Golden-fronted/Spectacled Redstart',
   'Myioborus albifrons': 'White-fronted Redstart',
   'Myioborus sp.': 'Myioborus sp.',
   'Parulidae sp.': 'new world warbler sp.',
-  'Passerellidae/Parulidae sp. (trilling song)': 'sparrow/warbler sp. (trilling song)',
+  'Passerellidae/Parulidae sp. (trilling song)':
+      'sparrow/warbler sp. (trilling song)',
   'Mitrospingus cassinii': 'Dusky-faced Tanager',
   'Mitrospingus oleagineus': 'Olive-backed Tanager',
   'Lamprospiza melanoleuca': 'Red-billed Pied Tanager',
@@ -17230,14 +18557,17 @@ const Map<String, String> scientificToCommon = {
   'Habia rubica rosea': 'Red-crowned Ant-Tanager (West Mexican)',
   'Habia rubica affinis': 'Red-crowned Ant-Tanager (Oaxaca)',
   'Habia rubica holobrunnea': 'Red-crowned Ant-Tanager (East Mexican)',
-  'Habia rubica [rubicoides Group]': 'Red-crowned Ant-Tanager (rubicoides Group)',
+  'Habia rubica [rubicoides Group]':
+      'Red-crowned Ant-Tanager (rubicoides Group)',
   'Habia rubica vinacea': 'Red-crowned Ant-Tanager (Isthmian)',
   'Habia rubica [rubra Group]': 'Red-crowned Ant-Tanager (Amazonian)',
   'Habia rubica perijana': 'Red-crowned Ant-Tanager (Perija)',
   'Habia rubica rubica/bahiae': 'Red-crowned Ant-Tanager (Atlantic)',
   'Driophlox fuscicauda': 'Red-throated Ant-Tanager',
-  'Driophlox fuscicauda [salvini Group]': 'Red-throated Ant-Tanager (Salvin\'s)',
-  'Driophlox fuscicauda [fuscicauda Group]': 'Red-throated Ant-Tanager (Red-throated)',
+  'Driophlox fuscicauda [salvini Group]':
+      'Red-throated Ant-Tanager (Salvin\'s)',
+  'Driophlox fuscicauda [fuscicauda Group]':
+      'Red-throated Ant-Tanager (Red-throated)',
   'Driophlox gutturalis': 'Sooty Ant-Tanager',
   'Driophlox atrimaxillaris': 'Black-cheeked Ant-Tanager',
   'Driophlox cristata': 'Crested Ant-Tanager',
@@ -17255,13 +18585,15 @@ const Map<String, String> scientificToCommon = {
   'Caryothraustes canadensis': 'Yellow-green Grosbeak',
   'Caryothraustes canadensis simulans': 'Yellow-green Grosbeak (Pirre)',
   'Caryothraustes canadensis canadensis': 'Yellow-green Grosbeak (Amazonian)',
-  'Caryothraustes canadensis brasiliensis/frontalis': 'Yellow-green Grosbeak (Atlantic)',
+  'Caryothraustes canadensis brasiliensis/frontalis':
+      'Yellow-green Grosbeak (Atlantic)',
   'Cardinalis phoeniceus': 'Vermilion Cardinal',
   'Cardinalis cardinalis': 'Northern Cardinal',
   'Cardinalis cardinalis [cardinalis Group]': 'Northern Cardinal (Common)',
   'Cardinalis cardinalis carneus': 'Northern Cardinal (Long-crested)',
   'Cardinalis sinuatus': 'Pyrrhuloxia',
-  'Cardinalis cardinalis x sinuatus': 'Northern Cardinal x Pyrrhuloxia (hybrid)',
+  'Cardinalis cardinalis x sinuatus':
+      'Northern Cardinal x Pyrrhuloxia (hybrid)',
   'Cardinalis cardinalis/sinuatus': 'Northern Cardinal/Pyrrhuloxia',
   'Pheucticus chrysopeplus': 'Yellow Grosbeak',
   'Pheucticus chrysopeplus chrysopeplus/dilutus': 'Yellow Grosbeak (Northern)',
@@ -17270,14 +18602,20 @@ const Map<String, String> scientificToCommon = {
   'Pheucticus tibialis': 'Black-thighed Grosbeak',
   'Pheucticus aureoventris': 'Black-backed Grosbeak',
   'Pheucticus aureoventris meridensis': 'Black-backed Grosbeak (Merida)',
-  'Pheucticus aureoventris crissalis': 'Black-backed Grosbeak (Yellow-throated)',
-  'Pheucticus aureoventris uropygialis/terminalis': 'Black-backed Grosbeak (Yellow-rumped)',
-  'Pheucticus aureoventris aureoventris': 'Black-backed Grosbeak (Black-rumped)',
+  'Pheucticus aureoventris crissalis':
+      'Black-backed Grosbeak (Yellow-throated)',
+  'Pheucticus aureoventris uropygialis/terminalis':
+      'Black-backed Grosbeak (Yellow-rumped)',
+  'Pheucticus aureoventris aureoventris':
+      'Black-backed Grosbeak (Black-rumped)',
   'Pheucticus ludovicianus': 'Rose-breasted Grosbeak',
-  'Piranga olivacea x Pheucticus ludovicianus': 'Scarlet Tanager x Rose-breasted Grosbeak (hybrid)',
+  'Piranga olivacea x Pheucticus ludovicianus':
+      'Scarlet Tanager x Rose-breasted Grosbeak (hybrid)',
   'Pheucticus melanocephalus': 'Black-headed Grosbeak',
-  'Pheucticus ludovicianus x melanocephalus': 'Rose-breasted x Black-headed Grosbeak (hybrid)',
-  'Pheucticus ludovicianus/melanocephalus': 'Rose-breasted/Black-headed Grosbeak',
+  'Pheucticus ludovicianus x melanocephalus':
+      'Rose-breasted x Black-headed Grosbeak (hybrid)',
+  'Pheucticus ludovicianus/melanocephalus':
+      'Rose-breasted/Black-headed Grosbeak',
   'Pheucticus sp.': 'Pheucticus sp.',
   'Granatellus venustus': 'Red-breasted Chat',
   'Granatellus venustus venustus': 'Red-breasted Chat (Red-breasted)',
@@ -17298,7 +18636,8 @@ const Map<String, String> scientificToCommon = {
   'Cyanoloxia brissonii': 'Ultramarine Grosbeak',
   'Cyanoloxia glaucocaerulea/brissonii': 'Glaucous-blue/Ultramarine Grosbeak',
   'Cyanocompsa parellina': 'Blue Bunting',
-  'Cyanocompsa parellina parellina/beneplacita': 'Blue Bunting (Middle America)',
+  'Cyanocompsa parellina parellina/beneplacita':
+      'Blue Bunting (Middle America)',
   'Cyanocompsa parellina indigotica': 'Blue Bunting (West Mexico)',
   'Passerina caerulea': 'Blue Grosbeak',
   'Passerina amoena': 'Lazuli Bunting',
@@ -17344,8 +18683,10 @@ const Map<String, String> scientificToCommon = {
   'Creurgops verticalis': 'Rufous-crested Tanager',
   'Creurgops dentatus': 'Slaty Tanager',
   'Kleinothraupis atropileus': 'Black-capped Hemispingus',
-  'Kleinothraupis atropileus atropileus': 'Black-capped Hemispingus (Black-capped)',
-  'Kleinothraupis atropileus auricularis': 'Black-capped Hemispingus (White-browed)',
+  'Kleinothraupis atropileus atropileus':
+      'Black-capped Hemispingus (Black-capped)',
+  'Kleinothraupis atropileus auricularis':
+      'Black-capped Hemispingus (White-browed)',
   'Kleinothraupis calophrys': 'Orange-browed Hemispingus',
   'Kleinothraupis parodii': 'Parodi\'s Hemispingus',
   'Kleinothraupis reyi': 'Gray-capped Hemispingus',
@@ -17354,7 +18695,8 @@ const Map<String, String> scientificToCommon = {
   'Sphenopsis frontalis flavidorsalis': 'Oleaginous Hemispingus (Perija)',
   'Sphenopsis frontalis hanieli/iterata': 'Oleaginous Hemispingus (Venezuelan)',
   'Sphenopsis melanotis': 'Black-eared Hemispingus',
-  'Sphenopsis melanotis [melanotis Group]': 'Black-eared Hemispingus (Black-eared)',
+  'Sphenopsis melanotis [melanotis Group]':
+      'Black-eared Hemispingus (Black-eared)',
   'Sphenopsis melanotis ochracea': 'Black-eared Hemispingus (Western)',
   'Sphenopsis melanotis piurae/macrophrys': 'Black-eared Hemispingus (Piura)',
   'Thlypopsis sordida': 'Orange-headed Tanager',
@@ -17365,10 +18707,14 @@ const Map<String, String> scientificToCommon = {
   'Thlypopsis pyrrhocoma': 'Chestnut-headed Tanager',
   'Thlypopsis ruficeps': 'Rust-and-yellow Tanager',
   'Thlypopsis superciliaris': 'Superciliaried Hemispingus',
-  'Thlypopsis superciliaris chrysophrys': 'Superciliaried Hemispingus (Yellow-browed)',
-  'Thlypopsis superciliaris [superciliaris Group]': 'Superciliaried Hemispingus (Superciliaried)',
-  'Thlypopsis superciliaris leucogastra/insignis': 'Superciliaried Hemispingus (White-bellied)',
-  'Thlypopsis superciliaris urubambae': 'Superciliaried Hemispingus (urubambae)',
+  'Thlypopsis superciliaris chrysophrys':
+      'Superciliaried Hemispingus (Yellow-browed)',
+  'Thlypopsis superciliaris [superciliaris Group]':
+      'Superciliaried Hemispingus (Superciliaried)',
+  'Thlypopsis superciliaris leucogastra/insignis':
+      'Superciliaried Hemispingus (White-bellied)',
+  'Thlypopsis superciliaris urubambae':
+      'Superciliaried Hemispingus (urubambae)',
   'Thlypopsis ornata': 'Rufous-chested Tanager',
   'Thlypopsis pectoralis': 'Brown-flanked Tanager',
   'Thlypopsis sp.': 'Thlypopsis sp.',
@@ -17385,17 +18731,21 @@ const Map<String, String> scientificToCommon = {
   'Nephelornis oneilli': 'Pardusco',
   'Trichothraupis melanops': 'Black-goggled Tanager',
   'Eucometis penicillata': 'Gray-headed Tanager',
-  'Eucometis penicillata [spodocephalus Group]': 'Gray-headed Tanager (Gray-crested)',
-  'Eucometis penicillata [penicillata Group]': 'Gray-headed Tanager (Gray-headed)',
+  'Eucometis penicillata [spodocephalus Group]':
+      'Gray-headed Tanager (Gray-crested)',
+  'Eucometis penicillata [penicillata Group]':
+      'Gray-headed Tanager (Gray-headed)',
   'Heliothraupis oneilli': 'Inti Tanager',
   'Loriotus cristatus': 'Flame-crested Tanager',
   'Loriotus rufiventer': 'Yellow-crested Tanager',
   'Loriotus luctuosus': 'White-shouldered Tanager',
   'Loriotus luctuosus nitidissimus': 'White-shouldered Tanager (Puntarenas)',
   'Loriotus luctuosus [luctuosus Group]': 'White-shouldered Tanager (Common)',
-  'Loriotus cristatus x luctuosus': 'Flame-crested x White-shouldered Tanager (hybrid)',
+  'Loriotus cristatus x luctuosus':
+      'Flame-crested x White-shouldered Tanager (hybrid)',
   'Tachyphonus surinamus': 'Fulvous-crested Tanager',
-  'Loriotus cristatus/Tachyphonus surinamus': 'Flame-crested/Fulvous-crested Tanager',
+  'Loriotus cristatus/Tachyphonus surinamus':
+      'Flame-crested/Fulvous-crested Tanager',
   'Tachyphonus delatrii': 'Tawny-crested Tanager',
   'Tachyphonus coronatus': 'Ruby-crowned Tanager',
   'Tachyphonus rufus': 'White-lined Tanager',
@@ -17405,23 +18755,28 @@ const Map<String, String> scientificToCommon = {
   'Lanio versicolor': 'White-winged Shrike-Tanager',
   'Lanio aurantius': 'Black-throated Shrike-Tanager',
   'Lanio leucothorax': 'White-throated Shrike-Tanager',
-  'Lanio leucothorax leucothorax': 'White-throated Shrike-Tanager (White-throated)',
-  'Lanio leucothorax [melanopygius Group]': 'White-throated Shrike-Tanager (Black-rumped)',
+  'Lanio leucothorax leucothorax':
+      'White-throated Shrike-Tanager (White-throated)',
+  'Lanio leucothorax [melanopygius Group]':
+      'White-throated Shrike-Tanager (Black-rumped)',
   'Ramphocelus sanguinolentus': 'Crimson-collared Tanager',
   'Ramphocelus flammigerus': 'Flame-rumped Tanager',
   'Ramphocelus flammigerus flammigerus': 'Flame-rumped Tanager (Flame-rumped)',
   'Ramphocelus flammigerus icteronotus': 'Flame-rumped Tanager (Lemon-rumped)',
-  'Ramphocelus flammigerus flammigerus x icteronotus': 'Flame-rumped Tanager (Flame-rumped x Lemon-rumped)',
+  'Ramphocelus flammigerus flammigerus x icteronotus':
+      'Flame-rumped Tanager (Flame-rumped x Lemon-rumped)',
   'Ramphocelus passerinii': 'Scarlet-rumped Tanager',
   'Ramphocelus passerinii passerinii': 'Scarlet-rumped Tanager (Passerini\'s)',
   'Ramphocelus passerinii costaricensis': 'Scarlet-rumped Tanager (Cherrie\'s)',
-  'Ramphocelus flammigerus x passerinii': 'Flame-rumped x Scarlet-rumped Tanager (hybrid)',
+  'Ramphocelus flammigerus x passerinii':
+      'Flame-rumped x Scarlet-rumped Tanager (hybrid)',
   'Ramphocelus bresilius': 'Brazilian Tanager',
   'Ramphocelus melanogaster': 'Black-bellied Tanager',
   'Ramphocelus carbo': 'Silver-beaked Tanager',
   'Ramphocelus nigrogularis': 'Masked Crimson Tanager',
   'Ramphocelus dimidiatus': 'Crimson-backed Tanager',
-  'Ramphocelus passerinii x dimidiatus': 'Scarlet-rumped x Crimson-backed Tanager (hybrid)',
+  'Ramphocelus passerinii x dimidiatus':
+      'Scarlet-rumped x Crimson-backed Tanager (hybrid)',
   'Ramphocelus sp.': 'Ramphocelus sp.',
   'Calochaetes coccineus': 'Vermilion Tanager',
   'Cyanicterus cyanicterus': 'Blue-backed Tanager',
@@ -17434,29 +18789,42 @@ const Map<String, String> scientificToCommon = {
   'Wetmorethraupis sterrhopteron': 'Orange-throated Tanager',
   'Buthraupis montana': 'Hooded Mountain Tanager',
   'Sporathraupis cyanocephala': 'Blue-capped Tanager',
-  'Sporathraupis cyanocephala olivicyanea': 'Blue-capped Tanager (Blue-bellied)',
-  'Sporathraupis cyanocephala [cyanocephala Group]': 'Blue-capped Tanager (Blue-capped)',
-  'Sporathraupis cyanocephala subcinerea/buesingi': 'Blue-capped Tanager (Venezuelan)',
+  'Sporathraupis cyanocephala olivicyanea':
+      'Blue-capped Tanager (Blue-bellied)',
+  'Sporathraupis cyanocephala [cyanocephala Group]':
+      'Blue-capped Tanager (Blue-capped)',
+  'Sporathraupis cyanocephala subcinerea/buesingi':
+      'Blue-capped Tanager (Venezuelan)',
   'Tephrophilus wetmorei': 'Masked Mountain Tanager',
   'Chlorornis riefferii': 'Grass-green Tanager',
   'Cnemathraupis eximia': 'Black-chested Mountain Tanager',
-  'Cnemathraupis eximia eximia/zimmeri': 'Black-chested Mountain Tanager (Blue-rumped)',
-  'Cnemathraupis eximia chloronota/cyanocalyptra': 'Black-chested Mountain Tanager (Moss-rumped)',
+  'Cnemathraupis eximia eximia/zimmeri':
+      'Black-chested Mountain Tanager (Blue-rumped)',
+  'Cnemathraupis eximia chloronota/cyanocalyptra':
+      'Black-chested Mountain Tanager (Moss-rumped)',
   'Cnemathraupis aureodorsalis': 'Golden-backed Mountain Tanager',
   'Anisognathus melanogenys': 'Black-cheeked Mountain Tanager',
   'Anisognathus lacrymosus': 'Lacrimose Mountain Tanager',
-  'Anisognathus lacrymosus pallididorsalis': 'Lacrimose Mountain Tanager (Perija)',
+  'Anisognathus lacrymosus pallididorsalis':
+      'Lacrimose Mountain Tanager (Perija)',
   'Anisognathus lacrymosus melanops': 'Lacrimose Mountain Tanager (melanops)',
-  'Anisognathus lacrymosus yariguierum': 'Lacrimose Mountain Tanager (yariguierum)',
+  'Anisognathus lacrymosus yariguierum':
+      'Lacrimose Mountain Tanager (yariguierum)',
   'Anisognathus lacrymosus intensus': 'Lacrimose Mountain Tanager (intensus)',
-  'Anisognathus lacrymosus [palpebrosus Group]': 'Lacrimose Mountain Tanager (palpebrosus Group)',
-  'Anisognathus lacrymosus lacrymosus': 'Lacrimose Mountain Tanager (lacrymosus)',
+  'Anisognathus lacrymosus [palpebrosus Group]':
+      'Lacrimose Mountain Tanager (palpebrosus Group)',
+  'Anisognathus lacrymosus lacrymosus':
+      'Lacrimose Mountain Tanager (lacrymosus)',
   'Anisognathus igniventris': 'Scarlet-bellied Mountain Tanager',
-  'Anisognathus igniventris [lunulatus Group]': 'Scarlet-bellied Mountain Tanager (Scarlet-bellied)',
-  'Anisognathus igniventris igniventris': 'Scarlet-bellied Mountain Tanager (Fire-bellied)',
+  'Anisognathus igniventris [lunulatus Group]':
+      'Scarlet-bellied Mountain Tanager (Scarlet-bellied)',
+  'Anisognathus igniventris igniventris':
+      'Scarlet-bellied Mountain Tanager (Fire-bellied)',
   'Anisognathus somptuosus': 'Blue-winged Mountain Tanager',
-  'Anisognathus somptuosus [somptuosus Group]': 'Blue-winged Mountain Tanager (Blue-winged)',
-  'Anisognathus somptuosus flavinucha': 'Blue-winged Mountain Tanager (Bolivian)',
+  'Anisognathus somptuosus [somptuosus Group]':
+      'Blue-winged Mountain Tanager (Blue-winged)',
+  'Anisognathus somptuosus flavinucha':
+      'Blue-winged Mountain Tanager (Bolivian)',
   'Anisognathus notabilis': 'Black-chinned Mountain Tanager',
   'Dubusia carrikeri': 'Carriker\'s Mountain Tanager',
   'Dubusia taeniata': 'Buff-banded Mountain Tanager',
@@ -17472,11 +18840,14 @@ const Map<String, String> scientificToCommon = {
   'Pipraeidea melanonota': 'Fawn-breasted Tanager',
   'Rauenia bonariensis': 'Blue-and-yellow Tanager',
   'Rauenia bonariensis darwinii': 'Blue-and-yellow Tanager (Green-mantled)',
-  'Rauenia bonariensis [bonariensis Group]': 'Blue-and-yellow Tanager (Blue-and-yellow)',
+  'Rauenia bonariensis [bonariensis Group]':
+      'Blue-and-yellow Tanager (Blue-and-yellow)',
   'Chlorochrysa phoenicotis': 'Glistening-green Tanager',
   'Chlorochrysa calliparaea': 'Orange-eared Tanager',
-  'Chlorochrysa calliparaea calliparaea/bourcieri': 'Orange-eared Tanager (Orange-eared)',
-  'Chlorochrysa calliparaea fulgentissima': 'Orange-eared Tanager (Blue-throated)',
+  'Chlorochrysa calliparaea calliparaea/bourcieri':
+      'Orange-eared Tanager (Orange-eared)',
+  'Chlorochrysa calliparaea fulgentissima':
+      'Orange-eared Tanager (Blue-throated)',
   'Chlorochrysa nitidissima': 'Multicolored Tanager',
   'Thraupis episcopus': 'Blue-gray Tanager',
   'Thraupis episcopus [cana Group]': 'Blue-gray Tanager (Blue-gray)',
@@ -17497,8 +18868,10 @@ const Map<String, String> scientificToCommon = {
   'Ixothraupis punctata': 'Spotted Tanager',
   'Ixothraupis sp.': 'Ixothraupis sp. (speckled tanager sp.)',
   'Chalcothraupis ruficervix': 'Golden-naped Tanager',
-  'Chalcothraupis ruficervix [ruficervix Group]': 'Golden-naped Tanager (Golden-naped)',
-  'Chalcothraupis ruficervix [fulvicervix Group]': 'Golden-naped Tanager (Rusty-naped)',
+  'Chalcothraupis ruficervix [ruficervix Group]':
+      'Golden-naped Tanager (Golden-naped)',
+  'Chalcothraupis ruficervix [fulvicervix Group]':
+      'Golden-naped Tanager (Rusty-naped)',
   'Poecilostreptus cabanisi': 'Azure-rumped Tanager',
   'Poecilostreptus palmeri': 'Gray-and-gold Tanager',
   'Stilpnia cyanoptera': 'Black-headed Tanager',
@@ -17511,7 +18884,8 @@ const Map<String, String> scientificToCommon = {
   'Stilpnia preciosa': 'Chestnut-backed Tanager',
   'Stilpnia meyerdeschauenseei': 'Green-capped Tanager',
   'Stilpnia cayana': 'Burnished-buff Tanager',
-  'Stilpnia cayana cayana/fulvescens': 'Burnished-buff Tanager (Rufous-crowned)',
+  'Stilpnia cayana cayana/fulvescens':
+      'Burnished-buff Tanager (Rufous-crowned)',
   'Stilpnia cayana [flava Group]': 'Burnished-buff Tanager (Stripe-bellied)',
   'Stilpnia cucullata': 'Lesser Antillean Tanager',
   'Stilpnia cucullata versicolor': 'Lesser Antillean Tanager (St. Vincent)',
@@ -17522,7 +18896,8 @@ const Map<String, String> scientificToCommon = {
   'Stilpnia cyanicollis': 'Blue-necked Tanager',
   'Stilpnia sp.': 'Stilpnia sp.',
   'Tangara vassorii': 'Blue-and-black Tanager',
-  'Tangara vassorii vassorii/branickii': 'Blue-and-black Tanager (Blue-and-black)',
+  'Tangara vassorii vassorii/branickii':
+      'Blue-and-black Tanager (Blue-and-black)',
   'Tangara vassorii atrocoerulea': 'Blue-and-black Tanager (Spot-bellied)',
   'Tangara nigroviridis': 'Beryl-spangled Tanager',
   'Tangara dowii': 'Spangle-cheeked Tanager',
@@ -17551,7 +18926,8 @@ const Map<String, String> scientificToCommon = {
   'Tangara chrysotis': 'Golden-eared Tanager',
   'Tangara xanthocephala': 'Saffron-crowned Tanager',
   'Tangara parzudakii': 'Flame-faced Tanager',
-  'Tangara parzudakii parzudakii/urubambae': 'Flame-faced Tanager (Flame-faced)',
+  'Tangara parzudakii parzudakii/urubambae':
+      'Flame-faced Tanager (Flame-faced)',
   'Tangara parzudakii lunigera': 'Flame-faced Tanager (Yellow-faced)',
   'Tangara schrankii': 'Green-and-gold Tanager',
   'Tangara johannae': 'Blue-whiskered Tanager',
@@ -17563,7 +18939,8 @@ const Map<String, String> scientificToCommon = {
   'Tangara icterocephala': 'Silver-throated Tanager',
   'Tangara sp.': 'Tangara sp.',
   'Tangara/Stilpnia sp.': 'Tangara/Stilpnia sp.',
-  'Thraupidae sp. (former Tangara sp.)': 'small tanager sp. (former Tangara sp.)',
+  'Thraupidae sp. (former Tangara sp.)':
+      'small tanager sp. (former Tangara sp.)',
   'Tersina viridis': 'Swallow Tanager',
   'Dacnis albiventris': 'White-bellied Dacnis',
   'Dacnis egregia': 'Yellow-tufted Dacnis',
@@ -17603,7 +18980,8 @@ const Map<String, String> scientificToCommon = {
   'Conirostrum ferrugineiventre': 'White-browed Conebill',
   'Conirostrum sitticolor': 'Blue-backed Conebill',
   'Conirostrum albifrons': 'Capped Conebill',
-  'Conirostrum albifrons albifrons/centralandium': 'Capped Conebill (White-capped)',
+  'Conirostrum albifrons albifrons/centralandium':
+      'Capped Conebill (White-capped)',
   'Conirostrum albifrons cyanonotum': 'Capped Conebill (Venezuelan)',
   'Conirostrum albifrons [atrocyaneum Group]': 'Capped Conebill (Blue-capped)',
   'Conirostrum tamarugense': 'Tamarugo Conebill',
@@ -17622,10 +19000,13 @@ const Map<String, String> scientificToCommon = {
   'Diglossa gloriosa': 'Merida Flowerpiercer',
   'Diglossa humeralis': 'Black Flowerpiercer',
   'Diglossa brunneiventris': 'Black-throated Flowerpiercer',
-  'Diglossa brunneiventris vuilleumieri': 'Black-throated Flowerpiercer (vuilleumieri)',
-  'Diglossa brunneiventris brunneiventris': 'Black-throated Flowerpiercer (Black-throated)',
+  'Diglossa brunneiventris vuilleumieri':
+      'Black-throated Flowerpiercer (vuilleumieri)',
+  'Diglossa brunneiventris brunneiventris':
+      'Black-throated Flowerpiercer (Black-throated)',
   'Diglossa carbonaria': 'Gray-bellied Flowerpiercer',
-  'Diglossa brunneiventris x carbonaria': 'Black-throated x Gray-bellied Flowerpiercer (hybrid)',
+  'Diglossa brunneiventris x carbonaria':
+      'Black-throated x Gray-bellied Flowerpiercer (hybrid)',
   'Diglossa venezuelensis': 'Venezuelan Flowerpiercer',
   'Diglossa albilatera': 'White-sided Flowerpiercer',
   'Diglossa duidae': 'Scaled Flowerpiercer',
@@ -17655,7 +19036,8 @@ const Map<String, String> scientificToCommon = {
   'Melanodera melanodera melanodera': 'White-bridled Finch (Falkland)',
   'Melanodera xanthogramma': 'Yellow-bridled Finch',
   'Melanodera xanthogramma barrosi': 'Yellow-bridled Finch (White-tailed)',
-  'Melanodera xanthogramma xanthogramma': 'Yellow-bridled Finch (Yellow-tailed)',
+  'Melanodera xanthogramma xanthogramma':
+      'Yellow-bridled Finch (Yellow-tailed)',
   'Xenodacnis parina': 'Tit-like Dacnis',
   'Xenodacnis parina petersi/bella': 'Tit-like Dacnis (petersi/bella)',
   'Xenodacnis parina parina': 'Tit-like Dacnis (parina)',
@@ -17664,7 +19046,8 @@ const Map<String, String> scientificToCommon = {
   'Idiopsar speculifer': 'Glacier Finch',
   'Idiopsar brachyurus': 'Boulder Finch',
   'Geospizopsis unicolor': 'Plumbeous Sierra Finch',
-  'Geospizopsis unicolor nivaria/geospizopsis': 'Plumbeous Sierra Finch (Northern)',
+  'Geospizopsis unicolor nivaria/geospizopsis':
+      'Plumbeous Sierra Finch (Northern)',
   'Geospizopsis unicolor inca': 'Plumbeous Sierra Finch (Peruvian)',
   'Geospizopsis unicolor [unicolor Group]': 'Plumbeous Sierra Finch (Southern)',
   'Geospizopsis plebejus': 'Ash-breasted Sierra Finch',
@@ -17681,7 +19064,8 @@ const Map<String, String> scientificToCommon = {
   'Nesospiza acunhae dunnei': 'Inaccessible Island Finch (Dunn\'s)',
   'Nesospiza questi': 'Nightingale Island Finch',
   'Nesospiza wilkinsi': 'Wilkins\'s Finch',
-  'Nesospiza acunhae x wilkinsi': 'Inaccessible Island x Wilkins\'s Finch (hybrid)',
+  'Nesospiza acunhae x wilkinsi':
+      'Inaccessible Island x Wilkins\'s Finch (hybrid)',
   'Nesospiza questi/wilkinsi': 'Nightingale Island/Wilkins\'s Finch',
   'Piezorina cinerea': 'Cinereous Finch',
   'Xenospingus concolor': 'Slender-billed Finch',
@@ -17692,7 +19076,8 @@ const Map<String, String> scientificToCommon = {
   'Incaspiza watkinsi': 'Little Inca-Finch',
   'Incaspiza sp.': 'inca-finch sp.',
   'Rhopospina fruticeti': 'Mourning Sierra Finch',
-  'Rhopospina fruticeti fruticeti/peruviana': 'Mourning Sierra Finch (Mourning)',
+  'Rhopospina fruticeti fruticeti/peruviana':
+      'Mourning Sierra Finch (Mourning)',
   'Rhopospina fruticeti coracina': 'Mourning Sierra Finch (Blackish)',
   'Rhopospina caerulescens': 'Blue Finch',
   'Rhopospina alaudina': 'Band-tailed Sierra Finch',
@@ -17702,7 +19087,8 @@ const Map<String, String> scientificToCommon = {
   'Pseudospingus xanthophthalmus': 'Drab Hemispingus',
   'Cnemoscopus rubrirostris': 'Pink-billed Cnemoscopus',
   'Cnemoscopus chrysogaster': 'Black-billed Cnemoscopus',
-  'Cnemoscopus rubrirostris/chrysogaster': 'Pink-billed/Black-billed Cnemoscopus',
+  'Cnemoscopus rubrirostris/chrysogaster':
+      'Pink-billed/Black-billed Cnemoscopus',
   'Cypsnagra hirundinacea': 'White-rumped Tanager',
   'Donacospiza albifrons': 'Long-tailed Reed Finch',
   'Poospizopsis caesar': 'Chestnut-breasted Mountain Finch',
@@ -17714,7 +19100,8 @@ const Map<String, String> scientificToCommon = {
   'Poospiza ornata': 'Cinnamon Warbling Finch',
   'Poospiza whitii': 'Black-and-chestnut Warbling Finch',
   'Poospiza nigrorufa': 'Black-and-rufous Warbling Finch',
-  'Poospiza whitii/nigrorufa': 'Black-and-chestnut/Black-and-rufous Warbling Finch',
+  'Poospiza whitii/nigrorufa':
+      'Black-and-chestnut/Black-and-rufous Warbling Finch',
   'Poospiza rubecula': 'Rufous-breasted Warbling Finch',
   'Poospiza hispaniolensis': 'Collared Warbling Finch',
   'Poospiza garleppi': 'Cochabamba Mountain Finch',
@@ -17740,7 +19127,8 @@ const Map<String, String> scientificToCommon = {
   'Sicalis taczanowskii': 'Sulphur-throated Finch',
   'Sicalis sp.': 'yellow-finch sp.',
   'Emberizoides herbicola': 'Wedge-tailed Grass-Finch',
-  'Emberizoides herbicola [sphenurus Group]': 'Wedge-tailed Grass-Finch (Northern)',
+  'Emberizoides herbicola [sphenurus Group]':
+      'Wedge-tailed Grass-Finch (Northern)',
   'Emberizoides herbicola herbicola': 'Wedge-tailed Grass-Finch (Southern)',
   'Emberizoides duidae': 'Duida Grass-Finch',
   'Emberizoides ypiranganus': 'Lesser Grass-Finch',
@@ -17755,7 +19143,8 @@ const Map<String, String> scientificToCommon = {
   'Sporophila bouvronides/lineola': 'Lesson\'s/Lined Seedeater',
   'Sporophila leucoptera': 'White-bellied Seedeater',
   'Sporophila leucoptera bicolor': 'White-bellied Seedeater (Bicolored)',
-  'Sporophila leucoptera [leucoptera Group]': 'White-bellied Seedeater (Gray-backed)',
+  'Sporophila leucoptera [leucoptera Group]':
+      'White-bellied Seedeater (Gray-backed)',
   'Sporophila peruviana': 'Parrot-billed Seedeater',
   'Sporophila telasco': 'Chestnut-throated Seedeater',
   'Sporophila simplex': 'Drab Seedeater',
@@ -17783,7 +19172,8 @@ const Map<String, String> scientificToCommon = {
   'Sporophila corvina [ophthalmica Group]': 'Variable Seedeater (Variable)',
   'Sporophila intermedia': 'Gray Seedeater',
   'Sporophila americana': 'Wing-barred Seedeater',
-  'Sporophila americana americana/dispar': 'Wing-barred Seedeater (Wing-barred)',
+  'Sporophila americana americana/dispar':
+      'Wing-barred Seedeater (Wing-barred)',
   'Sporophila americana murallae': 'Wing-barred Seedeater (Caqueta)',
   'Sporophila morelleti': 'Morelet\'s Seedeater',
   'Sporophila morelleti sharpei': 'Morelet\'s Seedeater (Sharpe\'s)',
@@ -17818,7 +19208,8 @@ const Map<String, String> scientificToCommon = {
   'Coryphospingus cucullatus': 'Red-crested Finch',
   'Rhodospingus cruentus': 'Crimson-breasted Finch',
   'Gubernatrix cristata': 'Yellow Cardinal',
-  'Diuca diuca x Gubernatrix cristata': 'Diuca Finch x Yellow Cardinal (hybrid)',
+  'Diuca diuca x Gubernatrix cristata':
+      'Diuca Finch x Yellow Cardinal (hybrid)',
   'Coereba flaveola': 'Bananaquit',
   'Coereba flaveola bahamensis': 'Bananaquit (Bahamas)',
   'Coereba flaveola caboti': 'Bananaquit (Quintana Roo)',
@@ -17852,7 +19243,8 @@ const Map<String, String> scientificToCommon = {
   'Certhidea fusca [fusca Group]': 'Gray Warbler-Finch (Gray)',
   'Platyspiza crassirostris': 'Vegetarian Finch',
   'Camarhynchus pallidus': 'Woodpecker Finch',
-  'Camarhynchus pallidus pallidus/productus': 'Woodpecker Finch (pallidus/productus)',
+  'Camarhynchus pallidus pallidus/productus':
+      'Woodpecker Finch (pallidus/productus)',
   'Camarhynchus pallidus striatipecta': 'Woodpecker Finch (striatipecta)',
   'Camarhynchus psittacula': 'Large Tree-Finch',
   'Camarhynchus pauper': 'Medium Tree-Finch',

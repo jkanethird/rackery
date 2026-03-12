@@ -43,7 +43,7 @@ class BirdClusterer {
     final aspects = crops
         .map((c) => c.box.width / max(c.box.height, 1))
         .toList();
-    final colors = crops.map((c) => _computeCenterColor(c)).toList();
+    final colors = crops.map((c) => c.centerColor).toList();
 
     // Process crops from largest to smallest: big distinctive birds (swans,
     // geese) anchor their own clusters before small similar ones are grouped.
@@ -77,44 +77,12 @@ class BirdClusterer {
         .map((c) => c.indices.map((i) => crops[i]).toList())
         .toList();
   }
-  List<double> _computeCenterColor(BirdCrop crop) {
-    // Sample the center 20% of the bird crop to avoid background pixels
-    final w = crop.croppedImage.width;
-    final h = crop.croppedImage.height;
-    
-    final int startX = (w * 0.4).toInt();
-    final int startY = (h * 0.4).toInt();
-    final int endX = (w * 0.6).toInt();
-    final int endY = (h * 0.6).toInt();
-    
-    if (startX >= endX || startY >= endY) {
-      if (w > 0 && h > 0) {
-        final centerPixel = crop.croppedImage.getPixel(w ~/ 2, h ~/ 2);
-        return [centerPixel.r.toDouble(), centerPixel.g.toDouble(), centerPixel.b.toDouble()];
-      }
-      return [0.0, 0.0, 0.0];
-    }
-
-    double sumR = 0, sumG = 0, sumB = 0;
-    int count = 0;
-
-    for (int y = startY; y < endY; y++) {
-      for (int x = startX; x < endX; x++) {
-        final pixel = crop.croppedImage.getPixel(x, y);
-        sumR += pixel.r;
-        sumG += pixel.g;
-        sumB += pixel.b;
-        count++;
-      }
-    }
-
-    if (count == 0) return [0.0, 0.0, 0.0];
-    return [sumR / count, sumG / count, sumB / count];
-  }
 
   double _colorDistance(List<double> c1, List<double> c2) {
     if (c1.length != 3 || c2.length != 3) return double.maxFinite;
-    return sqrt(pow(c1[0] - c2[0], 2) + pow(c1[1] - c2[1], 2) + pow(c1[2] - c2[2], 2));
+    return sqrt(
+      pow(c1[0] - c2[0], 2) + pow(c1[1] - c2[1], 2) + pow(c1[2] - c2[2], 2),
+    );
   }
 }
 
@@ -127,10 +95,10 @@ class _Cluster {
   double get meanArea => _sumArea / indices.length;
   double get meanAspect => _sumAspect / indices.length;
   List<double> get meanColor => [
-        _sumColor[0] / indices.length,
-        _sumColor[1] / indices.length,
-        _sumColor[2] / indices.length
-      ];
+    _sumColor[0] / indices.length,
+    _sumColor[1] / indices.length,
+    _sumColor[2] / indices.length,
+  ];
 
   void add(int index, double area, double aspect, List<double> color) {
     indices.add(index);
