@@ -354,7 +354,7 @@ class BirdClassifier {
         } else {
           if (!seenScientifics.contains(bestSci)) {
             seenScientifics.add(bestSci!);
-            processedSpecies.add("$bestCommon ($bestSci)");
+            processedSpecies.add(bestCommon);
           }
         }
       }

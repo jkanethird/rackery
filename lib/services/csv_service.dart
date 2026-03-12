@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:ebird_generator/models/observation.dart';
+import 'package:ebird_generator/services/bird_names.dart';
 
 class CsvService {
   static Future<void> generateEbirdCsv(
@@ -43,10 +44,25 @@ class CsvService {
             '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
       }
 
+      String genus = "";
+      String species = "";
+      
+      final match = scientificToCommon.entries.where((e) => e.value == obs.speciesName);
+      if (match.isNotEmpty) {
+        final scientificName = match.first.key;
+        final parts = scientificName.split(' ');
+        if (parts.isNotEmpty) {
+          genus = parts.first;
+          if (parts.length > 1) {
+            species = parts.sublist(1).join(' '); 
+          }
+        }
+      }
+
       rows.add([
         obs.speciesName, // Common Name
-        "", // Genus
-        "", // Species (eBird can map from Common Name)
+        genus, // Genus
+        species, // Species
         obs.count.toString(), // Number
         "Identified via local AI from photo: ${obs.imagePath.split('/').last}", // Comments
         "Generated Location", // Location Name

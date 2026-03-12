@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import '../../models/observation.dart';
+import '../../services/bird_names.dart';
 
 class DragData {
   final int obsIndex;
@@ -54,6 +55,46 @@ class ObservationCard extends StatefulWidget {
 
 class _ObservationCardState extends State<ObservationCard> {
   bool _isExpanded = false;
+  late final TextEditingController _speciesController;
+  late final FocusNode _speciesFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _speciesController = TextEditingController(text: widget.obs.speciesName);
+    _speciesFocusNode = FocusNode();
+    _speciesFocusNode.addListener(_onFocusChanged);
+  }
+
+  void _onFocusChanged() {
+    if (!_speciesFocusNode.hasFocus) {
+      // Delay the focus lost save slightly so that if the user is clicking an option
+      // in the Autocomplete dropdown, the InkWell's onTap (which fires on PointerUp)
+      // has time to execute BEFORE the focus loss triggers a parent rebuild!
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (mounted) {
+          widget.onSpeciesChanged(_speciesController.text);
+        }
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(ObservationCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.obs.speciesName != oldWidget.obs.speciesName &&
+        _speciesController.text != widget.obs.speciesName) {
+      _speciesController.text = widget.obs.speciesName;
+    }
+  }
+
+  @override
+  void dispose() {
+    _speciesFocusNode.removeListener(_onFocusChanged);
+    _speciesController.dispose();
+    _speciesFocusNode.dispose();
+    super.dispose();
+  }
 
   Widget _buildSplitButtonHalf({required bool isTop}) {
     return InkWell(
@@ -98,6 +139,14 @@ class _ObservationCardState extends State<ObservationCard> {
 
   @override
   Widget build(BuildContext context) {
+    String? scientificName;
+    if (widget.obs.speciesName != "Unknown Bird") {
+      final match = scientificToCommon.entries.where((e) => e.value == widget.obs.speciesName);
+      if (match.isNotEmpty) {
+        scientificName = match.first.key;
+      }
+    }
+
     Widget cardChild = Card(
       clipBehavior: Clip.antiAlias,
       shape: const SuperellipseBorder(m: 200.0, n: 20.0),
@@ -119,29 +168,121 @@ class _ObservationCardState extends State<ObservationCard> {
                   )
                 : const Icon(Icons.image),
             title: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: TextFormField(
-                    key: ValueKey("${widget.obs.imagePath}_${widget.obs.speciesName}"),
-                    initialValue: widget.obs.speciesName,
-                    decoration: const InputDecoration(labelText: "Species"),
-                    onChanged: widget.onSpeciesChanged,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RawAutocomplete<String>(
+                        key: ValueKey("raw_auto_${widget.obs.imagePath}_${widget.index}"),
+                        textEditingController: _speciesController,
+                        focusNode: _speciesFocusNode,
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          final query = textEditingValue.text.toLowerCase();
+                          
+                          List<String> modelCommons = widget.obs.possibleSpecies
+                              .where((s) => s.toLowerCase().contains(query) && s != "Unknown Bird")
+                              .toList();
+                              
+                          Iterable<String> taxonomyCommons = [];
+                          if (query.isNotEmpty) {
+                            taxonomyCommons = scientificToCommon.values
+                                .where((s) => s.toLowerCase().contains(query) && !modelCommons.contains(s))
+                                .take(15);
+                          }
+                              
+                          return [...modelCommons, ...taxonomyCommons];
+                        },
+                        onSelected: (String selection) {
+                           _speciesController.text = selection;
+                           widget.onSpeciesChanged(selection);
+                           _speciesFocusNode.unfocus();
+                           setState(() {}); // Force local UI update immediately!
+                        },
+                        fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                          return TextFormField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            decoration: const InputDecoration(labelText: "Species"),
+                            onFieldSubmitted: (String value) {
+                              onFieldSubmitted(); // Pass event through to RawAutocomplete
+                              
+                              // Delay saving the submit text! If the user hit 'Enter' to 
+                              // select a highlighted dropdown option, RawAutocomplete's onSelected 
+                              // will fire right NOW and overwrite _speciesController.text.
+                              // By waiting a split second, we save the completed selection 
+                              // rather than the partial typed string!
+                              Future.delayed(const Duration(milliseconds: 50), () {
+                                if (mounted) {
+                                  widget.onSpeciesChanged(_speciesController.text);
+                                  setState(() {});
+                                }
+                              });
+                            },
+                            onChanged: (String value) {
+                              widget.obs.speciesName = value;
+                            },
+                          );
+                        },
+                        optionsViewBuilder: (context, onSelected, options) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Material(
+                              elevation: 4.0,
+                              child: Container(
+                                constraints: const BoxConstraints(maxHeight: 250),
+                                width: 300,
+                                child: Builder(
+                                  builder: (BuildContext context) {
+                                    final int highlightedIndex = AutocompleteHighlightedOption.of(context);
+                                    return ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      itemCount: options.length,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        final String option = options.elementAt(index);
+                                        final bool isHighlighted = index == highlightedIndex;
+                                        return Container(
+                                          color: isHighlighted ? Theme.of(context).focusColor : null,
+                                          child: Listener(
+                                            behavior: HitTestBehavior.opaque,
+                                            onPointerDown: (_) {
+                                              onSelected(option);
+                                            },
+                                            child: InkWell(
+                                              onTap: () {}, // Required for InkWell to track hover/focus UI states natively
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Text(option),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+                        child: Text(
+                          scientificName ?? ' ',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                if (widget.obs.possibleSpecies.length > 1)
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.arrow_drop_down),
-                    tooltip: "AI Alternatives",
-                    onSelected: widget.onSpeciesSelected,
-                    itemBuilder: (BuildContext context) {
-                      return widget.obs.possibleSpecies
-                          .map((String choice) => PopupMenuItem<String>(
-                                value: choice,
-                                child: Text(choice),
-                              ))
-                          .toList();
-                    },
-                  ),
               ],
             ),
             subtitle: Text(
