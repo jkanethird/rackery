@@ -10,17 +10,24 @@ import 'package:ebird_generator/services/bird_detector.dart';
 /// even when mixed in the same scene.
 class BirdClusterer {
   /// Maximum relative area difference (0–1) for two birds to be considered
-  /// the same species cluster. 0.6 means the smaller box can be at most 40%
-  /// smaller than the larger one.
+  /// the same species cluster. 0.3 means the smaller box can be at most 30%
+  /// smaller than the larger one, strictly separating geese from ducks.
   final double areaSimilarityThreshold;
 
   /// Maximum absolute aspect-ratio difference (width/height) for two birds
-  /// to be in the same cluster. 0.5 handles minor pose variation.
+  /// to be in the same cluster. 0.2 handles minor pose variation but prevents
+  /// grouping birds with wildly different shapes.
   final double aspectRatioThreshold;
 
+  /// Maximum Euclidean distance in RGB color space (0-441) between the
+  /// center crops of two birds. 50 allows for minor lighting/shadow
+  /// variation but strictly segregates different colored birds.
+  final double colorDistanceThreshold;
+
   const BirdClusterer({
-    this.areaSimilarityThreshold = 0.6,
-    this.aspectRatioThreshold = 0.5,
+    this.areaSimilarityThreshold = 0.3,
+    this.aspectRatioThreshold = 0.2,
+    this.colorDistanceThreshold = 50.0,
   });
 
   /// Returns a list of clusters, each cluster being a list of [BirdCrop]s
@@ -36,6 +43,7 @@ class BirdClusterer {
     final aspects = crops
         .map((c) => c.box.width / max(c.box.height, 1))
         .toList();
+    final colors = crops.map((c) => _computeCenterColor(c)).toList();
 
     // Process crops from largest to smallest: big distinctive birds (swans,
     // geese) anchor their own clusters before small similar ones are grouped.
@@ -50,16 +58,18 @@ class BirdClusterer {
         final areaDiff =
             (areas[i] - c.meanArea).abs() / max(areas[i], c.meanArea);
         final aspectDiff = (aspects[i] - c.meanAspect).abs();
+        final colorDiff = _colorDistance(colors[i], c.meanColor);
 
         if (areaDiff <= areaSimilarityThreshold &&
-            aspectDiff <= aspectRatioThreshold) {
-          c.add(i, areas[i], aspects[i]);
+            aspectDiff <= aspectRatioThreshold &&
+            colorDiff <= colorDistanceThreshold) {
+          c.add(i, areas[i], aspects[i], colors[i]);
           placed = true;
           break;
         }
       }
       if (!placed) {
-        clusters.add(_Cluster()..add(i, areas[i], aspects[i]));
+        clusters.add(_Cluster()..add(i, areas[i], aspects[i], colors[i]));
       }
     }
 
@@ -67,19 +77,67 @@ class BirdClusterer {
         .map((c) => c.indices.map((i) => crops[i]).toList())
         .toList();
   }
+  List<double> _computeCenterColor(BirdCrop crop) {
+    // Sample the center 20% of the bird crop to avoid background pixels
+    final w = crop.croppedImage.width;
+    final h = crop.croppedImage.height;
+    
+    final int startX = (w * 0.4).toInt();
+    final int startY = (h * 0.4).toInt();
+    final int endX = (w * 0.6).toInt();
+    final int endY = (h * 0.6).toInt();
+    
+    if (startX >= endX || startY >= endY) {
+      if (w > 0 && h > 0) {
+        final centerPixel = crop.croppedImage.getPixel(w ~/ 2, h ~/ 2);
+        return [centerPixel.r.toDouble(), centerPixel.g.toDouble(), centerPixel.b.toDouble()];
+      }
+      return [0.0, 0.0, 0.0];
+    }
+
+    double sumR = 0, sumG = 0, sumB = 0;
+    int count = 0;
+
+    for (int y = startY; y < endY; y++) {
+      for (int x = startX; x < endX; x++) {
+        final pixel = crop.croppedImage.getPixel(x, y);
+        sumR += pixel.r;
+        sumG += pixel.g;
+        sumB += pixel.b;
+        count++;
+      }
+    }
+
+    if (count == 0) return [0.0, 0.0, 0.0];
+    return [sumR / count, sumG / count, sumB / count];
+  }
+
+  double _colorDistance(List<double> c1, List<double> c2) {
+    if (c1.length != 3 || c2.length != 3) return double.maxFinite;
+    return sqrt(pow(c1[0] - c2[0], 2) + pow(c1[1] - c2[1], 2) + pow(c1[2] - c2[2], 2));
+  }
 }
 
 class _Cluster {
   final List<int> indices = [];
   double _sumArea = 0;
   double _sumAspect = 0;
+  final List<double> _sumColor = [0.0, 0.0, 0.0];
 
   double get meanArea => _sumArea / indices.length;
   double get meanAspect => _sumAspect / indices.length;
+  List<double> get meanColor => [
+        _sumColor[0] / indices.length,
+        _sumColor[1] / indices.length,
+        _sumColor[2] / indices.length
+      ];
 
-  void add(int index, double area, double aspect) {
+  void add(int index, double area, double aspect, List<double> color) {
     indices.add(index);
     _sumArea += area;
     _sumAspect += aspect;
+    _sumColor[0] += color[0];
+    _sumColor[1] += color[1];
+    _sumColor[2] += color[2];
   }
 }

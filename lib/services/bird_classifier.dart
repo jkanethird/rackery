@@ -224,19 +224,8 @@ class BirdClassifier {
       final prompt =
           'You are an expert ornithologist helping build an eBird checklist. '
           'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
-          'Identify the bird species using visible features like body shape, '
-          'plumage color and pattern, beak shape, and habitat.\n'
-          'Provide your top 1-5 species guesses formatted ONLY as a numbered list.\n'
-          'Example:\n'
-          '1. Mallard\n'
-          '2. American Black Duck\n'
-          'Be specific: distinguish between similar species (e.g. Mallard vs. Gadwall).\n'
-          'CRITICAL RULES:\n'
-          '- NEVER output dashes, hyphens, or formatting artifacts if you are unsure.\n'
-          '- NEVER provide partial names like "Northern". You must provide the full eBird common name.\n'
-          '- NEVER provide conversational text or explanations.\n'
-          '- If the image is too blurry, too ambiguous, or does not clearly contain a bird, respond EXACTLY and ONLY with:\n'
-          '1. Unknown Bird';
+          'Provide your top 1 to 5 bird species guesses formatted as a numbered list of common names.\n'
+          'CRITICAL: Do not include any text other than the numbered list.';
 
       final response = await http.post(
         Uri.parse('http://localhost:11434/api/generate'),
@@ -268,7 +257,6 @@ class BirdClassifier {
     try {
       final data = jsonDecode(body);
       String responseText = data['response'].toString().trim();
-      debugPrint('RAW LLM OUTPUT:\n$responseText');
 
       List<String> rawSpeciesList = [];
 
@@ -336,8 +324,6 @@ class BirdClassifier {
             seenScientifics.add(bestSci);
             processedSpecies.add("$bestCommon ($bestSci)");
           }
-        } else {
-          debugPrint('LLM Hallucination dropped: $raw');
         }
       }
 
