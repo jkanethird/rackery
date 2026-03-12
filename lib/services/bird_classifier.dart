@@ -446,18 +446,41 @@ class BirdClassifier {
         final lowerRaw = raw.toLowerCase();
         if (lowerRaw.contains('unknown') && !lowerRaw.contains('(')) continue;
 
-        final sciRegex = RegExp(r'\(([^)]+)\)');
-        final sciMatch = sciRegex.firstMatch(raw);
+        // Try to find the exact common name in our eBird dictionary
+        String? bestCommon;
+        String? bestSci;
 
-        if (sciMatch != null) {
-          String sciName = sciMatch.group(1)!.trim();
-          if (seenScientifics.contains(sciName)) continue;
-          seenScientifics.add(sciName);
-          String commonName =
-              scientificToCommon[sciName] ?? raw.split('(')[0].trim();
-          processedSpecies.add("$commonName ($sciName)");
+        for (final entry in scientificToCommon.entries) {
+          if (entry.value.trim().isEmpty) continue; // Skip empty generic common names to prevent matching everything
+          if (lowerRaw.contains(entry.value.toLowerCase())) {
+            if (bestCommon == null || entry.value.length > bestCommon.length) {
+              bestCommon = entry.value;
+              bestSci = entry.key;
+            }
+          }
+        }
+
+        if (bestCommon != null && bestSci != null) {
+          if (!seenScientifics.contains(bestSci)) {
+            seenScientifics.add(bestSci);
+            processedSpecies.add("$bestCommon ($bestSci)");
+          }
         } else {
-          if (!processedSpecies.contains(raw)) processedSpecies.add(raw);
+          // Fallback if no exact dictionary match is found, but strip leading symbols
+          String cleanRaw = raw.replaceAll(RegExp(r'^[\d.\-\*\s]+'), '').trim();
+          
+          final sciRegex = RegExp(r'\(([^)]+)\)');
+          final sciMatch = sciRegex.firstMatch(cleanRaw);
+
+          if (sciMatch != null) {
+            String sciName = sciMatch.group(1)!.trim();
+            if (seenScientifics.contains(sciName)) continue;
+            seenScientifics.add(sciName);
+            String commonName = cleanRaw.split('(')[0].trim();
+            processedSpecies.add("$commonName ($sciName)");
+          } else {
+            if (!processedSpecies.contains(cleanRaw)) processedSpecies.add(cleanRaw);
+          }
         }
       }
 

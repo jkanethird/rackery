@@ -73,8 +73,6 @@ class BurstGroup {
       }
     }
 
-    // Ebird prefers the *maximum* count seen at one time, rather than
-    // summing counts across a timeline which overcounts the same bird.
     totalCount = maxBirdsInSingleFrame;
   }
 

@@ -614,10 +614,10 @@ class _MainScreenState extends State<MainScreen> {
           final filename = file.split(Platform.pathSeparator).last;
           final isSelected = _currentlyDisplayedImage == file;
 
-          // Total individuals identified across all observations that include this photo
+          // Total individuals formally detected as bounding boxes in THIS specific photo
           final individualCount = _observations
               .where((o) => o.sourceImages.any((s) => s.imagePath == file))
-              .fold<int>(0, (sum, o) => sum + o.count);
+              .fold<int>(0, (sum, o) => sum + (o.boxesByImagePath[file]?.length ?? 0));
 
           return InkWell(
             onTap: () {
