@@ -1445,7 +1445,10 @@ class _MainScreenState extends State<MainScreen> {
               controller: _pageController,
               itemCount: sources.length,
               onPageChanged: (i) {
-                setState(() => _currentCenterPage = i);
+                setState(() {
+                  _currentCenterPage = i;
+                  _currentlyDisplayedImage = sources![i].imagePath;
+                });
               },
               itemBuilder: (context, i) {
                 return Padding(
