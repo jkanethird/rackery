@@ -151,141 +151,6 @@ class BirdClassifier {
     );
   }
 
-  /// Pass 1 — Scene scan: sends the whole resized image (no boxes) to the LLM
-  /// and asks it to enumerate ALL distinct bird species it can see. Returns a
-  /// deduplicated list such as ["Mute Swan (Cygnus olor)", "Mallard (Anas platyrhynchos)"].
-  Future<List<String>> scanScene(
-    String imagePath, {
-    double? latitude,
-    double? longitude,
-  }) async {
-    try {
-      final bytes = await File(imagePath).readAsBytes();
-      final fullImage = await compute(img.decodeImage, bytes);
-      if (fullImage == null) return [];
-
-      // Encode the whole image (downscaled) — no boxes
-      final jpgBytes = await compute(
-        _annotateAndEncode,
-        _AnnotationParams(fullImage, [], fullImage.width, fullImage.height),
-      );
-      final base64Image = base64Encode(jpgBytes);
-
-      final String locationGuide = (latitude != null && longitude != null)
-          ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}. '
-                'Prioritize species known to occur in that region.'
-          : '';
-
-      final prompt =
-          'You are an expert ornithologist helping build an eBird checklist.$locationGuide\n'
-          'Carefully examine this photograph and identify the DISTINCT bird species you can see.\n'
-          'Rules:\n'
-          '- List at most 5 species (the most visually prominent ones).\n'
-          '- Use the most specific common name you are confident about (e.g. "Ruddy Turnstone", not just "Sandpiper").\n'
-          '- Do NOT list subspecies or multiple variants of the same species.\n'
-          '- Return ONLY a compact JSON array: ["Common Name (Scientific Name)", ...]\n'
-          '- Example: ["Mute Swan (Cygnus olor)", "Mallard (Anas platyrhynchos)"]\n'
-          '- If no birds are visible, return [].\n'
-          'OUTPUT ONLY THE JSON ARRAY, NOTHING ELSE.';
-
-      final response = await http.post(
-        Uri.parse('http://localhost:11434/api/generate'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'model': 'llava:13b',
-          'prompt': prompt,
-          'images': [base64Image],
-          'stream': false,
-          'options': {'temperature': 0.1, 'num_predict': 512},
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        return _parseResponse(response.body);
-      }
-      return [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  /// Pass 2 — Constrained classification: classifies the bird in [box] but
-  /// tells the LLM to choose from [knownSpecies] seen elsewhere in the image.
-  /// Falls back to unconstrained classification if [knownSpecies] is empty.
-  Future<String> classifyInContext(
-    String imagePath, {
-    required Rectangle<int> box,
-    required List<String> knownSpecies,
-    double? latitude,
-    double? longitude,
-  }) async {
-    if (knownSpecies.isEmpty) {
-      final result = await classifyFile(
-        imagePath,
-        box: box,
-        latitude: latitude,
-        longitude: longitude,
-      );
-      return result.isNotEmpty ? result.first : 'Unknown';
-    }
-
-    try {
-      final bytes = await File(imagePath).readAsBytes();
-      final fullImage = await compute(img.decodeImage, bytes);
-      if (fullImage == null) return 'Unknown';
-
-      final jpgBytes = await compute(
-        _annotateAndEncode,
-        _AnnotationParams(fullImage, [box], fullImage.width, fullImage.height),
-      );
-      final base64Image = base64Encode(jpgBytes);
-
-      final speciesList = knownSpecies.map((s) => '"$s"').join(', ');
-      final String locationGuide = (latitude != null && longitude != null)
-          ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}.'
-          : '';
-
-      final prompt =
-          'You are an expert ornithologist.$locationGuide\n'
-          'A red rectangle highlights one bird in this image.\n'
-          'The following species have already been identified elsewhere in this photo: [$speciesList]\n'
-          'Which ONE of those species is the bird inside the red box? '
-          'Consider size, plumage, and shape relative to other birds in the scene.\n'
-          'Respond with ONLY the exact species name from the list above (e.g. "Mute Swan (Cygnus olor)"). '
-          'OUTPUT ONLY THE SPECIES NAME, NOTHING ELSE.';
-
-      final response = await http.post(
-        Uri.parse('http://localhost:11434/api/generate'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'model': 'llava:13b',
-          'prompt': prompt,
-          'images': [base64Image],
-          'stream': false,
-          'options': {'temperature': 0.1, 'num_predict': 64},
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final raw = data['response'].toString().trim();
-        // Try to match the response to one of the known species
-        for (final species in knownSpecies) {
-          if (raw.toLowerCase().contains(
-            species.split('(').first.trim().toLowerCase(),
-          )) {
-            return species;
-          }
-        }
-        // Fallback: just return the first known species if nothing matched
-        return knownSpecies.first;
-      }
-      return knownSpecies.first;
-    } catch (e) {
-      return knownSpecies.isNotEmpty ? knownSpecies.first : 'Unknown';
-    }
-  }
-
   Future<List<String>> _classifyWithBoxes(
     String imagePath, {
     required List<Rectangle<int>> boxes,
@@ -359,24 +224,29 @@ class BirdClassifier {
       final prompt =
           'You are an expert ornithologist helping build an eBird checklist. '
           'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
-          'First, explain your reasoning step-by-step. Identify the bird species using visible features: '
-          'body shape, plumage color and pattern, beak shape, leg color, size relative to surroundings, and habitat.\n'
-          'Second, carefully provide your top 1-5 species guesses based on your reasoning, formatted strictly as a JSON array.\n'
-          'Use this exact format for the array at the very end of your response: '
-          '["Mallard (Anas platyrhynchos)", "American Black Duck (Anas rubripes)"]\n'
-          'Be specific: distinguish between similar species (e.g. Mallard vs. Gadwall, '
-          'Ruddy Turnstone vs. Sanderling, Canada Goose vs. Cackling Goose, etc.).\n'
-          'Only respond with ["Unknown Bird"] if there is absolutely NO bird visible at all.';
+          'Identify the bird species using visible features like body shape, '
+          'plumage color and pattern, beak shape, and habitat.\n'
+          'Provide your top 1-5 species guesses formatted ONLY as a numbered list.\n'
+          'Example:\n'
+          '1. Mallard\n'
+          '2. American Black Duck\n'
+          'Be specific: distinguish between similar species (e.g. Mallard vs. Gadwall).\n'
+          'CRITICAL RULES:\n'
+          '- NEVER output dashes, hyphens, or formatting artifacts if you are unsure.\n'
+          '- NEVER provide partial names like "Northern". You must provide the full eBird common name.\n'
+          '- NEVER provide conversational text or explanations.\n'
+          '- If the image is too blurry, too ambiguous, or does not clearly contain a bird, respond EXACTLY and ONLY with:\n'
+          '1. Unknown Bird';
 
       final response = await http.post(
         Uri.parse('http://localhost:11434/api/generate'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'model': 'llava:13b',
+          'model': 'llama3.2-vision',
           'prompt': prompt,
           'images': [base64Image],
           'stream': false,
-          'options': {'temperature': 0.2, 'num_predict': 512},
+          'options': {'temperature': 0, 'num_predict': 192},
         }),
       );
 
@@ -398,38 +268,37 @@ class BirdClassifier {
     try {
       final data = jsonDecode(body);
       String responseText = data['response'].toString().trim();
+      debugPrint('RAW LLM OUTPUT:\n$responseText');
 
       List<String> rawSpeciesList = [];
 
-      // 1. Try JSON Array first
-      final arrayRegex = RegExp(r'\[.*?\]', dotAll: true);
-      final match = arrayRegex.firstMatch(responseText);
-      if (match != null) {
-        try {
-          final List<dynamic> jsonList = jsonDecode(match.group(0)!);
-          rawSpeciesList = jsonList.map((e) => e.toString().trim()).toList();
-        } catch (_) {}
+      // 1. Try to grab strictly formatted numbered list items first
+      final listRegex = RegExp(r'^\s*\d+\.\s*(.+)$', multiLine: true);
+      for (final match in listRegex.allMatches(responseText)) {
+        rawSpeciesList.add(match.group(1)!.trim());
       }
 
       // 2. Try looking for formatted strings "Common Name (Scientific Name)"
       if (rawSpeciesList.isEmpty) {
-        final speciesNameRegex = RegExp(r"([A-Za-z \-'\.,]+?\s*\([A-Z][a-z]+ [a-z]+\))");
+        final speciesNameRegex = RegExp(
+          r"([A-Za-z \-'\.,]+?\s*\([A-Z][a-z]+ [a-z]+\))",
+        );
         final matches = speciesNameRegex.allMatches(responseText);
         for (final m in matches) {
           rawSpeciesList.add(m.group(1)!.trim());
         }
       }
-      
+
       // 3. Try pulling bulleted items
       if (rawSpeciesList.isEmpty) {
         final bulletRegex = RegExp(r'[-*]\s*"?([^"\n]+)"?');
         final matches = bulletRegex.allMatches(responseText);
         for (final m in matches) {
-           rawSpeciesList.add(m.group(1)!.trim());
+          rawSpeciesList.add(m.group(1)!.trim());
         }
       }
 
-      // 4. Default Unknown
+      // 3. Default Unknown
       if (rawSpeciesList.isEmpty) {
         if (responseText.toLowerCase().contains("unknown bird")) {
           return ["Unknown Bird"];
@@ -451,7 +320,9 @@ class BirdClassifier {
         String? bestSci;
 
         for (final entry in scientificToCommon.entries) {
-          if (entry.value.trim().isEmpty) continue; // Skip empty generic common names to prevent matching everything
+          if (entry.value.trim().isEmpty) {
+            continue; // Skip empty generic common names to prevent matching everything
+          }
           if (lowerRaw.contains(entry.value.toLowerCase())) {
             if (bestCommon == null || entry.value.length > bestCommon.length) {
               bestCommon = entry.value;
@@ -466,21 +337,7 @@ class BirdClassifier {
             processedSpecies.add("$bestCommon ($bestSci)");
           }
         } else {
-          // Fallback if no exact dictionary match is found, but strip leading symbols
-          String cleanRaw = raw.replaceAll(RegExp(r'^[\d.\-\*\s]+'), '').trim();
-          
-          final sciRegex = RegExp(r'\(([^)]+)\)');
-          final sciMatch = sciRegex.firstMatch(cleanRaw);
-
-          if (sciMatch != null) {
-            String sciName = sciMatch.group(1)!.trim();
-            if (seenScientifics.contains(sciName)) continue;
-            seenScientifics.add(sciName);
-            String commonName = cleanRaw.split('(')[0].trim();
-            processedSpecies.add("$commonName ($sciName)");
-          } else {
-            if (!processedSpecies.contains(cleanRaw)) processedSpecies.add(cleanRaw);
-          }
+          debugPrint('LLM Hallucination dropped: $raw');
         }
       }
 
