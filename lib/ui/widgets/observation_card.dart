@@ -287,7 +287,7 @@ class _ObservationCardState extends State<ObservationCard> {
 
   Widget _buildSpeciesAutocomplete() {
     return RawAutocomplete<String>(
-      key: ValueKey('raw_auto_${widget.obs.imagePath}_${widget.index}'),
+      key: ValueKey('raw_auto_${widget.obs.hashCode}'),
       textEditingController: _speciesController,
       focusNode: _speciesFocusNode,
       optionsBuilder: (TextEditingValue textEditingValue) {
@@ -304,9 +304,7 @@ class _ObservationCardState extends State<ObservationCard> {
         return [...modelCommons, ...taxonomyCommons];
       },
       onSelected: (String selection) {
-        _speciesController.text = selection;
         widget.onSpeciesChanged(selection);
-        _speciesFocusNode.unfocus();
         setState(() {});
       },
       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
@@ -316,11 +314,9 @@ class _ObservationCardState extends State<ObservationCard> {
           decoration: const InputDecoration(labelText: 'Species'),
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
-            // Wait a tick so RawAutocomplete's onSelected can overwrite the text
-            // if the user pressed Enter to select a highlighted option.
-            Future.delayed(const Duration(milliseconds: 50), () {
+            // Ensure UI updates once RawAutocomplete has finalized its selection
+            Future.microtask(() {
               if (mounted) {
-                widget.onSpeciesChanged(_speciesController.text);
                 setState(() {});
               }
             });
