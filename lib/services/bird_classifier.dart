@@ -4,108 +4,12 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:http/http.dart' as http;
-import 'package:ebird_generator/services/bird_names.dart';
+import 'package:ebird_generator/services/image_annotation.dart';
+import 'package:ebird_generator/services/species_name_resolver.dart';
 import 'package:ebird_generator/services/geo_region_service.dart';
 
-// Top-level function for compute() isolation: annotates the image with one or
-// more red bounding boxes and encodes to JPEG for the vision model.
-List<int> _annotateAndEncode(_AnnotationParams params) {
-  img.Image source = params.image;
-  final boxes = params.boxes;
-  img.Image region;
-
-  if (boxes.length == 1) {
-    // For a single detected bird, crop with generous 200% padding so the bird
-    // is the prominent subject but has enough habitat/environment context.
-    final box = boxes.first;
-    final padX = (box.width * 2.0).round();
-    final padY = (box.height * 2.0).round();
-
-    final cropX1 = (box.left - padX).clamp(0, source.width - 1);
-    final cropY1 = (box.top - padY).clamp(0, source.height - 1);
-    final cropX2 = (box.left + box.width + padX).clamp(1, source.width);
-    final cropY2 = (box.top + box.height + padY).clamp(1, source.height);
-
-    region = img.copyCrop(
-      source,
-      x: cropX1,
-      y: cropY1,
-      width: cropX2 - cropX1,
-      height: cropY2 - cropY1,
-    );
-
-    // Box coords relative to the crop
-    final relBox = Rectangle<int>(
-      box.left - cropX1,
-      box.top - cropY1,
-      box.width,
-      box.height,
-    );
-
-    // Upscale small crops so the bird is large enough to identify
-    if (region.width < 640 || region.height < 640) {
-      final scale = 640 / max(region.width, region.height);
-      final newW = (region.width * scale).round();
-      final newH = (region.height * scale).round();
-      final scaleX = newW / region.width;
-      final scaleY = newH / region.height;
-      final scaled = Rectangle<int>(
-        (relBox.left * scaleX).round(),
-        (relBox.top * scaleY).round(),
-        (relBox.width * scaleX).round(),
-        (relBox.height * scaleY).round(),
-      );
-      region = img.copyResize(region, width: newW, height: newH);
-      _drawBoxes(region, [scaled]);
-    } else {
-      _drawBoxes(region, [relBox]);
-    }
-  } else {
-    // For multi-bird clusters use the full image so all boxes are visible.
-    region = source;
-    _drawBoxes(region, boxes);
-  }
-
-  // Downscale to at most 1280px on longest edge
-  if (region.width > 1280 || region.height > 1280) {
-    final scale = 1280 / max(region.width, region.height);
-    final newW = (region.width * scale).round();
-    final newH = (region.height * scale).round();
-    region = img.copyResize(region, width: newW, height: newH);
-  }
-
-  return img.encodeJpg(region, quality: 90);
-}
-
-void _drawBoxes(img.Image image, List<Rectangle<int>> boxes) {
-  final red = img.ColorRgb8(255, 50, 50);
-  for (final box in boxes) {
-    for (int t = 0; t < 12; t++) {
-      img.drawRect(
-        image,
-        x1: (box.left - t).clamp(0, image.width - 1),
-        y1: (box.top - t).clamp(0, image.height - 1),
-        x2: (box.left + box.width + t).clamp(0, image.width - 1),
-        y2: (box.top + box.height + t).clamp(0, image.height - 1),
-        color: red,
-      );
-    }
-  }
-}
-
-class _AnnotationParams {
-  final img.Image image;
-  final List<Rectangle<int>> boxes;
-  final int originalWidth;
-  final int originalHeight;
-
-  _AnnotationParams(
-    this.image,
-    this.boxes,
-    this.originalWidth,
-    this.originalHeight,
-  );
-}
+const _kOllamaUrl = 'http://localhost:11434/api/generate';
+const _kModel = 'llama3.2-vision';
 
 class BirdClassifier {
   Future<void> init() async {}
@@ -131,8 +35,8 @@ class BirdClassifier {
     );
   }
 
-  /// Classifies a cluster of [count] birds in [imagePath], all highlighted
-  /// with red rectangles. Prompts the model to identify all highlighted birds
+  /// Classifies a cluster of birds in [imagePath], all highlighted with red
+  /// rectangles. Prompts the model to identify all highlighted birds
   /// simultaneously, leveraging flock-level visual context.
   Future<List<String>> classifyCluster(
     String imagePath, {
@@ -165,8 +69,8 @@ class BirdClassifier {
       if (fullImage == null) return ["Unknown Bird"];
 
       final jpgBytes = await compute(
-        _annotateAndEncode,
-        _AnnotationParams(fullImage, boxes, fullImage.width, fullImage.height),
+        annotateAndEncode,
+        AnnotationParams(fullImage, boxes, fullImage.width, fullImage.height),
       );
       final base64Image = base64Encode(jpgBytes);
 
@@ -184,28 +88,18 @@ class BirdClassifier {
         boxGuide = '';
       }
 
-      final String locationGuide = (latitude != null && longitude != null)
+      final String locationGuide =
+          (latitude != null && longitude != null)
           ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}.'
                 ' Prioritize species known to occur in that region.'
           : '';
 
-      // Derive season/month context from the photo date
       final String dateGuide;
       if (photoDate != null) {
         const months = [
           '',
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December',
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December',
         ];
         final month = months[photoDate.month];
         final season = switch (photoDate.month) {
@@ -228,10 +122,10 @@ class BirdClassifier {
           'CRITICAL: Do not include any text other than the numbered list.';
 
       final response = await http.post(
-        Uri.parse('http://localhost:11434/api/generate'),
+        Uri.parse(_kOllamaUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'model': 'llama3.2-vision',
+          'model': _kModel,
           'prompt': prompt,
           'images': [base64Image],
           'stream': false,
@@ -240,7 +134,7 @@ class BirdClassifier {
       );
 
       if (response.statusCode == 200) {
-        return _parseResponse(response.body);
+        return SpeciesNameResolver.parseOllamaResponse(response.body);
       } else {
         debugPrint(
           'Ollama API Error: ${response.statusCode} - ${response.body}',
@@ -253,126 +147,12 @@ class BirdClassifier {
     }
   }
 
-  List<String> _parseResponse(String body) {
-    try {
-      final data = jsonDecode(body);
-      String responseText = data['response'].toString().trim();
-
-      List<String> rawSpeciesList = [];
-
-      // 1. Try to grab strictly formatted numbered list items first
-      final listRegex = RegExp(r'^\s*\d+\.\s*(.+)$', multiLine: true);
-      for (final match in listRegex.allMatches(responseText)) {
-        rawSpeciesList.add(match.group(1)!.trim());
-      }
-
-      // 2. Try looking for formatted strings "Common Name (Scientific Name)"
-      if (rawSpeciesList.isEmpty) {
-        final speciesNameRegex = RegExp(
-          r"([A-Za-z \-'\.,]+?\s*\([A-Z][a-z]+ [a-z]+\))",
-        );
-        final matches = speciesNameRegex.allMatches(responseText);
-        for (final m in matches) {
-          rawSpeciesList.add(m.group(1)!.trim());
-        }
-      }
-
-      // 3. Try pulling bulleted items
-      if (rawSpeciesList.isEmpty) {
-        final bulletRegex = RegExp(r'[-*]\s*"?([^"\n]+)"?');
-        final matches = bulletRegex.allMatches(responseText);
-        for (final m in matches) {
-          rawSpeciesList.add(m.group(1)!.trim());
-        }
-      }
-
-      // 3. Default Unknown
-      if (rawSpeciesList.isEmpty) {
-        if (responseText.toLowerCase().contains("unknown bird")) {
-          return ["Unknown Bird"];
-        }
-        return ["Unknown Bird"];
-      }
-
-      List<String> processedSpecies = [];
-      Set<String> seenScientifics = {};
-
-      for (String raw in rawSpeciesList) {
-        if (raw.isEmpty) continue;
-        final lowerRaw = raw.toLowerCase();
-
-        if (lowerRaw.contains('unknown') && !lowerRaw.contains('(')) continue;
-
-        // Try to find the common name in our eBird dictionary using multiple passes
-        String? bestCommon;
-        String? bestSci;
-
-        // Pass 1: Check if LLM output CONTAINS a full eBird name
-        // Example: LLM outputs "1. Mute Swan", eBird contains "Mute Swan".
-        // We want the longest match to avoid matching "Swan sp." instead of "Mute Swan".
-        for (final entry in scientificToCommon.entries) {
-          if (entry.value.trim().isEmpty) continue;
-          if (lowerRaw.contains(entry.value.toLowerCase())) {
-            if (bestCommon == null || entry.value.length > bestCommon.length) {
-              bestCommon = entry.value;
-              bestSci = entry.key;
-            }
-          }
-        }
-
-        // Pass 2: Maybe the LLM gave a generic name (e.g. "Swan")
-        // Check if there is an exact generic "sp." match in eBird (e.g. "swan sp.")
-        if (bestCommon == null) {
-          for (final entry in scientificToCommon.entries) {
-            final ebirdLower = entry.value.toLowerCase();
-            if (ebirdLower == '$lowerRaw sp.' || ebirdLower == '$lowerRaw sp') {
-              bestCommon = entry.value;
-              bestSci = entry.key;
-              break;
-            }
-          }
-        }
-
-        // Pass 3: Look for the shortest eBird name that CONTAINS the LLM guess as a whole word.
-        // Example: LLM outputs "Pigeon". Shortest eBird match containing "Pigeon" might be "Feral Pigeon".
-        if (bestCommon == null) {
-          final escapedRaw = RegExp.escape(lowerRaw);
-          final wordRegex = RegExp(r'\b' + escapedRaw + r'\b');
-          for (final entry in scientificToCommon.entries) {
-            if (wordRegex.hasMatch(entry.value.toLowerCase())) {
-              if (bestCommon == null ||
-                  entry.value.length < bestCommon.length) {
-                bestCommon = entry.value;
-                bestSci = entry.key;
-              }
-            }
-          }
-        }
-
-        if (bestCommon == null) {
-          debugPrint('FAILED to find dictionary match for: "$raw"');
-        } else {
-          if (!seenScientifics.contains(bestSci)) {
-            seenScientifics.add(bestSci!);
-            processedSpecies.add(bestCommon);
-          }
-        }
-      }
-
-      if (processedSpecies.isEmpty) return ["Unknown Bird"];
-      return processedSpecies;
-    } catch (e) {
-      debugPrint('Failed to parse LLM JSON response: $e');
-      return ["Unknown Bird"];
-    }
-  }
-
   Future<void> unloadModel() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:11434/api/generate'),
+        Uri.parse(_kOllamaUrl),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'model': 'llama3.2-vision', 'keep_alive': 0}),
+        body: jsonEncode({'model': _kModel, 'keep_alive': 0}),
       );
       if (response.statusCode != 200) {
         debugPrint('Failed to unload Ollama model: ${response.body}');
