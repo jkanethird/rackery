@@ -58,6 +58,7 @@ class ObservationListPanel extends StatelessWidget {
         final isDragging = draggingIndex == index;
 
         final observationItem = ObservationCard(
+          key: ObjectKey(obs),
           obs: obs,
           index: index,
           isSelected: isSelected,
