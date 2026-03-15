@@ -38,16 +38,36 @@ class CenterPane extends StatelessWidget {
     final obs = selectedObservation;
     List<SourceImage>? sources;
 
+    // Build a global individual index → (imagePath, perPhotoBoxIndex) mapping.
+    // Global indices are assigned by iterating sourceImages in order — first
+    // photo's boxes get indices 0..n0-1, second photo's get n0..n0+n1-1, etc.
+    // Within each photo, boxes are sorted left-to-right to match the order
+    // ObservationCard assigns "Individual 1", "Individual 2", etc.
+    final Map<int, ({String imagePath, int localIndex})> globalIndexMap = {};
+    if (obs != null) {
+      int gi = 0;
+      for (final src in obs.sourceImages) {
+        final boxes = List<Rectangle<int>>.from(
+          obs.boxesByImagePath[src.imagePath] ?? [],
+        )..sort((a, b) => a.left.compareTo(b.left));
+        for (int li = 0; li < boxes.length; li++) {
+          globalIndexMap[gi++] = (imagePath: src.imagePath, localIndex: li);
+        }
+      }
+    }
+
     if (obs != null) {
       if (selectedIndividualIndices.isNotEmpty) {
-        sources = obs.sourceImages.where((src) {
-          final boxes = obs.boxesByImagePath[src.imagePath];
-          // boxes == null means the photo has no entry at all → exclude.
-          // boxes.isEmpty means individual is linked to this photo with no box → include.
-          if (boxes == null) return false;
-          if (boxes.isEmpty) return true;
-          return selectedIndividualIndices.any((idx) => boxes.length > idx);
-        }).toList();
+        // Find the set of photos that contain any selected individual.
+        final selectedPaths = selectedIndividualIndices
+            .where(globalIndexMap.containsKey)
+            .map((gi) => globalIndexMap[gi]!.imagePath)
+            .toSet();
+        sources = obs.sourceImages
+            .where((src) => selectedPaths.contains(src.imagePath))
+            .toList();
+        // Fallback: if the mapping produced no results (no-box individuals),
+        // show all photos so the user at least sees something.
         if (sources.isEmpty) sources = obs.sourceImages;
       } else {
         sources = obs.sourceImages;
@@ -92,10 +112,17 @@ class CenterPane extends StatelessWidget {
 
         List<Rectangle<int>> photoBoxes = allPhotoBoxes;
         if (selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
-          photoBoxes = [
-            for (final idx in selectedIndividualIndices)
-              if (idx < allPhotoBoxes.length) allPhotoBoxes[idx],
-          ];
+          // Map selected global indices to the local box indices for THIS photo.
+          final localSelected = selectedIndividualIndices
+              .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
+              .map((gi) => globalIndexMap[gi]!.localIndex)
+              .toSet();
+          if (localSelected.isNotEmpty) {
+            photoBoxes = [
+              for (int li = 0; li < allPhotoBoxes.length; li++)
+                if (localSelected.contains(li)) allPhotoBoxes[li],
+            ];
+          }
         }
 
         return Stack(
