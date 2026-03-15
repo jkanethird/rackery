@@ -118,7 +118,10 @@ class BirdClassifier {
       final prompt =
           'You are an expert ornithologist helping build an eBird checklist. '
           'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
-          'Provide your top 1 to 5 bird species guesses formatted as a numbered list of common names.\n'
+          'If you can identify a bird, provide your top 1 to 5 species guesses '
+          'as a numbered list of common names (e.g. "1. Northern Cardinal").\n'
+          'If the highlighted region contains NO identifiable bird '
+          '(e.g. foliage, rocks, sky, or a non-bird animal), respond with exactly: 0. none\n'
           'CRITICAL: Do not include any text other than the numbered list.';
 
       final response = await http.post(

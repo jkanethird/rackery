@@ -8,7 +8,12 @@ class SpeciesNameResolver {
   /// Parses [body] (the Ollama `generate` response JSON) and returns a list
   /// of matched eBird common names, in the order the model suggested them.
   ///
-  /// Falls back to `["Unknown Bird"]` when no recognisable species are found.
+  /// Returns an **empty list** when the model explicitly reported no bird
+  /// (i.e. it responded with "0. none"). Callers should treat an empty result
+  /// as a signal to skip observation creation for that crop.
+  ///
+  /// Falls back to `["Unknown Bird"]` when no recognisable species are found
+  /// but the model did not explicitly say "none".
   static List<String> parseOllamaResponse(String body) {
     try {
       final data = jsonDecode(body);
@@ -41,6 +46,13 @@ class SpeciesNameResolver {
       }
 
       if (rawSpeciesList.isEmpty) return ["Unknown Bird"];
+
+      // If the model responded with the no-bird sentinel ("0. none"), return
+      // an empty list so PhotoProcessor knows to skip this crop entirely.
+      if (rawSpeciesList.length == 1 &&
+          rawSpeciesList.first.trim().toLowerCase() == 'none') {
+        return [];
+      }
 
       return _resolveNames(rawSpeciesList);
     } catch (e) {

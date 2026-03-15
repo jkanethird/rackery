@@ -180,28 +180,30 @@ class PhotoProcessor {
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
                 );
-                final species =
-                    speciesList.isNotEmpty ? speciesList.first : 'Unknown';
-                final fullImageBox = Rectangle<int>(
-                  0,
-                  0,
-                  res.fallbackImg!.width,
-                  res.fallbackImg!.height,
-                );
-                burstGroupsBySpecies
-                    .putIfAbsent(species, BurstGroup.new)
-                    .addObservation(
-                      Observation(
-                        imagePath: filePath,
-                        displayPath: res.processedPath,
-                        fullImageDisplayPath: res.processedPath,
-                        speciesName: species,
-                        possibleSpecies: speciesList,
-                        exifData: res.exifData,
-                        count: 1,
-                        boundingBoxes: [fullImageBox],
-                      ),
-                    );
+                // Empty list = model said no bird is present — skip this photo.
+                if (speciesList.isNotEmpty) {
+                  final species = speciesList.first;
+                  final fullImageBox = Rectangle<int>(
+                    0,
+                    0,
+                    res.fallbackImg!.width,
+                    res.fallbackImg!.height,
+                  );
+                  burstGroupsBySpecies
+                      .putIfAbsent(species, BurstGroup.new)
+                      .addObservation(
+                        Observation(
+                          imagePath: filePath,
+                          displayPath: res.processedPath,
+                          fullImageDisplayPath: res.processedPath,
+                          speciesName: species,
+                          possibleSpecies: speciesList,
+                          exifData: res.exifData,
+                          count: 1,
+                          boundingBoxes: [fullImageBox],
+                        ),
+                      );
+                }
                 completedIdentifications++;
                 onProgressMessage(
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
@@ -223,8 +225,16 @@ class PhotoProcessor {
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
                 );
-                final species =
-                    speciesList.isNotEmpty ? speciesList.first : 'Unknown';
+                // Empty list = model said this crop isn't a bird — skip it.
+                if (speciesList.isEmpty) {
+                  completedIdentifications++;
+                  onProgressMessage(
+                    'Classifying... ($completedIdentifications of $totalIdentifications birds)',
+                  );
+                  continue;
+                }
+
+                final species = speciesList.first;
 
                 if (photoObservations.containsKey(species)) {
                   photoObservations[species]!.count += clusterCrops.length;
