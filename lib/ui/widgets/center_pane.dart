@@ -42,7 +42,10 @@ class CenterPane extends StatelessWidget {
       if (selectedIndividualIndices.isNotEmpty) {
         sources = obs.sourceImages.where((src) {
           final boxes = obs.boxesByImagePath[src.imagePath];
+          // boxes == null means the photo has no entry at all → exclude.
+          // boxes.isEmpty means individual is linked to this photo with no box → include.
           if (boxes == null) return false;
+          if (boxes.isEmpty) return true;
           return selectedIndividualIndices.any((idx) => boxes.length > idx);
         }).toList();
         if (sources.isEmpty) sources = obs.sourceImages;

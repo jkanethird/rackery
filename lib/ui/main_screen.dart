@@ -359,6 +359,10 @@ class _MainScreenState extends State<MainScreen> {
             }
           }
         }
+        // Always register the photo path in boxesByImagePath so CenterPane
+        // can link this individual back to its source photo even when there
+        // are no boxes (e.g. a single-bird observation detected without a box).
+        into.boxesByImagePath.putIfAbsent(path, () => []);
         if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
           into.sourceImages.add(src);
         }
