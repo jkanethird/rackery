@@ -59,6 +59,7 @@ class PhotoProcessor {
     required void Function(double) onProgress,
     required void Function(String) onProgressMessage,
     required void Function(List<Observation>) onObservationAdded,
+    required void Function(String filePath) onFileStarted,
     required void Function(String filePath) onFileCompleted,
     required void Function(String filePath, dynamic error) onError,
   }) async {
@@ -89,6 +90,7 @@ class PhotoProcessor {
       for (int i = 0; i < bursts.length; i++) {
         for (final filePath in bursts[i]) {
           if (!newPathSet.contains(filePath)) continue;
+          onFileStarted(filePath);
           try {
             final processedPath =
                 await ImageConverter.convertToJpegIfNeeded(filePath) ??
@@ -161,6 +163,7 @@ class PhotoProcessor {
 
         for (final filePath in burstFiles) {
           if (!newPathSet.contains(filePath)) continue;
+          onFileStarted(filePath);
 
           final res = phase1Results[filePath];
           if (res == null) {

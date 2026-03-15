@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen> {
   // Left panel state
   List<String> _selectedFiles = [];
   final Set<String> _processingFiles = {};
+  final Set<String> _activeFiles = {};
   final Map<String, ExifData> _imageExifData = {};
   List<List<String>> _fileBursts = [];
 
@@ -218,8 +219,16 @@ class _MainScreenState extends State<MainScreen> {
       onObservationAdded: (newObs) {
         if (mounted) setState(() => _observations.addAll(newObs));
       },
+      onFileStarted: (filePath) {
+        if (mounted) setState(() => _activeFiles.add(filePath));
+      },
       onFileCompleted: (filePath) {
-        if (mounted) setState(() => _processingFiles.remove(filePath));
+        if (mounted) {
+          setState(() {
+            _processingFiles.remove(filePath);
+            _activeFiles.remove(filePath);
+          });
+        }
       },
       onError: (filePath, error) {
         if (mounted) {
@@ -232,6 +241,7 @@ class _MainScreenState extends State<MainScreen> {
 
     setState(() {
       _isProcessing = false;
+      _activeFiles.clear();
       if (_selectedObservation == null && _observations.isNotEmpty) {
         _selectedObservation = _observations.first;
         _selectedIndividualIndices.clear();
@@ -256,6 +266,7 @@ class _MainScreenState extends State<MainScreen> {
       _fileBursts = [];
       _selectedFiles.clear();
       _processingFiles.clear();
+      _activeFiles.clear();
       _imageExifData.clear();
       _progress = 0.0;
       _progressMessage = '';
@@ -495,6 +506,7 @@ class _MainScreenState extends State<MainScreen> {
                       fileBursts: _fileBursts,
                       selectedFiles: _selectedFiles,
                       processingFiles: _processingFiles,
+                      activeFiles: _activeFiles,
                       imageExifData: _imageExifData,
                       observations: _observations,
                       currentlyDisplayedImage: _currentlyDisplayedImage,

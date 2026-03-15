@@ -9,6 +9,7 @@ class FileListPanel extends StatelessWidget {
   final List<List<String>> fileBursts;
   final List<String> selectedFiles;
   final Set<String> processingFiles;
+  final Set<String> activeFiles;
   final Map<String, ExifData> imageExifData;
   final List<Observation> observations;
   final String? currentlyDisplayedImage;
@@ -21,6 +22,7 @@ class FileListPanel extends StatelessWidget {
     required this.fileBursts,
     required this.selectedFiles,
     required this.processingFiles,
+    required this.activeFiles,
     required this.imageExifData,
     required this.observations,
     required this.currentlyDisplayedImage,
@@ -57,6 +59,7 @@ class FileListPanel extends StatelessWidget {
 
         Widget fileTile(String file) {
           final isProcessing = processingFiles.contains(file);
+          final isActive = activeFiles.contains(file);
           final filename = file.split(Platform.pathSeparator).last;
           final isSelected = currentlyDisplayedImage == file;
 
@@ -66,6 +69,33 @@ class FileListPanel extends StatelessWidget {
                 0,
                 (sum, o) => sum + (o.boxesByImagePath[file]?.length ?? 0),
               );
+
+          Widget statusIndicator;
+          if (isActive) {
+            // Actively being detected/classified right now — full spinner
+            statusIndicator = const SizedBox(
+              width: 12,
+              height: 12,
+              child: CircularProgressIndicator(strokeWidth: 1.5),
+            );
+          } else if (isProcessing) {
+            // In the queue, waiting for its turn — dim spinner
+            statusIndicator = Opacity(
+              opacity: 0.30,
+              child: const SizedBox(
+                width: 12,
+                height: 12,
+                child: CircularProgressIndicator(strokeWidth: 1.5),
+              ),
+            );
+          } else {
+            // Done — green check
+            statusIndicator = const Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 12,
+            );
+          }
 
           return InkWell(
             onTap: () => onFileTapped(file),
@@ -119,18 +149,7 @@ class FileListPanel extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (isProcessing)
-                    const SizedBox(
-                      width: 12,
-                      height: 12,
-                      child: CircularProgressIndicator(strokeWidth: 1.5),
-                    )
-                  else
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 12,
-                    ),
+                  statusIndicator,
                 ],
               ),
             ),
