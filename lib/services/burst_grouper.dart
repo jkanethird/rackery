@@ -55,18 +55,19 @@ class BurstGrouper {
         }
       }
 
-      // 2. Environmental Overrule (Visual physical space grouping)
-      if (!isSameBurst && currentHash != null && lastHash != null) {
+      // 2. Strict Environmental Overrule
+      if (currentHash != null && lastHash != null) {
         final dist = _hammingDistance(currentHash, lastHash);
-        if (dist <= 12) {
-          // Additional temporal safeguard so we don't group visually identical photos from wildly different days
-          if (date != null && lastTime != null) {
-             if (date.difference(lastTime).inSeconds.abs() <= 300) {
-                 isSameBurst = true;
-             }
-          } else {
-             // If either date is missing, strictly rely on the physical visual match
-             isSameBurst = true;
+        
+        if (dist > 29) {
+          // If the visual background shifts significantly, BREAK the burst immediately!
+          // This prevents rapid-fire turning from getting lumped into one burst.
+          isSameBurst = false;
+        } else if (dist <= 29) {
+          // If the visual background is identical, FORCE the burst to group!
+          // This bridges photos taken minutes apart if the user stood completely still.
+          if (date == null || lastTime == null || date.difference(lastTime).inSeconds.abs() <= 300) {
+            isSameBurst = true;
           }
         }
       }
