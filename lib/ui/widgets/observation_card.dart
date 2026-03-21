@@ -63,13 +63,8 @@ class _ObservationCardState extends State<ObservationCard> {
   }
 
   void _onFocusChanged() {
-    if (!_speciesFocusNode.hasFocus) {
-      // Delay so that a click on an autocomplete option (PointerUp) fires first.
-      Future.delayed(const Duration(milliseconds: 150), () {
-        if (mounted) {
-          widget.onSpeciesChanged(_speciesController.text);
-        }
-      });
+    if (!_speciesFocusNode.hasFocus && mounted) {
+      widget.onSpeciesChanged(_speciesController.text);
     }
   }
 
@@ -305,7 +300,7 @@ class _ObservationCardState extends State<ObservationCard> {
       },
       onSelected: (String selection) {
         widget.onSpeciesChanged(selection);
-        setState(() {});
+        if (mounted) setState(() {});
       },
       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
         return TextFormField(
