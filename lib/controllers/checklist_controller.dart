@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/services/bird_classifier.dart';
 import 'package:ebird_generator/services/bird_clusterer.dart';
 import 'package:ebird_generator/services/burst_grouper.dart';
@@ -12,8 +9,9 @@ import 'package:ebird_generator/services/csv_service.dart';
 import 'package:ebird_generator/services/image_converter.dart';
 import 'package:ebird_generator/services/bird_detector.dart';
 import 'package:ebird_generator/services/photo_processor.dart';
-
-const _kLastPickerDirKey = 'last_picker_directory';
+import 'package:ebird_generator/services/ingestion_pipeline.dart';
+import 'package:ebird_generator/services/exif_service.dart';
+import 'package:ebird_generator/utils/observation_operations.dart';
 
 class ChecklistController extends ChangeNotifier {
   // ─── Services ────────────────────────────────────────────────────────────
@@ -38,9 +36,6 @@ class ChecklistController extends ChangeNotifier {
   final Set<String> activeFiles = {};
   final Map<String, ExifData> imageExifData = {};
   List<List<String>> fileBursts = [];
-
-  // Cache on-demand HEIC→JPEG conversions
-  final Map<String, String> _convertedHeicPaths = {};
 
   // Right panel scroll controller
   final ScrollController observationScrollController = ScrollController();
@@ -91,20 +86,7 @@ class ChecklistController extends ChangeNotifier {
       if (path != null && !path.toLowerCase().endsWith('.heic')) return path;
     } catch (_) {}
 
-    if (!imagePath.toLowerCase().endsWith('.heic') &&
-        !imagePath.toLowerCase().endsWith('.heif')) {
-      return imagePath;
-    }
-
-    if (_convertedHeicPaths.containsKey(imagePath)) {
-      return _convertedHeicPaths[imagePath];
-    }
-    final converted = await ImageConverter.convertToJpegIfNeeded(imagePath);
-    if (converted != null && converted != imagePath) {
-      _convertedHeicPaths[imagePath] = converted;
-      return converted;
-    }
-    return imagePath;
+    return ImageConverter.getDisplayPath(imagePath);
   }
 
   Future<Size> getImageSize(String path) async {
@@ -116,64 +98,23 @@ class ChecklistController extends ChangeNotifier {
   // ─── Photo selection & processing ────────────────────────────────────────
 
   Future<void> selectAndProcessPhotos(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastDir = prefs.getString(_kLastPickerDirKey);
-
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
-      initialDirectory: lastDir,
-      allowedExtensions: [
-        'jpg', 'jpeg', 'png', 'heic', 'heif',
-        'JPG', 'JPEG', 'PNG', 'HEIC', 'HEIF',
-      ],
+    final result = await IngestionPipeline.gatherFiles(
+      currentSelectedFiles: selectedFiles,
+      currentExifData: imageExifData,
+      burstGrouper: _burstGrouper,
     );
 
     if (result == null) return;
 
-    final firstPath = result.files.first.path;
-    if (firstPath != null) {
-      await prefs.setString(_kLastPickerDirKey, File(firstPath).parent.path);
-    }
-
-    final pickedPaths = result.files.map((f) => f.path!).toSet();
-    final newPaths = pickedPaths.difference(selectedFiles.toSet()).toList();
-    if (newPaths.isEmpty) return;
-
-    newPaths.sort((a, b) => File(a).lengthSync().compareTo(File(b).lengthSync()));
-
     isProcessing = true;
     progress = 0.0;
     progressMessage = 'Preparing files...';
-    selectedFiles.addAll(newPaths);
-    processingFiles.addAll(newPaths);
-    notifyListeners();
-
-    for (final path in newPaths) {
-      try {
-        imageExifData[path] = await ExifService.extractExif(path);
-      } catch (_) {
-        imageExifData[path] = ExifData();
-      }
-    }
-
-    final allFileData = selectedFiles.map((path) {
-      return {'path': path, 'exif': imageExifData[path] ?? ExifData()};
-    }).toList();
-
-    allFileData.sort((a, b) {
-      final dateA = (a['exif'] as ExifData).dateTime;
-      final dateB = (b['exif'] as ExifData).dateTime;
-      if (dateA == null && dateB == null) return 0;
-      if (dateA == null) return 1;
-      if (dateB == null) return -1;
-      return dateA.compareTo(dateB);
-    });
-
-    final bursts = _burstGrouper.group(allFileData);
-
-    fileBursts = bursts;
-    selectedFiles = bursts.expand((b) => b).toList();
+    
+    selectedFiles = result.allFiles;
+    processingFiles.addAll(result.newPaths);
+    fileBursts = result.bursts;
+    imageExifData.addAll(result.exifData);
+    
     notifyListeners();
 
     final processor = PhotoProcessor(
@@ -183,8 +124,8 @@ class ChecklistController extends ChangeNotifier {
     );
 
     await processor.run(
-      newPaths: newPaths,
-      bursts: bursts,
+      newPaths: result.newPaths,
+      bursts: result.bursts,
       onProgress: (value) {
         progress = value;
         notifyListeners();
@@ -353,23 +294,25 @@ class ChecklistController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _syncSelectionAfterMutation(Observation from) {
+    if (from.count <= 0) {
+      if (selectedObservation == from) {
+        selectedObservation = observations.isNotEmpty ? observations.first : null;
+        selectedIndividualIndices.clear();
+        lastSelectedIndividualIndex = null;
+        currentCenterPage = 0;
+        if (pageController.hasClients) pageController.jumpToPage(0);
+      }
+    } else if (selectedObservation == from) {
+      selectedIndividualIndices.clear();
+      lastSelectedIndividualIndex = null;
+    }
+  }
+
   void mergeObservations(int fromIdx, int intoIdx) {
-    if (fromIdx == intoIdx) return;
     final from = observations[fromIdx];
     final into = observations[intoIdx];
-    into.count += from.count;
-    into.boundingBoxes.addAll(from.boundingBoxes);
-    for (final s in from.possibleSpecies) {
-      if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
-    }
-    final existingPaths = into.sourceImages.map((s) => s.imagePath).toSet();
-    for (final src in from.sourceImages) {
-      if (existingPaths.add(src.imagePath)) into.sourceImages.add(src);
-    }
-    for (final entry in from.boxesByImagePath.entries) {
-      into.boxesByImagePath.putIfAbsent(entry.key, () => []).addAll(entry.value);
-    }
-    observations.removeAt(fromIdx);
+    ObservationOperations.mergeObservations(observations, fromIdx, intoIdx);
     if (selectedObservation == from) {
       selectedObservation = into;
       selectedIndividualIndices.clear();
@@ -381,120 +324,29 @@ class ChecklistController extends ChangeNotifier {
   }
 
   void mergeIndividuals(int fromObsIdx, List<int> indIndices, int intoIdx) {
-    if (fromObsIdx == intoIdx || indIndices.isEmpty) return;
     final from = observations[fromObsIdx];
-    final into = observations[intoIdx];
-    into.count += indIndices.length;
-    from.count -= indIndices.length;
-
-    final sortedIndices = List<int>.from(indIndices)
-      ..sort((a, b) => b.compareTo(a));
-
-    for (final src in List.from(from.sourceImages)) {
-      final path = src.imagePath;
-      final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null && fromBoxes.isNotEmpty) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final idx in sortedIndices) {
-          if (idx < sortedBoxes.length) {
-            final box = sortedBoxes[idx];
-            fromBoxes.remove(box);
-            into.boxesByImagePath.putIfAbsent(path, () => []).add(box);
-            from.boundingBoxes.remove(box);
-            into.boundingBoxes.add(box);
-          }
-        }
-      }
-      into.boxesByImagePath.putIfAbsent(path, () => []);
-      if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
-        into.sourceImages.add(src);
-      }
-    }
-    for (final s in from.possibleSpecies) {
-      if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
-    }
-    if (from.count <= 0) {
-      observations.removeAt(fromObsIdx);
-    } else if (selectedObservation == from) {
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-    }
-    if (selectedObservation == from && from.count <= 0) {
-      selectedObservation =
-          observations.isNotEmpty ? observations.first : null;
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
-    }
+    ObservationOperations.mergeIndividuals(observations, fromObsIdx, indIndices, intoIdx);
+    _syncSelectionAfterMutation(from);
     notifyListeners();
   }
 
-  void extractIndividuals(
-    int fromObsIdx,
-    List<int> indIndices,
-    int insertAtIdx,
-  ) {
-    if (indIndices.isEmpty) return;
-    
+  void extractIndividuals(int fromObsIdx, List<int> indIndices, int insertAtIdx) {
     final from = observations[fromObsIdx];
-
-    final newObs = Observation(
-      imagePath: from.imagePath,
-      displayPath: from.displayPath,
-      fullImageDisplayPath: from.fullImageDisplayPath,
-      speciesName: from.speciesName,
-      possibleSpecies: List.from(from.possibleSpecies),
-      exifData: from.exifData,
-      count: indIndices.length,
-      boundingBoxes: [],
-      sourceImages: [],
-      boxesByImagePath: {},
-      burstId: from.burstId,
-    );
-    from.count -= indIndices.length;
-
-    final sortedIndices = List<int>.from(indIndices)
-      ..sort((a, b) => b.compareTo(a));
-
-    for (final src in List.from(from.sourceImages)) {
-      final path = src.imagePath;
-      final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null && fromBoxes.isNotEmpty) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final idx in sortedIndices) {
-          if (idx < sortedBoxes.length) {
-            final box = sortedBoxes[idx];
-            fromBoxes.remove(box);
-            newObs.boxesByImagePath.putIfAbsent(path, () => []).add(box);
-            from.boundingBoxes.remove(box);
-            newObs.boundingBoxes.add(box);
-          }
-        }
-      }
-      if (newObs.boxesByImagePath.containsKey(path) &&
-          newObs.boxesByImagePath[path]!.isNotEmpty) {
-        newObs.sourceImages.add(src);
-      }
-    }
-
-    int actualInsertIdx = insertAtIdx;
-    if (from.count <= 0) {
-      observations.removeAt(fromObsIdx);
-      if (insertAtIdx > fromObsIdx) actualInsertIdx--;
-    } else if (selectedObservation == from) {
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-    }
-    observations.insert(actualInsertIdx, newObs);
-    if (selectedObservation == from && from.count <= 0) {
+    final bool wasSelected = selectedObservation == from;
+    final bool wasDeleted = from.count - indIndices.length <= 0;
+    
+    final newObs = ObservationOperations.extractIndividuals(observations, fromObsIdx, indIndices, insertAtIdx);
+    if (newObs == null) return;
+    
+    if (wasSelected && wasDeleted) {
       selectedObservation = newObs;
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
       currentCenterPage = 0;
       if (pageController.hasClients) pageController.jumpToPage(0);
+    } else if (wasSelected) {
+      selectedIndividualIndices.clear();
+      lastSelectedIndividualIndex = null;
     }
     notifyListeners();
   }

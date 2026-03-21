@@ -2,6 +2,24 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class ImageConverter {
+  static final Map<String, String> _convertedHeicPaths = {};
+
+  static Future<String?> getDisplayPath(String imagePath) async {
+    if (!imagePath.toLowerCase().endsWith('.heic') &&
+        !imagePath.toLowerCase().endsWith('.heif')) {
+      return imagePath;
+    }
+    if (_convertedHeicPaths.containsKey(imagePath)) {
+      return _convertedHeicPaths[imagePath];
+    }
+    final converted = await convertToJpegIfNeeded(imagePath);
+    if (converted != null && converted != imagePath) {
+      _convertedHeicPaths[imagePath] = converted;
+      return converted;
+    }
+    return imagePath;
+  }
+
   /// Converts an image (like HEIC) to a temporary JPEG file.
   /// Needs ImageMagick ('magick' or 'convert') or 'heif-convert' installed.
   static Future<String?> convertToJpegIfNeeded(String inputPath) async {
