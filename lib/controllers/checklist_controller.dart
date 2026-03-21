@@ -35,6 +35,7 @@ class ChecklistController extends ChangeNotifier {
   final Set<String> processingFiles = {};
   final Set<String> activeFiles = {};
   final Map<String, ExifData> imageExifData = {};
+  final Map<String, String> imageVisualHashes = {};
   List<List<String>> fileBursts = [];
 
   // Right panel scroll controller
@@ -101,6 +102,7 @@ class ChecklistController extends ChangeNotifier {
     final result = await IngestionPipeline.gatherFiles(
       currentSelectedFiles: selectedFiles,
       currentExifData: imageExifData,
+      currentVisualHashes: imageVisualHashes,
       burstGrouper: _burstGrouper,
     );
 
@@ -114,6 +116,7 @@ class ChecklistController extends ChangeNotifier {
     processingFiles.addAll(result.newPaths);
     fileBursts = result.bursts;
     imageExifData.addAll(result.exifData);
+    imageVisualHashes.addAll(result.visualHashes);
     
     notifyListeners();
 
@@ -183,6 +186,7 @@ class ChecklistController extends ChangeNotifier {
     processingFiles.clear();
     activeFiles.clear();
     imageExifData.clear();
+    imageVisualHashes.clear();
     progress = 0.0;
     progressMessage = '';
     isProcessing = false;

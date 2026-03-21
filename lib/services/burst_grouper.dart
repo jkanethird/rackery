@@ -11,7 +11,19 @@ class BurstGrouper {
 
   const BurstGrouper({this.burstGapSeconds = 15});
 
-  /// [fileData] is a list of `{'path': String, 'exif': ExifData}` maps,
+  int _hammingDistance(String h1, String h2) {
+    if (h1.length != h2.length) return 64; // Fallback
+    int dist = 0;
+    for (int i = 0; i < h1.length; i++) {
+        int v1 = int.parse(h1[i], radix: 16);
+        int v2 = int.parse(h2[i], radix: 16);
+        int xor = v1 ^ v2;
+        dist += (xor & 1) + ((xor >> 1) & 1) + ((xor >> 2) & 1) + ((xor >> 3) & 1);
+    }
+    return dist;
+  }
+
+  /// [fileData] is a list of `{'path': String, 'exif': ExifData, 'visualHash': String?}` maps,
   /// pre-sorted chronologically by the caller.
   ///
   /// Returns a list of bursts, each burst being the file paths it contains.
@@ -19,30 +31,56 @@ class BurstGrouper {
     final List<List<String>> bursts = [];
     List<String> currentBurst = [];
     DateTime? lastTime;
+    String? lastHash;
 
     for (final data in fileData) {
       final path = data['path'] as String;
       final date = (data['exif'] as ExifData).dateTime;
+      final currentHash = data['visualHash'] as String?;
 
-      if (date == null) {
-        // No timestamp: flush current burst and emit a solo burst.
-        if (currentBurst.isNotEmpty) bursts.add(List.from(currentBurst));
-        bursts.add([path]);
-        currentBurst.clear();
-        lastTime = null;
-      } else if (lastTime == null) {
+      if (currentBurst.isEmpty) {
         currentBurst.add(path);
-        lastTime = date;
-      } else {
+        lastTime = date ?? lastTime; // Usually null initially anyway
+        lastHash = currentHash ?? lastHash;
+        continue;
+      }
+
+      bool isSameBurst = false;
+
+      // 1. Temporal Check (Fast logical grouping)
+      if (date != null && lastTime != null) {
         final diffSeconds = date.difference(lastTime).inSeconds.abs();
         if (diffSeconds <= burstGapSeconds) {
-          currentBurst.add(path);
-        } else {
-          bursts.add(List.from(currentBurst));
-          currentBurst = [path];
+          isSameBurst = true;
         }
-        lastTime = date;
       }
+
+      // 2. Environmental Overrule (Visual physical space grouping)
+      if (!isSameBurst && currentHash != null && lastHash != null) {
+        final dist = _hammingDistance(currentHash, lastHash);
+        if (dist <= 12) {
+          // Additional temporal safeguard so we don't group visually identical photos from wildly different days
+          if (date != null && lastTime != null) {
+             if (date.difference(lastTime).inSeconds.abs() <= 300) {
+                 isSameBurst = true;
+             }
+          } else {
+             // If either date is missing, strictly rely on the physical visual match
+             isSameBurst = true;
+          }
+        }
+      }
+
+      if (isSameBurst) {
+        currentBurst.add(path);
+      } else {
+        bursts.add(List.from(currentBurst));
+        currentBurst = [path];
+      }
+      
+      // Update tracking markers based on latest photo
+      lastTime = date ?? lastTime;
+      lastHash = currentHash ?? lastHash;
     }
 
     if (currentBurst.isNotEmpty) bursts.add(currentBurst);

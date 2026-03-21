@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/services/burst_grouper.dart';
+import 'package:ebird_generator/services/env_hasher.dart';
 
 const _kLastPickerDirKey = 'last_picker_directory';
 
@@ -11,12 +12,14 @@ class IngestionResult {
   final List<String> allFiles;
   final List<List<String>> bursts;
   final Map<String, ExifData> exifData;
+  final Map<String, String> visualHashes;
 
   IngestionResult({
     required this.newPaths,
     required this.allFiles,
     required this.bursts,
     required this.exifData,
+    required this.visualHashes,
   });
 }
 
@@ -24,6 +27,7 @@ class IngestionPipeline {
   static Future<IngestionResult?> gatherFiles({
     required List<String> currentSelectedFiles,
     required Map<String, ExifData> currentExifData,
+    required Map<String, String> currentVisualHashes,
     required BurstGrouper burstGrouper,
   }) async {
     final prefs = await SharedPreferences.getInstance();
@@ -61,9 +65,16 @@ class IngestionPipeline {
       }
     }
 
+    final Map<String, String> newHashes = await EnvHasher.computeHashes(newPaths);
+    final Map<String, String> updatedVisualHashes = Map.of(currentVisualHashes)..addAll(newHashes);
+
     final allFiles = [...currentSelectedFiles, ...newPaths];
     final allFileData = allFiles.map((path) {
-      return {'path': path, 'exif': updatedExifData[path] ?? ExifData()};
+      return {
+        'path': path, 
+        'exif': updatedExifData[path] ?? ExifData(),
+        'visualHash': updatedVisualHashes[path],
+      };
     }).toList();
 
     allFileData.sort((a, b) {
@@ -84,6 +95,7 @@ class IngestionPipeline {
       allFiles: sortedAllFiles,
       bursts: bursts,
       exifData: updatedExifData,
+      visualHashes: updatedVisualHashes,
     );
   }
 }
