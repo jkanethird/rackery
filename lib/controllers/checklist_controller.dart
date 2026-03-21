@@ -104,22 +104,27 @@ class ChecklistController extends ChangeNotifier {
       currentExifData: imageExifData,
       currentVisualHashes: imageVisualHashes,
       burstGrouper: _burstGrouper,
+      onStartProcessing: () {
+        isProcessing = true;
+        progress = 0.0;
+        progressMessage = 'Preparing files...';
+        notifyListeners();
+      },
     );
 
     if (result == null) return;
 
-    isProcessing = true;
-    progress = 0.0;
-    progressMessage = 'Preparing files...';
-    
     selectedFiles = result.allFiles;
     processingFiles.addAll(result.newPaths);
     fileBursts = result.bursts;
     imageExifData.addAll(result.exifData);
     imageVisualHashes.addAll(result.visualHashes);
-    
+
     final int sessionTime = DateTime.now().millisecondsSinceEpoch;
-    final List<String> burstIds = List.generate(fileBursts.length, (i) => 'burst_${sessionTime}_$i');
+    final List<String> burstIds = List.generate(
+      fileBursts.length,
+      (i) => 'burst_${sessionTime}_$i',
+    );
 
     for (int i = 0; i < fileBursts.length; i++) {
       final burstSet = fileBursts[i];
@@ -222,9 +227,9 @@ class ChecklistController extends ChangeNotifier {
     if (!outputFile.endsWith('.csv')) outputFile += '.csv';
     await CsvService.generateEbirdCsv(observations, outputFile);
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('CSV exported to $outputFile')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('CSV exported to $outputFile')));
     }
   }
 
@@ -315,7 +320,9 @@ class ChecklistController extends ChangeNotifier {
   void _syncSelectionAfterMutation(Observation from) {
     if (from.count <= 0) {
       if (selectedObservation == from) {
-        selectedObservation = observations.isNotEmpty ? observations.first : null;
+        selectedObservation = observations.isNotEmpty
+            ? observations.first
+            : null;
         selectedIndividualIndices.clear();
         lastSelectedIndividualIndex = null;
         currentCenterPage = 0;
@@ -343,19 +350,33 @@ class ChecklistController extends ChangeNotifier {
 
   void mergeIndividuals(int fromObsIdx, List<int> indIndices, int intoIdx) {
     final from = observations[fromObsIdx];
-    ObservationOperations.mergeIndividuals(observations, fromObsIdx, indIndices, intoIdx);
+    ObservationOperations.mergeIndividuals(
+      observations,
+      fromObsIdx,
+      indIndices,
+      intoIdx,
+    );
     _syncSelectionAfterMutation(from);
     notifyListeners();
   }
 
-  void extractIndividuals(int fromObsIdx, List<int> indIndices, int insertAtIdx) {
+  void extractIndividuals(
+    int fromObsIdx,
+    List<int> indIndices,
+    int insertAtIdx,
+  ) {
     final from = observations[fromObsIdx];
     final bool wasSelected = selectedObservation == from;
     final bool wasDeleted = from.count - indIndices.length <= 0;
-    
-    final newObs = ObservationOperations.extractIndividuals(observations, fromObsIdx, indIndices, insertAtIdx);
+
+    final newObs = ObservationOperations.extractIndividuals(
+      observations,
+      fromObsIdx,
+      indIndices,
+      insertAtIdx,
+    );
     if (newObs == null) return;
-    
+
     if (wasSelected && wasDeleted) {
       selectedObservation = newObs;
       selectedIndividualIndices.clear();

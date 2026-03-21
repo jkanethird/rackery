@@ -29,6 +29,7 @@ class IngestionPipeline {
     required Map<String, ExifData> currentExifData,
     required Map<String, String> currentVisualHashes,
     required BurstGrouper burstGrouper,
+    void Function()? onStartProcessing,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final lastDir = prefs.getString(_kLastPickerDirKey);
@@ -53,6 +54,8 @@ class IngestionPipeline {
     final pickedPaths = result.files.map((f) => f.path!).toSet();
     final newPaths = pickedPaths.difference(currentSelectedFiles.toSet()).toList();
     if (newPaths.isEmpty) return null;
+
+    if (onStartProcessing != null) onStartProcessing();
 
     newPaths.sort((a, b) => File(a).lengthSync().compareTo(File(b).lengthSync()));
 

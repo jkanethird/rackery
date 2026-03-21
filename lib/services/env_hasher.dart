@@ -1,67 +1,89 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as img;
+import 'ffi_heif.dart';
+import 'package:path/path.dart' as p;
 
 class EnvHasher {
-  /// Spawns a Python subprocess to rapidly calculate an Average Hash (64-bit boolean array
-  /// mapped to a 16-character hex string) for every image in the provided list.
-  /// Used for grouping photos that physically share the exact same environmental background.
-  static Future<Map<String, String>> computeHashes(List<String> filePaths) async {
-    if (filePaths.isEmpty) return {};
-
-    final pythonCode = '''
-import sys
-import json
-from PIL import Image
-
-try:
-    from pillow_heif import register_heif_opener
-    register_heif_opener()
-except ImportError:
-    pass
-
-def ahash(img):
-    img = img.resize((8, 8), Image.Resampling.LANCZOS).convert('L')
-    pixels = list(img.getdata())
-    avg = sum(pixels) / len(pixels)
-    bits = "".join(['1' if p > avg else '0' for p in pixels])
-    return hex(int(bits, 2))[2:].zfill(16)
-
-results = {}
-for path in sys.argv[1:]:
-    try:
-        img = Image.open(path)
-        img.thumbnail((256, 256)) # Fast low-res decode if supported by codec
-        results[path] = ahash(img)
-    except Exception as e:
-        results[path] = None
-
-print(json.dumps(results))
-''';
+  static Future<Map<String, String>> computeHashes(List<String> imagePaths) async {
+    final Map<String, String> hashes = {};
+    if (imagePaths.isEmpty) return hashes;
 
     try {
-      final result = await Process.run('python3', [
-        '-c',
-        pythonCode,
-        ...filePaths,
-      ]);
-
-      if (result.exitCode == 0) {
-        final Map<String, dynamic> output = jsonDecode(result.stdout.toString().trim());
-        final Map<String, String> finalHashes = {};
-        for (final entry in output.entries) {
-          if (entry.value != null && entry.value.toString().isNotEmpty) {
-            finalHashes[entry.key] = entry.value.toString();
-          }
-        }
-        return finalHashes;
-      } else {
-        debugPrint('EnvHasher Failed: \${result.stderr}');
-      }
+      final results = await compute(_hashImagesWrapper, imagePaths);
+      hashes.addAll(results);
     } catch (e) {
-      debugPrint('EnvHasher Exception: \$e');
+      debugPrint("EnvHasher FFI Exception: $e");
     }
 
-    return {};
+    return hashes;
   }
+}
+
+Future<Map<String, String>> _hashImagesWrapper(List<String> paths) async {
+  final Map<String, String> results = {};
+  
+  // Instance is lazy loaded per isolate, safely
+  LibHeif? libHeif;
+
+  for (final path in paths) {
+    try {
+      img.Image image;
+      final ext = p.extension(path).toLowerCase();
+      
+      if (ext == '.heic' || ext == '.heif') {
+        libHeif ??= LibHeif();
+        final heicData = libHeif.decodeHeic(path);
+        image = img.Image.fromBytes(
+          width: heicData.width,
+          height: heicData.height,
+          bytes: heicData.pixels.buffer,
+          rowStride: heicData.stride,
+          numChannels: 3,
+          order: img.ChannelOrder.rgb,
+        );
+      } else {
+        final bytes = await File(path).readAsBytes();
+        final decoded = img.decodeImage(bytes);
+        if (decoded == null) throw Exception("Could not decode image");
+        image = decoded;
+      }
+      
+      results[path] = _calculateAHash(image);
+      
+    } catch (e) {
+      debugPrint("EnvHasher error hashing $path: $e");
+    }
+  }
+  
+  return results;
+}
+
+String _calculateAHash(img.Image image) {
+  // 1. Resize to 8x8 using average interpolation
+  final small = img.copyResize(image, width: 8, height: 8, interpolation: img.Interpolation.average);
+  
+  // 2. Grayscale and collect luminances
+  final luminances = <int>[];
+  var totalLuminance = 0;
+  
+  for (final p in small) {
+    // Perceptual grayscale
+    final lum = (0.299 * p.r + 0.587 * p.g + 0.114 * p.b).round();
+    luminances.add(lum);
+    totalLuminance += lum;
+  }
+  
+  // 3. Average
+  final avg = totalLuminance / luminances.length;
+  
+  // 4. Compute 64-bit hash
+  BigInt hash = BigInt.zero;
+  for (int i = 0; i < luminances.length; i++) {
+    if (luminances[i] >= avg) {
+      hash |= (BigInt.one << (63 - i));
+    }
+  }
+  
+  return hash.toString(); // Generates equivalent unsigned string representation
 }

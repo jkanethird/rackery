@@ -93,9 +93,7 @@ class PhotoProcessor {
           if (!newPathSet.contains(filePath)) continue;
           onFileStarted(filePath);
           try {
-            final processedPath =
-                await ImageConverter.convertToJpegIfNeeded(filePath) ??
-                filePath;
+            final processedPath = await ImageConverter.convertToJpegIfNeeded(filePath);
             final exifData = await ExifService.extractExif(filePath);
             final detectedBirds = await detector.detectAndCrop(processedPath);
 

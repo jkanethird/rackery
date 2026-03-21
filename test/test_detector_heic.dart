@@ -15,10 +15,6 @@ void main() {
     final convertedPath = await ImageConverter.convertToJpegIfNeeded(
       '/home/jkane/test photos/IMG_3835.HEIC',
     );
-    if (convertedPath == null) {
-      print("Conversion failed");
-      return;
-    }
     print("Converted to \$convertedPath");
 
     final fileBytes = await File(convertedPath).readAsBytes();
