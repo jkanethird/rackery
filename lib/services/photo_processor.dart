@@ -204,6 +204,9 @@ class PhotoProcessor {
                       );
                 }
                 completedIdentifications++;
+                if (completedIdentifications % 15 == 0) {
+                  await classifier.unloadModel();
+                }
                 onProgressMessage(
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
@@ -227,6 +230,9 @@ class PhotoProcessor {
                 // Empty list = model said this crop isn't a bird — skip it.
                 if (speciesList.isEmpty) {
                   completedIdentifications++;
+                  if (completedIdentifications % 15 == 0) {
+                    await classifier.unloadModel();
+                  }
                   onProgressMessage(
                     'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                   );
@@ -262,6 +268,9 @@ class PhotoProcessor {
                 }
 
                 completedIdentifications++;
+                if (completedIdentifications % 15 == 0) {
+                  await classifier.unloadModel();
+                }
                 onProgressMessage(
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
@@ -289,8 +298,7 @@ class PhotoProcessor {
         }
         if (newObs.isNotEmpty) onObservationAdded(newObs);
 
-        // Unload the model between bursts to prevent context bleed
-        await classifier.unloadModel();
+        // Unload logic handled per-15 birds and at the end of the batch
 
         completedBurstsPhase2++;
         final p1 = totalBytesPhase1 > 0
@@ -300,6 +308,9 @@ class PhotoProcessor {
             totalBursts > 0 ? completedBurstsPhase2 / totalBursts : 1.0;
         onProgress(p1 * 0.5 + p2 * 0.5);
       } // end for burst
+
+      // Unload after the entire selected batch of photos is processed
+      await classifier.unloadModel();
     });
 
     await Future.wait([phase1Worker, phase2Worker]);
