@@ -85,5 +85,5 @@ String _calculateAHash(img.Image image) {
     }
   }
   
-  return hash.toString(); // Generates equivalent unsigned string representation
+  return hash.toRadixString(16).padLeft(16, '0');
 }
