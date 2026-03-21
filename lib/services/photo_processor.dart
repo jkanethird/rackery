@@ -56,6 +56,7 @@ class PhotoProcessor {
   Future<void> run({
     required List<String> newPaths,
     required List<List<String>> bursts,
+    required List<String> burstIds,
     required void Function(double) onProgress,
     required void Function(String) onProgressMessage,
     required void Function(List<Observation>) onObservationAdded,
@@ -285,7 +286,7 @@ class PhotoProcessor {
         final newObs = <Observation>[];
         for (final bg in burstGroupsBySpecies.values) {
           if (bg.observations.isNotEmpty) {
-            newObs.add(bg.toObservation(burstId: 'burst_$i'));
+            newObs.add(bg.toObservation(burstId: burstIds[i]));
           }
         }
         if (newObs.isNotEmpty) onObservationAdded(newObs);

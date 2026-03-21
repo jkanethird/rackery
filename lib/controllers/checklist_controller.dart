@@ -118,6 +118,19 @@ class ChecklistController extends ChangeNotifier {
     imageExifData.addAll(result.exifData);
     imageVisualHashes.addAll(result.visualHashes);
     
+    final int sessionTime = DateTime.now().millisecondsSinceEpoch;
+    final List<String> burstIds = List.generate(fileBursts.length, (i) => 'burst_${sessionTime}_$i');
+
+    for (int i = 0; i < fileBursts.length; i++) {
+      final burstSet = fileBursts[i];
+      final bId = burstIds[i];
+      for (final obs in observations) {
+        if (burstSet.contains(obs.imagePath)) {
+          obs.burstId = bId;
+        }
+      }
+    }
+
     notifyListeners();
 
     final processor = PhotoProcessor(
@@ -129,6 +142,7 @@ class ChecklistController extends ChangeNotifier {
     await processor.run(
       newPaths: result.newPaths,
       bursts: result.bursts,
+      burstIds: burstIds,
       onProgress: (value) {
         progress = value;
         notifyListeners();
