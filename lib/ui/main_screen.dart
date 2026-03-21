@@ -477,6 +477,19 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text('eBird Checklist Generator'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: 'About & Licenses',
+            onPressed: () {
+              showAboutDialog(
+                context: context,
+                applicationName: 'eBird Checklist Generator',
+                applicationVersion: '1.0.0',
+                applicationIcon: const Icon(Icons.flutter_dash, size: 48),
+                applicationLegalese: 'Built with Llama 3.2 Vision.\nPowered by TensorFlow Lite.',
+              );
+            },
+          ),
           if (_selectedFiles.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete_outline),
