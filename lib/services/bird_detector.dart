@@ -119,7 +119,7 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
       double score = scores[0][i];
       int detectedClass = classes[0][i].toInt();
 
-      if (score > 0.45 && (detectedClass == 16 || detectedClass == 15)) {
+      if (score > 0.25 && (detectedClass == 16 || detectedClass == 15)) {
         List<double> box = locations[0][i];
 
         double ymin = box[0].clamp(0.0, 1.0);
@@ -196,9 +196,9 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
                 existing.box.height) /
             8;
 
-        if (iou > 0.30 ||
-            ioMin > 0.50 ||
-            (intersectArea > 0 && centerDist < distThreshold)) {
+        if (iou > 0.20 ||
+            ioMin > 0.40 ||
+            (intersectArea > 0 && centerDist < distThreshold * 1.5)) {
           isDuplicate = true;
           break;
         }
