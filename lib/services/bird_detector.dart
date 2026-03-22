@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -22,13 +23,15 @@ class _RawDetection {
 
 class _DetectorRequest {
   final Uint8List fileBytes;
-  final int interpreterAddress;
+  final int? interpreterAddress;
+  final Uint8List? modelBytes;
   final int targetW;
   final int targetH;
 
   _DetectorRequest(
     this.fileBytes,
     this.interpreterAddress,
+    this.modelBytes,
     this.targetW,
     this.targetH,
   );
@@ -38,7 +41,15 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
   final originalImage = img.decodeImage(data.fileBytes);
   if (originalImage == null) return [];
 
-  final interpreter = Interpreter.fromAddress(data.interpreterAddress);
+  late Interpreter interpreter;
+  bool closeInterpreter = false;
+
+  if (Platform.isWindows) {
+    interpreter = Interpreter.fromBuffer(data.modelBytes!);
+    closeInterpreter = true;
+  } else {
+    interpreter = Interpreter.fromAddress(data.interpreterAddress!);
+  }
 
   final int origW = originalImage.width;
   final int origH = originalImage.height;
@@ -257,17 +268,25 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
     allCrops.add(BirdCrop(jpgBytes, color, det.score, det.box));
   }
 
+  if (closeInterpreter) {
+    interpreter.close();
+  }
+
   return allCrops;
 }
 
 class BirdDetector {
   Interpreter? _interpreter;
+  Uint8List? _modelBytes;
 
   Future<void> init() async {
+    final byteData = await rootBundle.load('assets/efficientdet_lite4.tflite');
+    _modelBytes = byteData.buffer.asUint8List();
+
     final options = InterpreterOptions()
       ..threads = min(4, Platform.numberOfProcessors);
-    _interpreter = await Interpreter.fromAsset(
-      'assets/efficientdet_lite4.tflite',
+    _interpreter = Interpreter.fromBuffer(
+      _modelBytes!,
       options: options,
     );
   }
@@ -285,19 +304,13 @@ class BirdDetector {
 
     final request = _DetectorRequest(
       fileBytes,
-      _interpreter!.address,
+      Platform.isWindows ? null : _interpreter!.address,
+      Platform.isWindows ? _modelBytes : null,
       targetW,
       targetH,
     );
 
-    // The C++ TensorFlow Lite DLL binds threads locally in Windows kernel contexts.
-    // Utilizing `Interpreter.fromAddress` across a Dart `Isolate` boundary natively 
-    // triggers a silent C++ memory deadlock. Bypassing `compute` fixes the freeze.
-    if (Platform.isWindows) {
-      return _detectorWorker(request);
-    } else {
-      return await compute(_detectorWorker, request);
-    }
+    return await compute(_detectorWorker, request);
   }
 
   void dispose() {
