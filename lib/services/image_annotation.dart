@@ -25,11 +25,11 @@ List<int> annotateAndEncode(AnnotationParams params) {
   img.Image region;
 
   if (boxes.length == 1) {
-    // For a single detected bird, crop with generous 200% padding so the bird
+    // For a single detected bird, crop with 50% padding so the bird
     // is the prominent subject but has enough habitat/environment context.
     final box = boxes.first;
-    final padX = (box.width * 2.0).round();
-    final padY = (box.height * 2.0).round();
+    final padX = (box.width * 0.5).round();
+    final padY = (box.height * 0.5).round();
 
     final cropX1 = (box.left - padX).clamp(0, source.width - 1);
     final cropY1 = (box.top - padY).clamp(0, source.height - 1);
@@ -44,31 +44,12 @@ List<int> annotateAndEncode(AnnotationParams params) {
       height: cropY2 - cropY1,
     );
 
-    // Box coords relative to the crop
-    final relBox = Rectangle<int>(
-      box.left - cropX1,
-      box.top - cropY1,
-      box.width,
-      box.height,
-    );
-
     // Upscale small crops so the bird is large enough to identify
     if (region.width < 640 || region.height < 640) {
       final scale = 640 / max(region.width, region.height);
       final newW = (region.width * scale).round();
       final newH = (region.height * scale).round();
-      final scaleX = newW / region.width;
-      final scaleY = newH / region.height;
-      final scaled = Rectangle<int>(
-        (relBox.left * scaleX).round(),
-        (relBox.top * scaleY).round(),
-        (relBox.width * scaleX).round(),
-        (relBox.height * scaleY).round(),
-      );
       region = img.copyResize(region, width: newW, height: newH);
-      drawBoxes(region, [scaled]);
-    } else {
-      drawBoxes(region, [relBox]);
     }
   } else {
     // For multi-bird clusters use the full image so all boxes are visible.

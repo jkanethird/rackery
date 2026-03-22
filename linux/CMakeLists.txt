@@ -132,3 +132,35 @@ install(
   FILES ${PROJECT_BUILD_DIR}/../blobs/libtensorflowlite_c-linux.so
   DESTINATION ${INSTALL_BUNDLE_DATA_DIR}/../blobs/
 )
+
+# ── llama.cpp native libraries ──────────────────────────────────────────────
+# libllama.so, libmtmd.so, libllama_shim.so, and all libggml*.so files.
+# The app's RPATH is set to $ORIGIN/lib so placing them in bundle/lib/ is sufficient.
+set(LLAMA_BUILD_BIN "$ENV{HOME}/llama.cpp/build/bin")
+set(LLAMA_SHIM_SO "${CMAKE_CURRENT_SOURCE_DIR}/llama_shim/libllama_shim.so")
+
+file(GLOB LLAMA_SO_FILES
+  "${LLAMA_BUILD_BIN}/libggml*.so"
+  "${LLAMA_BUILD_BIN}/libllama.so"
+  "${LLAMA_BUILD_BIN}/libmtmd.so"
+)
+
+if(LLAMA_SO_FILES)
+  install(FILES ${LLAMA_SO_FILES}
+    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+else()
+  message(WARNING
+    "llama.cpp .so files not found in ${LLAMA_BUILD_BIN}. "
+    "Run cmake --build ~/llama.cpp/build first.")
+endif()
+
+if(EXISTS "${LLAMA_SHIM_SO}")
+  install(FILES "${LLAMA_SHIM_SO}"
+    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+else()
+  message(WARNING
+    "libllama_shim.so not found at ${LLAMA_SHIM_SO}. "
+    "Build it with: g++ -shared -fPIC -o linux/llama_shim/libllama_shim.so ...")
+endif()

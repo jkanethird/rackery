@@ -1,22 +1,25 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
-import 'package:http/http.dart' as http;
+import 'package:ebird_generator/services/ffi_llama.dart';
 import 'package:ebird_generator/services/image_annotation.dart';
 import 'package:ebird_generator/services/species_name_resolver.dart';
 import 'package:ebird_generator/services/geo_region_service.dart';
 
-const _kOllamaUrl = 'http://localhost:11434/api/generate';
-const _kModel = 'llama3.2-vision';
-
+/// Classifies bird species in images using llama3.2-vision via direct
+/// C FFI (`libllama.so` + `libmtmd.so`), bypassing the Ollama HTTP daemon.
+///
+/// Image pixels are passed directly to the multimodal encoder (mtmd_bitmap)
+/// so there is no base64 overhead and no HTTP round-trip latency.
 class BirdClassifier {
+  final _llama = const FfiLlama();
+
   Future<void> init() async {}
 
   /// Classifies the bird in the image at [imagePath].
-  /// An optional single [box] draws a red rectangle for solo-bird context.
-  /// Use [classifyCluster] for multi-bird clusters.
+  /// An optional [box] draws a red rectangle for solo-bird context.
   Future<List<String>> classifyFile(
     String imagePath, {
     Rectangle<int>? box,
@@ -37,7 +40,7 @@ class BirdClassifier {
 
   /// Classifies a cluster of birds in [imagePath], all highlighted with red
   /// rectangles. Prompts the model to identify all highlighted birds
-  /// simultaneously, leveraging flock-level visual context.
+  /// simultaneously using flock-level visual context.
   Future<List<String>> classifyCluster(
     String imagePath, {
     required List<Rectangle<int>> boxes,
@@ -66,104 +69,120 @@ class BirdClassifier {
     try {
       final bytes = await File(imagePath).readAsBytes();
       final fullImage = await compute(img.decodeImage, bytes);
-      if (fullImage == null) return ["Unknown Bird"];
+      if (fullImage == null) return ['Unknown Bird'];
 
+      // Annotate the image (red bounding boxes) and write to a temp JPEG file.
+      // FfiLlama reads this temp file to decode pixels into the mtmd_bitmap.
       final jpgBytes = await compute(
         annotateAndEncode,
         AnnotationParams(fullImage, boxes, fullImage.width, fullImage.height),
       );
-      final base64Image = base64Encode(jpgBytes);
+      final tmpFile = File(
+        '${Directory.systemTemp.path}/bird_classify_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
+      await tmpFile.writeAsBytes(jpgBytes);
 
-      final String boxGuide;
-      if (boxes.length > 1) {
-        boxGuide =
-            ' There are ${boxes.length} red rectangles drawn on the image, '
-            'each highlighting one bird. All highlighted birds are the SAME species. '
-            'Identify their species using the collective visual evidence across all boxes.';
-      } else if (boxes.isNotEmpty) {
-        boxGuide =
-            ' A red rectangle has been drawn on the image to highlight the bird. '
-            'Focus your identification on the bird inside the red box.';
-      } else {
-        boxGuide = '';
-      }
+      final prompt = _buildPrompt(boxes, latitude, longitude, photoDate);
 
-      final String locationGuide =
-          (latitude != null && longitude != null)
-          ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}.'
-                ' Prioritize species known to occur in that region.'
-          : '';
-
-      final String dateGuide;
-      if (photoDate != null) {
-        const months = [
-          '',
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December',
-        ];
-        final month = months[photoDate.month];
-        final season = switch (photoDate.month) {
-          12 || 1 || 2 => 'winter',
-          3 || 4 || 5 => 'spring',
-          6 || 7 || 8 => 'summer',
-          _ => 'fall',
-        };
-        dateGuide =
-            ' Photo taken in $month ${photoDate.year} ($season).'
-            ' Consider $season plumage and $season visitors for this region.';
-      } else {
-        dateGuide = '';
-      }
-
-      final prompt =
-          'You are an expert ornithologist helping build an eBird checklist. '
-          'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
-          'If you can identify a bird, provide your top 1 to 5 species guesses '
-          'as a numbered list of common names (e.g. "1. Northern Cardinal").\n'
-          'If the highlighted region contains NO identifiable bird '
-          '(e.g. foliage, rocks, sky, or a non-bird animal), respond with exactly: 0. none\n'
-          'CRITICAL: Do not include any text other than the numbered list.';
-
-      final response = await http.post(
-        Uri.parse(_kOllamaUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'model': _kModel,
-          'prompt': prompt,
-          'images': [base64Image],
-          'stream': false,
-          'options': {'temperature': 0.1, 'num_predict': 96},
-        }),
+      final result = await _llama.classify(
+        tmpFile.path,
+        prompt,
+        temperature: 0.1,
+        maxTokens: 96,
       );
 
-      if (response.statusCode == 200) {
-        return SpeciesNameResolver.parseOllamaResponse(response.body);
-      } else {
+      // Copy the file to artifacts to inspect it
+      final artifactPath = '/home/jkane/.gemini/antigravity/brain/223f541a-abf7-41d2-bca4-7c9aa467e382/bird_crop_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await tmpFile.copy(artifactPath);
+      debugPrint('BirdClassifier saved crop to $artifactPath');
+
+      // Clean up the temp file
+      unawaited(tmpFile.delete().catchError((Object _) => tmpFile));
+
+      if (result.isHighRisk) {
         debugPrint(
-          'Ollama API Error: ${response.statusCode} - ${response.body}',
+          'BirdClassifier: HALP flagged high hallucination risk '
+          '(scores: ${result.halpScores.map((s) => s.toStringAsFixed(2)).join(', ')})',
         );
-        return ["Unknown Bird (Ollama Error)"];
       }
-    } catch (e) {
-      debugPrint('Error classifying with Ollama: $e');
-      return ["Unknown Bird (Connection Error)"];
-    }
-  }
 
-  Future<void> unloadModel() async {
-    try {
-      final response = await http.post(
-        Uri.parse(_kOllamaUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'model': _kModel, 'keep_alive': 0}),
+      if (result.text.isEmpty) {
+        debugPrint('BirdClassifier: empty response from FfiLlama');
+        return ['Unknown Bird'];
+      }
+
+      debugPrint('BirdClassifier raw output: ${result.text}');
+
+      return SpeciesNameResolver.parseOllamaResponse(
+        // Wrap in Ollama-compatible envelope for the existing parser
+        '{"response":"${result.text.replaceAll('"', '\\"').replaceAll('\n', '\\n')}"}',
       );
-      if (response.statusCode != 200) {
-        debugPrint('Failed to unload Ollama model: ${response.body}');
-      }
     } catch (e) {
-      debugPrint('Error unloading Ollama model: $e');
+      debugPrint('BirdClassifier: error during FFI inference: $e');
+      return ['Unknown Bird'];
     }
   }
 
-  void dispose() {}
+  String _buildPrompt(
+    List<Rectangle<int>> boxes,
+    double? latitude,
+    double? longitude,
+    DateTime? photoDate,
+  ) {
+    final String boxGuide;
+    if (boxes.length > 1) {
+      boxGuide =
+          ' There are ${boxes.length} red rectangles drawn on the image, '
+          'each highlighting one bird. All highlighted birds are the SAME species. '
+          'Identify their species using the collective visual evidence across all boxes.';
+    } else if (boxes.isNotEmpty) {
+      boxGuide =
+          ' This image is a tight crop of the single bird detected in the photograph.';
+    } else {
+      boxGuide = '';
+    }
+
+    final String locationGuide =
+        (latitude != null && longitude != null)
+        ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}.'
+              ' Prioritize species known to occur in that region.'
+        : '';
+
+    final String dateGuide;
+    if (photoDate != null) {
+      const months = [
+        '',
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December',
+      ];
+      final month = months[photoDate.month];
+      final season = switch (photoDate.month) {
+        12 || 1 || 2 => 'winter',
+        3 || 4 || 5 => 'spring',
+        6 || 7 || 8 => 'summer',
+        _ => 'fall',
+      };
+      dateGuide =
+          ' Photo taken in $month ${photoDate.year} ($season).'
+          ' Consider $season plumage and $season visitors for this region.';
+    } else {
+      dateGuide = '';
+    }
+
+    return 'You are an expert ornithologist helping build an eBird checklist. '
+        'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n\n'
+        'First, describe the bird\'s most prominent physical characteristics in a single brief paragraph (e.g., colors, beak shape, patterns).\n'
+        'Then, provide a numbered list of your top 1 to 5 species guesses using common names (e.g. "1. Species Name"). '
+        'Even if you are uncertain, you MUST provide your best guesses.\n\n'
+        'If the image clearly contains NO bird whatsoever '
+        '(e.g. ONLY foliage, rocks, sky, or a non-bird animal), respond with exactly: 0. none';
+  }
+
+  /// Previously used to evict the Ollama model from RAM.
+  /// With FFI the model is loaded/unloaded per inference call automatically.
+  Future<void> unloadModel() async {}
+
+  void dispose() {
+    _llama.dispose();
+  }
 }
