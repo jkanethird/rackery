@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
+import 'package:path/path.dart' as p;
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/models/burst_group.dart';
 import 'package:ebird_generator/services/exif_service.dart';
@@ -251,7 +252,7 @@ class PhotoProcessor {
                 } else {
                   final cropBytes = clusterCrops.first.croppedJpgBytes;
                   final tempDir = await Directory.systemTemp.createTemp();
-                  final filename = filePath.split('/').last;
+                  final filename = p.basename(filePath);
                   final cropPath = '${tempDir.path}/cluster_${ci}_$filename';
                   await File(cropPath).writeAsBytes(cropBytes);
 

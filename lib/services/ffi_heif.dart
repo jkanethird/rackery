@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_interpolation_to_compose_strings
 import 'dart:ffi' as ffi;
+import 'dart:io';
 import 'package:ffi/ffi.dart';
 import 'dart:typed_data';
 
@@ -114,7 +115,10 @@ class LibHeif {
       _lib = ffi.DynamicLibrary.open('libheif.so.1');
     } catch (_) {
       try {
-        _lib = ffi.DynamicLibrary.open('libheif.so');
+        String libName = 'libheif.so';
+        if (Platform.isMacOS) libName = 'libheif.dylib';
+        if (Platform.isWindows) libName = 'heif.dll';
+        _lib = ffi.DynamicLibrary.open(libName);
       } catch (e) {
         throw Exception("Failed to open libheif natively: \$e");
       }
