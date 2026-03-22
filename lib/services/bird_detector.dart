@@ -35,16 +35,16 @@ class _DetectorRequest {
   );
 }
 
-List<BirdCrop> _detectorWorker(_DetectorRequest data) {
+Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
   final originalImage = img.decodeImage(data.fileBytes);
   if (originalImage == null) return [];
 
   final interpreter = Interpreter.fromAddress(data.interpreterAddress);
   
-  return _processCore(originalImage, interpreter, data.targetW, data.targetH);
+  return await _processCore(originalImage, interpreter, data.targetW, data.targetH);
 }
 
-List<BirdCrop> _processCore(img.Image originalImage, Interpreter interpreter, int targetW, int targetH) {
+Future<List<BirdCrop>> _processCore(img.Image originalImage, Interpreter interpreter, int targetW, int targetH) async {
   final int origW = originalImage.width;
   final int origH = originalImage.height;
 
@@ -75,6 +75,9 @@ List<BirdCrop> _processCore(img.Image originalImage, Interpreter interpreter, in
   List<_RawDetection> rawDetections = [];
 
   for (var tile in tiles) {
+    // Yield to the Flutter UI rendering engine before incredibly heavy tensor mapping
+    await Future.delayed(Duration.zero);
+
     img.Image tileImage = img.copyCrop(
       originalImage,
       x: tile.left,
@@ -217,6 +220,9 @@ List<BirdCrop> _processCore(img.Image originalImage, Interpreter interpreter, in
 
   List<BirdCrop> allCrops = [];
   for (var det in finalDetections) {
+    // Yield securely to the Flutter UI rendering engine distinctly before heavy JPG encoding
+    await Future.delayed(Duration.zero);
+
     final cropped = img.copyCrop(
       originalImage,
       x: det.box.left,
@@ -298,7 +304,7 @@ class BirdDetector {
 
       // Run the exceptionally fast Inference matrix processing synchronously.
       // This strictly prevents Windows TFLite TLS mutexes from locking the Isolate cleanly.
-      return _processCore(originalImage, _interpreter!, targetW, targetH);
+      return await _processCore(originalImage, _interpreter!, targetW, targetH);
     } else {
       // Linux/Mac OS TFLite configurations handle cross-isolate bindings perfectly fine
       final request = _DetectorRequest(
