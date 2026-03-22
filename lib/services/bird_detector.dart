@@ -23,15 +23,13 @@ class _RawDetection {
 
 class _DetectorRequest {
   final Uint8List fileBytes;
-  final int? interpreterAddress;
-  final Uint8List? modelBytes;
+  final int interpreterAddress;
   final int targetW;
   final int targetH;
 
   _DetectorRequest(
     this.fileBytes,
     this.interpreterAddress,
-    this.modelBytes,
     this.targetW,
     this.targetH,
   );
@@ -41,16 +39,12 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
   final originalImage = img.decodeImage(data.fileBytes);
   if (originalImage == null) return [];
 
-  late Interpreter interpreter;
-  bool closeInterpreter = false;
+  final interpreter = Interpreter.fromAddress(data.interpreterAddress);
+  
+  return _processCore(originalImage, interpreter, data.targetW, data.targetH);
+}
 
-  if (Platform.isWindows) {
-    interpreter = Interpreter.fromBuffer(data.modelBytes!);
-    closeInterpreter = true;
-  } else {
-    interpreter = Interpreter.fromAddress(data.interpreterAddress!);
-  }
-
+List<BirdCrop> _processCore(img.Image originalImage, Interpreter interpreter, int targetW, int targetH) {
   final int origW = originalImage.width;
   final int origH = originalImage.height;
 
@@ -91,16 +85,16 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
 
     img.Image imageInput = img.copyResize(
       tileImage,
-      width: data.targetW,
-      height: data.targetH,
+      width: targetW,
+      height: targetH,
       interpolation: img.Interpolation.linear,
     );
 
     var tensor = List.generate(
       1,
       (_) => List.generate(
-        data.targetH,
-        (y) => List.generate(data.targetW, (x) {
+        targetH,
+        (y) => List.generate(targetW, (x) {
           final pixel = imageInput.getPixel(x, y);
           return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
         }),
@@ -268,25 +262,17 @@ List<BirdCrop> _detectorWorker(_DetectorRequest data) {
     allCrops.add(BirdCrop(jpgBytes, color, det.score, det.box));
   }
 
-  if (closeInterpreter) {
-    interpreter.close();
-  }
-
   return allCrops;
 }
 
 class BirdDetector {
   Interpreter? _interpreter;
-  Uint8List? _modelBytes;
 
   Future<void> init() async {
-    final byteData = await rootBundle.load('assets/efficientdet_lite4.tflite');
-    _modelBytes = byteData.buffer.asUint8List();
-
     final options = InterpreterOptions()
       ..threads = min(4, Platform.numberOfProcessors);
-    _interpreter = Interpreter.fromBuffer(
-      _modelBytes!,
+    _interpreter = await Interpreter.fromAsset(
+      'assets/efficientdet_lite4.tflite',
       options: options,
     );
   }
@@ -302,15 +288,28 @@ class BirdDetector {
     final int targetW = inputShape[1];
     final int targetH = inputShape[2];
 
-    final request = _DetectorRequest(
-      fileBytes,
-      Platform.isWindows ? null : _interpreter!.address,
-      Platform.isWindows ? _modelBytes : null,
-      targetW,
-      targetH,
-    );
+    if (Platform.isWindows) {
+      // Decode image in background to avoid 500ms UI freeze
+      final originalImage = await compute(img.decodeImage, fileBytes);
+      if (originalImage == null) return [];
 
-    return await compute(_detectorWorker, request);
+      // Yield back to RenderBox briefly to guarantee UI updates cleanly
+      await Future.delayed(Duration.zero);
+
+      // Run the exceptionally fast Inference matrix processing synchronously.
+      // This strictly prevents Windows TFLite TLS mutexes from locking the Isolate cleanly.
+      return _processCore(originalImage, _interpreter!, targetW, targetH);
+    } else {
+      // Linux/Mac OS TFLite configurations handle cross-isolate bindings perfectly fine
+      final request = _DetectorRequest(
+        fileBytes,
+        _interpreter!.address,
+        targetW,
+        targetH,
+      );
+
+      return await compute(_detectorWorker, request);
+    }
   }
 
   void dispose() {
