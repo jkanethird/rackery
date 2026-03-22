@@ -1,25 +1,21 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
-import 'package:ebird_generator/services/ffi_llama.dart';
+import 'package:http/http.dart' as http;
 import 'package:ebird_generator/services/image_annotation.dart';
 import 'package:ebird_generator/services/species_name_resolver.dart';
 import 'package:ebird_generator/services/geo_region_service.dart';
 
-/// Classifies bird species in images using llama3.2-vision via direct
-/// C FFI (`libllama.so` + `libmtmd.so`), bypassing the Ollama HTTP daemon.
-///
-/// Image pixels are passed directly to the multimodal encoder (mtmd_bitmap)
-/// so there is no base64 overhead and no HTTP round-trip latency.
-class BirdClassifier {
-  final _llama = const FfiLlama();
+const _kOllamaUrl = 'http://localhost:11434/api/generate';
+const _kModel = 'llama3.2-vision';
 
+class BirdClassifier {
   Future<void> init() async {}
 
   /// Classifies the bird in the image at [imagePath].
-  /// An optional [box] draws a red rectangle for solo-bird context.
   Future<List<String>> classifyFile(
     String imagePath, {
     Rectangle<int>? box,
@@ -38,9 +34,6 @@ class BirdClassifier {
     );
   }
 
-  /// Classifies a cluster of birds in [imagePath], all highlighted with red
-  /// rectangles. Prompts the model to identify all highlighted birds
-  /// simultaneously using flock-level visual context.
   Future<List<String>> classifyCluster(
     String imagePath, {
     required List<Rectangle<int>> boxes,
@@ -69,57 +62,42 @@ class BirdClassifier {
     try {
       final bytes = await File(imagePath).readAsBytes();
       final fullImage = await compute(img.decodeImage, bytes);
-      if (fullImage == null) return ['Unknown Bird'];
+      if (fullImage == null) return ["Unknown Bird"];
 
-      // Annotate the image (red bounding boxes) and write to a temp JPEG file.
-      // FfiLlama reads this temp file to decode pixels into the mtmd_bitmap.
       final jpgBytes = await compute(
         annotateAndEncode,
         AnnotationParams(fullImage, boxes, fullImage.width, fullImage.height),
       );
-      final tmpFile = File(
-        '${Directory.systemTemp.path}/bird_classify_${DateTime.now().millisecondsSinceEpoch}.jpg',
-      );
-      await tmpFile.writeAsBytes(jpgBytes);
-
+      
+      final base64Image = base64Encode(jpgBytes);
       final prompt = _buildPrompt(boxes, latitude, longitude, photoDate);
-
-      final result = await _llama.classify(
-        tmpFile.path,
-        prompt,
-        temperature: 0.1,
-        maxTokens: 96,
+      final response = await http.post(
+        Uri.parse(_kOllamaUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'model': _kModel,
+          'prompt': prompt,
+          'images': [base64Image],
+          'stream': false,
+          'options': {'temperature': 0.1, 'num_predict': 128},
+        }),
       );
 
-      // Copy the file to artifacts to inspect it
-      final artifactPath = '/home/jkane/.gemini/antigravity/brain/223f541a-abf7-41d2-bca4-7c9aa467e382/bird_crop_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      await tmpFile.copy(artifactPath);
-      debugPrint('BirdClassifier saved crop to $artifactPath');
-
-      // Clean up the temp file
-      unawaited(tmpFile.delete().catchError((Object _) => tmpFile));
-
-      if (result.isHighRisk) {
-        debugPrint(
-          'BirdClassifier: HALP flagged high hallucination risk '
-          '(scores: ${result.halpScores.map((s) => s.toStringAsFixed(2)).join(', ')})',
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        String resultText = data['response'].toString().trim();
+        return SpeciesNameResolver.parseOllamaResponse(
+          '{"response":"${resultText.replaceAll('"', '\\"').replaceAll('\n', '\\n')}"}',
         );
+      } else {
+        debugPrint(
+          'Ollama API Error: ${response.statusCode} - ${response.body}',
+        );
+        return ["Unknown Bird"];
       }
-
-      if (result.text.isEmpty) {
-        debugPrint('BirdClassifier: empty response from FfiLlama');
-        return ['Unknown Bird'];
-      }
-
-      debugPrint('BirdClassifier raw output: ${result.text}');
-
-      return SpeciesNameResolver.parseOllamaResponse(
-        // Wrap in Ollama-compatible envelope for the existing parser
-        '{"response":"${result.text.replaceAll('"', '\\"').replaceAll('\n', '\\n')}"}',
-      );
     } catch (e) {
-      debugPrint('BirdClassifier: error during FFI inference: $e');
-      return ['Unknown Bird'];
+      debugPrint('Error classifying with Ollama: $e');
+      return ["Unknown Bird"];
     }
   }
 
@@ -137,7 +115,8 @@ class BirdClassifier {
           'Identify their species using the collective visual evidence across all boxes.';
     } else if (boxes.isNotEmpty) {
       boxGuide =
-          ' This image is a tight crop of the single bird detected in the photograph.';
+          ' A red rectangle has been drawn on the image to highlight the bird. '
+          'Focus your identification on the bird inside the red box.';
     } else {
       boxGuide = '';
     }
@@ -170,19 +149,25 @@ class BirdClassifier {
     }
 
     return 'You are an expert ornithologist helping build an eBird checklist. '
-        'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n\n'
-        'First, describe the bird\'s most prominent physical characteristics in a single brief paragraph (e.g., colors, beak shape, patterns).\n'
-        'Then, provide a numbered list of your top 1 to 5 species guesses using common names (e.g. "1. Species Name"). '
-        'Even if you are uncertain, you MUST provide your best guesses.\n\n'
-        'If the image clearly contains NO bird whatsoever '
-        '(e.g. ONLY foliage, rocks, sky, or a non-bird animal), respond with exactly: 0. none';
+        'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
+        'Provide your top 1 to 5 bird species guesses formatted as a numbered list of common names.\n'
+        'CRITICAL: Do not include any text other than the numbered list.';
   }
 
-  /// Previously used to evict the Ollama model from RAM.
-  /// With FFI the model is loaded/unloaded per inference call automatically.
-  Future<void> unloadModel() async {}
-
-  void dispose() {
-    _llama.dispose();
+  Future<void> unloadModel() async {
+    try {
+      final response = await http.post(
+        Uri.parse(_kOllamaUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'model': _kModel, 'keep_alive': 0}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Failed to unload Ollama model: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error unloading Ollama model: $e');
+    }
   }
+
+  void dispose() {}
 }

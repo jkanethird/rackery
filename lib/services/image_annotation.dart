@@ -57,9 +57,9 @@ List<int> annotateAndEncode(AnnotationParams params) {
     drawBoxes(region, boxes);
   }
 
-  // Downscale to at most 1280px on longest edge
-  if (region.width > 1280 || region.height > 1280) {
-    final scale = 1280 / max(region.width, region.height);
+  // Downscale to at most 1024px on longest edge to fit vision model positional limits
+  if (region.width > 1024 || region.height > 1024) {
+    final scale = 1024 / max(region.width, region.height);
     region = img.copyResize(
       region,
       width: (region.width * scale).round(),
