@@ -290,7 +290,14 @@ class BirdDetector {
       targetH,
     );
 
-    return await compute(_detectorWorker, request);
+    // The C++ TensorFlow Lite DLL binds threads locally in Windows kernel contexts.
+    // Utilizing `Interpreter.fromAddress` across a Dart `Isolate` boundary natively 
+    // triggers a silent C++ memory deadlock. Bypassing `compute` fixes the freeze.
+    if (Platform.isWindows) {
+      return _detectorWorker(request);
+    } else {
+      return await compute(_detectorWorker, request);
+    }
   }
 
   void dispose() {
