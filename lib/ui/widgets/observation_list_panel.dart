@@ -77,8 +77,10 @@ class ObservationListPanel extends StatelessWidget {
           onDragEnded: onDragEnded,
         );
 
-        final isFirstInBurst = index > 0 &&
-            observations[index].burstId != observations[index - 1].burstId;
+        // In reversed display order, index+1 is the item visually *above*.
+        // Show a separator when this item's burst differs from the one below.
+        final isFirstInBurst = index < observations.length - 1 &&
+            observations[index].burstId != observations[index + 1].burstId;
 
         Widget dropZone(int insertIndex) {
           return DragTarget<DragData>(
@@ -125,7 +127,7 @@ class ObservationListPanel extends StatelessWidget {
               ),
             dropZone(index),
             observationItem,
-            if (index == observations.length - 1) dropZone(index + 1),
+            if (index == 0) dropZone(index + 1),
           ],
         );
       },
