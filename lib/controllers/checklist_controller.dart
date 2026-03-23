@@ -25,6 +25,8 @@ class ChecklistController extends ChangeNotifier {
   bool isProcessing = false;
   double progress = 0.0;
   String progressMessage = '';
+  DateTime? batchStartTime;
+  Duration? batchElapsedTime;
 
   final List<Observation> observations = [];
   Observation? selectedObservation;
@@ -110,6 +112,8 @@ class ChecklistController extends ChangeNotifier {
         isProcessing = true;
         progress = 0.0;
         progressMessage = 'Preparing files...';
+        batchStartTime = DateTime.now();
+        batchElapsedTime = null;
         notifyListeners();
       },
     );
@@ -187,6 +191,10 @@ class ChecklistController extends ChangeNotifier {
 
     isProcessing = false;
     activeFiles.clear();
+    if (batchStartTime != null) {
+      batchElapsedTime = DateTime.now().difference(batchStartTime!);
+      batchStartTime = null;
+    }
     if (selectedObservation == null && observations.isNotEmpty) {
       selectedObservation = observations.first;
       selectedIndividualIndices.clear();
@@ -218,6 +226,8 @@ class ChecklistController extends ChangeNotifier {
     progress = 0.0;
     progressMessage = '';
     isProcessing = false;
+    batchStartTime = null;
+    batchElapsedTime = null;
     if (pageController.hasClients) pageController.jumpToPage(0);
     notifyListeners();
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ebird_generator/controllers/checklist_controller.dart';
 import 'package:ebird_generator/ui/sine_wave_progress.dart';
@@ -14,6 +15,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ChecklistController _controller = ChecklistController();
+  Timer? _batchTicker;
 
   // ── Memoized panel widgets ────────────────────────────────────────────────
   // When the ListenableBuilder fires we recompute a hash of each panel's
@@ -116,8 +118,29 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
+    _batchTicker?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  /// Starts / stops a 1-second ticker so the batch timer updates live.
+  void _syncBatchTicker() {
+    if (_controller.batchStartTime != null) {
+      _batchTicker ??= Timer.periodic(const Duration(seconds: 1), (_) {
+        if (mounted) setState(() {});
+      });
+    } else {
+      _batchTicker?.cancel();
+      _batchTicker = null;
+    }
+  }
+
+  static String _formatDuration(Duration d) {
+    final totalSeconds = d.inSeconds;
+    if (totalSeconds < 60) return '${totalSeconds}s';
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes}m ${seconds}s';
   }
 
   @override
@@ -125,6 +148,7 @@ class _MainScreenState extends State<MainScreen> {
     return ListenableBuilder(
       listenable: _controller,
       builder: (context, _) {
+        _syncBatchTicker();
         if (!_controller.isInit) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
@@ -213,10 +237,27 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _controller.progressMessage.isNotEmpty
-                        ? _controller.progressMessage
-                        : 'Processing images...',
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _controller.progressMessage.isNotEmpty
+                              ? _controller.progressMessage
+                              : 'Processing images...',
+                        ),
+                      ),
+                      if (_controller.batchStartTime != null)
+                        Text(
+                          _formatDuration(
+                            DateTime.now().difference(_controller.batchStartTime!),
+                          ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   SineWaveProgressIndicator(value: _controller.progress),
@@ -225,11 +266,25 @@ class _MainScreenState extends State<MainScreen> {
             )
           else
             Expanded(
-              child: Text(
-                _controller.observations.isEmpty
-                    ? 'No photos selected'
-                    : '${_controller.observations.length} observations generated',
-                style: const TextStyle(fontStyle: FontStyle.italic),
+              child: Row(
+                children: [
+                  Text(
+                    _controller.observations.isEmpty
+                        ? 'No photos selected'
+                        : '${_controller.observations.length} observations generated',
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  if (_controller.batchElapsedTime != null) ...[
+                    const SizedBox(width: 8),
+                    Text(
+                      'in ${_formatDuration(_controller.batchElapsedTime!)}',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
         ],
