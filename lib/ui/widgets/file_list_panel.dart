@@ -92,7 +92,8 @@ class _FileListPanelState extends State<FileListPanel> {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 4),
       itemCount: bursts.length,
-      itemBuilder: (context, burstIndex) {
+      itemBuilder: (context, i) {
+        final burstIndex = bursts.length - 1 - i;
         final burstFiles = bursts[burstIndex];
         final isBurst = burstFiles.length > 1;
 

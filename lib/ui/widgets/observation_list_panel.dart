@@ -52,7 +52,8 @@ class ObservationListPanel extends StatelessWidget {
     return ListView.builder(
       controller: scrollController,
       itemCount: observations.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (context, i) {
+        final index = observations.length - 1 - i;
         final obs = observations[index];
         final isSelected = selectedObservation == obs;
         final isDragging = draggingIndex == index;

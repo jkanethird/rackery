@@ -50,10 +50,51 @@ class PhotoProcessor {
   /// Callbacks:
   /// - [onProgress] — called with a value in [0, 1].
   /// - [onProgressMessage] — human-readable status string.
-  /// - [onObservationAdded] — called once per burst with the observations
-  ///   from that burst so the UI can display them immediately.
+  /// - [onObservationAdded] — called with new observations as birds are
+  ///   identified so the UI can display them immediately.
+  /// - [onObservationsChanged] — called when existing observations are
+  ///   updated in-place (e.g. count/individuals from subsequent burst photos).
   /// - [onFileCompleted] — called when a single file finishes phase 1 + 2.
   /// - [onError] — called with (filePath, error) when a file fails.
+
+  /// Snapshot the current [burstGroupsBySpecies] state, emitting new species
+  /// and updating already-emitted observations in-place.
+  static void _emitBurstUpdates(
+    Map<String, BurstGroup> burstGroupsBySpecies,
+    Map<String, Observation> emittedObs,
+    String burstId,
+    void Function(List<Observation>) onObservationAdded,
+    void Function() onObservationsChanged,
+  ) {
+    final List<Observation> newlyEmitted = [];
+    bool existingUpdated = false;
+
+    for (final entry in burstGroupsBySpecies.entries) {
+      final species = entry.key;
+      final bg = entry.value;
+      if (bg.observations.isEmpty) continue;
+
+      if (emittedObs.containsKey(species)) {
+        // Update existing observation in-place from BurstGroup
+        final existing = emittedObs[species]!;
+        final updated = bg.toObservation(burstId: burstId);
+        existing.count = updated.count;
+        existing.sourceImages = updated.sourceImages;
+        existing.boxesByImagePath = updated.boxesByImagePath;
+        existing.boundingBoxes = updated.boundingBoxes;
+        existing.possibleSpecies = updated.possibleSpecies;
+        existingUpdated = true;
+      } else {
+        // New species — emit
+        final obs = bg.toObservation(burstId: burstId);
+        emittedObs[species] = obs;
+        newlyEmitted.add(obs);
+      }
+    }
+
+    if (newlyEmitted.isNotEmpty) onObservationAdded(newlyEmitted);
+    if (existingUpdated) onObservationsChanged();
+  }
   Future<void> run({
     required List<String> newPaths,
     required List<List<String>> bursts,
@@ -61,6 +102,7 @@ class PhotoProcessor {
     required void Function(double) onProgress,
     required void Function(String) onProgressMessage,
     required void Function(List<Observation>) onObservationAdded,
+    required void Function() onObservationsChanged,
     required void Function(String filePath) onFileStarted,
     required void Function(String filePath) onFileCompleted,
     required void Function(String filePath, dynamic error) onError,
@@ -160,6 +202,8 @@ class PhotoProcessor {
         );
 
         final Map<String, BurstGroup> burstGroupsBySpecies = {};
+        // Track already-emitted observations so we can update them in-place
+        final Map<String, Observation> emittedObs = {};
 
         for (final filePath in burstFiles) {
           if (!newPathSet.contains(filePath)) continue;
@@ -203,6 +247,12 @@ class PhotoProcessor {
                           boundingBoxes: [fullImageBox],
                         ),
                       );
+
+                  // Emit / update immediately
+                  _emitBurstUpdates(
+                    burstGroupsBySpecies, emittedObs, burstIds[i],
+                    onObservationAdded, onObservationsChanged,
+                  );
                 }
                 completedIdentifications++;
                 if (completedIdentifications % 15 == 0) {
@@ -213,9 +263,7 @@ class PhotoProcessor {
                 );
               }
             } else {
-              // Cluster-level classification
-              final Map<String, Observation> photoObservations = {};
-
+              // Cluster-level classification — emit after each cluster
               for (int ci = 0; ci < res.clusters.length; ci++) {
                 final clusterCrops = res.clusters[ci];
                 final clusterBoxes =
@@ -242,31 +290,47 @@ class PhotoProcessor {
 
                 final species = speciesList.first;
 
-                if (photoObservations.containsKey(species)) {
-                  photoObservations[species]!.count += clusterCrops.length;
-                  photoObservations[species]!.boundingBoxes
-                      .addAll(clusterBoxes);
-                  photoObservations[species]!.boxesByImagePath
-                      .putIfAbsent(filePath, () => [])
-                      .addAll(clusterBoxes);
-                } else {
+                // Write crop file only for the first cluster of this species
+                // in this file (subsequent clusters reuse the existing crop).
+                final bool isNewSpeciesInFile =
+                    !burstGroupsBySpecies.containsKey(species) ||
+                    !burstGroupsBySpecies[species]!.observations
+                        .any((o) => o.imagePath == filePath);
+
+                String cropPath;
+                if (isNewSpeciesInFile) {
                   final cropBytes = clusterCrops.first.croppedJpgBytes;
                   final tempDir = await Directory.systemTemp.createTemp();
                   final filename = p.basename(filePath);
-                  final cropPath = '${tempDir.path}/cluster_${ci}_$filename';
+                  cropPath = '${tempDir.path}/cluster_${ci}_$filename';
                   await File(cropPath).writeAsBytes(cropBytes);
-
-                  photoObservations[species] = Observation(
-                    imagePath: filePath,
-                    displayPath: cropPath,
-                    fullImageDisplayPath: res.processedPath,
-                    speciesName: species,
-                    possibleSpecies: speciesList,
-                    exifData: res.exifData,
-                    count: clusterCrops.length,
-                    boundingBoxes: clusterBoxes,
-                  );
+                } else {
+                  // Reuse the first observation's crop path for this species
+                  cropPath = burstGroupsBySpecies[species]!.observations
+                      .firstWhere((o) => o.imagePath == filePath)
+                      .displayPath!;
                 }
+
+                burstGroupsBySpecies
+                    .putIfAbsent(species, BurstGroup.new)
+                    .addObservation(
+                      Observation(
+                        imagePath: filePath,
+                        displayPath: cropPath,
+                        fullImageDisplayPath: res.processedPath,
+                        speciesName: species,
+                        possibleSpecies: speciesList,
+                        exifData: res.exifData,
+                        count: clusterCrops.length,
+                        boundingBoxes: clusterBoxes,
+                      ),
+                    );
+
+                // Emit / update immediately after each cluster
+                _emitBurstUpdates(
+                  burstGroupsBySpecies, emittedObs, burstIds[i],
+                  onObservationAdded, onObservationsChanged,
+                );
 
                 completedIdentifications++;
                 if (completedIdentifications % 15 == 0) {
@@ -276,12 +340,6 @@ class PhotoProcessor {
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
               }
-
-              for (final obs in photoObservations.values) {
-                burstGroupsBySpecies
-                    .putIfAbsent(obs.speciesName, BurstGroup.new)
-                    .addObservation(obs);
-              }
             }
           } catch (e) {
             onError(filePath, e);
@@ -289,15 +347,6 @@ class PhotoProcessor {
 
           onFileCompleted(filePath);
         } // end for filePath
-
-        // Emit completed burst observations
-        final newObs = <Observation>[];
-        for (final bg in burstGroupsBySpecies.values) {
-          if (bg.observations.isNotEmpty) {
-            newObs.add(bg.toObservation(burstId: burstIds[i]));
-          }
-        }
-        if (newObs.isNotEmpty) onObservationAdded(newObs);
 
         // Unload logic handled per-15 birds and at the end of the batch
 

@@ -87,6 +87,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _memoizedObsPanel() {
     final hash = Object.hash(
       _controller.observations.length,
+      _controller.observationVersion,
       identityHashCode(_controller.selectedObservation),
       Object.hashAll(_controller.selectedIndividualIndices),
       _controller.lastSelectedIndividualIndex,

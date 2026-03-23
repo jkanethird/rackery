@@ -49,10 +49,13 @@ class ObservationCard extends StatefulWidget {
   State<ObservationCard> createState() => _ObservationCardState();
 }
 
-class _ObservationCardState extends State<ObservationCard> {
+class _ObservationCardState extends State<ObservationCard>
+    with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   late final TextEditingController _speciesController;
   late final FocusNode _speciesFocusNode;
+  late final AnimationController _fadeController;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
@@ -60,6 +63,15 @@ class _ObservationCardState extends State<ObservationCard> {
     _speciesController = TextEditingController(text: widget.obs.speciesName);
     _speciesFocusNode = FocusNode();
     _speciesFocusNode.addListener(_onFocusChanged);
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeIn,
+    );
+    _fadeController.forward();
   }
 
   void _onFocusChanged() {
@@ -79,6 +91,7 @@ class _ObservationCardState extends State<ObservationCard> {
 
   @override
   void dispose() {
+    _fadeController.dispose();
     _speciesFocusNode.removeListener(_onFocusChanged);
     _speciesController.dispose();
     _speciesFocusNode.dispose();
@@ -202,9 +215,12 @@ class _ObservationCardState extends State<ObservationCard> {
       },
     );
 
-    return Opacity(
-      opacity: widget.isDragging ? 0.4 : 1.0,
-      child: observationItem,
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Opacity(
+        opacity: widget.isDragging ? 0.4 : 1.0,
+        child: observationItem,
+      ),
     );
   }
 

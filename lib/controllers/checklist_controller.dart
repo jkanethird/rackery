@@ -27,6 +27,7 @@ class ChecklistController extends ChangeNotifier {
   String progressMessage = '';
   DateTime? batchStartTime;
   Duration? batchElapsedTime;
+  int observationVersion = 0;
 
   final List<Observation> observations = [];
   Observation? selectedObservation;
@@ -164,6 +165,11 @@ class ChecklistController extends ChangeNotifier {
       },
       onObservationAdded: (newObs) {
         observations.addAll(newObs);
+        observationVersion++;
+        notifyListeners();
+      },
+      onObservationsChanged: () {
+        observationVersion++;
         notifyListeners();
       },
       onFileStarted: (filePath) {
@@ -228,6 +234,7 @@ class ChecklistController extends ChangeNotifier {
     isProcessing = false;
     batchStartTime = null;
     batchElapsedTime = null;
+    observationVersion = 0;
     if (pageController.hasClients) pageController.jumpToPage(0);
     notifyListeners();
   }
