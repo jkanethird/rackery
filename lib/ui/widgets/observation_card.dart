@@ -172,6 +172,9 @@ class _ObservationCardState extends State<ObservationCard> {
                             width: 40,
                             height: 40,
                             fit: BoxFit.cover,
+                            cacheWidth: 80,
+                            cacheHeight: 80,
+                            gaplessPlayback: true,
                           )
                         : const Icon(Icons.image),
                     title: Text(
@@ -233,6 +236,9 @@ class _ObservationCardState extends State<ObservationCard> {
               width: 50,
               height: 50,
               fit: BoxFit.cover,
+              cacheWidth: 100,
+              cacheHeight: 100,
+              gaplessPlayback: true,
             )
           : const Icon(Icons.image),
       title: Row(
@@ -243,7 +249,7 @@ class _ObservationCardState extends State<ObservationCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildSpeciesAutocomplete(),
+                _buildSpeciesField(),
                 Padding(
                   padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
                   child: Text(
@@ -278,6 +284,25 @@ class _ObservationCardState extends State<ObservationCard> {
         ),
       ),
     );
+  }
+
+  Widget _buildSpeciesField() {
+    // Only build the expensive RawAutocomplete for the selected card.
+    // Non-selected cards use a lightweight Text widget.
+    if (!widget.isSelected) {
+      return GestureDetector(
+        onTap: widget.onTapCard,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            widget.obs.speciesName,
+            style: const TextStyle(fontSize: 16),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+    }
+    return _buildSpeciesAutocomplete();
   }
 
   Widget _buildSpeciesAutocomplete() {

@@ -36,6 +36,8 @@ class ChecklistController extends ChangeNotifier {
   final Set<String> activeFiles = {};
   final Map<String, ExifData> imageExifData = {};
   final Map<String, String> imageVisualHashes = {};
+  final Map<String, DateTime> fileStartTimes = {};
+  final Map<String, Duration> fileElapsedTimes = {};
   List<List<String>> fileBursts = [];
 
   // Right panel scroll controller
@@ -162,11 +164,16 @@ class ChecklistController extends ChangeNotifier {
       },
       onFileStarted: (filePath) {
         activeFiles.add(filePath);
+        fileStartTimes.putIfAbsent(filePath, () => DateTime.now());
         notifyListeners();
       },
       onFileCompleted: (filePath) {
         processingFiles.remove(filePath);
         activeFiles.remove(filePath);
+        final startTime = fileStartTimes.remove(filePath);
+        if (startTime != null) {
+          fileElapsedTimes[filePath] = DateTime.now().difference(startTime);
+        }
         notifyListeners();
       },
       onError: (filePath, error) {
@@ -206,6 +213,8 @@ class ChecklistController extends ChangeNotifier {
     activeFiles.clear();
     imageExifData.clear();
     imageVisualHashes.clear();
+    fileStartTimes.clear();
+    fileElapsedTimes.clear();
     progress = 0.0;
     progressMessage = '';
     isProcessing = false;

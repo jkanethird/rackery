@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/exif_service.dart';
 
 /// Left-side panel that displays all selected files grouped into bursts,
-/// with timestamps, processing indicators, and individual-count badges.
-class FileListPanel extends StatelessWidget {
+/// with timestamps, processing indicators, elapsed timers, and
+/// individual-count badges.
+class FileListPanel extends StatefulWidget {
   final List<List<String>> fileBursts;
   final List<String> selectedFiles;
   final Set<String> processingFiles;
@@ -13,6 +15,8 @@ class FileListPanel extends StatelessWidget {
   final Map<String, ExifData> imageExifData;
   final List<Observation> observations;
   final String? currentlyDisplayedImage;
+  final Map<String, DateTime> fileStartTimes;
+  final Map<String, Duration> fileElapsedTimes;
 
   /// Called when the user taps a file tile. Provides the file path.
   final void Function(String filePath) onFileTapped;
@@ -26,15 +30,64 @@ class FileListPanel extends StatelessWidget {
     required this.imageExifData,
     required this.observations,
     required this.currentlyDisplayedImage,
+    required this.fileStartTimes,
+    required this.fileElapsedTimes,
     required this.onFileTapped,
   });
 
   @override
+  State<FileListPanel> createState() => _FileListPanelState();
+}
+
+class _FileListPanelState extends State<FileListPanel> {
+  Timer? _ticker;
+
+  @override
+  void didUpdateWidget(covariant FileListPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncTicker();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _syncTicker();
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  /// Starts a 1-second ticker while any files are actively being processed,
+  /// so the live elapsed-time labels stay up to date.
+  void _syncTicker() {
+    if (widget.fileStartTimes.isNotEmpty) {
+      _ticker ??= Timer.periodic(const Duration(seconds: 1), (_) {
+        if (mounted) setState(() {});
+      });
+    } else {
+      _ticker?.cancel();
+      _ticker = null;
+    }
+  }
+
+  /// Formats a [Duration] as a compact string: "3s", "1m 12s", etc.
+  static String _formatDuration(Duration d) {
+    final totalSeconds = d.inSeconds;
+    if (totalSeconds < 60) return '${totalSeconds}s';
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes}m ${seconds}s';
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Fall back to a flat list if bursts haven't been computed yet
-    final bursts = fileBursts.isNotEmpty
-        ? fileBursts
-        : selectedFiles.map((f) => [f]).toList();
+    final bursts = widget.fileBursts.isNotEmpty
+        ? widget.fileBursts
+        : widget.selectedFiles.map((f) => [f]).toList();
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -44,7 +97,7 @@ class FileListPanel extends StatelessWidget {
         final isBurst = burstFiles.length > 1;
 
         final firstFile = burstFiles.first;
-        final firstExif = imageExifData[firstFile];
+        final firstExif = widget.imageExifData[firstFile];
         final timestamp = firstExif?.dateTime;
         final timeLabel = timestamp != null
             ? '${timestamp.hour.toString().padLeft(2, '0')}:'
@@ -58,17 +111,28 @@ class FileListPanel extends StatelessWidget {
             : '';
 
         Widget fileTile(String file) {
-          final isProcessing = processingFiles.contains(file);
-          final isActive = activeFiles.contains(file);
+          final isProcessing = widget.processingFiles.contains(file);
+          final isActive = widget.activeFiles.contains(file);
           final filename = file.split(Platform.pathSeparator).last;
-          final isSelected = currentlyDisplayedImage == file;
+          final isSelected = widget.currentlyDisplayedImage == file;
 
-          final individualCount = observations
+          final individualCount = widget.observations
               .where((o) => o.sourceImages.any((s) => s.imagePath == file))
               .fold<int>(
                 0,
                 (sum, o) => sum + (o.boxesByImagePath[file]?.length ?? 0),
               );
+
+          // ── Timer label ──────────────────────────────────────────────
+          String? timerLabel;
+          if (widget.fileStartTimes.containsKey(file)) {
+            // Currently processing — show live elapsed time
+            final elapsed = DateTime.now().difference(widget.fileStartTimes[file]!);
+            timerLabel = _formatDuration(elapsed);
+          } else if (widget.fileElapsedTimes.containsKey(file)) {
+            // Finished — show final elapsed time
+            timerLabel = _formatDuration(widget.fileElapsedTimes[file]!);
+          }
 
           Widget statusIndicator;
           if (isActive) {
@@ -98,7 +162,7 @@ class FileListPanel extends StatelessWidget {
           }
 
           return InkWell(
-            onTap: () => onFileTapped(file),
+            onTap: () => widget.onFileTapped(file),
             child: Container(
               color: isSelected
                   ? Colors.blue.withValues(alpha: 0.12)
@@ -126,6 +190,20 @@ class FileListPanel extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 4),
+                  if (timerLabel != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: Text(
+                        timerLabel,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isActive
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).hintColor,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
                   if (!isProcessing && individualCount > 0)
                     Container(
                       margin: const EdgeInsets.only(right: 4),

@@ -15,6 +15,105 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final ChecklistController _controller = ChecklistController();
 
+  // ── Memoized panel widgets ────────────────────────────────────────────────
+  // When the ListenableBuilder fires we recompute a hash of each panel's
+  // inputs.  If the hash hasn't changed we return the *same* widget instance,
+  // causing Flutter to skip the entire subtree rebuild.
+
+  Widget? _cachedFilePanel;
+  int _filePanelHash = 0;
+
+  Widget? _cachedCenterPane;
+  int _centerPaneHash = 0;
+
+  Widget? _cachedObsPanel;
+  int _obsPanelHash = 0;
+
+  Widget _memoizedFilePanel() {
+    final hash = Object.hash(
+      _controller.fileBursts.length,
+      _controller.selectedFiles.length,
+      _controller.processingFiles.length,
+      _controller.activeFiles.length,
+      _controller.currentlyDisplayedImage,
+      _controller.observations.length,
+      _controller.fileStartTimes.length,
+      _controller.fileElapsedTimes.length,
+    );
+    if (hash != _filePanelHash || _cachedFilePanel == null) {
+      _filePanelHash = hash;
+      _cachedFilePanel = FileListPanel(
+        fileBursts: _controller.fileBursts,
+        selectedFiles: _controller.selectedFiles,
+        processingFiles: _controller.processingFiles,
+        activeFiles: _controller.activeFiles,
+        imageExifData: _controller.imageExifData,
+        observations: _controller.observations,
+        currentlyDisplayedImage: _controller.currentlyDisplayedImage,
+        fileStartTimes: _controller.fileStartTimes,
+        fileElapsedTimes: _controller.fileElapsedTimes,
+        onFileTapped: _controller.selectFile,
+      );
+    }
+    return _cachedFilePanel!;
+  }
+
+  Widget _memoizedCenterPane() {
+    final hash = Object.hash(
+      identityHashCode(_controller.selectedObservation),
+      Object.hashAll(_controller.selectedIndividualIndices),
+      _controller.currentlyDisplayedImage,
+      _controller.currentCenterPage,
+    );
+    if (hash != _centerPaneHash || _cachedCenterPane == null) {
+      _centerPaneHash = hash;
+      _cachedCenterPane = CenterPane(
+        selectedObservation: _controller.selectedObservation,
+        selectedIndividualIndices: _controller.selectedIndividualIndices,
+        currentlyDisplayedImage: _controller.currentlyDisplayedImage,
+        imageExifData: _controller.imageExifData,
+        currentPage: _controller.currentCenterPage,
+        pageController: _controller.pageController,
+        getDisplayPath: _controller.getDisplayPath,
+        getImageSize: _controller.getImageSize,
+        onPageChanged: _controller.setCenterPage,
+      );
+    }
+    return _cachedCenterPane!;
+  }
+
+  Widget _memoizedObsPanel() {
+    final hash = Object.hash(
+      _controller.observations.length,
+      identityHashCode(_controller.selectedObservation),
+      Object.hashAll(_controller.selectedIndividualIndices),
+      _controller.lastSelectedIndividualIndex,
+      _controller.draggingIndex,
+    );
+    if (hash != _obsPanelHash || _cachedObsPanel == null) {
+      _obsPanelHash = hash;
+      _cachedObsPanel = ObservationListPanel(
+        observations: _controller.observations,
+        selectedObservation: _controller.selectedObservation,
+        selectedIndividualIndices: _controller.selectedIndividualIndices,
+        lastSelectedIndividualIndex: _controller.lastSelectedIndividualIndex,
+        draggingIndex: _controller.draggingIndex,
+        scrollController: _controller.observationScrollController,
+        onTapCard: _controller.selectObservation,
+        onTapIndividual: _controller.selectIndividual,
+        onSpeciesChanged: _controller.updateObservationSpecies,
+        onSpeciesSelected: _controller.updateObservationSpecies,
+        onCountChanged: _controller.updateObservationCount,
+        onMergeObservations: _controller.mergeObservations,
+        onMergeIndividuals: _controller.mergeIndividuals,
+        onDragStarted: _controller.setDraggingIndex,
+        onDragEnded: () => _controller.setDraggingIndex(null),
+        onExtractIndividuals: _controller.extractIndividuals,
+      );
+    }
+    return _cachedObsPanel!;
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -73,56 +172,20 @@ class _MainScreenState extends State<MainScreen> {
                       flex: 1,
                       child: Container(
                         color: Theme.of(context).cardColor,
-                        child: FileListPanel(
-                          fileBursts: _controller.fileBursts,
-                          selectedFiles: _controller.selectedFiles,
-                          processingFiles: _controller.processingFiles,
-                          activeFiles: _controller.activeFiles,
-                          imageExifData: _controller.imageExifData,
-                          observations: _controller.observations,
-                          currentlyDisplayedImage: _controller.currentlyDisplayedImage,
-                          onFileTapped: _controller.selectFile,
-                        ),
+                        child: _memoizedFilePanel(),
                       ),
                     ),
                     const VerticalDivider(width: 1),
 
                     // Centre: photo viewer
-                    CenterPane(
-                      selectedObservation: _controller.selectedObservation,
-                      selectedIndividualIndices: _controller.selectedIndividualIndices,
-                      currentlyDisplayedImage: _controller.currentlyDisplayedImage,
-                      imageExifData: _controller.imageExifData,
-                      currentPage: _controller.currentCenterPage,
-                      pageController: _controller.pageController,
-                      getDisplayPath: _controller.getDisplayPath,
-                      getImageSize: _controller.getImageSize,
-                      onPageChanged: _controller.setCenterPage,
-                    ),
+                    _memoizedCenterPane(),
 
                     const VerticalDivider(width: 1),
 
                     // Right: observations list
                     Expanded(
                       flex: 1,
-                      child: ObservationListPanel(
-                        observations: _controller.observations,
-                        selectedObservation: _controller.selectedObservation,
-                        selectedIndividualIndices: _controller.selectedIndividualIndices,
-                        lastSelectedIndividualIndex: _controller.lastSelectedIndividualIndex,
-                        draggingIndex: _controller.draggingIndex,
-                        scrollController: _controller.observationScrollController,
-                        onTapCard: _controller.selectObservation,
-                        onTapIndividual: _controller.selectIndividual,
-                        onSpeciesChanged: _controller.updateObservationSpecies,
-                        onSpeciesSelected: _controller.updateObservationSpecies,
-                        onCountChanged: _controller.updateObservationCount,
-                        onMergeObservations: _controller.mergeObservations,
-                        onMergeIndividuals: _controller.mergeIndividuals,
-                        onDragStarted: _controller.setDraggingIndex,
-                        onDragEnded: () => _controller.setDraggingIndex(null),
-                        onExtractIndividuals: _controller.extractIndividuals,
-                      ),
+                      child: _memoizedObsPanel(),
                     ),
                   ],
                 ),
