@@ -111,16 +111,63 @@ class LibHeif {
   late final _heif_image_get_plane_readonly_Dart _getPlane;
 
   LibHeif._internal() {
-    try {
-      _lib = ffi.DynamicLibrary.open('libheif.so.1');
-    } catch (_) {
+    if (Platform.isWindows) {
+      // Try multiple names — NuGet packages use 'libheif.dll', some builds use 'heif.dll'
+      final names = ['heif.dll', 'libheif.dll'];
+      bool loaded = false;
+
+      // First try simple name (searches exe dir, system PATH, etc.)
+      for (final name in names) {
+        try {
+          _lib = ffi.DynamicLibrary.open(name);
+          loaded = true;
+          break;
+        } catch (_) {
+          continue;
+        }
+      }
+
+      // Then try resolving relative to the executable
+      if (!loaded) {
+        final exeDir = File(Platform.resolvedExecutable).parent.path;
+        for (final name in names) {
+          try {
+            _lib = ffi.DynamicLibrary.open('$exeDir\\$name');
+            loaded = true;
+            break;
+          } catch (_) {
+            continue;
+          }
+        }
+      }
+
+      // Try blobs subdirectory (CMake install puts it there)
+      if (!loaded) {
+        final exeDir = File(Platform.resolvedExecutable).parent.path;
+        for (final name in names) {
+          try {
+            _lib = ffi.DynamicLibrary.open('$exeDir\\blobs\\$name');
+            loaded = true;
+            break;
+          } catch (_) {
+            continue;
+          }
+        }
+      }
+
+      if (!loaded) {
+        throw Exception('Failed to open libheif on Windows — tried heif.dll and libheif.dll');
+      }
+    } else {
       try {
-        String libName = 'libheif.so';
-        if (Platform.isMacOS) libName = 'libheif.dylib';
-        if (Platform.isWindows) libName = 'heif.dll';
-        _lib = ffi.DynamicLibrary.open(libName);
-      } catch (e) {
-        throw Exception("Failed to open libheif natively: \$e");
+        _lib = ffi.DynamicLibrary.open('libheif.so.1');
+      } catch (_) {
+        try {
+          final libName = Platform.isMacOS ? 'libheif.dylib' : 'libheif.so';
+          _lib = ffi.DynamicLibrary.open(libName);
+        } catch (e) {
+          throw Exception("Failed to open libheif natively: \$e");
+        }
       }
     }
     

@@ -375,9 +375,8 @@ class BirdDetector {
     if (Platform.isWindows) {
       try {
         options.addDelegate(XNNPackDelegate());
-        debugPrint('[DETECT] XNNPack delegate enabled');
-      } catch (e) {
-        debugPrint('[DETECT] XNNPack delegate not available: $e');
+      } catch (_) {
+        // XNNPack not available in the loaded TFLite DLL
       }
     }
 
@@ -418,23 +417,18 @@ class BirdDetector {
   /// Windows pipeline — fully async, no heavy work on main isolate.
   ///
   /// 1. compute() isolate: decode + crop + resize all tiles → flat Uint8Lists
-  /// 2. Main isolate: _tensorFromFlat (~20ms) + IsolateInterpreter (~600ms)
+  /// 2. Main isolate: pass flat pixels to IsolateInterpreter (async inference)
   /// 3. compute() isolate: NMS + crop + JPG encode
   Future<List<BirdCrop>> _detectWindows(
     Uint8List fileBytes,
     int targetW,
     int targetH,
   ) async {
-    final totalSw = Stopwatch()..start();
-
     // Step 1: All heavy image ops in compute isolate
     final prepared = await compute(
       _prepareTiles,
       _PrepareTilesRequest(fileBytes, targetW, targetH),
     );
-    debugPrint('[DETECT] prep done: ${totalSw.elapsedMilliseconds}ms, '
-        '${prepared.origW}x${prepared.origH}, '
-        '${prepared.tilePixels.length} tiles');
 
     if (prepared.tilePixels.isEmpty) return [];
 
@@ -442,16 +436,9 @@ class BirdDetector {
     List<List<int>> rawDetections = [];
 
     for (int ti = 0; ti < prepared.tilePixels.length; ti++) {
-      final sw = Stopwatch()..start();
-
-      // Pass flat Uint8List directly — TFLite copies raw bytes to the native
-      // tensor buffer without traversing nested structures. This avoids both
-      // the ~20ms tensor creation and the expensive serialization of 409,600
-      // inner lists through IsolateInterpreter's SendPort.
       final pixels = prepared.tilePixels[ti];
       final outputs = _allocateOutputs();
       await _isolateInterpreter!.runForMultipleInputs([pixels], outputs);
-      final inferMs = sw.elapsedMilliseconds;
 
       final rect = prepared.tileRects[ti];
       final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
@@ -465,27 +452,15 @@ class BirdDetector {
           (det.score * 1000).toInt(),
         ]);
       }
-
-      debugPrint(
-        '[DETECT] tile ${ti + 1}/${prepared.tilePixels.length}: '
-        'infer=${inferMs}ms birds=${tileDets.length}',
-      );
     }
-
-    debugPrint('[DETECT] inference done: ${totalSw.elapsedMilliseconds}ms, '
-        '${rawDetections.length} detections');
 
     if (rawDetections.isEmpty) return [];
 
     // Step 3: NMS + crop + encode in compute isolate
-    final result = await compute(
+    return await compute(
       _postProcessDetections,
       _PostProcessRequest(fileBytes, rawDetections),
     );
-
-    debugPrint('[DETECT] TOTAL: ${totalSw.elapsedMilliseconds}ms, '
-        '${result.length} crops');
-    return result;
   }
 
   void dispose() {
