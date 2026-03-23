@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
+
+// ── Public types ───────────────────────────────────────────────────────────
 
 class BirdCrop {
   final Uint8List croppedJpgBytes;
@@ -13,6 +14,8 @@ class BirdCrop {
 
   BirdCrop(this.croppedJpgBytes, this.centerColor, this.confidence, this.box);
 }
+
+// ── Internal types ─────────────────────────────────────────────────────────
 
 class _RawDetection {
   final Rectangle<int> box;
@@ -27,32 +30,49 @@ class _DetectorRequest {
   final int targetW;
   final int targetH;
 
-  _DetectorRequest(
-    this.fileBytes,
-    this.interpreterAddress,
-    this.targetW,
-    this.targetH,
-  );
+  _DetectorRequest(this.fileBytes, this.interpreterAddress, this.targetW, this.targetH);
 }
 
-Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
-  final originalImage = img.decodeImage(data.fileBytes);
-  if (originalImage == null) return [];
+/// Request for computing all tile pixel data in a background isolate.
+class _PrepareTilesRequest {
+  final Uint8List fileBytes;
+  final int targetW;
+  final int targetH;
 
-  final interpreter = Interpreter.fromAddress(data.interpreterAddress);
-  
-  return await _processCore(originalImage, interpreter, data.targetW, data.targetH);
+  _PrepareTilesRequest(this.fileBytes, this.targetW, this.targetH);
 }
 
-Future<List<BirdCrop>> _processCore(img.Image originalImage, Interpreter interpreter, int targetW, int targetH) async {
-  final int origW = originalImage.width;
-  final int origH = originalImage.height;
+/// Result from the tile preparation compute isolate.
+/// Uses only primitives and Uint8List for efficient isolate transfer.
+class _PrepareTilesResult {
+  /// Flat pixel data (RGB) per tile, each Uint8List is targetW*targetH*3 bytes.
+  final List<Uint8List> tilePixels;
 
-  int tileSize = 1536;
-  int stride = tileSize ~/ 2;
+  /// Tile rectangles as [x, y, w, h] per tile.
+  final List<List<int>> tileRects;
 
-  List<Rectangle<int>> tiles = [];
-  tiles.add(Rectangle<int>(0, 0, origW, origH));
+  final int origW;
+  final int origH;
+
+  _PrepareTilesResult(this.tilePixels, this.tileRects, this.origW, this.origH);
+}
+
+/// Request for post-processing in a compute isolate.
+class _PostProcessRequest {
+  final Uint8List fileBytes;
+  final List<List<int>> detections; // [x, y, w, h, score*1000]
+
+  _PostProcessRequest(this.fileBytes, this.detections);
+}
+
+// ── Shared helpers ─────────────────────────────────────────────────────────
+
+/// Generates overlapping tile rectangles for a given image size.
+List<Rectangle<int>> _buildTiles(int origW, int origH) {
+  const int tileSize = 1536;
+  const int stride = tileSize ~/ 2;
+
+  List<Rectangle<int>> tiles = [Rectangle<int>(0, 0, origW, origH)];
 
   if (origW > tileSize || origH > tileSize) {
     for (int y = 0; y < origH; y += stride) {
@@ -71,158 +91,135 @@ Future<List<BirdCrop>> _processCore(img.Image originalImage, Interpreter interpr
     }
   }
 
-  tiles = tiles.toSet().toList();
-  List<_RawDetection> rawDetections = [];
+  return tiles.toSet().toList();
+}
 
-  for (var tile in tiles) {
-    // Yield to the Flutter UI rendering engine before incredibly heavy tensor mapping
-    await Future.delayed(Duration.zero);
+/// Builds a [1,H,W,3] int tensor from an img.Image.
+List<List<List<List<int>>>> _buildTensor(
+  img.Image imageInput,
+  int targetW,
+  int targetH,
+) {
+  return List.generate(
+    1,
+    (_) => List.generate(
+      targetH,
+      (y) => List.generate(targetW, (x) {
+        final pixel = imageInput.getPixel(x, y);
+        return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
+      }),
+    ),
+  );
+}
 
-    img.Image tileImage = img.copyCrop(
-      originalImage,
-      x: tile.left,
-      y: tile.top,
-      width: tile.width,
-      height: tile.height,
-    );
+/// Allocates fresh TFLite output buffers.
+Map<int, Object> _allocateOutputs() => {
+  0: List<List<List<double>>>.filled(1, List.filled(25, List.filled(4, 0.0))),
+  1: List<List<double>>.filled(1, List.filled(25, 0.0)),
+  2: List<List<double>>.filled(1, List.filled(25, 0.0)),
+  3: List<double>.filled(1, 0.0),
+};
 
-    img.Image imageInput = img.copyResize(
-      tileImage,
-      width: targetW,
-      height: targetH,
-      interpolation: img.Interpolation.linear,
-    );
+/// Extracts valid bird detections from TFLite inference outputs for one tile.
+List<_RawDetection> _extractDetections(
+  Map<int, Object> outputs,
+  Rectangle<int> tile,
+  int origW,
+  int origH,
+) {
+  final locations = outputs[0] as List<List<List<double>>>;
+  final classes = outputs[1] as List<List<double>>;
+  final scores = outputs[2] as List<List<double>>;
+  final counts = outputs[3] as List<double>;
 
-    var tensor = List.generate(
-      1,
-      (_) => List.generate(
-        targetH,
-        (y) => List.generate(targetW, (x) {
-          final pixel = imageInput.getPixel(x, y);
-          return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
-        }),
-      ),
-    );
+  final int count = counts[0].toInt();
+  final List<_RawDetection> detections = [];
 
-    Map<int, Object> dynamicOutputs = {
-      0: List<List<List<double>>>.filled(
-        1,
-        List.filled(25, List.filled(4, 0.0)),
-      ),
-      1: List<List<double>>.filled(1, List.filled(25, 0.0)),
-      2: List<List<double>>.filled(1, List.filled(25, 0.0)),
-      3: List<double>.filled(1, 0.0),
-    };
+  for (int i = 0; i < count; i++) {
+    final double score = scores[0][i];
+    final int detectedClass = classes[0][i].toInt();
 
-    interpreter.runForMultipleInputs([tensor], dynamicOutputs);
+    if (score <= 0.25 || (detectedClass != 16 && detectedClass != 15)) continue;
 
-    var locations = dynamicOutputs[0] as List<List<List<double>>>;
-    var classes = dynamicOutputs[1] as List<List<double>>;
-    var scores = dynamicOutputs[2] as List<List<double>>;
-    var counts = dynamicOutputs[3] as List<double>;
+    final box = locations[0][i];
+    final double ymin = box[0].clamp(0.0, 1.0);
+    final double xmin = box[1].clamp(0.0, 1.0);
+    final double ymax = box[2].clamp(0.0, 1.0);
+    final double xmax = box[3].clamp(0.0, 1.0);
 
-    int count = counts[0].toInt();
-
-    for (int i = 0; i < count; i++) {
-      double score = scores[0][i];
-      int detectedClass = classes[0][i].toInt();
-
-      if (score > 0.25 && (detectedClass == 16 || detectedClass == 15)) {
-        List<double> box = locations[0][i];
-
-        double ymin = box[0].clamp(0.0, 1.0);
-        double xmin = box[1].clamp(0.0, 1.0);
-        double ymax = box[2].clamp(0.0, 1.0);
-        double xmax = box[3].clamp(0.0, 1.0);
-
-        bool touchesLeftSeam = (xmin <= 0.02 && tile.left > 0);
-        bool touchesTopSeam = (ymin <= 0.02 && tile.top > 0);
-        bool touchesRightSeam = (xmax >= 0.98 && tile.right < origW);
-        bool touchesBottomSeam = (ymax >= 0.98 && tile.bottom < origH);
-
-        if (touchesLeftSeam ||
-            touchesTopSeam ||
-            touchesRightSeam ||
-            touchesBottomSeam) {
-          continue;
-        }
-
-        int localW = ((xmax - xmin) * tile.width).toInt();
-        int localH = ((ymax - ymin) * tile.height).toInt();
-
-        int globalX = ((xmin * tile.width) + tile.left).toInt();
-        int globalY = ((ymin * tile.height) + tile.top).toInt();
-
-        globalX = globalX.clamp(0, origW - 1);
-        globalY = globalY.clamp(0, origH - 1);
-        localW = localW.clamp(1, origW - globalX);
-        localH = localH.clamp(1, origH - globalY);
-
-        double aspectRatio = localW / localH;
-        if (localW < 10 ||
-            localH < 10 ||
-            aspectRatio > 5.0 ||
-            aspectRatio < 0.20) {
-          continue;
-        }
-
-        Rectangle<int> birdRect = Rectangle<int>(
-          globalX,
-          globalY,
-          localW,
-          localH,
-        );
-        rawDetections.add(_RawDetection(birdRect, score));
-      }
+    if ((xmin <= 0.02 && tile.left > 0) ||
+        (ymin <= 0.02 && tile.top > 0) ||
+        (xmax >= 0.98 && tile.right < origW) ||
+        (ymax >= 0.98 && tile.bottom < origH)) {
+      continue;
     }
+
+    int localW = ((xmax - xmin) * tile.width).toInt();
+    int localH = ((ymax - ymin) * tile.height).toInt();
+    int globalX = ((xmin * tile.width) + tile.left).toInt();
+    int globalY = ((ymin * tile.height) + tile.top).toInt();
+
+    globalX = globalX.clamp(0, origW - 1);
+    globalY = globalY.clamp(0, origH - 1);
+    localW = localW.clamp(1, origW - globalX);
+    localH = localH.clamp(1, origH - globalY);
+
+    final double aspectRatio = localW / localH;
+    if (localW < 10 || localH < 10 || aspectRatio > 5.0 || aspectRatio < 0.20) {
+      continue;
+    }
+
+    detections.add(_RawDetection(Rectangle<int>(globalX, globalY, localW, localH), score));
   }
 
+  return detections;
+}
+
+/// Non-maximum suppression: removes duplicate overlapping detections.
+List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
   rawDetections.sort((a, b) => b.score.compareTo(a.score));
 
-  List<_RawDetection> finalDetections = [];
+  final List<_RawDetection> kept = [];
   for (var current in rawDetections) {
     bool isDuplicate = false;
-    for (var existing in finalDetections) {
-      var intersect = existing.box.intersection(current.box);
+    for (var existing in kept) {
+      final intersect = existing.box.intersection(current.box);
       if (intersect != null && intersect.width > 0 && intersect.height > 0) {
-        double intersectArea = (intersect.width * intersect.height).toDouble();
-        double area1 = (current.box.width * current.box.height).toDouble();
-        double area2 = (existing.box.width * existing.box.height).toDouble();
-        double iou = intersectArea / (area1 + area2 - intersectArea);
-        double ioMin = intersectArea / min(area1, area2);
+        final double intersectArea = (intersect.width * intersect.height).toDouble();
+        final double area1 = (current.box.width * current.box.height).toDouble();
+        final double area2 = (existing.box.width * existing.box.height).toDouble();
+        final double iou = intersectArea / (area1 + area2 - intersectArea);
+        final double ioMin = intersectArea / min(area1, area2);
 
-        double cx1 = current.box.left + current.box.width / 2;
-        double cy1 = current.box.top + current.box.height / 2;
-        double cx2 = existing.box.left + existing.box.width / 2;
-        double cy2 = existing.box.top + existing.box.height / 2;
+        final double cx1 = current.box.left + current.box.width / 2;
+        final double cy1 = current.box.top + current.box.height / 2;
+        final double cx2 = existing.box.left + existing.box.width / 2;
+        final double cy2 = existing.box.top + existing.box.height / 2;
 
-        double centerDist = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
-        double distThreshold =
-            (current.box.width +
-                existing.box.width +
-                current.box.height +
-                existing.box.height) /
-            8;
+        final double centerDist = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
+        final double distThreshold =
+            (current.box.width + existing.box.width +
+                current.box.height + existing.box.height) / 8;
 
-        if (iou > 0.20 ||
-            ioMin > 0.40 ||
+        if (iou > 0.20 || ioMin > 0.40 ||
             (intersectArea > 0 && centerDist < distThreshold * 1.5)) {
           isDuplicate = true;
           break;
         }
       }
     }
-
-    if (!isDuplicate) {
-      finalDetections.add(current);
-    }
+    if (!isDuplicate) kept.add(current);
   }
 
-  List<BirdCrop> allCrops = [];
-  for (var det in finalDetections) {
-    // Yield securely to the Flutter UI rendering engine distinctly before heavy JPG encoding
-    await Future.delayed(Duration.zero);
+  return kept;
+}
 
+/// Crops detected birds from the original image, extracts center color, and
+/// JPG-encodes each crop.
+List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detections) {
+  final List<BirdCrop> crops = [];
+
+  for (final det in detections) {
     final cropped = img.copyCrop(
       originalImage,
       x: det.box.left,
@@ -231,7 +228,6 @@ Future<List<BirdCrop>> _processCore(img.Image originalImage, Interpreter interpr
       height: det.box.height,
     );
 
-    // Extract center color for clustering
     final w = cropped.width;
     final h = cropped.height;
     final int startX = (w * 0.4).toInt();
@@ -265,22 +261,137 @@ Future<List<BirdCrop>> _processCore(img.Image originalImage, Interpreter interpr
     }
 
     final jpgBytes = Uint8List.fromList(img.encodeJpg(cropped, quality: 90));
-    allCrops.add(BirdCrop(jpgBytes, color, det.score, det.box));
+    crops.add(BirdCrop(jpgBytes, color, det.score, det.box));
   }
 
-  return allCrops;
+  return crops;
 }
+
+// ── Non-Windows: full pipeline in a single compute isolate ─────────────────
+
+Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
+  final originalImage = img.decodeImage(data.fileBytes);
+  if (originalImage == null) return [];
+
+  final interpreter = Interpreter.fromAddress(data.interpreterAddress);
+
+  final int origW = originalImage.width;
+  final int origH = originalImage.height;
+  final tiles = _buildTiles(origW, origH);
+
+  List<_RawDetection> rawDetections = [];
+
+  for (var tile in tiles) {
+    await Future.delayed(Duration.zero);
+
+    final tileImage = img.copyCrop(
+      originalImage,
+      x: tile.left, y: tile.top, width: tile.width, height: tile.height,
+    );
+    final imageInput = img.copyResize(
+      tileImage, width: data.targetW, height: data.targetH,
+      interpolation: img.Interpolation.linear,
+    );
+
+    final tensor = _buildTensor(imageInput, data.targetW, data.targetH);
+    final outputs = _allocateOutputs();
+    interpreter.runForMultipleInputs([tensor], outputs);
+
+    rawDetections.addAll(_extractDetections(outputs, tile, origW, origH));
+  }
+
+  final finalDetections = _applyNms(rawDetections);
+  return _cropAndEncode(originalImage, finalDetections);
+}
+
+// ── Windows: tile prep in compute, inference via IsolateInterpreter ────────
+
+/// Runs in a compute isolate: decodes image, crops/resizes all tiles,
+/// packs pixel data into flat Uint8Lists for efficient transfer.
+_PrepareTilesResult _prepareTiles(_PrepareTilesRequest req) {
+  final image = img.decodeImage(req.fileBytes);
+  if (image == null) return _PrepareTilesResult([], [], 0, 0);
+
+  final tiles = _buildTiles(image.width, image.height);
+  final List<Uint8List> pixelData = [];
+  final List<List<int>> rects = [];
+
+  for (final tile in tiles) {
+    final tileImage = img.copyCrop(
+      image,
+      x: tile.left, y: tile.top, width: tile.width, height: tile.height,
+    );
+    final resized = img.copyResize(
+      tileImage,
+      width: req.targetW, height: req.targetH,
+      interpolation: img.Interpolation.linear,
+    );
+
+    // Pack pixels into flat Uint8List (TypedData = efficient isolate transfer)
+    final pixels = Uint8List(req.targetW * req.targetH * 3);
+    int idx = 0;
+    for (int y = 0; y < req.targetH; y++) {
+      for (int x = 0; x < req.targetW; x++) {
+        final p = resized.getPixel(x, y);
+        pixels[idx++] = p.r.toInt();
+        pixels[idx++] = p.g.toInt();
+        pixels[idx++] = p.b.toInt();
+      }
+    }
+    pixelData.add(pixels);
+    rects.add([tile.left, tile.top, tile.width, tile.height]);
+  }
+
+  return _PrepareTilesResult(pixelData, rects, image.width, image.height);
+}
+
+/// Runs in a compute isolate: NMS + crop + JPG encode.
+List<BirdCrop> _postProcessDetections(_PostProcessRequest req) {
+  final originalImage = img.decodeImage(req.fileBytes);
+  if (originalImage == null) return [];
+
+  final rawDetections = req.detections
+      .map((d) => _RawDetection(
+            Rectangle<int>(d[0], d[1], d[2], d[3]),
+            d[4] / 1000.0,
+          ))
+      .toList();
+
+  final finalDetections = _applyNms(rawDetections);
+  return _cropAndEncode(originalImage, finalDetections);
+}
+
+// ── BirdDetector class ─────────────────────────────────────────────────────
 
 class BirdDetector {
   Interpreter? _interpreter;
+  IsolateInterpreter? _isolateInterpreter;
 
   Future<void> init() async {
     final options = InterpreterOptions()
       ..threads = min(4, Platform.numberOfProcessors);
+
+    // Enable XNNPack delegate for SIMD-optimized CPU inference.
+    if (Platform.isWindows) {
+      try {
+        options.addDelegate(XNNPackDelegate());
+        debugPrint('[DETECT] XNNPack delegate enabled');
+      } catch (e) {
+        debugPrint('[DETECT] XNNPack delegate not available: $e');
+      }
+    }
+
     _interpreter = await Interpreter.fromAsset(
       'assets/efficientdet_lite4.tflite',
       options: options,
     );
+
+    // Use IsolateInterpreter on Windows to run inference off the main thread.
+    if (Platform.isWindows) {
+      _isolateInterpreter = await IsolateInterpreter.create(
+        address: _interpreter!.address,
+      );
+    }
   }
 
   Future<List<BirdCrop>> detectAndCrop(String imagePath) async {
@@ -295,30 +406,90 @@ class BirdDetector {
     final int targetH = inputShape[2];
 
     if (Platform.isWindows) {
-      // Decode image in background to avoid 500ms UI freeze
-      final originalImage = await compute(img.decodeImage, fileBytes);
-      if (originalImage == null) return [];
-
-      // Yield back to RenderBox briefly to guarantee UI updates cleanly
-      await Future.delayed(Duration.zero);
-
-      // Run the exceptionally fast Inference matrix processing synchronously.
-      // This strictly prevents Windows TFLite TLS mutexes from locking the Isolate cleanly.
-      return await _processCore(originalImage, _interpreter!, targetW, targetH);
+      return await _detectWindows(fileBytes, targetW, targetH);
     } else {
-      // Linux/Mac OS TFLite configurations handle cross-isolate bindings perfectly fine
       final request = _DetectorRequest(
-        fileBytes,
-        _interpreter!.address,
-        targetW,
-        targetH,
+        fileBytes, _interpreter!.address, targetW, targetH,
       );
-
       return await compute(_detectorWorker, request);
     }
   }
 
+  /// Windows pipeline — fully async, no heavy work on main isolate.
+  ///
+  /// 1. compute() isolate: decode + crop + resize all tiles → flat Uint8Lists
+  /// 2. Main isolate: _tensorFromFlat (~20ms) + IsolateInterpreter (~600ms)
+  /// 3. compute() isolate: NMS + crop + JPG encode
+  Future<List<BirdCrop>> _detectWindows(
+    Uint8List fileBytes,
+    int targetW,
+    int targetH,
+  ) async {
+    final totalSw = Stopwatch()..start();
+
+    // Step 1: All heavy image ops in compute isolate
+    final prepared = await compute(
+      _prepareTiles,
+      _PrepareTilesRequest(fileBytes, targetW, targetH),
+    );
+    debugPrint('[DETECT] prep done: ${totalSw.elapsedMilliseconds}ms, '
+        '${prepared.origW}x${prepared.origH}, '
+        '${prepared.tilePixels.length} tiles');
+
+    if (prepared.tilePixels.isEmpty) return [];
+
+    // Step 2: Inference via IsolateInterpreter (async, no UI blocking)
+    List<List<int>> rawDetections = [];
+
+    for (int ti = 0; ti < prepared.tilePixels.length; ti++) {
+      final sw = Stopwatch()..start();
+
+      // Pass flat Uint8List directly — TFLite copies raw bytes to the native
+      // tensor buffer without traversing nested structures. This avoids both
+      // the ~20ms tensor creation and the expensive serialization of 409,600
+      // inner lists through IsolateInterpreter's SendPort.
+      final pixels = prepared.tilePixels[ti];
+      final outputs = _allocateOutputs();
+      await _isolateInterpreter!.runForMultipleInputs([pixels], outputs);
+      final inferMs = sw.elapsedMilliseconds;
+
+      final rect = prepared.tileRects[ti];
+      final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
+      final tileDets = _extractDetections(
+        outputs, tile, prepared.origW, prepared.origH,
+      );
+
+      for (final det in tileDets) {
+        rawDetections.add([
+          det.box.left, det.box.top, det.box.width, det.box.height,
+          (det.score * 1000).toInt(),
+        ]);
+      }
+
+      debugPrint(
+        '[DETECT] tile ${ti + 1}/${prepared.tilePixels.length}: '
+        'infer=${inferMs}ms birds=${tileDets.length}',
+      );
+    }
+
+    debugPrint('[DETECT] inference done: ${totalSw.elapsedMilliseconds}ms, '
+        '${rawDetections.length} detections');
+
+    if (rawDetections.isEmpty) return [];
+
+    // Step 3: NMS + crop + encode in compute isolate
+    final result = await compute(
+      _postProcessDetections,
+      _PostProcessRequest(fileBytes, rawDetections),
+    );
+
+    debugPrint('[DETECT] TOTAL: ${totalSw.elapsedMilliseconds}ms, '
+        '${result.length} crops');
+    return result;
+  }
+
   void dispose() {
+    _isolateInterpreter?.close();
     _interpreter?.close();
   }
 }
