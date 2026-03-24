@@ -11,6 +11,7 @@ class ObservationListPanel extends StatelessWidget {
   final Set<int> selectedIndividualIndices;
   final int? lastSelectedIndividualIndex;
   final int? draggingIndex;
+  final bool isDropdownOpen;
   final ScrollController scrollController;
 
   // Card interaction callbacks
@@ -26,6 +27,7 @@ class ObservationListPanel extends StatelessWidget {
   final void Function() onDragEnded;
   final void Function(int fromObsIdx, List<int> indIndices, int insertAtIdx)
       onExtractIndividuals;
+  final void Function(bool isOpen)? onDropdownToggled;
 
   const ObservationListPanel({
     super.key,
@@ -34,6 +36,7 @@ class ObservationListPanel extends StatelessWidget {
     required this.selectedIndividualIndices,
     required this.lastSelectedIndividualIndex,
     required this.draggingIndex,
+    required this.isDropdownOpen,
     required this.scrollController,
     required this.onTapCard,
     required this.onTapIndividual,
@@ -45,12 +48,14 @@ class ObservationListPanel extends StatelessWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     required this.onExtractIndividuals,
+    this.onDropdownToggled,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: scrollController,
+      physics: isDropdownOpen ? const NeverScrollableScrollPhysics() : null,
       itemCount: observations.length,
       findChildIndexCallback: (Key key) {
         if (key is ObjectKey && key.value is Observation) {
@@ -83,6 +88,7 @@ class ObservationListPanel extends StatelessWidget {
           onMergeIndividuals: onMergeIndividuals,
           onDragStarted: onDragStarted,
           onDragEnded: onDragEnded,
+          onDropdownToggled: onDropdownToggled,
         );
 
         // In reversed display order, index+1 is the item visually *above*.

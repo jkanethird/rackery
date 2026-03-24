@@ -1,0 +1,1 @@
+import 'package:flutter/material.dart'; void main() { RawAutocomplete<String>(optionsViewBuilder: (c, s, o) => const SizedBox(), optionsBuilder: (v) => [], optionsViewOpenDirection: OptionsViewOpenDirection.up, focusNode: FocusNode(), textEditingController: TextEditingController()); }

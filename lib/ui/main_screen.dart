@@ -92,6 +92,7 @@ class _MainScreenState extends State<MainScreen> {
       Object.hashAll(_controller.selectedIndividualIndices),
       _controller.lastSelectedIndividualIndex,
       _controller.draggingIndex,
+      _controller.isDropdownOpen,
     );
     if (hash != _obsPanelHash || _cachedObsPanel == null) {
       _obsPanelHash = hash;
@@ -101,6 +102,7 @@ class _MainScreenState extends State<MainScreen> {
         selectedIndividualIndices: _controller.selectedIndividualIndices,
         lastSelectedIndividualIndex: _controller.lastSelectedIndividualIndex,
         draggingIndex: _controller.draggingIndex,
+        isDropdownOpen: _controller.isDropdownOpen,
         scrollController: _controller.observationScrollController,
         onTapCard: _controller.selectObservation,
         onTapIndividual: _controller.selectIndividual,
@@ -112,6 +114,7 @@ class _MainScreenState extends State<MainScreen> {
         onDragStarted: _controller.setDraggingIndex,
         onDragEnded: () => _controller.setDraggingIndex(null),
         onExtractIndividuals: _controller.extractIndividuals,
+        onDropdownToggled: _controller.setDropdownOpen,
       );
     }
     return _cachedObsPanel!;

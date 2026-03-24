@@ -51,6 +51,9 @@ class ChecklistController extends ChangeNotifier {
   int? lastSelectedIndividualIndex;
   int? draggingIndex;
 
+  // Dropdown UI state
+  bool isDropdownOpen = false;
+
   // Center pane pager
   int currentCenterPage = 0;
   final PageController pageController = PageController();
@@ -325,6 +328,13 @@ class ChecklistController extends ChangeNotifier {
   void setDraggingIndex(int? idx) {
     draggingIndex = idx;
     notifyListeners();
+  }
+
+  void setDropdownOpen(bool isOpen) {
+    if (isDropdownOpen != isOpen) {
+      isDropdownOpen = isOpen;
+      notifyListeners();
+    }
   }
 
   void setCenterPage(int page, String imagePath) {
