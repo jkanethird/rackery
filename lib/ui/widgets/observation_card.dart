@@ -83,6 +83,15 @@ class _ObservationCardState extends State<ObservationCard>
   @override
   void didUpdateWidget(ObservationCard oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!widget.isSelected && oldWidget.isSelected) {
+      if (_speciesFocusNode.hasFocus) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _speciesFocusNode.hasFocus) {
+            _speciesFocusNode.unfocus();
+          }
+        });
+      }
+    }
     if (widget.obs.speciesName != oldWidget.obs.speciesName &&
         _speciesController.text != widget.obs.speciesName) {
       _speciesController.text = widget.obs.speciesName;
@@ -303,21 +312,6 @@ class _ObservationCardState extends State<ObservationCard>
   }
 
   Widget _buildSpeciesField() {
-    // Only build the expensive RawAutocomplete for the selected card.
-    // Non-selected cards use a lightweight Text widget.
-    if (!widget.isSelected) {
-      return GestureDetector(
-        onTap: widget.onTapCard,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            widget.obs.speciesName,
-            style: const TextStyle(fontSize: 16),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      );
-    }
     return _buildSpeciesAutocomplete();
   }
 
@@ -344,6 +338,28 @@ class _ObservationCardState extends State<ObservationCard>
         if (mounted) setState(() {});
       },
       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+        if (!widget.isSelected) {
+          return GestureDetector(
+            onTap: widget.onTapCard,
+            child: AbsorbPointer(
+              child: TextFormField(
+                controller: controller,
+                focusNode: focusNode,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0),
+                ),
+                style: const TextStyle(fontSize: 16),
+                readOnly: true,
+              ),
+            ),
+          );
+        }
+
         return TextFormField(
           controller: controller,
           focusNode: focusNode,

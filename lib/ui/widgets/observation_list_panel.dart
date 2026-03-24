@@ -52,6 +52,14 @@ class ObservationListPanel extends StatelessWidget {
     return ListView.builder(
       controller: scrollController,
       itemCount: observations.length,
+      findChildIndexCallback: (Key key) {
+        if (key is ObjectKey && key.value is Observation) {
+          final obs = key.value as Observation;
+          final idx = observations.indexOf(obs);
+          if (idx >= 0) return observations.length - 1 - idx;
+        }
+        return null;
+      },
       itemBuilder: (context, i) {
         final index = observations.length - 1 - i;
         final obs = observations[index];
@@ -115,6 +123,7 @@ class ObservationListPanel extends StatelessWidget {
         }
 
         return Column(
+          key: ObjectKey(obs),
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isFirstInBurst)

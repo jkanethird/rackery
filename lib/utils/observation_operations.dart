@@ -21,6 +21,20 @@ class ObservationOperations {
     observations.removeAt(fromIdx);
   }
 
+  static Map<int, ({String imagePath, int localIndex})> _buildGlobalIndexMap(Observation obs) {
+    final Map<int, ({String imagePath, int localIndex})> map = {};
+    int gi = 0;
+    for (final src in obs.sourceImages) {
+      final boxes = List<Rectangle<int>>.from(
+        obs.boxesByImagePath[src.imagePath] ?? [],
+      )..sort((a, b) => a.left.compareTo(b.left));
+      for (int li = 0; li < boxes.length; li++) {
+        map[gi++] = (imagePath: src.imagePath, localIndex: li);
+      }
+    }
+    return map;
+  }
+
   static void mergeIndividuals(List<Observation> observations, int fromObsIdx, List<int> indIndices, int intoIdx) {
     if (fromObsIdx == intoIdx || indIndices.isEmpty) return;
     final from = observations[fromObsIdx];
@@ -28,18 +42,26 @@ class ObservationOperations {
     into.count += indIndices.length;
     from.count -= indIndices.length;
 
-    final sortedIndices = List<int>.from(indIndices)
-      ..sort((a, b) => b.compareTo(a));
+    final globalIndexMap = _buildGlobalIndexMap(from);
+    final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
 
-    for (final src in List.from(from.sourceImages)) {
-      final path = src.imagePath;
+    final Map<String, List<int>> localIndicesToRemove = {};
+    for (final gi in sortedIndices) {
+      final loc = globalIndexMap[gi];
+      if (loc != null) {
+        localIndicesToRemove.putIfAbsent(loc.imagePath, () => []).add(loc.localIndex);
+      }
+    }
+
+    for (final entry in localIndicesToRemove.entries) {
+      final path = entry.key;
+      final localIndices = entry.value..sort((a, b) => b.compareTo(a));
       final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null && fromBoxes.isNotEmpty) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final idx in sortedIndices) {
-          if (idx < sortedBoxes.length) {
-            final box = sortedBoxes[idx];
+      if (fromBoxes != null) {
+        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)..sort((a, b) => a.left.compareTo(b.left));
+        for (final li in localIndices) {
+          if (li < sortedBoxes.length) {
+            final box = sortedBoxes[li];
             fromBoxes.remove(box);
             into.boxesByImagePath.putIfAbsent(path, () => []).add(box);
             from.boundingBoxes.remove(box);
@@ -47,11 +69,26 @@ class ObservationOperations {
           }
         }
       }
-      into.boxesByImagePath.putIfAbsent(path, () => []);
+    }
+
+    for (final gi in sortedIndices) {
+      final loc = globalIndexMap[gi];
+      if (loc != null) {
+        final src = from.sourceImages.firstWhere((s) => s.imagePath == loc.imagePath);
+        into.boxesByImagePath.putIfAbsent(loc.imagePath, () => []);
+        if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
+          into.sourceImages.add(src);
+        }
+      }
+    }
+    
+    if (localIndicesToRemove.isEmpty && from.sourceImages.isNotEmpty) {
+      final src = from.sourceImages.first;
       if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
         into.sourceImages.add(src);
       }
     }
+
     for (final s in from.possibleSpecies) {
       if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
     }
@@ -79,18 +116,26 @@ class ObservationOperations {
     );
     from.count -= indIndices.length;
 
-    final sortedIndices = List<int>.from(indIndices)
-      ..sort((a, b) => b.compareTo(a));
+    final globalIndexMap = _buildGlobalIndexMap(from);
+    final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
 
-    for (final src in List.from(from.sourceImages)) {
-      final path = src.imagePath;
+    final Map<String, List<int>> localIndicesToRemove = {};
+    for (final gi in sortedIndices) {
+      final loc = globalIndexMap[gi];
+      if (loc != null) {
+        localIndicesToRemove.putIfAbsent(loc.imagePath, () => []).add(loc.localIndex);
+      }
+    }
+
+    for (final entry in localIndicesToRemove.entries) {
+      final path = entry.key;
+      final localIndices = entry.value..sort((a, b) => b.compareTo(a));
       final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null && fromBoxes.isNotEmpty) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final idx in sortedIndices) {
-          if (idx < sortedBoxes.length) {
-            final box = sortedBoxes[idx];
+      if (fromBoxes != null) {
+        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)..sort((a, b) => a.left.compareTo(b.left));
+        for (final li in localIndices) {
+          if (li < sortedBoxes.length) {
+            final box = sortedBoxes[li];
             fromBoxes.remove(box);
             newObs.boxesByImagePath.putIfAbsent(path, () => []).add(box);
             from.boundingBoxes.remove(box);
@@ -98,8 +143,21 @@ class ObservationOperations {
           }
         }
       }
-      if (newObs.boxesByImagePath.containsKey(path) &&
-          newObs.boxesByImagePath[path]!.isNotEmpty) {
+    }
+
+    for (final gi in sortedIndices) {
+      final loc = globalIndexMap[gi];
+      if (loc != null) {
+        final src = from.sourceImages.firstWhere((s) => s.imagePath == loc.imagePath);
+        if (!newObs.sourceImages.any((s) => s.imagePath == src.imagePath)) {
+          newObs.sourceImages.add(src);
+        }
+      }
+    }
+    
+    if (localIndicesToRemove.isEmpty && from.sourceImages.isNotEmpty) {
+      final src = from.sourceImages.first;
+      if (!newObs.sourceImages.any((s) => s.imagePath == src.imagePath)) {
         newObs.sourceImages.add(src);
       }
     }

@@ -73,7 +73,11 @@ class BurstGroup {
     List<String> possibleSpecies = [];
 
     for (var obs in observations) {
-      sourceImages.addAll(obs.sourceImages);
+      for (final src in obs.sourceImages) {
+        if (!sourceImages.any((s) => s.imagePath == src.imagePath)) {
+          sourceImages.add(src);
+        }
+      }
 
       for (final entry in obs.boxesByImagePath.entries) {
         boxesByImagePath.putIfAbsent(entry.key, () => []).addAll(entry.value);
