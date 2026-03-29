@@ -11,20 +11,74 @@ class ObservationOperations {
     if (fromIdx == intoIdx) return;
     final from = observations[fromIdx];
     final into = observations[intoIdx];
-    into.count += from.count;
-    into.individualNames.addAll(from.individualNames);
-    into.boundingBoxes.addAll(from.boundingBoxes);
-    for (final s in from.possibleSpecies) {
-      if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
-    }
+
+    // Merge source images first (needed for correct global index computation)
     final existingPaths = into.sourceImages.map((s) => s.imagePath).toSet();
     for (final src in from.sourceImages) {
       if (existingPaths.add(src.imagePath)) into.sourceImages.add(src);
     }
+
+    // Build a map of (imagePath, box) → name from the 'from' observation
+    // so we can insert each name at the right sorted position after merging boxes.
+    final fromGlobalMap = _buildGlobalIndexMap(from);
+    final Map<int, String> fromGiToName = {};
+    for (int gi = 0; gi < from.individualNames.length; gi++) {
+      fromGiToName[gi] = from.individualNames[gi];
+    }
+    // Collect (imagePath, box, name) triples from the 'from' observation
+    final fromEntries =
+        <({String imagePath, Rectangle<int> box, String name})>[];
+    for (final entry in fromGiToName.entries) {
+      final loc = fromGlobalMap[entry.key];
+      if (loc != null) {
+        final boxes = List<Rectangle<int>>.from(
+          from.boxesByImagePath[loc.imagePath] ?? [],
+        )..sort((a, b) => a.left.compareTo(b.left));
+        if (loc.localIndex < boxes.length) {
+          fromEntries.add((
+            imagePath: loc.imagePath,
+            box: boxes[loc.localIndex],
+            name: entry.value,
+          ));
+        }
+      }
+    }
+
+    // Merge boxes into the target
+    into.count += from.count;
+    into.boundingBoxes.addAll(from.boundingBoxes);
     for (final entry in from.boxesByImagePath.entries) {
       into.boxesByImagePath
           .putIfAbsent(entry.key, () => [])
           .addAll(entry.value);
+    }
+
+    // Now rebuild the global index map for the merged 'into' observation
+    // and insert each 'from' name at the correct position.
+    for (final fe in fromEntries) {
+      // Find the global index of this box in the merged observation
+      int gi = 0;
+      int insertAt = into.individualNames.length; // fallback: end
+      bool found = false;
+      for (final src in into.sourceImages) {
+        final boxes = List<Rectangle<int>>.from(
+          into.boxesByImagePath[src.imagePath] ?? [],
+        )..sort((a, b) => a.left.compareTo(b.left));
+        for (int li = 0; li < boxes.length; li++) {
+          if (src.imagePath == fe.imagePath && boxes[li] == fe.box) {
+            insertAt = gi;
+            found = true;
+            break;
+          }
+          gi++;
+        }
+        if (found) break;
+      }
+      into.individualNames.insert(insertAt, fe.name);
+    }
+
+    for (final s in from.possibleSpecies) {
+      if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
     }
     observations.removeAt(fromIdx);
   }
