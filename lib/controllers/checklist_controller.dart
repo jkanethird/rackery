@@ -471,7 +471,7 @@ class ChecklistController extends ChangeNotifier {
           o.sourceImages.any((src) => src.imagePath == imagePath),
       orElse: () => null,
     );
-    final displayPath =
+    final fullDisplayPath =
         sibling?.fullImageDisplayPath ??
         sibling?.sourceImages
             .cast<SourceImage?>()
@@ -481,13 +481,14 @@ class ChecklistController extends ChangeNotifier {
     final newObs = Observation(
       imagePath: imagePath,
       speciesName: 'Identifying...',
+      displayPath: sibling?.displayPath,
       exifData: imageExifData[imagePath] ?? ExifData(),
       count: 1,
       boundingBoxes: [box],
       boxesByImagePath: {
         imagePath: [box],
       },
-      fullImageDisplayPath: displayPath,
+      fullImageDisplayPath: fullDisplayPath,
     );
 
     if (sibling != null) {
