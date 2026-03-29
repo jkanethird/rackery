@@ -72,3 +72,30 @@ class BoundingBoxPainter extends CustomPainter {
       oldDelegate.names != names || 
       oldDelegate.imageSize != imageSize;
 }
+
+class DrawingBoxPainter extends CustomPainter {
+  final Offset start;
+  final Offset end;
+
+  DrawingBoxPainter(this.start, this.end);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromPoints(start, end);
+    final paint = Paint()
+      ..color = Colors.blueAccent.withValues(alpha: 0.3)
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(rect, paint);
+
+    final borderPaint = Paint()
+      ..color = Colors.blueAccent
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawRect(rect, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(DrawingBoxPainter oldDelegate) {
+    return oldDelegate.start != start || oldDelegate.end != end;
+  }
+}
