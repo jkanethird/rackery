@@ -130,6 +130,11 @@ class ChecklistController extends ChangeNotifier {
     fileBursts = result.bursts;
     imageExifData.addAll(result.exifData);
     imageVisualHashes.addAll(result.visualHashes);
+    
+    if (currentlyDisplayedImage == null && processingFiles.isNotEmpty) {
+      currentlyDisplayedImage = processingFiles.first;
+      notifyListeners();
+    }
 
     final int sessionTime = DateTime.now().millisecondsSinceEpoch;
     final List<String> burstIds = List.generate(

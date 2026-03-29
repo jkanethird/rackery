@@ -43,20 +43,7 @@ class ImageConverter {
   }
 
   static Future<String> getDisplayPath(String imagePath) async {
-    final extension = p.extension(imagePath).toLowerCase();
-    
-    if (extension == '.jpg' || extension == '.jpeg' || extension == '.png') {
-      return imagePath;
-    }
-
-    if (extension == '.heic' || extension == '.heif') {
-      final cacheDir = await getApplicationSupportDirectory();
-      final heicCacheDir = Directory(p.join(cacheDir.path, 'heic_cache'));
-      final fileNameWithoutExt = p.basenameWithoutExtension(imagePath);
-      return p.join(heicCacheDir.path, '$fileNameWithoutExt.jpg');
-    }
-
-    return imagePath;
+    return convertToJpegIfNeeded(imagePath);
   }
 }
 
