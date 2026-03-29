@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ebird_generator/services/bird_classifier.dart';
 import 'package:ebird_generator/ui/main_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await BirdClassifier().unloadModel();
   runApp(const MyApp());
 }
 
