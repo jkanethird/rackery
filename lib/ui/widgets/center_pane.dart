@@ -223,64 +223,67 @@ class _CenterPaneState extends State<CenterPane> {
         );
 
         if (_isDrawingMode) {
-          stack = GestureDetector(
-            onPanStart: (details) {
-              setState(() {
-                _drawStart = details.localPosition;
-                _drawCurrent = details.localPosition;
-              });
-            },
-            onPanUpdate: (details) {
-              setState(() {
-                _drawCurrent = details.localPosition;
-              });
-            },
-            onPanEnd: (details) {
-              if (_drawStart != null && _drawCurrent != null) {
-                // Map local coordinates to image pixel coordinates
-                final s = min(
-                  constraints.maxWidth / imgSize.width,
-                  constraints.maxHeight / imgSize.height,
-                );
-                final dw = imgSize.width * s;
-                final dh = imgSize.height * s;
-                final dx = (constraints.maxWidth - dw) / 2;
-                final dy = (constraints.maxHeight - dh) / 2;
-
-                int mapX(double x) =>
-                    ((x - dx) / s).clamp(0, imgSize.width).toInt();
-                int mapY(double y) =>
-                    ((y - dy) / s).clamp(0, imgSize.height).toInt();
-
-                final left = min(_drawStart!.dx, _drawCurrent!.dx);
-                final right = max(_drawStart!.dx, _drawCurrent!.dx);
-                final top = min(_drawStart!.dy, _drawCurrent!.dy);
-                final bottom = max(_drawStart!.dy, _drawCurrent!.dy);
-
-                final imgLeft = mapX(left);
-                final imgRight = mapX(right);
-                final imgTop = mapY(top);
-                final imgBottom = mapY(bottom);
-
-                if (imgRight - imgLeft > 5 && imgBottom - imgTop > 5) {
-                  final box = Rectangle<int>(
-                    imgLeft,
-                    imgTop,
-                    imgRight - imgLeft,
-                    imgBottom - imgTop,
+          stack = MouseRegion(
+            cursor: SystemMouseCursors.precise,
+            child: GestureDetector(
+              onPanStart: (details) {
+                setState(() {
+                  _drawStart = details.localPosition;
+                  _drawCurrent = details.localPosition;
+                });
+              },
+              onPanUpdate: (details) {
+                setState(() {
+                  _drawCurrent = details.localPosition;
+                });
+              },
+              onPanEnd: (details) {
+                if (_drawStart != null && _drawCurrent != null) {
+                  // Map local coordinates to image pixel coordinates
+                  final s = min(
+                    constraints.maxWidth / imgSize.width,
+                    constraints.maxHeight / imgSize.height,
                   );
-                  if (widget.onDrawBoundingBox != null) {
-                    widget.onDrawBoundingBox!(rawPath, box);
+                  final dw = imgSize.width * s;
+                  final dh = imgSize.height * s;
+                  final dx = (constraints.maxWidth - dw) / 2;
+                  final dy = (constraints.maxHeight - dh) / 2;
+
+                  int mapX(double x) =>
+                      ((x - dx) / s).clamp(0, imgSize.width).toInt();
+                  int mapY(double y) =>
+                      ((y - dy) / s).clamp(0, imgSize.height).toInt();
+
+                  final left = min(_drawStart!.dx, _drawCurrent!.dx);
+                  final right = max(_drawStart!.dx, _drawCurrent!.dx);
+                  final top = min(_drawStart!.dy, _drawCurrent!.dy);
+                  final bottom = max(_drawStart!.dy, _drawCurrent!.dy);
+
+                  final imgLeft = mapX(left);
+                  final imgRight = mapX(right);
+                  final imgTop = mapY(top);
+                  final imgBottom = mapY(bottom);
+
+                  if (imgRight - imgLeft > 5 && imgBottom - imgTop > 5) {
+                    final box = Rectangle<int>(
+                      imgLeft,
+                      imgTop,
+                      imgRight - imgLeft,
+                      imgBottom - imgTop,
+                    );
+                    if (widget.onDrawBoundingBox != null) {
+                      widget.onDrawBoundingBox!(rawPath, box);
+                    }
                   }
                 }
-              }
-              setState(() {
-                _drawStart = null;
-                _drawCurrent = null;
-                _isDrawingMode = false;
-              });
-            },
-            child: stack,
+                setState(() {
+                  _drawStart = null;
+                  _drawCurrent = null;
+                  _isDrawingMode = false;
+                });
+              },
+              child: stack,
+            ),
           );
         }
         return stack;
