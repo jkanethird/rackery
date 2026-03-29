@@ -1,7 +1,66 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 /// Converts GPS coordinates to a human-readable geographic region description
 /// without requiring any internet connection or external API.
 /// Uses bounding boxes for US states and broad world regions.
 class GeoRegionService {
+  static final Map<String, String> _locationCache = {};
+
+  /// Asynchronously fetches municipality and state level detail using Nominatim.
+  /// Falls back to the offline [describe] method if network is unavailable.
+  static Future<String> getDetailedLocation(double lat, double lon) async {
+    final cacheKey = '${lat.toStringAsFixed(4)},${lon.toStringAsFixed(4)}';
+    if (_locationCache.containsKey(cacheKey)) {
+      return _locationCache[cacheKey]!;
+    }
+
+    try {
+      final url = Uri.parse(
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=10',
+      );
+      final response = await http.get(
+        url,
+        headers: {'User-Agent': 'ebird_generator/1.0.0'},
+      ).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final address = data['address'] as Map<String, dynamic>?;
+        if (address != null) {
+          final state = address['state'] ?? address['region'] ?? '';
+          final municipality =
+              address['city'] ??
+              address['town'] ??
+              address['village'] ??
+              address['municipality'] ??
+              address['county'] ??
+              '';
+
+          String result = '';
+          if (municipality.isNotEmpty) {
+            result += municipality;
+          }
+          if (state.isNotEmpty) {
+            if (result.isNotEmpty) result += ', ';
+            result += state;
+          }
+
+          if (result.isNotEmpty) {
+            _locationCache[cacheKey] = result;
+            return result;
+          }
+        }
+      }
+    } catch (_) {
+      // Ignore network errors and fall back to local description below
+    }
+
+    // Fallback to bounding box logic
+    final fallback = describe(lat, lon);
+    _locationCache[cacheKey] = fallback;
+    return fallback;
+  }
   /// Returns a natural language location string suitable for an ornithology prompt,
   /// e.g. "New Jersey, USA (northeastern United States)"
   static String describe(double lat, double lon) {

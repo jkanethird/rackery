@@ -298,10 +298,15 @@ class _CenterPaneState extends State<CenterPane> {
               const Icon(Icons.location_on, size: 12, color: Colors.blueGrey),
               const SizedBox(width: 3),
               Flexible(
-                child: SelectableText(
-                  GeoRegionService.describe(lat, lon),
-                  style: const TextStyle(fontSize: 11, color: Colors.blueGrey),
-                  textAlign: TextAlign.center,
+                child: FutureBuilder<String>(
+                  future: GeoRegionService.getDetailedLocation(lat, lon),
+                  builder: (context, snapshot) {
+                    return SelectableText(
+                      snapshot.data ?? GeoRegionService.describe(lat, lon),
+                      style: const TextStyle(fontSize: 11, color: Colors.blueGrey),
+                      textAlign: TextAlign.center,
+                    );
+                  },
                 ),
               ),
             ],
