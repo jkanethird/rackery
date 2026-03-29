@@ -483,6 +483,8 @@ class ChecklistController extends ChangeNotifier {
           o.sourceImages.any((src) => src.imagePath == imagePath),
     );
     if (lastIndex >= 0) {
+      // Copy burst ID so the list panel groups them together
+      newObs.burstId = observations[lastIndex].burstId;
       observations.insert(lastIndex + 1, newObs);
     } else {
       observations.add(newObs);
