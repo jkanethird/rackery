@@ -63,10 +63,19 @@ class ChecklistController extends ChangeNotifier {
 
   // Dropdown UI state
   bool isDropdownOpen = false;
+  bool showBoundingBoxes = true;
 
-  // Center pane pager
-  int currentCenterPage = 0;
-  final PageController pageController = PageController();
+  void toggleBoundingBoxes() {
+    showBoundingBoxes = !showBoundingBoxes;
+    notify();
+  }
+
+  void ensureBoundingBoxesVisible() {
+    if (!showBoundingBoxes) {
+      showBoundingBoxes = true;
+      notify();
+    }
+  }
 
   // ─── Lifecycle ──────────────────────────────────────────────────────────
 
@@ -90,7 +99,6 @@ class ChecklistController extends ChangeNotifier {
     _classifier.dispose();
     _detector.dispose();
     observationScrollController.dispose();
-    pageController.dispose();
     super.dispose();
   }
 
@@ -133,12 +141,6 @@ class ChecklistController extends ChangeNotifier {
     }
   }
 
-  void setCenterPage(int page, String imagePath) {
-    currentCenterPage = page;
-    currentlyDisplayedImage = imagePath;
-    notifyListeners();
-  }
-
   // ─── Clear ───────────────────────────────────────────────────────────────
 
   void clearAll() {
@@ -146,7 +148,6 @@ class ChecklistController extends ChangeNotifier {
     selectedObservation = null;
     selectedIndividualIndices.clear();
     lastSelectedIndividualIndex = null;
-    currentCenterPage = 0;
     currentlyDisplayedImage = null;
     fileBursts.clear();
     selectedFiles.clear();
@@ -162,7 +163,6 @@ class ChecklistController extends ChangeNotifier {
     batchStartTime = null;
     batchElapsedTime = null;
     observationVersion = 0;
-    if (pageController.hasClients) pageController.jumpToPage(0);
     notifyListeners();
   }
 }

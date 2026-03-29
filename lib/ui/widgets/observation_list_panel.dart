@@ -27,6 +27,7 @@ class ObservationListPanel extends StatelessWidget {
   final void Function() onDragEnded;
   final void Function(int fromObsIdx, List<int> indIndices, int insertAtIdx)
       onExtractIndividuals;
+  final void Function(String imagePath) onTapPhoto;
   final void Function(bool isOpen)? onDropdownToggled;
   final void Function(int obsIdx, List<int> indIndices)? onDeleteIndividuals;
 
@@ -49,6 +50,7 @@ class ObservationListPanel extends StatelessWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     required this.onExtractIndividuals,
+    required this.onTapPhoto,
     this.onDropdownToggled,
     this.onDeleteIndividuals,
   });
@@ -90,6 +92,7 @@ class ObservationListPanel extends StatelessWidget {
           onMergeIndividuals: onMergeIndividuals,
           onDragStarted: onDragStarted,
           onDragEnded: onDragEnded,
+          onTapPhoto: onTapPhoto,
           onDropdownToggled: onDropdownToggled,
           onDeleteIndividuals: (indIndices) => onDeleteIndividuals?.call(index, indIndices),
         );

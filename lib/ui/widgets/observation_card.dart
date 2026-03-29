@@ -28,6 +28,7 @@ class ObservationCard extends StatefulWidget {
   final void Function() onDragEnded;
   final void Function(bool isOpen)? onDropdownToggled;
   final void Function(List<int> indIndices)? onDeleteIndividuals;
+  final void Function(String imagePath) onTapPhoto;
 
   const ObservationCard({
     super.key,
@@ -46,6 +47,7 @@ class ObservationCard extends StatefulWidget {
     required this.onMergeIndividuals,
     required this.onDragStarted,
     required this.onDragEnded,
+    required this.onTapPhoto,
     this.onDropdownToggled,
     this.onDeleteIndividuals,
   });
@@ -520,6 +522,13 @@ class _ObservationCardState extends State<ObservationCard>
   }
 
   Widget _buildIndividualsList() {
+    final sortedIndices = List.generate(widget.obs.count, (i) => i);
+    sortedIndices.sort((a, b) {
+      final nameA = a < widget.obs.individualNames.length ? widget.obs.individualNames[a] : 'Individual ${a + 1}';
+      final nameB = b < widget.obs.individualNames.length ? widget.obs.individualNames[b] : 'Individual ${b + 1}';
+      return nameA.compareTo(nameB);
+    });
+
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOutCubic,
@@ -529,7 +538,7 @@ class _ObservationCardState extends State<ObservationCard>
             _isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 0),
         child: Column(
           children: [
-            for (int i = 0; i < widget.obs.count; i++)
+            for (int i in sortedIndices)
               _buildIndividualTile(i),
           ],
         ),
@@ -579,26 +588,67 @@ class _ObservationCardState extends State<ObservationCard>
           title: Text(label, style: const TextStyle(fontSize: 13)),
         ),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.only(left: 82, right: 16),
-        title: Text(individualName, style: const TextStyle(fontSize: 13)),
-        selected: widget.isSelected && widget.selectedIndividualIndices.contains(i),
-        selectedColor: Theme.of(context).colorScheme.primary,
-        selectedTileColor:
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-        onTap: () => widget.onTapIndividual(i),
-        trailing: widget.isSelected && widget.selectedIndividualIndices.contains(i)
-            ? IconButton(
-                icon: const Icon(Icons.delete_outline, size: 20),
-                color: Theme.of(context).colorScheme.error,
-                tooltip: 'Delete individual',
-                onPressed: () {
-                   if (widget.onDeleteIndividuals != null) {
-                       widget.onDeleteIndividuals!(widget.selectedIndividualIndices.toList());
-                   }
-                },
-              )
-            : null,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 82, right: 16),
+            title: Text(individualName, style: const TextStyle(fontSize: 13)),
+            selected: widget.isSelected && widget.selectedIndividualIndices.contains(i),
+            selectedColor: Theme.of(context).colorScheme.primary,
+            selectedTileColor:
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            onTap: () => widget.onTapIndividual(i),
+            trailing: widget.isSelected && widget.selectedIndividualIndices.contains(i)
+                ? IconButton(
+                    icon: const Icon(Icons.delete_outline, size: 20),
+                    color: Theme.of(context).colorScheme.error,
+                    tooltip: 'Delete individual',
+                    onPressed: () {
+                       if (widget.onDeleteIndividuals != null) {
+                           widget.onDeleteIndividuals!(widget.selectedIndividualIndices.toList());
+                       }
+                    },
+                  )
+                : null,
+          ),
+          if (widget.isSelected && widget.selectedIndividualIndices.contains(i) && widget.obs.sourceImages.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(left: 82, right: 16, bottom: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: widget.obs.sourceImages.map((src) {
+                  final filename = src.imagePath.split('/').last.split('\\').last;
+                  return InkWell(
+                    onTap: () => widget.onTapPhoto(src.imagePath),
+                    borderRadius: BorderRadius.circular(6),
+                    hoverColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(Icons.photo_outlined, size: 16, color: Theme.of(context).colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              filename,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+        ],
       ),
     );
   }

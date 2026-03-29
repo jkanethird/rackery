@@ -43,11 +43,10 @@ class CenterPane extends StatefulWidget {
   final Set<int> selectedIndividualIndices;
   final String? currentlyDisplayedImage;
   final Map<String, ExifData> imageExifData;
-  final int currentPage;
-  final PageController pageController;
+  final bool showBoundingBoxes;
+  final VoidCallback onToggleBoundingBoxes;
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
-  final void Function(int page, String imagePath) onPageChanged;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
   const CenterPane({
@@ -56,11 +55,10 @@ class CenterPane extends StatefulWidget {
     required this.selectedIndividualIndices,
     required this.currentlyDisplayedImage,
     required this.imageExifData,
-    required this.currentPage,
-    required this.pageController,
+    required this.showBoundingBoxes,
+    required this.onToggleBoundingBoxes,
     required this.getDisplayPath,
     required this.getImageSize,
-    required this.onPageChanged,
     this.onDrawBoundingBox,
   });
 
@@ -70,14 +68,12 @@ class CenterPane extends StatefulWidget {
 
 class _CenterPaneState extends State<CenterPane> {
   bool _isDrawingMode = false;
-  bool _showBoundingBoxes = true;
   Offset? _drawStart;
   Offset? _drawCurrent;
 
   @override
   Widget build(BuildContext context) {
     final obs = widget.selectedObservation;
-    List<SourceImage>? sources;
 
     // Build a global individual index → (imagePath, perPhotoBoxIndex) mapping.
     // Global indices are assigned by iterating sourceImages in order — first
@@ -97,39 +93,25 @@ class _CenterPaneState extends State<CenterPane> {
       }
     }
 
-    if (obs != null) {
-      if (widget.selectedIndividualIndices.isNotEmpty) {
-        // Find the set of photos that contain any selected individual.
-        final selectedPaths = widget.selectedIndividualIndices
-            .where(globalIndexMap.containsKey)
-            .map((gi) => globalIndexMap[gi]!.imagePath)
-            .toSet();
-        sources = obs.sourceImages
-            .where((src) => selectedPaths.contains(src.imagePath))
-            .toList();
-        // Fallback: if the mapping produced no results (no-box individuals),
-        // show all photos so the user at least sees something.
-        if (sources.isEmpty) sources = obs.sourceImages;
-      } else {
-        sources = obs.sourceImages;
-      }
-    } else if (widget.currentlyDisplayedImage != null) {
-      sources = [
-        (
-          imagePath: widget.currentlyDisplayedImage!,
-          fullImageDisplayPath: obs?.fullImageDisplayPath,
-        ),
-      ];
+    SourceImage? activeSource;
+    if (widget.currentlyDisplayedImage != null) {
+      activeSource = obs?.sourceImages
+              .where((s) => s.imagePath == widget.currentlyDisplayedImage)
+              .firstOrNull ??
+          (
+            imagePath: widget.currentlyDisplayedImage!,
+            fullImageDisplayPath: obs?.fullImageDisplayPath,
+          );
+    } else if (obs != null && obs.sourceImages.isNotEmpty) {
+      activeSource = obs.sourceImages.first;
     }
 
-    if (sources == null || sources.isEmpty) {
+    if (activeSource == null) {
       return const Expanded(
         flex: 2,
         child: Center(child: Text('Select photos to begin')),
       );
     }
-
-    final isMulti = sources.length > 1;
 
     Widget photoCard(SourceImage src) {
       final rawPath = src.imagePath;
@@ -203,7 +185,7 @@ class _CenterPaneState extends State<CenterPane> {
               width: double.infinity,
               fit: BoxFit.contain,
             ),
-            if (obs != null && photoBoxes.isNotEmpty && _showBoundingBoxes)
+            if (obs != null && photoBoxes.isNotEmpty && widget.showBoundingBoxes)
               Positioned.fill(
                 child: CustomPaint(
                   painter: BoundingBoxPainter(
@@ -361,96 +343,10 @@ class _CenterPaneState extends State<CenterPane> {
       );
     }
 
-    Widget mainContent;
-    if (!isMulti) {
-      mainContent = Padding(
-        padding: const EdgeInsets.all(16),
-        child: photoCard(sources.first),
-      );
-    } else {
-      // Multi-source: PageView with keyboard navigation
-      mainContent = Stack(
-        children: [
-          PageView.builder(
-            controller: widget.pageController,
-            itemCount: sources.length,
-            onPageChanged: (i) =>
-                widget.onPageChanged(i, sources![i].imagePath),
-            itemBuilder: (context, i) => Padding(
-              padding: const EdgeInsets.all(16),
-              child: photoCard(sources![i]),
-            ),
-          ),
-          // Page counter badge
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.photo_library,
-                    size: 14,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    '${widget.currentPage + 1} / ${sources.length}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (widget.currentPage > 0)
-            Positioned(
-              left: 16,
-              bottom: 16,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.grey.shade800.withValues(alpha: 0.5),
-                  hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
-                  shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                ),
-                tooltip: 'Previous photo',
-                onPressed: () => widget.pageController.previousPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                ),
-              ),
-            ),
-          if (widget.currentPage < sources.length - 1)
-            Positioned(
-              right: 16,
-              bottom: 16,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_forward, color: Colors.white),
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.grey.shade800.withValues(alpha: 0.5),
-                  hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
-                  shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                ),
-                tooltip: 'Next photo',
-                onPressed: () => widget.pageController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                ),
-              ),
-            ),
-        ],
-      );
-    }
+    Widget mainContent = Padding(
+      padding: const EdgeInsets.all(16),
+      child: photoCard(activeSource),
+    );
 
     return Expanded(
       flex: 2,
@@ -472,51 +368,28 @@ class _CenterPaneState extends State<CenterPane> {
               });
               return KeyEventResult.handled;
             }
-
-            if (isMulti) {
-              if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-                if (widget.currentPage > 0) {
-                  widget.pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                  return KeyEventResult.handled;
-                }
-              } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-                if (widget.currentPage < sources!.length - 1) {
-                  widget.pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                  return KeyEventResult.handled;
-                }
-              }
-            }
           }
           return KeyEventResult.ignored;
         },
         child: Stack(
           children: [
             Positioned.fill(child: mainContent),
-            if (sources.isNotEmpty)
-              Positioned(
+            Positioned(
                 top: 16,
                 left: 16,
                 child: Row(
                   children: [
                     Tooltip(
-                      message: _showBoundingBoxes
+                      message: widget.showBoundingBoxes
                           ? 'Hide Bounding Boxes'
                           : 'Show Bounding Boxes',
                       child: IconButton(
                         icon: Icon(
-                          _showBoundingBoxes
+                          widget.showBoundingBoxes
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
-                        onPressed: () => setState(
-                          () => _showBoundingBoxes = !_showBoundingBoxes,
-                        ),
+                        onPressed: widget.onToggleBoundingBoxes,
                         color: Theme.of(context).colorScheme.primary,
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.grey.shade800.withValues(

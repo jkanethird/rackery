@@ -109,8 +109,6 @@ extension PhotoProcessingActions on ChecklistController {
       selectedObservation = observations.first;
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
       currentlyDisplayedImage = selectedObservation!.imagePath;
     }
     notify();

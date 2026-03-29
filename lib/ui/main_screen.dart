@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
       identityHashCode(_controller.selectedObservation),
       Object.hashAll(_controller.selectedIndividualIndices),
       _controller.currentlyDisplayedImage,
-      _controller.currentCenterPage,
+      _controller.showBoundingBoxes,
     );
     if (hash != _centerPaneHash || _cachedCenterPane == null) {
       _centerPaneHash = hash;
@@ -74,11 +74,10 @@ class _MainScreenState extends State<MainScreen> {
         selectedIndividualIndices: _controller.selectedIndividualIndices,
         currentlyDisplayedImage: _controller.currentlyDisplayedImage,
         imageExifData: _controller.imageExifData,
-        currentPage: _controller.currentCenterPage,
-        pageController: _controller.pageController,
+        showBoundingBoxes: _controller.showBoundingBoxes,
+        onToggleBoundingBoxes: _controller.toggleBoundingBoxes,
         getDisplayPath: _controller.getDisplayPath,
         getImageSize: _controller.getImageSize,
-        onPageChanged: _controller.setCenterPage,
         onDrawBoundingBox: _controller.addManualIndividual,
       );
     }
@@ -117,6 +116,7 @@ class _MainScreenState extends State<MainScreen> {
         onExtractIndividuals: _controller.extractIndividuals,
         onDropdownToggled: _controller.setDropdownOpen,
         onDeleteIndividuals: _controller.deleteIndividuals,
+        onTapPhoto: _controller.selectPhotoImage,
       );
     }
     return _cachedObsPanel!;

@@ -26,8 +26,6 @@ extension ObservationActions on ChecklistController {
             : null;
         selectedIndividualIndices.clear();
         lastSelectedIndividualIndex = null;
-        currentCenterPage = 0;
-        if (pageController.hasClients) pageController.jumpToPage(0);
       }
     } else if (selectedObservation == from) {
       selectedIndividualIndices.clear();
@@ -43,8 +41,6 @@ extension ObservationActions on ChecklistController {
       selectedObservation = into;
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
     }
     notify();
   }
@@ -82,8 +78,6 @@ extension ObservationActions on ChecklistController {
       selectedObservation = newObs;
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
     } else if (wasSelected) {
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
@@ -102,8 +96,6 @@ extension ObservationActions on ChecklistController {
       selectedObservation = null;
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
       currentlyDisplayedImage = processingFiles.isNotEmpty
           ? processingFiles.first
           : null;

@@ -9,8 +9,7 @@ extension SelectionActions on ChecklistController {
         .firstOrNull;
     selectedIndividualIndices.clear();
     lastSelectedIndividualIndex = null;
-    currentCenterPage = 0;
-    if (pageController.hasClients) pageController.jumpToPage(0);
+    ensureBoundingBoxesVisible();
     notify();
   }
 
@@ -19,8 +18,13 @@ extension SelectionActions on ChecklistController {
     currentlyDisplayedImage = obs.imagePath;
     selectedIndividualIndices.clear();
     lastSelectedIndividualIndex = null;
-    currentCenterPage = 0;
-    if (pageController.hasClients) pageController.jumpToPage(0);
+    ensureBoundingBoxesVisible();
+    notify();
+  }
+
+  void selectPhotoImage(String imagePath) {
+    currentlyDisplayedImage = imagePath;
+    ensureBoundingBoxesVisible();
     notify();
   }
 
@@ -34,8 +38,7 @@ extension SelectionActions on ChecklistController {
     selectedIndividualIndices.clear();
     selectedIndividualIndices.add(i);
     lastSelectedIndividualIndex = i;
-    currentCenterPage = 0;
-    if (pageController.hasClients) pageController.jumpToPage(0);
+    ensureBoundingBoxesVisible();
     notify();
   }
 
