@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:file_picker/file_picker.dart';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/bird_classifier.dart';
@@ -481,7 +483,7 @@ class ChecklistController extends ChangeNotifier {
     final newObs = Observation(
       imagePath: imagePath,
       speciesName: 'Identifying...',
-      displayPath: sibling?.displayPath,
+      displayPath: sibling?.displayPath, // temporary until crop is generated
       exifData: imageExifData[imagePath] ?? ExifData(),
       count: 1,
       boundingBoxes: [box],
@@ -506,6 +508,45 @@ class ChecklistController extends ChangeNotifier {
     notifyListeners();
 
     _classifyManualIndividual(newObs, box);
+    _generateCropForManualBox(newObs, box);
+  }
+
+  Future<void> _generateCropForManualBox(
+    Observation obs,
+    Rectangle<int> box,
+  ) async {
+    try {
+      String sourceImagePath = obs.imagePath;
+      if (sourceImagePath.toLowerCase().endsWith('.heic')) {
+        final resolved = await getDisplayPath(sourceImagePath);
+        if (resolved != null) sourceImagePath = resolved;
+      }
+
+      final bytes = await File(sourceImagePath).readAsBytes();
+      final fullImage = await compute(img.decodeImage, bytes);
+      if (fullImage == null) return;
+
+      final x = box.left.clamp(0, fullImage.width - 1);
+      final y = box.top.clamp(0, fullImage.height - 1);
+      final w = box.width.clamp(1, fullImage.width - x);
+      final h = box.height.clamp(1, fullImage.height - y);
+
+      final cropped = img.copyCrop(fullImage, x: x, y: y, width: w, height: h);
+      final jpgBytes = img.encodeJpg(cropped, quality: 85);
+
+      final tempDir = await Directory.systemTemp.createTemp();
+      final cropPath =
+          '${tempDir.path}/manual_crop_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await File(cropPath).writeAsBytes(jpgBytes);
+
+      if (observations.contains(obs)) {
+        obs.displayPath = cropPath;
+        observationVersion++;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error generating manual crop: $e');
+    }
   }
 
   Future<void> _classifyManualIndividual(
