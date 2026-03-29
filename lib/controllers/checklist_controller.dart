@@ -464,6 +464,20 @@ class ChecklistController extends ChangeNotifier {
   }
 
   void addManualIndividual(String imagePath, Rectangle<int> box) {
+    // Look up display path and burst ID from a sibling observation
+    final sibling = observations.cast<Observation?>().firstWhere(
+      (o) =>
+          o!.imagePath == imagePath ||
+          o.sourceImages.any((src) => src.imagePath == imagePath),
+      orElse: () => null,
+    );
+    final displayPath =
+        sibling?.fullImageDisplayPath ??
+        sibling?.sourceImages
+            .cast<SourceImage?>()
+            .firstWhere((s) => s!.imagePath == imagePath, orElse: () => null)
+            ?.fullImageDisplayPath;
+
     final newObs = Observation(
       imagePath: imagePath,
       speciesName: 'Identifying...',
@@ -473,18 +487,12 @@ class ChecklistController extends ChangeNotifier {
       boxesByImagePath: {
         imagePath: [box],
       },
-      fullImageDisplayPath: processingFiles.contains(imagePath)
-          ? null
-          : imagePath,
+      fullImageDisplayPath: displayPath,
     );
-    final lastIndex = observations.lastIndexWhere(
-      (o) =>
-          o.imagePath == imagePath ||
-          o.sourceImages.any((src) => src.imagePath == imagePath),
-    );
-    if (lastIndex >= 0) {
-      // Copy burst ID so the list panel groups them together
-      newObs.burstId = observations[lastIndex].burstId;
+
+    if (sibling != null) {
+      newObs.burstId = sibling.burstId;
+      final lastIndex = observations.lastIndexOf(sibling);
       observations.insert(lastIndex + 1, newObs);
     } else {
       observations.add(newObs);
