@@ -437,4 +437,29 @@ class ChecklistController extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void deleteIndividuals(int obsIdx, List<int> indIndices) {
+    final from = observations[obsIdx];
+    final bool wasSelected = selectedObservation == from;
+    final bool wasDeleted = from.count - indIndices.length <= 0;
+
+    ObservationOperations.deleteIndividuals(
+      observations,
+      obsIdx,
+      indIndices,
+    );
+
+    if (wasSelected && wasDeleted) {
+      selectedObservation = null;
+      selectedIndividualIndices.clear();
+      lastSelectedIndividualIndex = null;
+      currentCenterPage = 0;
+      if (pageController.hasClients) pageController.jumpToPage(0);
+      currentlyDisplayedImage = processingFiles.isNotEmpty ? processingFiles.first : null;
+    } else if (wasSelected) {
+      selectedIndividualIndices.clear();
+      lastSelectedIndividualIndex = null;
+    }
+    notifyListeners();
+  }
 }

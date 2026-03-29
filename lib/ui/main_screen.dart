@@ -115,6 +115,7 @@ class _MainScreenState extends State<MainScreen> {
         onDragEnded: () => _controller.setDraggingIndex(null),
         onExtractIndividuals: _controller.extractIndividuals,
         onDropdownToggled: _controller.setDropdownOpen,
+        onDeleteIndividuals: _controller.deleteIndividuals,
       );
     }
     return _cachedObsPanel!;

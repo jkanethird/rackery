@@ -28,6 +28,7 @@ class ObservationListPanel extends StatelessWidget {
   final void Function(int fromObsIdx, List<int> indIndices, int insertAtIdx)
       onExtractIndividuals;
   final void Function(bool isOpen)? onDropdownToggled;
+  final void Function(int obsIdx, List<int> indIndices)? onDeleteIndividuals;
 
   const ObservationListPanel({
     super.key,
@@ -49,6 +50,7 @@ class ObservationListPanel extends StatelessWidget {
     required this.onDragEnded,
     required this.onExtractIndividuals,
     this.onDropdownToggled,
+    this.onDeleteIndividuals,
   });
 
   @override
@@ -89,6 +91,7 @@ class ObservationListPanel extends StatelessWidget {
           onDragStarted: onDragStarted,
           onDragEnded: onDragEnded,
           onDropdownToggled: onDropdownToggled,
+          onDeleteIndividuals: (indIndices) => onDeleteIndividuals?.call(index, indIndices),
         );
 
         // In reversed display order, index+1 is the item visually *above*.

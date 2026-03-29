@@ -20,13 +20,14 @@ class ObservationCard extends StatefulWidget {
   final Function(int) onTapIndividual;
   final Function(String) onSpeciesChanged;
   final Function(String) onSpeciesSelected;
-  final Function(int) onCountChanged;
-  final Function(int, int) onMergeObservations;
-  final void Function(int fromObsIndex, List<int> individualIndices, int intoIndex)
+  final void Function(int count) onCountChanged;
+  final void Function(int fromObsIdx, int intoIdx) onMergeObservations;
+  final void Function(int fromObsIdx, List<int> indIndices, int intoIdx)
       onMergeIndividuals;
   final void Function(int dragIndex) onDragStarted;
   final void Function() onDragEnded;
   final void Function(bool isOpen)? onDropdownToggled;
+  final void Function(List<int> indIndices)? onDeleteIndividuals;
 
   const ObservationCard({
     super.key,
@@ -46,6 +47,7 @@ class ObservationCard extends StatefulWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     this.onDropdownToggled,
+    this.onDeleteIndividuals,
   });
 
   @override
@@ -585,6 +587,18 @@ class _ObservationCardState extends State<ObservationCard>
         selectedTileColor:
             Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         onTap: () => widget.onTapIndividual(i),
+        trailing: widget.isSelected && widget.selectedIndividualIndices.contains(i)
+            ? IconButton(
+                icon: const Icon(Icons.delete_outline, size: 20),
+                color: Theme.of(context).colorScheme.error,
+                tooltip: 'Delete individual',
+                onPressed: () {
+                   if (widget.onDeleteIndividuals != null) {
+                       widget.onDeleteIndividuals!(widget.selectedIndividualIndices.toList());
+                   }
+                },
+              )
+            : null,
       ),
     );
   }

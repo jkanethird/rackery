@@ -106,6 +106,48 @@ class ObservationOperations {
     }
   }
 
+  static void deleteIndividuals(List<Observation> observations, int obsIdx, List<int> indIndices) {
+    if (indIndices.isEmpty) return;
+    final from = observations[obsIdx];
+    final globalIndexMap = _buildGlobalIndexMap(from);
+    final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+
+    for (final gi in sortedIndices) {
+      if (gi < from.individualNames.length) {
+        from.individualNames.removeAt(gi);
+      }
+    }
+
+    final Map<String, List<int>> localIndicesToRemove = {};
+    for (final gi in sortedIndices) {
+      final loc = globalIndexMap[gi];
+      if (loc != null) {
+        localIndicesToRemove.putIfAbsent(loc.imagePath, () => []).add(loc.localIndex);
+      }
+    }
+
+    for (final entry in localIndicesToRemove.entries) {
+      final path = entry.key;
+      final localIndices = entry.value..sort((a, b) => b.compareTo(a));
+      final fromBoxes = from.boxesByImagePath[path];
+      if (fromBoxes != null) {
+        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)..sort((a, b) => a.left.compareTo(b.left));
+        for (final li in localIndices) {
+          if (li < sortedBoxes.length) {
+            final box = sortedBoxes[li];
+            fromBoxes.remove(box);
+            from.boundingBoxes.remove(box);
+          }
+        }
+      }
+    }
+
+    from.count -= indIndices.length;
+    if (from.count <= 0) {
+      observations.removeAt(obsIdx);
+    }
+  }
+
   static Observation? extractIndividuals(List<Observation> observations, int fromObsIdx, List<int> indIndices, int insertAtIdx) {
     if (indIndices.isEmpty) return null;
     final from = observations[fromObsIdx];
