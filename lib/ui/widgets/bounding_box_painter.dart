@@ -56,7 +56,12 @@ class BoundingBoxPainter extends CustomPainter {
           textDirection: TextDirection.ltr,
         );
         tp.layout();
-        tp.paint(canvas, Offset(rect.left, rect.bottom - tp.height));
+        double yOffset = rect.bottom - tp.height;
+        if (rect.height < tp.height * 0.5) {
+          // If the box is extremely short, push the name caption outside below it
+          yOffset = rect.bottom + 2.0;
+        }
+        tp.paint(canvas, Offset(rect.left, yOffset));
       }
     }
   }
