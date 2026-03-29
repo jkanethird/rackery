@@ -503,8 +503,15 @@ class ChecklistController extends ChangeNotifier {
     Observation obs,
     Rectangle<int> box,
   ) async {
+    // Resolve HEIC to a converted JPEG so the classifier can decode it
+    String classifyPath = obs.imagePath;
+    if (classifyPath.toLowerCase().endsWith('.heic')) {
+      final resolved = await getDisplayPath(classifyPath);
+      if (resolved != null) classifyPath = resolved;
+    }
+
     final suggestions = await _classifier.classifyFile(
-      obs.imagePath,
+      classifyPath,
       box: box,
       latitude: obs.exifData.latitude,
       longitude: obs.exifData.longitude,
