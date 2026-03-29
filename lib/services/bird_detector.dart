@@ -202,8 +202,15 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
             (current.box.width + existing.box.width +
                 current.box.height + existing.box.height) / 8;
 
-        if (iou > 0.10 || ioMin > 0.25 ||
-            (intersectArea > 0 && centerDist < distThreshold * 2.2)) {
+        // Structured part detection: usually a tall/narrow head kissing a wider horizontal body
+        final double ar1 = current.box.width / current.box.height;
+        final double ar2 = existing.box.width / existing.box.height;
+        final bool isHeadBodySplit = intersectArea > 0 && 
+            ((ar1 < 1.1 && ar2 > 1.2) || (ar2 < 1.1 && ar1 > 1.2));
+
+        if (iou > 0.20 || ioMin > 0.40 ||
+            (intersectArea > 0 && centerDist < distThreshold * 1.5) ||
+            isHeadBodySplit) {
             
           final int left = min(existing.box.left, current.box.left);
           final int top = min(existing.box.top, current.box.top);
