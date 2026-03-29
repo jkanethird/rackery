@@ -353,9 +353,9 @@ class _ObservationCardState extends State<ObservationCard>
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(scientificName),
-          if (widget.obs.count > 1) _buildSplitButtonHalf(isTop: true),
-          if (widget.obs.count > 1) _buildIndividualsList(),
-          if (widget.obs.count > 1 && _isExpanded) _buildSplitButtonHalf(isTop: false),
+          _buildSplitButtonHalf(isTop: true),
+          _buildIndividualsList(),
+          if (_isExpanded) _buildSplitButtonHalf(isTop: false),
         ],
       ),
     );
