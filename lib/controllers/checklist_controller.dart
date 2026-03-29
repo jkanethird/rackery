@@ -466,10 +466,12 @@ class ChecklistController extends ChangeNotifier {
   void addManualIndividual(String imagePath, Rectangle<int> box) {
     if (selectedObservation != null) {
       ObservationOperations.addIndividual(selectedObservation!, imagePath, box);
+      observationVersion++;
+      notifyListeners();
     } else {
       final newObs = Observation(
         imagePath: imagePath,
-        speciesName: 'Unknown Bird',
+        speciesName: 'Identifying...',
         exifData: imageExifData[imagePath] ?? ExifData(),
         count: 1,
         boundingBoxes: [box],
@@ -482,8 +484,36 @@ class ChecklistController extends ChangeNotifier {
       );
       observations.add(newObs);
       selectedObservation = newObs;
+
+      observationVersion++;
+      notifyListeners();
+
+      _classifyManualIndividual(newObs, box);
     }
-    observationVersion++;
-    notifyListeners();
+  }
+
+  Future<void> _classifyManualIndividual(
+    Observation obs,
+    Rectangle<int> box,
+  ) async {
+    final suggestions = await _classifier.classifyFile(
+      obs.imagePath,
+      box: box,
+      latitude: obs.exifData.latitude,
+      longitude: obs.exifData.longitude,
+      photoDate: obs.exifData.dateTime,
+    );
+
+    // Only update if the observation wasn't deleted by the user while classifying
+    if (observations.contains(obs)) {
+      if (suggestions.isNotEmpty) {
+        obs.speciesName = suggestions.first;
+        obs.possibleSpecies = suggestions;
+      } else {
+        obs.speciesName = 'Unknown Bird';
+      }
+      observationVersion++;
+      notifyListeners();
+    }
   }
 }
