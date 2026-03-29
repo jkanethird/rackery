@@ -17,6 +17,12 @@ import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/utils/name_generator.dart';
 import 'package:ebird_generator/utils/observation_operations.dart';
 
+part 'selection_actions.dart';
+part 'observation_actions.dart';
+part 'manual_detection_actions.dart';
+part 'photo_processing_actions.dart';
+part 'export_actions.dart';
+
 class ChecklistController extends ChangeNotifier {
   // ─── Services ────────────────────────────────────────────────────────────
   final BirdClassifier _classifier = BirdClassifier();
@@ -62,6 +68,8 @@ class ChecklistController extends ChangeNotifier {
   int currentCenterPage = 0;
   final PageController pageController = PageController();
 
+  // ─── Lifecycle ──────────────────────────────────────────────────────────
+
   ChecklistController() {
     _initClassifier();
   }
@@ -86,6 +94,9 @@ class ChecklistController extends ChangeNotifier {
     super.dispose();
   }
 
+  /// Public wrapper so part-file extensions can trigger listener updates.
+  void notify() => notifyListeners();
+
   // ─── Display path resolution ─────────────────────────────────────────────
 
   Future<String?> getDisplayPath(String imagePath) async {
@@ -108,119 +119,23 @@ class ChecklistController extends ChangeNotifier {
     return Size(decoded.width.toDouble(), decoded.height.toDouble());
   }
 
-  // ─── Photo selection & processing ────────────────────────────────────────
+  // ─── Simple setters ─────────────────────────────────────────────────────
 
-  Future<void> selectAndProcessPhotos(BuildContext context) async {
-    final result = await IngestionPipeline.gatherFiles(
-      currentSelectedFiles: selectedFiles,
-      currentExifData: imageExifData,
-      currentVisualHashes: imageVisualHashes,
-      burstGrouper: _burstGrouper,
-      onStartProcessing: () {
-        isProcessing = true;
-        progress = 0.0;
-        progressMessage = 'Preparing files...';
-        batchStartTime = DateTime.now();
-        batchElapsedTime = null;
-        notifyListeners();
-      },
-    );
+  void setDraggingIndex(int? idx) {
+    draggingIndex = idx;
+    notifyListeners();
+  }
 
-    if (result == null) return;
-
-    selectedFiles = result.allFiles;
-    processingFiles.addAll(result.newPaths);
-    fileBursts = result.bursts;
-    imageExifData.addAll(result.exifData);
-    imageVisualHashes.addAll(result.visualHashes);
-
-    if (currentlyDisplayedImage == null && processingFiles.isNotEmpty) {
-      currentlyDisplayedImage = processingFiles.first;
+  void setDropdownOpen(bool isOpen) {
+    if (isDropdownOpen != isOpen) {
+      isDropdownOpen = isOpen;
       notifyListeners();
     }
+  }
 
-    final int sessionTime = DateTime.now().millisecondsSinceEpoch;
-    final List<String> burstIds = List.generate(
-      fileBursts.length,
-      (i) => 'burst_${sessionTime}_$i',
-    );
-
-    for (int i = 0; i < fileBursts.length; i++) {
-      final burstSet = fileBursts[i];
-      final bId = burstIds[i];
-      for (final obs in observations) {
-        if (burstSet.contains(obs.imagePath)) {
-          obs.burstId = bId;
-        }
-      }
-    }
-
-    notifyListeners();
-
-    final processor = PhotoProcessor(
-      classifier: _classifier,
-      detector: _detector,
-      clusterer: _clusterer,
-    );
-
-    await processor.run(
-      newPaths: result.newPaths,
-      bursts: result.bursts,
-      burstIds: burstIds,
-      onProgress: (value) {
-        progress = value;
-        notifyListeners();
-      },
-      onProgressMessage: (msg) {
-        progressMessage = msg;
-        notifyListeners();
-      },
-      onObservationAdded: (newObs) {
-        observations.addAll(newObs);
-        observationVersion++;
-        notifyListeners();
-      },
-      onObservationsChanged: () {
-        observationVersion++;
-        notifyListeners();
-      },
-      onFileStarted: (filePath) {
-        activeFiles.add(filePath);
-        fileStartTimes.putIfAbsent(filePath, () => DateTime.now());
-        notifyListeners();
-      },
-      onFileCompleted: (filePath) {
-        processingFiles.remove(filePath);
-        activeFiles.remove(filePath);
-        final startTime = fileStartTimes.remove(filePath);
-        if (startTime != null) {
-          fileElapsedTimes[filePath] = DateTime.now().difference(startTime);
-        }
-        notifyListeners();
-      },
-      onError: (filePath, error) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error processing $filePath: $error')),
-          );
-        }
-      },
-    );
-
-    isProcessing = false;
-    activeFiles.clear();
-    if (batchStartTime != null) {
-      batchElapsedTime = DateTime.now().difference(batchStartTime!);
-      batchStartTime = null;
-    }
-    if (selectedObservation == null && observations.isNotEmpty) {
-      selectedObservation = observations.first;
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
-      currentlyDisplayedImage = selectedObservation!.imagePath;
-    }
+  void setCenterPage(int page, String imagePath) {
+    currentCenterPage = page;
+    currentlyDisplayedImage = imagePath;
     notifyListeners();
   }
 
@@ -249,363 +164,5 @@ class ChecklistController extends ChangeNotifier {
     observationVersion = 0;
     if (pageController.hasClients) pageController.jumpToPage(0);
     notifyListeners();
-  }
-
-  // ─── Export ──────────────────────────────────────────────────────────────
-
-  Future<void> exportCsv(BuildContext context) async {
-    String? outputFile = await FilePicker.platform.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: 'ebird_checklist.csv',
-      type: FileType.custom,
-      allowedExtensions: ['csv'],
-    );
-    if (outputFile == null) return;
-
-    if (!outputFile.endsWith('.csv')) outputFile += '.csv';
-    await CsvService.generateEbirdCsv(observations, outputFile);
-    if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('CSV exported to $outputFile')));
-    }
-  }
-
-  // ─── Selection Helpers ───────────────────────────────────────────────────
-
-  void selectFile(String file) {
-    currentlyDisplayedImage = file;
-    selectedObservation = observations
-        .where((o) => o.imagePath == file)
-        .firstOrNull;
-    selectedIndividualIndices.clear();
-    lastSelectedIndividualIndex = null;
-    currentCenterPage = 0;
-    if (pageController.hasClients) {
-      pageController.jumpToPage(0);
-    }
-    notifyListeners();
-  }
-
-  void selectObservation(Observation obs) {
-    selectedObservation = obs;
-    currentlyDisplayedImage = obs.imagePath;
-    selectedIndividualIndices.clear();
-    lastSelectedIndividualIndex = null;
-    currentCenterPage = 0;
-    if (pageController.hasClients) {
-      pageController.jumpToPage(0);
-    }
-    notifyListeners();
-  }
-
-  void selectIndividual(Observation obs, int i) {
-    if (selectedObservation != obs) {
-      selectedObservation = obs;
-      currentlyDisplayedImage = obs.imagePath;
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-    }
-    selectedIndividualIndices.clear();
-    selectedIndividualIndices.add(i);
-    lastSelectedIndividualIndex = i;
-    currentCenterPage = 0;
-    if (pageController.hasClients) {
-      pageController.jumpToPage(0);
-    }
-    notifyListeners();
-  }
-
-  void scrollToObservationForImage(String imagePath) {
-    if (!observationScrollController.hasClients) return;
-    final idx = observations.indexWhere((o) => o.imagePath == imagePath);
-    if (idx < 0) return;
-    const estimatedItemHeight = 96.0;
-    final target = (idx * estimatedItemHeight).clamp(
-      0.0,
-      observationScrollController.position.maxScrollExtent,
-    );
-    observationScrollController.animateTo(
-      target,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-  }
-
-  // ─── Merge / extract operations ──────────────────────────────────────────
-
-  void setDraggingIndex(int? idx) {
-    draggingIndex = idx;
-    notifyListeners();
-  }
-
-  void setDropdownOpen(bool isOpen) {
-    if (isDropdownOpen != isOpen) {
-      isDropdownOpen = isOpen;
-      notifyListeners();
-    }
-  }
-
-  void setCenterPage(int page, String imagePath) {
-    currentCenterPage = page;
-    currentlyDisplayedImage = imagePath;
-    notifyListeners();
-  }
-
-  void updateObservationSpecies(Observation obs, String species) {
-    obs.speciesName = species;
-    notifyListeners();
-  }
-
-  void updateObservationCount(Observation obs, int count) {
-    obs.count = count;
-    while (obs.individualNames.length < count) {
-      obs.individualNames.add(generatePronounceableName());
-    }
-    if (obs.individualNames.length > count) {
-      obs.individualNames.removeRange(count, obs.individualNames.length);
-    }
-    notifyListeners();
-  }
-
-  void _syncSelectionAfterMutation(Observation from) {
-    if (from.count <= 0) {
-      if (selectedObservation == from) {
-        selectedObservation = observations.isNotEmpty
-            ? observations.first
-            : null;
-        selectedIndividualIndices.clear();
-        lastSelectedIndividualIndex = null;
-        currentCenterPage = 0;
-        if (pageController.hasClients) pageController.jumpToPage(0);
-      }
-    } else if (selectedObservation == from) {
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-    }
-  }
-
-  void mergeObservations(int fromIdx, int intoIdx) {
-    final from = observations[fromIdx];
-    final into = observations[intoIdx];
-    ObservationOperations.mergeObservations(observations, fromIdx, intoIdx);
-    if (selectedObservation == from) {
-      selectedObservation = into;
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
-    }
-    notifyListeners();
-  }
-
-  void mergeIndividuals(int fromObsIdx, List<int> indIndices, int intoIdx) {
-    final from = observations[fromObsIdx];
-    ObservationOperations.mergeIndividuals(
-      observations,
-      fromObsIdx,
-      indIndices,
-      intoIdx,
-    );
-    _syncSelectionAfterMutation(from);
-    notifyListeners();
-  }
-
-  void extractIndividuals(
-    int fromObsIdx,
-    List<int> indIndices,
-    int insertAtIdx,
-  ) {
-    final from = observations[fromObsIdx];
-    final bool wasSelected = selectedObservation == from;
-    final bool wasDeleted = from.count - indIndices.length <= 0;
-
-    final newObs = ObservationOperations.extractIndividuals(
-      observations,
-      fromObsIdx,
-      indIndices,
-      insertAtIdx,
-    );
-    if (newObs == null) return;
-
-    if (wasSelected && wasDeleted) {
-      selectedObservation = newObs;
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
-    } else if (wasSelected) {
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-    }
-    notifyListeners();
-  }
-
-  void deleteIndividuals(int obsIdx, List<int> indIndices) {
-    final from = observations[obsIdx];
-    final bool wasSelected = selectedObservation == from;
-    final bool wasDeleted = from.count - indIndices.length <= 0;
-
-    ObservationOperations.deleteIndividuals(observations, obsIdx, indIndices);
-
-    if (wasSelected && wasDeleted) {
-      selectedObservation = null;
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-      currentCenterPage = 0;
-      if (pageController.hasClients) pageController.jumpToPage(0);
-      currentlyDisplayedImage = processingFiles.isNotEmpty
-          ? processingFiles.first
-          : null;
-    } else if (wasSelected) {
-      selectedIndividualIndices.clear();
-      lastSelectedIndividualIndex = null;
-    }
-    notifyListeners();
-    notifyListeners();
-  }
-
-  void addManualIndividual(String imagePath, Rectangle<int> box) {
-    // Look up display path and burst ID from a sibling observation
-    final sibling = observations.cast<Observation?>().firstWhere(
-      (o) =>
-          o!.imagePath == imagePath ||
-          o.sourceImages.any((src) => src.imagePath == imagePath),
-      orElse: () => null,
-    );
-    final fullDisplayPath =
-        sibling?.fullImageDisplayPath ??
-        sibling?.sourceImages
-            .cast<SourceImage?>()
-            .firstWhere((s) => s!.imagePath == imagePath, orElse: () => null)
-            ?.fullImageDisplayPath;
-
-    final newObs = Observation(
-      imagePath: imagePath,
-      speciesName: 'Identifying...',
-      displayPath: sibling?.displayPath, // temporary until crop is generated
-      exifData: imageExifData[imagePath] ?? ExifData(),
-      count: 1,
-      boundingBoxes: [box],
-      boxesByImagePath: {
-        imagePath: [box],
-      },
-      fullImageDisplayPath: fullDisplayPath,
-    );
-
-    if (sibling != null) {
-      newObs.burstId = sibling.burstId;
-      final lastIndex = observations.lastIndexOf(sibling);
-      observations.insert(lastIndex + 1, newObs);
-    } else {
-      observations.add(newObs);
-    }
-    selectedObservation = newObs;
-    selectedIndividualIndices.clear();
-    lastSelectedIndividualIndex = null;
-
-    observationVersion++;
-    notifyListeners();
-
-    _classifyManualIndividual(newObs, box);
-    _generateCropForManualBox(newObs, box);
-  }
-
-  Future<void> _generateCropForManualBox(
-    Observation obs,
-    Rectangle<int> box,
-  ) async {
-    try {
-      String sourceImagePath = obs.imagePath;
-      if (sourceImagePath.toLowerCase().endsWith('.heic')) {
-        final resolved = await getDisplayPath(sourceImagePath);
-        if (resolved != null) sourceImagePath = resolved;
-      }
-
-      final bytes = await File(sourceImagePath).readAsBytes();
-      final fullImage = await compute(img.decodeImage, bytes);
-      if (fullImage == null) return;
-
-      final x = box.left.clamp(0, fullImage.width - 1);
-      final y = box.top.clamp(0, fullImage.height - 1);
-      final w = box.width.clamp(1, fullImage.width - x);
-      final h = box.height.clamp(1, fullImage.height - y);
-
-      final cropped = img.copyCrop(fullImage, x: x, y: y, width: w, height: h);
-      final jpgBytes = img.encodeJpg(cropped, quality: 85);
-
-      final tempDir = await Directory.systemTemp.createTemp();
-      final cropPath =
-          '${tempDir.path}/manual_crop_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      await File(cropPath).writeAsBytes(jpgBytes);
-
-      if (observations.contains(obs)) {
-        obs.displayPath = cropPath;
-        observationVersion++;
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint('Error generating manual crop: $e');
-    }
-  }
-
-  Future<void> _classifyManualIndividual(
-    Observation obs,
-    Rectangle<int> box,
-  ) async {
-    // Resolve HEIC to a converted JPEG so the classifier can decode it
-    String classifyPath = obs.imagePath;
-    if (classifyPath.toLowerCase().endsWith('.heic')) {
-      final resolved = await getDisplayPath(classifyPath);
-      if (resolved != null) classifyPath = resolved;
-    }
-
-    final suggestions = await _classifier.classifyFile(
-      classifyPath,
-      box: box,
-      latitude: obs.exifData.latitude,
-      longitude: obs.exifData.longitude,
-      photoDate: obs.exifData.dateTime,
-    );
-
-    // Only update if the observation wasn't deleted by the user while classifying
-    if (observations.contains(obs)) {
-      if (suggestions.isNotEmpty) {
-        obs.speciesName = suggestions.first;
-        obs.possibleSpecies = suggestions;
-      } else {
-        obs.speciesName = 'Unknown Bird';
-      }
-
-      // Auto-merge into an existing observation of the same species in the same burst
-      final fromIdx = observations.indexOf(obs);
-      final mergeTarget = observations.indexWhere(
-        (o) =>
-            o != obs &&
-            o.burstId == obs.burstId &&
-            o.burstId.isNotEmpty &&
-            o.speciesName == obs.speciesName,
-      );
-      if (mergeTarget >= 0) {
-        final wasSelected = selectedObservation == obs;
-        ObservationOperations.mergeObservations(
-          observations,
-          fromIdx,
-          mergeTarget,
-        );
-        if (wasSelected) {
-          // Re-select the merged-into observation
-          final adjustedTarget = fromIdx < mergeTarget
-              ? mergeTarget - 1
-              : mergeTarget;
-          selectedObservation = observations[adjustedTarget];
-          selectedIndividualIndices.clear();
-          lastSelectedIndividualIndex = null;
-        }
-      }
-
-      observationVersion++;
-      notifyListeners();
-    }
   }
 }
