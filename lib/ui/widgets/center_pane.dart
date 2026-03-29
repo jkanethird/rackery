@@ -364,7 +364,92 @@ class _CenterPaneState extends State<CenterPane> {
       );
     } else {
       // Multi-source: PageView with keyboard navigation
-      mainContent = Focus(
+      mainContent = Stack(
+        children: [
+          PageView.builder(
+            controller: widget.pageController,
+            itemCount: sources.length,
+            onPageChanged: (i) =>
+                widget.onPageChanged(i, sources![i].imagePath),
+            itemBuilder: (context, i) => Padding(
+              padding: const EdgeInsets.all(16),
+              child: photoCard(sources![i]),
+            ),
+          ),
+          // Page counter badge
+          Positioned(
+            top: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.photo_library,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${widget.currentPage + 1} / ${sources.length}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.currentPage > 0)
+            Positioned(
+              left: 16,
+              bottom: 16,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.grey.shade800.withValues(alpha: 0.5),
+                  hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
+                  shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                ),
+                tooltip: 'Previous photo',
+                onPressed: () => widget.pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+              ),
+            ),
+          if (widget.currentPage < sources.length - 1)
+            Positioned(
+              right: 16,
+              bottom: 16,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_forward, color: Colors.white),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.grey.shade800.withValues(alpha: 0.5),
+                  hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
+                  shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                ),
+                tooltip: 'Next photo',
+                onPressed: () => widget.pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+              ),
+            ),
+        ],
+      );
+    }
+
+    return Expanded(
+      flex: 2,
+      child: Focus(
         autofocus: true,
         onKeyEvent: (node, event) {
           if (event is KeyDownEvent) {
@@ -372,21 +457,34 @@ class _CenterPaneState extends State<CenterPane> {
             if (primaryFocus?.context?.widget is EditableText) {
               return KeyEventResult.ignored;
             }
-            if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-              if (widget.currentPage > 0) {
-                widget.pageController.previousPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-                return KeyEventResult.handled;
-              }
-            } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-              if (widget.currentPage < sources!.length - 1) {
-                widget.pageController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-                return KeyEventResult.handled;
+
+            if (event.logicalKey == LogicalKeyboardKey.escape &&
+                _isDrawingMode) {
+              setState(() {
+                _isDrawingMode = false;
+                _drawStart = null;
+                _drawCurrent = null;
+              });
+              return KeyEventResult.handled;
+            }
+
+            if (isMulti) {
+              if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                if (widget.currentPage > 0) {
+                  widget.pageController.previousPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                  return KeyEventResult.handled;
+                }
+              } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+                if (widget.currentPage < sources!.length - 1) {
+                  widget.pageController.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                  return KeyEventResult.handled;
+                }
               }
             }
           }
@@ -394,159 +492,73 @@ class _CenterPaneState extends State<CenterPane> {
         },
         child: Stack(
           children: [
-            PageView.builder(
-              controller: widget.pageController,
-              itemCount: sources.length,
-              onPageChanged: (i) =>
-                  widget.onPageChanged(i, sources![i].imagePath),
-              itemBuilder: (context, i) => Padding(
-                padding: const EdgeInsets.all(16),
-                child: photoCard(sources![i]),
-              ),
-            ),
-            // Page counter badge
-            Positioned(
-              top: 16,
-              right: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(16),
-                ),
+            Positioned.fill(child: mainContent),
+            if (sources.isNotEmpty)
+              Positioned(
+                top: 16,
+                left: 16,
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.photo_library,
-                      size: 14,
-                      color: Colors.white,
+                    Tooltip(
+                      message: _showBoundingBoxes
+                          ? 'Hide Bounding Boxes'
+                          : 'Show Bounding Boxes',
+                      child: IconButton(
+                        icon: Icon(
+                          _showBoundingBoxes
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () => setState(
+                          () => _showBoundingBoxes = !_showBoundingBoxes,
+                        ),
+                        color: Theme.of(context).colorScheme.primary,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.grey.shade800.withValues(
+                            alpha: 0.5,
+                          ),
+                          hoverColor: Colors.grey.shade900.withValues(
+                            alpha: 0.7,
+                          ),
+                          shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${widget.currentPage + 1} / ${sources.length}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(width: 8),
+                    Tooltip(
+                      message: _isDrawingMode
+                          ? 'Cancel Drawing'
+                          : 'Draw Boundary Box',
+                      child: IconButton(
+                        icon: Icon(
+                          _isDrawingMode ? Icons.close : Icons.add_box,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isDrawingMode = !_isDrawingMode;
+                            _drawStart = null;
+                            _drawCurrent = null;
+                          });
+                        },
+                        color: _isDrawingMode
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.primary,
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.grey.shade800.withValues(
+                            alpha: 0.5,
+                          ),
+                          hoverColor: Colors.grey.shade900.withValues(
+                            alpha: 0.7,
+                          ),
+                          shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            if (widget.currentPage > 0)
-              Positioned(
-                left: 16,
-                bottom: 16,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.grey.shade800.withValues(
-                      alpha: 0.5,
-                    ),
-                    hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
-                    shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                  ),
-                  tooltip: 'Previous photo',
-                  onPressed: () => widget.pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  ),
-                ),
-              ),
-            if (widget.currentPage < sources.length - 1)
-              Positioned(
-                right: 16,
-                bottom: 16,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_forward, color: Colors.white),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.grey.shade800.withValues(
-                      alpha: 0.5,
-                    ),
-                    hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
-                    shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                  ),
-                  tooltip: 'Next photo',
-                  onPressed: () => widget.pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  ),
-                ),
-              ),
           ],
         ),
-      );
-    }
-
-    return Expanded(
-      flex: 2,
-      child: Stack(
-        children: [
-          Positioned.fill(child: mainContent),
-          if (sources.isNotEmpty)
-            Positioned(
-              top: 16,
-              left: 16,
-              child: Row(
-                children: [
-                  Tooltip(
-                    message: _showBoundingBoxes
-                        ? 'Hide Bounding Boxes'
-                        : 'Show Bounding Boxes',
-                    child: IconButton(
-                      icon: Icon(
-                        _showBoundingBoxes
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () => setState(
-                        () => _showBoundingBoxes = !_showBoundingBoxes,
-                      ),
-                      color: Theme.of(context).colorScheme.primary,
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.grey.shade800.withValues(
-                          alpha: 0.5,
-                        ),
-                        hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
-                        shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Tooltip(
-                    message: _isDrawingMode
-                        ? 'Cancel Drawing'
-                        : 'Draw Boundary Box',
-                    child: IconButton(
-                      icon: Icon(_isDrawingMode ? Icons.close : Icons.add_box),
-                      onPressed: () {
-                        setState(() {
-                          _isDrawingMode = !_isDrawingMode;
-                          _drawStart = null;
-                          _drawCurrent = null;
-                        });
-                      },
-                      color: _isDrawingMode
-                          ? Theme.of(context).colorScheme.error
-                          : Theme.of(context).colorScheme.primary,
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.grey.shade800.withValues(
-                          alpha: 0.5,
-                        ),
-                        hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
-                        shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
       ),
     );
   }
