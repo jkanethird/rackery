@@ -477,7 +477,16 @@ class ChecklistController extends ChangeNotifier {
           ? null
           : imagePath,
     );
-    observations.add(newObs);
+    final lastIndex = observations.lastIndexWhere(
+      (o) =>
+          o.imagePath == imagePath ||
+          o.sourceImages.any((src) => src.imagePath == imagePath),
+    );
+    if (lastIndex >= 0) {
+      observations.insert(lastIndex + 1, newObs);
+    } else {
+      observations.add(newObs);
+    }
     selectedObservation = newObs;
     selectedIndividualIndices.clear();
     lastSelectedIndividualIndex = null;
