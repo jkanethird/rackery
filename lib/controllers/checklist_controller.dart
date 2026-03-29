@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:ebird_generator/models/observation.dart';
@@ -130,7 +131,7 @@ class ChecklistController extends ChangeNotifier {
     fileBursts = result.bursts;
     imageExifData.addAll(result.exifData);
     imageVisualHashes.addAll(result.visualHashes);
-    
+
     if (currentlyDisplayedImage == null && processingFiles.isNotEmpty) {
       currentlyDisplayedImage = processingFiles.first;
       notifyListeners();
@@ -443,11 +444,7 @@ class ChecklistController extends ChangeNotifier {
     final bool wasSelected = selectedObservation == from;
     final bool wasDeleted = from.count - indIndices.length <= 0;
 
-    ObservationOperations.deleteIndividuals(
-      observations,
-      obsIdx,
-      indIndices,
-    );
+    ObservationOperations.deleteIndividuals(observations, obsIdx, indIndices);
 
     if (wasSelected && wasDeleted) {
       selectedObservation = null;
@@ -455,11 +452,38 @@ class ChecklistController extends ChangeNotifier {
       lastSelectedIndividualIndex = null;
       currentCenterPage = 0;
       if (pageController.hasClients) pageController.jumpToPage(0);
-      currentlyDisplayedImage = processingFiles.isNotEmpty ? processingFiles.first : null;
+      currentlyDisplayedImage = processingFiles.isNotEmpty
+          ? processingFiles.first
+          : null;
     } else if (wasSelected) {
       selectedIndividualIndices.clear();
       lastSelectedIndividualIndex = null;
     }
+    notifyListeners();
+    notifyListeners();
+  }
+
+  void addManualIndividual(String imagePath, Rectangle<int> box) {
+    if (selectedObservation != null) {
+      ObservationOperations.addIndividual(selectedObservation!, imagePath, box);
+    } else {
+      final newObs = Observation(
+        imagePath: imagePath,
+        speciesName: 'Unknown Bird',
+        exifData: imageExifData[imagePath] ?? ExifData(),
+        count: 1,
+        boundingBoxes: [box],
+        boxesByImagePath: {
+          imagePath: [box],
+        },
+        fullImageDisplayPath: processingFiles.contains(imagePath)
+            ? null
+            : imagePath,
+      );
+      observations.add(newObs);
+      selectedObservation = newObs;
+    }
+    observationVersion++;
     notifyListeners();
   }
 }

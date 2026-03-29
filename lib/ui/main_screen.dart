@@ -79,6 +79,7 @@ class _MainScreenState extends State<MainScreen> {
         getDisplayPath: _controller.getDisplayPath,
         getImageSize: _controller.getImageSize,
         onPageChanged: _controller.setCenterPage,
+        onDrawBoundingBox: _controller.addManualIndividual,
       );
     }
     return _cachedCenterPane!;
@@ -155,7 +156,9 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, _) {
         _syncBatchTicker();
         if (!_controller.isInit) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
         return Scaffold(
           appBar: AppBar(
@@ -170,19 +173,23 @@ class _MainScreenState extends State<MainScreen> {
                     applicationName: 'eBird Checklist Generator',
                     applicationVersion: '1.0.0',
                     applicationIcon: const Icon(Icons.flutter_dash, size: 48),
-                    applicationLegalese: 'Built with Llama 3.2 Vision.\nPowered by TensorFlow Lite.',
+                    applicationLegalese:
+                        'Built with Llama 3.2 Vision.\nPowered by TensorFlow Lite.',
                   );
                 },
               ),
               if (_controller.selectedFiles.isNotEmpty)
                 IconButton(
                   icon: const Icon(Icons.delete_outline),
-                  onPressed: _controller.isProcessing ? null : _controller.clearAll,
+                  onPressed: _controller.isProcessing
+                      ? null
+                      : _controller.clearAll,
                   tooltip: 'Clear all photos and results',
                 ),
               IconButton(
                 icon: const Icon(Icons.download),
-                onPressed: _controller.observations.isEmpty || _controller.isProcessing
+                onPressed:
+                    _controller.observations.isEmpty || _controller.isProcessing
                     ? null
                     : () => _controller.exportCsv(context),
                 tooltip: 'Export CSV',
@@ -212,10 +219,7 @@ class _MainScreenState extends State<MainScreen> {
                     const VerticalDivider(width: 1),
 
                     // Right: observations list
-                    Expanded(
-                      flex: 1,
-                      child: _memoizedObsPanel(),
-                    ),
+                    Expanded(flex: 1, child: _memoizedObsPanel()),
                   ],
                 ),
               ),
@@ -232,7 +236,9 @@ class _MainScreenState extends State<MainScreen> {
       child: Row(
         children: [
           ElevatedButton.icon(
-            onPressed: _controller.isProcessing ? null : () => _controller.selectAndProcessPhotos(context),
+            onPressed: _controller.isProcessing
+                ? null
+                : () => _controller.selectAndProcessPhotos(context),
             icon: const Icon(Icons.photo_library),
             label: const Text('Select Photos'),
           ),
@@ -254,7 +260,9 @@ class _MainScreenState extends State<MainScreen> {
                       if (_controller.batchStartTime != null)
                         Text(
                           _formatDuration(
-                            DateTime.now().difference(_controller.batchStartTime!),
+                            DateTime.now().difference(
+                              _controller.batchStartTime!,
+                            ),
                           ),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,

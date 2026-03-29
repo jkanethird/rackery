@@ -1,8 +1,13 @@
 import 'dart:math';
 import 'package:ebird_generator/models/observation.dart';
+import 'package:ebird_generator/utils/name_generator.dart';
 
 class ObservationOperations {
-  static void mergeObservations(List<Observation> observations, int fromIdx, int intoIdx) {
+  static void mergeObservations(
+    List<Observation> observations,
+    int fromIdx,
+    int intoIdx,
+  ) {
     if (fromIdx == intoIdx) return;
     final from = observations[fromIdx];
     final into = observations[intoIdx];
@@ -17,12 +22,16 @@ class ObservationOperations {
       if (existingPaths.add(src.imagePath)) into.sourceImages.add(src);
     }
     for (final entry in from.boxesByImagePath.entries) {
-      into.boxesByImagePath.putIfAbsent(entry.key, () => []).addAll(entry.value);
+      into.boxesByImagePath
+          .putIfAbsent(entry.key, () => [])
+          .addAll(entry.value);
     }
     observations.removeAt(fromIdx);
   }
 
-  static Map<int, ({String imagePath, int localIndex})> _buildGlobalIndexMap(Observation obs) {
+  static Map<int, ({String imagePath, int localIndex})> _buildGlobalIndexMap(
+    Observation obs,
+  ) {
     final Map<int, ({String imagePath, int localIndex})> map = {};
     int gi = 0;
     for (final src in obs.sourceImages) {
@@ -36,7 +45,29 @@ class ObservationOperations {
     return map;
   }
 
-  static void mergeIndividuals(List<Observation> observations, int fromObsIdx, List<int> indIndices, int intoIdx) {
+  static void addIndividual(
+    Observation obs,
+    String imagePath,
+    Rectangle<int> box,
+  ) {
+    obs.count++;
+    obs.boundingBoxes.add(box);
+    obs.boxesByImagePath.putIfAbsent(imagePath, () => []).add(box);
+    if (!obs.sourceImages.any((s) => s.imagePath == imagePath)) {
+      obs.sourceImages.add((
+        imagePath: imagePath,
+        fullImageDisplayPath: imagePath,
+      ));
+    }
+    obs.individualNames.add(generatePronounceableName());
+  }
+
+  static void mergeIndividuals(
+    List<Observation> observations,
+    int fromObsIdx,
+    List<int> indIndices,
+    int intoIdx,
+  ) {
     if (fromObsIdx == intoIdx || indIndices.isEmpty) return;
     final from = observations[fromObsIdx];
     final into = observations[intoIdx];
@@ -44,7 +75,8 @@ class ObservationOperations {
     from.count -= indIndices.length;
 
     final globalIndexMap = _buildGlobalIndexMap(from);
-    final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+    final sortedIndices = List<int>.from(indIndices)
+      ..sort((a, b) => b.compareTo(a));
 
     final movedNames = <String>[];
     for (final gi in sortedIndices) {
@@ -58,7 +90,9 @@ class ObservationOperations {
     for (final gi in sortedIndices) {
       final loc = globalIndexMap[gi];
       if (loc != null) {
-        localIndicesToRemove.putIfAbsent(loc.imagePath, () => []).add(loc.localIndex);
+        localIndicesToRemove
+            .putIfAbsent(loc.imagePath, () => [])
+            .add(loc.localIndex);
       }
     }
 
@@ -67,7 +101,8 @@ class ObservationOperations {
       final localIndices = entry.value..sort((a, b) => b.compareTo(a));
       final fromBoxes = from.boxesByImagePath[path];
       if (fromBoxes != null) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)..sort((a, b) => a.left.compareTo(b.left));
+        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
+          ..sort((a, b) => a.left.compareTo(b.left));
         for (final li in localIndices) {
           if (li < sortedBoxes.length) {
             final box = sortedBoxes[li];
@@ -83,14 +118,16 @@ class ObservationOperations {
     for (final gi in sortedIndices) {
       final loc = globalIndexMap[gi];
       if (loc != null) {
-        final src = from.sourceImages.firstWhere((s) => s.imagePath == loc.imagePath);
+        final src = from.sourceImages.firstWhere(
+          (s) => s.imagePath == loc.imagePath,
+        );
         into.boxesByImagePath.putIfAbsent(loc.imagePath, () => []);
         if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
           into.sourceImages.add(src);
         }
       }
     }
-    
+
     if (localIndicesToRemove.isEmpty && from.sourceImages.isNotEmpty) {
       final src = from.sourceImages.first;
       if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
@@ -106,11 +143,16 @@ class ObservationOperations {
     }
   }
 
-  static void deleteIndividuals(List<Observation> observations, int obsIdx, List<int> indIndices) {
+  static void deleteIndividuals(
+    List<Observation> observations,
+    int obsIdx,
+    List<int> indIndices,
+  ) {
     if (indIndices.isEmpty) return;
     final from = observations[obsIdx];
     final globalIndexMap = _buildGlobalIndexMap(from);
-    final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+    final sortedIndices = List<int>.from(indIndices)
+      ..sort((a, b) => b.compareTo(a));
 
     for (final gi in sortedIndices) {
       if (gi < from.individualNames.length) {
@@ -122,7 +164,9 @@ class ObservationOperations {
     for (final gi in sortedIndices) {
       final loc = globalIndexMap[gi];
       if (loc != null) {
-        localIndicesToRemove.putIfAbsent(loc.imagePath, () => []).add(loc.localIndex);
+        localIndicesToRemove
+            .putIfAbsent(loc.imagePath, () => [])
+            .add(loc.localIndex);
       }
     }
 
@@ -131,7 +175,8 @@ class ObservationOperations {
       final localIndices = entry.value..sort((a, b) => b.compareTo(a));
       final fromBoxes = from.boxesByImagePath[path];
       if (fromBoxes != null) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)..sort((a, b) => a.left.compareTo(b.left));
+        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
+          ..sort((a, b) => a.left.compareTo(b.left));
         for (final li in localIndices) {
           if (li < sortedBoxes.length) {
             final box = sortedBoxes[li];
@@ -148,7 +193,12 @@ class ObservationOperations {
     }
   }
 
-  static Observation? extractIndividuals(List<Observation> observations, int fromObsIdx, List<int> indIndices, int insertAtIdx) {
+  static Observation? extractIndividuals(
+    List<Observation> observations,
+    int fromObsIdx,
+    List<int> indIndices,
+    int insertAtIdx,
+  ) {
     if (indIndices.isEmpty) return null;
     final from = observations[fromObsIdx];
 
@@ -168,7 +218,8 @@ class ObservationOperations {
     from.count -= indIndices.length;
 
     final globalIndexMap = _buildGlobalIndexMap(from);
-    final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+    final sortedIndices = List<int>.from(indIndices)
+      ..sort((a, b) => b.compareTo(a));
 
     final movedNames = <String>[];
     for (final gi in sortedIndices) {
@@ -182,7 +233,9 @@ class ObservationOperations {
     for (final gi in sortedIndices) {
       final loc = globalIndexMap[gi];
       if (loc != null) {
-        localIndicesToRemove.putIfAbsent(loc.imagePath, () => []).add(loc.localIndex);
+        localIndicesToRemove
+            .putIfAbsent(loc.imagePath, () => [])
+            .add(loc.localIndex);
       }
     }
 
@@ -191,7 +244,8 @@ class ObservationOperations {
       final localIndices = entry.value..sort((a, b) => b.compareTo(a));
       final fromBoxes = from.boxesByImagePath[path];
       if (fromBoxes != null) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)..sort((a, b) => a.left.compareTo(b.left));
+        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
+          ..sort((a, b) => a.left.compareTo(b.left));
         for (final li in localIndices) {
           if (li < sortedBoxes.length) {
             final box = sortedBoxes[li];
@@ -207,13 +261,15 @@ class ObservationOperations {
     for (final gi in sortedIndices) {
       final loc = globalIndexMap[gi];
       if (loc != null) {
-        final src = from.sourceImages.firstWhere((s) => s.imagePath == loc.imagePath);
+        final src = from.sourceImages.firstWhere(
+          (s) => s.imagePath == loc.imagePath,
+        );
         if (!newObs.sourceImages.any((s) => s.imagePath == src.imagePath)) {
           newObs.sourceImages.add(src);
         }
       }
     }
-    
+
     if (localIndicesToRemove.isEmpty && from.sourceImages.isNotEmpty) {
       final src = from.sourceImages.first;
       if (!newObs.sourceImages.any((s) => s.imagePath == src.imagePath)) {

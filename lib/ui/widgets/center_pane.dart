@@ -9,7 +9,35 @@ import 'package:ebird_generator/ui/widgets/bounding_box_painter.dart';
 
 /// The centre pane: shows the full photo(s) for the selected observation with
 /// bounding-box overlays. Supports single-image and multi-image (PageView) modes.
-class CenterPane extends StatelessWidget {
+
+class _DrawingBoxPainter extends CustomPainter {
+  final Offset start;
+  final Offset end;
+
+  _DrawingBoxPainter(this.start, this.end);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromPoints(start, end);
+    final paint = Paint()
+      ..color = Colors.blueAccent.withValues(alpha: 0.3)
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(rect, paint);
+
+    final borderPaint = Paint()
+      ..color = Colors.blueAccent
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawRect(rect, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(_DrawingBoxPainter oldDelegate) {
+    return oldDelegate.start != start || oldDelegate.end != end;
+  }
+}
+
+class CenterPane extends StatefulWidget {
   final Observation? selectedObservation;
   final Set<int> selectedIndividualIndices;
   final String? currentlyDisplayedImage;
@@ -19,6 +47,7 @@ class CenterPane extends StatelessWidget {
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
   final void Function(int page, String imagePath) onPageChanged;
+  final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
   const CenterPane({
     super.key,
@@ -31,11 +60,22 @@ class CenterPane extends StatelessWidget {
     required this.getDisplayPath,
     required this.getImageSize,
     required this.onPageChanged,
+    this.onDrawBoundingBox,
   });
 
   @override
+  State<CenterPane> createState() => _CenterPaneState();
+}
+
+class _CenterPaneState extends State<CenterPane> {
+  bool _isDrawingMode = false;
+  bool _showBoundingBoxes = true;
+  Offset? _drawStart;
+  Offset? _drawCurrent;
+
+  @override
   Widget build(BuildContext context) {
-    final obs = selectedObservation;
+    final obs = widget.selectedObservation;
     List<SourceImage>? sources;
 
     // Build a global individual index → (imagePath, perPhotoBoxIndex) mapping.
@@ -57,9 +97,9 @@ class CenterPane extends StatelessWidget {
     }
 
     if (obs != null) {
-      if (selectedIndividualIndices.isNotEmpty) {
+      if (widget.selectedIndividualIndices.isNotEmpty) {
         // Find the set of photos that contain any selected individual.
-        final selectedPaths = selectedIndividualIndices
+        final selectedPaths = widget.selectedIndividualIndices
             .where(globalIndexMap.containsKey)
             .map((gi) => globalIndexMap[gi]!.imagePath)
             .toSet();
@@ -72,10 +112,10 @@ class CenterPane extends StatelessWidget {
       } else {
         sources = obs.sourceImages;
       }
-    } else if (currentlyDisplayedImage != null) {
+    } else if (widget.currentlyDisplayedImage != null) {
       sources = [
         (
-          imagePath: currentlyDisplayedImage!,
+          imagePath: widget.currentlyDisplayedImage!,
           fullImageDisplayPath: obs?.fullImageDisplayPath,
         ),
       ];
@@ -96,14 +136,18 @@ class CenterPane extends StatelessWidget {
           src.fullImageDisplayPath != null &&
               !src.fullImageDisplayPath!.toLowerCase().endsWith('.heic')
           ? Future.value(src.fullImageDisplayPath)
-          : getDisplayPath(rawPath);
+          : widget.getDisplayPath(rawPath);
 
       final filename = rawPath.split('/').last.split('\\').last;
-      final exif = imageExifData[rawPath];
+      final exif = widget.imageExifData[rawPath];
       final lat = exif?.latitude;
       final lon = exif?.longitude;
 
-      Widget buildStack(String displayPath, Size imgSize) {
+      Widget buildStack(
+        String displayPath,
+        Size imgSize,
+        BoxConstraints constraints,
+      ) {
         final allPhotoBoxes = List<Rectangle<int>>.from(
           obs?.boxesByImagePath[rawPath] ??
               (obs?.imagePath == rawPath ? obs!.boundingBoxes : const []),
@@ -112,7 +156,7 @@ class CenterPane extends StatelessWidget {
 
         List<Rectangle<int>> photoBoxes = allPhotoBoxes;
         List<String>? photoNames;
-        
+
         if (obs != null) {
           photoNames = [];
           for (int li = 0; li < allPhotoBoxes.length; li++) {
@@ -128,9 +172,10 @@ class CenterPane extends StatelessWidget {
           }
         }
 
-        if (selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
+        if (widget.selectedIndividualIndices.isNotEmpty &&
+            allPhotoBoxes.isNotEmpty) {
           // Map selected global indices to the local box indices for THIS photo.
-          final localSelected = selectedIndividualIndices
+          final localSelected = widget.selectedIndividualIndices
               .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
               .map((gi) => globalIndexMap[gi]!.localIndex)
               .toSet();
@@ -148,7 +193,7 @@ class CenterPane extends StatelessWidget {
           }
         }
 
-        return Stack(
+        Widget stack = Stack(
           alignment: Alignment.center,
           fit: StackFit.loose,
           children: [
@@ -157,7 +202,7 @@ class CenterPane extends StatelessWidget {
               width: double.infinity,
               fit: BoxFit.contain,
             ),
-            if (obs != null && photoBoxes.isNotEmpty)
+            if (obs != null && photoBoxes.isNotEmpty && _showBoundingBoxes)
               Positioned.fill(
                 child: CustomPaint(
                   painter: BoundingBoxPainter(
@@ -167,8 +212,77 @@ class CenterPane extends StatelessWidget {
                   ),
                 ),
               ),
+            if (_isDrawingMode && _drawStart != null && _drawCurrent != null)
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _DrawingBoxPainter(_drawStart!, _drawCurrent!),
+                ),
+              ),
           ],
         );
+
+        if (_isDrawingMode) {
+          stack = GestureDetector(
+            onPanStart: (details) {
+              setState(() {
+                _drawStart = details.localPosition;
+                _drawCurrent = details.localPosition;
+              });
+            },
+            onPanUpdate: (details) {
+              setState(() {
+                _drawCurrent = details.localPosition;
+              });
+            },
+            onPanEnd: (details) {
+              if (_drawStart != null && _drawCurrent != null) {
+                // Map local coordinates to image pixel coordinates
+                final s = min(
+                  constraints.maxWidth / imgSize.width,
+                  constraints.maxHeight / imgSize.height,
+                );
+                final dw = imgSize.width * s;
+                final dh = imgSize.height * s;
+                final dx = (constraints.maxWidth - dw) / 2;
+                final dy = (constraints.maxHeight - dh) / 2;
+
+                int mapX(double x) =>
+                    ((x - dx) / s).clamp(0, imgSize.width).toInt();
+                int mapY(double y) =>
+                    ((y - dy) / s).clamp(0, imgSize.height).toInt();
+
+                final left = min(_drawStart!.dx, _drawCurrent!.dx);
+                final right = max(_drawStart!.dx, _drawCurrent!.dx);
+                final top = min(_drawStart!.dy, _drawCurrent!.dy);
+                final bottom = max(_drawStart!.dy, _drawCurrent!.dy);
+
+                final imgLeft = mapX(left);
+                final imgRight = mapX(right);
+                final imgTop = mapY(top);
+                final imgBottom = mapY(bottom);
+
+                if (imgRight - imgLeft > 5 && imgBottom - imgTop > 5) {
+                  final box = Rectangle<int>(
+                    imgLeft,
+                    imgTop,
+                    imgRight - imgLeft,
+                    imgBottom - imgTop,
+                  );
+                  if (widget.onDrawBoundingBox != null) {
+                    widget.onDrawBoundingBox!(rawPath, box);
+                  }
+                }
+              }
+              setState(() {
+                _drawStart = null;
+                _drawCurrent = null;
+                _isDrawingMode = false;
+              });
+            },
+            child: stack,
+          );
+        }
+        return stack;
       }
 
       final captions = <Widget>[
@@ -202,6 +316,8 @@ class CenterPane extends StatelessWidget {
         children: [
           Expanded(
             child: InteractiveViewer(
+              panEnabled: !_isDrawingMode,
+              scaleEnabled: !_isDrawingMode,
               child: LayoutBuilder(
                 builder: (context, constraints) => FutureBuilder<String?>(
                   future: resolvedFuture,
@@ -212,14 +328,18 @@ class CenterPane extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
                     return FutureBuilder<Size>(
-                      future: getImageSize(displayPath),
+                      future: widget.getImageSize(displayPath),
                       builder: (context, sizeSnap) {
                         if (!sizeSnap.hasData) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
-                        return buildStack(displayPath, sizeSnap.data!);
+                        return buildStack(
+                          displayPath,
+                          sizeSnap.data!,
+                          constraints,
+                        );
                       },
                     );
                   },
@@ -232,20 +352,15 @@ class CenterPane extends StatelessWidget {
       );
     }
 
+    Widget mainContent;
     if (!isMulti) {
-      return Expanded(
-        flex: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: photoCard(sources.first),
-        ),
+      mainContent = Padding(
+        padding: const EdgeInsets.all(16),
+        child: photoCard(sources.first),
       );
-    }
-
-    // Multi-source: PageView with keyboard navigation
-    return Expanded(
-      flex: 2,
-      child: Focus(
+    } else {
+      // Multi-source: PageView with keyboard navigation
+      mainContent = Focus(
         autofocus: true,
         onKeyEvent: (node, event) {
           if (event is KeyDownEvent) {
@@ -254,16 +369,16 @@ class CenterPane extends StatelessWidget {
               return KeyEventResult.ignored;
             }
             if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-              if (currentPage > 0) {
-                pageController.previousPage(
+              if (widget.currentPage > 0) {
+                widget.pageController.previousPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
                 return KeyEventResult.handled;
               }
             } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-              if (currentPage < sources!.length - 1) {
-                pageController.nextPage(
+              if (widget.currentPage < sources!.length - 1) {
+                widget.pageController.nextPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
@@ -276,10 +391,10 @@ class CenterPane extends StatelessWidget {
         child: Stack(
           children: [
             PageView.builder(
-              controller: pageController,
+              controller: widget.pageController,
               itemCount: sources.length,
               onPageChanged: (i) =>
-                  onPageChanged(i, sources![i].imagePath),
+                  widget.onPageChanged(i, sources![i].imagePath),
               itemBuilder: (context, i) => Padding(
                 padding: const EdgeInsets.all(16),
                 child: photoCard(sources![i]),
@@ -290,7 +405,10 @@ class CenterPane extends StatelessWidget {
               top: 16,
               right: 16,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(16),
@@ -298,11 +416,14 @@ class CenterPane extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.photo_library,
-                        size: 14, color: Colors.white),
+                    const Icon(
+                      Icons.photo_library,
+                      size: 14,
+                      color: Colors.white,
+                    ),
                     const SizedBox(width: 6),
                     Text(
-                      '${currentPage + 1} / ${sources.length}',
+                      '${widget.currentPage + 1} / ${sources.length}',
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.white,
@@ -313,7 +434,7 @@ class CenterPane extends StatelessWidget {
                 ),
               ),
             ),
-            if (currentPage > 0)
+            if (widget.currentPage > 0)
               Positioned(
                 left: 16,
                 bottom: 16,
@@ -324,13 +445,13 @@ class CenterPane extends StatelessWidget {
                     hoverColor: Colors.black87,
                   ),
                   tooltip: 'Previous photo',
-                  onPressed: () => pageController.previousPage(
+                  onPressed: () => widget.pageController.previousPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   ),
                 ),
               ),
-            if (currentPage < sources.length - 1)
+            if (widget.currentPage < sources.length - 1)
               Positioned(
                 right: 16,
                 bottom: 16,
@@ -341,7 +462,7 @@ class CenterPane extends StatelessWidget {
                     hoverColor: Colors.black87,
                   ),
                   tooltip: 'Next photo',
-                  onPressed: () => pageController.nextPage(
+                  onPressed: () => widget.pageController.nextPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   ),
@@ -349,6 +470,65 @@ class CenterPane extends StatelessWidget {
               ),
           ],
         ),
+      );
+    }
+
+    return Expanded(
+      flex: 2,
+      child: Stack(
+        children: [
+          Positioned.fill(child: mainContent),
+          if (sources.isNotEmpty)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: Row(
+                children: [
+                  Tooltip(
+                    message: _showBoundingBoxes
+                        ? 'Hide Bounding Boxes'
+                        : 'Show Bounding Boxes',
+                    child: IconButton(
+                      icon: Icon(
+                        _showBoundingBoxes
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () => setState(
+                        () => _showBoundingBoxes = !_showBoundingBoxes,
+                      ),
+                      color: Theme.of(context).colorScheme.primary,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Tooltip(
+                    message: _isDrawingMode
+                        ? 'Cancel Drawing'
+                        : 'Draw Boundary Box',
+                    child: IconButton(
+                      icon: Icon(_isDrawingMode ? Icons.close : Icons.add_box),
+                      onPressed: () {
+                        setState(() {
+                          _isDrawingMode = !_isDrawingMode;
+                          _drawStart = null;
+                          _drawCurrent = null;
+                        });
+                      },
+                      color: _isDrawingMode
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.primary,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
