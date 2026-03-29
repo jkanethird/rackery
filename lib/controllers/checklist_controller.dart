@@ -464,32 +464,28 @@ class ChecklistController extends ChangeNotifier {
   }
 
   void addManualIndividual(String imagePath, Rectangle<int> box) {
-    if (selectedObservation != null) {
-      ObservationOperations.addIndividual(selectedObservation!, imagePath, box);
-      observationVersion++;
-      notifyListeners();
-    } else {
-      final newObs = Observation(
-        imagePath: imagePath,
-        speciesName: 'Identifying...',
-        exifData: imageExifData[imagePath] ?? ExifData(),
-        count: 1,
-        boundingBoxes: [box],
-        boxesByImagePath: {
-          imagePath: [box],
-        },
-        fullImageDisplayPath: processingFiles.contains(imagePath)
-            ? null
-            : imagePath,
-      );
-      observations.add(newObs);
-      selectedObservation = newObs;
+    final newObs = Observation(
+      imagePath: imagePath,
+      speciesName: 'Identifying...',
+      exifData: imageExifData[imagePath] ?? ExifData(),
+      count: 1,
+      boundingBoxes: [box],
+      boxesByImagePath: {
+        imagePath: [box],
+      },
+      fullImageDisplayPath: processingFiles.contains(imagePath)
+          ? null
+          : imagePath,
+    );
+    observations.add(newObs);
+    selectedObservation = newObs;
+    selectedIndividualIndices.clear();
+    lastSelectedIndividualIndex = null;
 
-      observationVersion++;
-      notifyListeners();
+    observationVersion++;
+    notifyListeners();
 
-      _classifyManualIndividual(newObs, box);
-    }
+    _classifyManualIndividual(newObs, box);
   }
 
   Future<void> _classifyManualIndividual(
