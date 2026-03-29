@@ -182,7 +182,8 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
   final List<_RawDetection> kept = [];
   for (var current in rawDetections) {
     bool isDuplicate = false;
-    for (var existing in kept) {
+    for (int i = 0; i < kept.length; i++) {
+      var existing = kept[i];
       final intersect = existing.box.intersection(current.box);
       if (intersect != null && intersect.width > 0 && intersect.height > 0) {
         final double intersectArea = (intersect.width * intersect.height).toDouble();
@@ -201,8 +202,19 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
             (current.box.width + existing.box.width +
                 current.box.height + existing.box.height) / 8;
 
-        if (iou > 0.20 || ioMin > 0.40 ||
-            (intersectArea > 0 && centerDist < distThreshold * 1.5)) {
+        if (iou > 0.10 || ioMin > 0.25 ||
+            (intersectArea > 0 && centerDist < distThreshold * 2.2)) {
+            
+          final int left = min(existing.box.left, current.box.left);
+          final int top = min(existing.box.top, current.box.top);
+          final int right = max(existing.box.left + existing.box.width, current.box.left + current.box.width);
+          final int bottom = max(existing.box.top + existing.box.height, current.box.top + current.box.height);
+          
+          kept[i] = _RawDetection(
+            Rectangle<int>(left, top, right - left, bottom - top),
+            max(existing.score, current.score)
+          );
+          
           isDuplicate = true;
           break;
         }
