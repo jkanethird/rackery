@@ -1,11 +1,13 @@
 import 'dart:math';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/exif_service.dart';
+import 'package:ebird_generator/utils/name_generator.dart';
 
 class BurstGroup {
   final List<Observation> observations = [];
   String dominantSpecies = "Unknown";
   int totalCount = 0;
+  List<String> individualNames = [];
 
   // The very first observation sets the baseline EXIF data for the group
   ExifData? get baseExifData =>
@@ -34,6 +36,13 @@ class BurstGroup {
     }
 
     totalCount = maxBirdsInSingleFrame;
+
+    while (individualNames.length < totalCount) {
+      individualNames.add(generatePronounceableName());
+    }
+    if (individualNames.length > totalCount) {
+      individualNames.removeRange(totalCount, individualNames.length);
+    }
   }
 
   void _recalculateDominantSpecies() {
@@ -99,6 +108,7 @@ class BurstGroup {
       boundingBoxes: boxes,
       sourceImages: sourceImages,
       boxesByImagePath: boxesByImagePath,
+      individualNames: List.from(individualNames),
       burstId: burstId,
     );
   }

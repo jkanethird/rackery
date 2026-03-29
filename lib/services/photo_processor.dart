@@ -83,6 +83,7 @@ class PhotoProcessor {
         existing.boxesByImagePath = updated.boxesByImagePath;
         existing.boundingBoxes = updated.boundingBoxes;
         existing.possibleSpecies = updated.possibleSpecies;
+        existing.individualNames = updated.individualNames;
         existingUpdated = true;
       } else {
         // New species — emit
