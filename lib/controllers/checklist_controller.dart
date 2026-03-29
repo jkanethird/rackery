@@ -11,6 +11,7 @@ import 'package:ebird_generator/services/bird_detector.dart';
 import 'package:ebird_generator/services/photo_processor.dart';
 import 'package:ebird_generator/services/ingestion_pipeline.dart';
 import 'package:ebird_generator/services/exif_service.dart';
+import 'package:ebird_generator/utils/name_generator.dart';
 import 'package:ebird_generator/utils/observation_operations.dart';
 
 class ChecklistController extends ChangeNotifier {
@@ -350,6 +351,12 @@ class ChecklistController extends ChangeNotifier {
 
   void updateObservationCount(Observation obs, int count) {
     obs.count = count;
+    while (obs.individualNames.length < count) {
+      obs.individualNames.add(generatePronounceableName());
+    }
+    if (obs.individualNames.length > count) {
+      obs.individualNames.removeRange(count, obs.individualNames.length);
+    }
     notifyListeners();
   }
 

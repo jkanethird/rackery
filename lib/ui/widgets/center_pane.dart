@@ -111,6 +111,23 @@ class CenterPane extends StatelessWidget {
         allPhotoBoxes.sort((a, b) => a.left.compareTo(b.left));
 
         List<Rectangle<int>> photoBoxes = allPhotoBoxes;
+        List<String>? photoNames;
+        
+        if (obs != null) {
+          photoNames = [];
+          for (int li = 0; li < allPhotoBoxes.length; li++) {
+            final entry = globalIndexMap.entries.firstWhere(
+              (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
+              orElse: () => const MapEntry(-1, (imagePath: '', localIndex: -1)),
+            );
+            if (entry.key >= 0 && entry.key < obs.individualNames.length) {
+              photoNames.add(obs.individualNames[entry.key]);
+            } else {
+              photoNames.add('?');
+            }
+          }
+        }
+
         if (selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
           // Map selected global indices to the local box indices for THIS photo.
           final localSelected = selectedIndividualIndices
@@ -122,6 +139,12 @@ class CenterPane extends StatelessWidget {
               for (int li = 0; li < allPhotoBoxes.length; li++)
                 if (localSelected.contains(li)) allPhotoBoxes[li],
             ];
+            if (photoNames != null) {
+              photoNames = [
+                for (int li = 0; li < allPhotoBoxes.length; li++)
+                  if (localSelected.contains(li)) photoNames[li],
+              ];
+            }
           }
         }
 
@@ -139,6 +162,7 @@ class CenterPane extends StatelessWidget {
                 child: CustomPaint(
                   painter: BoundingBoxPainter(
                     boxes: photoBoxes,
+                    names: photoNames,
                     imageSize: imgSize,
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:ebird_generator/services/exif_service.dart';
+import 'package:ebird_generator/utils/name_generator.dart';
 
 // BurstGroup has been moved to models/burst_group.dart
 
@@ -24,6 +25,9 @@ class Observation {
   /// Allows the center pane to draw boxes correctly on each contributing photo.
   Map<String, List<Rectangle<int>>> boxesByImagePath;
 
+  /// Human-readable pronounceable names per individual assigned to this observation
+  List<String> individualNames;
+
   Observation({
     required this.imagePath,
     this.displayPath,
@@ -36,12 +40,14 @@ class Observation {
     this.burstId = "",
     List<SourceImage>? sourceImages,
     Map<String, List<Rectangle<int>>>? boxesByImagePath,
+    List<String>? individualNames,
   }) : sourceImages =
            sourceImages ??
            [(imagePath: imagePath, fullImageDisplayPath: fullImageDisplayPath)],
        boxesByImagePath =
            boxesByImagePath ??
-           {if (boundingBoxes.isNotEmpty) imagePath: List.of(boundingBoxes)};
+           {if (boundingBoxes.isNotEmpty) imagePath: List.of(boundingBoxes)},
+       individualNames = individualNames ?? List.generate(count, (_) => generatePronounceableName());
 }
 
 

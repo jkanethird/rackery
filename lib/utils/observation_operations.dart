@@ -7,6 +7,7 @@ class ObservationOperations {
     final from = observations[fromIdx];
     final into = observations[intoIdx];
     into.count += from.count;
+    into.individualNames.addAll(from.individualNames);
     into.boundingBoxes.addAll(from.boundingBoxes);
     for (final s in from.possibleSpecies) {
       if (!into.possibleSpecies.contains(s)) into.possibleSpecies.add(s);
@@ -44,6 +45,14 @@ class ObservationOperations {
 
     final globalIndexMap = _buildGlobalIndexMap(from);
     final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+
+    final movedNames = <String>[];
+    for (final gi in sortedIndices) {
+      if (gi < from.individualNames.length) {
+        movedNames.insert(0, from.individualNames.removeAt(gi));
+      }
+    }
+    into.individualNames.addAll(movedNames);
 
     final Map<String, List<int>> localIndicesToRemove = {};
     for (final gi in sortedIndices) {
@@ -108,16 +117,24 @@ class ObservationOperations {
       speciesName: from.speciesName,
       possibleSpecies: List.from(from.possibleSpecies),
       exifData: from.exifData,
-      count: indIndices.length,
       boundingBoxes: [],
       sourceImages: [],
       boxesByImagePath: {},
       burstId: from.burstId,
+      individualNames: [],
     );
     from.count -= indIndices.length;
 
     final globalIndexMap = _buildGlobalIndexMap(from);
     final sortedIndices = List<int>.from(indIndices)..sort((a, b) => b.compareTo(a));
+
+    final movedNames = <String>[];
+    for (final gi in sortedIndices) {
+      if (gi < from.individualNames.length) {
+        movedNames.insert(0, from.individualNames.removeAt(gi));
+      }
+    }
+    newObs.individualNames = movedNames;
 
     final Map<String, List<int>> localIndicesToRemove = {};
     for (final gi in sortedIndices) {

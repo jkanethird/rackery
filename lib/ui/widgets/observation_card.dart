@@ -536,12 +536,16 @@ class _ObservationCardState extends State<ObservationCard>
   }
 
   Widget _buildIndividualTile(int i) {
+    final individualName = i < widget.obs.individualNames.length
+        ? widget.obs.individualNames[i]
+        : 'Individual ${i + 1}';
+        
     final isMultiSelected = widget.isSelected &&
         widget.selectedIndividualIndices.contains(i) &&
         widget.selectedIndividualIndices.length > 1;
     final label = isMultiSelected
         ? '${widget.selectedIndividualIndices.length} Individuals'
-        : 'Individual ${i + 1}';
+        : individualName;
 
     return Draggable<DragData>(
       data: DragData(
@@ -575,7 +579,7 @@ class _ObservationCardState extends State<ObservationCard>
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.only(left: 82, right: 16),
-        title: Text('Individual ${i + 1}', style: const TextStyle(fontSize: 13)),
+        title: Text(individualName, style: const TextStyle(fontSize: 13)),
         selected: widget.isSelected && widget.selectedIndividualIndices.contains(i),
         selectedColor: Theme.of(context).colorScheme.primary,
         selectedTileColor:

@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 /// to match the rendered layout size.
 class BoundingBoxPainter extends CustomPainter {
   final List<Rectangle<int>> boxes;
+  final List<String>? names;
   final Size imageSize;
 
-  const BoundingBoxPainter({required this.boxes, required this.imageSize});
+  const BoundingBoxPainter({required this.boxes, this.names, required this.imageSize});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -30,20 +31,39 @@ class BoundingBoxPainter extends CustomPainter {
     final dx = (size.width - imageSize.width * scale) / 2.0;
     final dy = (size.height - imageSize.height * scale) / 2.0;
 
-    for (final box in boxes) {
-      canvas.drawRect(
-        Rect.fromLTWH(
-          box.left * scale + dx,
-          box.top * scale + dy,
-          box.width * scale,
-          box.height * scale,
-        ),
-        paint,
+    for (int i = 0; i < boxes.length; i++) {
+      final box = boxes[i];
+      final rect = Rect.fromLTWH(
+        box.left * scale + dx,
+        box.top * scale + dy,
+        box.width * scale,
+        box.height * scale,
       );
+      
+      canvas.drawRect(rect, paint);
+      
+      if (names != null && i < names!.length) {
+        final tp = TextPainter(
+          text: TextSpan(
+            text: ' ${names![i]} ',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              backgroundColor: Colors.black54,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        );
+        tp.layout();
+        tp.paint(canvas, Offset(rect.left, rect.bottom - tp.height));
+      }
     }
   }
 
   @override
   bool shouldRepaint(covariant BoundingBoxPainter oldDelegate) =>
-      oldDelegate.boxes != boxes || oldDelegate.imageSize != imageSize;
+      oldDelegate.boxes != boxes || 
+      oldDelegate.names != names || 
+      oldDelegate.imageSize != imageSize;
 }
