@@ -6,6 +6,7 @@ import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/services/geo_region_service.dart';
 import 'package:ebird_generator/ui/widgets/bounding_box_painter.dart';
+import 'package:ebird_generator/ui/widgets/superellipse_border.dart';
 
 /// The centre pane: shows the full photo(s) for the selected observation with
 /// bounding-box overlays. Supports single-image and multi-image (PageView) modes.
@@ -441,8 +442,11 @@ class _CenterPaneState extends State<CenterPane> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.black54,
-                    hoverColor: Colors.black87,
+                    backgroundColor: Colors.grey.shade800.withValues(
+                      alpha: 0.5,
+                    ),
+                    hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
+                    shape: const SuperellipseBorder(m: 200.0, n: 20.0),
                   ),
                   tooltip: 'Previous photo',
                   onPressed: () => widget.pageController.previousPage(
@@ -458,8 +462,11 @@ class _CenterPaneState extends State<CenterPane> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_forward, color: Colors.white),
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.black54,
-                    hoverColor: Colors.black87,
+                    backgroundColor: Colors.grey.shade800.withValues(
+                      alpha: 0.5,
+                    ),
+                    hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
+                    shape: const SuperellipseBorder(m: 200.0, n: 20.0),
                   ),
                   tooltip: 'Next photo',
                   onPressed: () => widget.pageController.nextPage(
@@ -499,7 +506,11 @@ class _CenterPaneState extends State<CenterPane> {
                       ),
                       color: Theme.of(context).colorScheme.primary,
                       style: IconButton.styleFrom(
-                        backgroundColor: Colors.transparent,
+                        backgroundColor: Colors.grey.shade800.withValues(
+                          alpha: 0.5,
+                        ),
+                        hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
+                        shape: const SuperellipseBorder(m: 200.0, n: 20.0),
                       ),
                     ),
                   ),
@@ -521,7 +532,11 @@ class _CenterPaneState extends State<CenterPane> {
                           ? Theme.of(context).colorScheme.error
                           : Theme.of(context).colorScheme.primary,
                       style: IconButton.styleFrom(
-                        backgroundColor: Colors.transparent,
+                        backgroundColor: Colors.grey.shade800.withValues(
+                          alpha: 0.5,
+                        ),
+                        hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
+                        shape: const SuperellipseBorder(m: 200.0, n: 20.0),
                       ),
                     ),
                   ),
