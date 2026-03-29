@@ -519,6 +519,34 @@ class ChecklistController extends ChangeNotifier {
       } else {
         obs.speciesName = 'Unknown Bird';
       }
+
+      // Auto-merge into an existing observation of the same species in the same burst
+      final fromIdx = observations.indexOf(obs);
+      final mergeTarget = observations.indexWhere(
+        (o) =>
+            o != obs &&
+            o.burstId == obs.burstId &&
+            o.burstId.isNotEmpty &&
+            o.speciesName == obs.speciesName,
+      );
+      if (mergeTarget >= 0) {
+        final wasSelected = selectedObservation == obs;
+        ObservationOperations.mergeObservations(
+          observations,
+          fromIdx,
+          mergeTarget,
+        );
+        if (wasSelected) {
+          // Re-select the merged-into observation
+          final adjustedTarget = fromIdx < mergeTarget
+              ? mergeTarget - 1
+              : mergeTarget;
+          selectedObservation = observations[adjustedTarget];
+          selectedIndividualIndices.clear();
+          lastSelectedIndividualIndex = null;
+        }
+      }
+
       observationVersion++;
       notifyListeners();
     }
