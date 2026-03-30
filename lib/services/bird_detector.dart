@@ -220,7 +220,8 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
   final List<BirdCrop> crops = [];
 
   for (final det in detections) {
-    final cropped = img.copyCrop(
+    // 1. Unpadded crop for accurate color extraction
+    final unpadded = img.copyCrop(
       originalImage,
       x: det.box.left,
       y: det.box.top,
@@ -228,8 +229,8 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
       height: det.box.height,
     );
 
-    final w = cropped.width;
-    final h = cropped.height;
+    final w = unpadded.width;
+    final h = unpadded.height;
     final int startX = (w * 0.4).toInt();
     final int startY = (h * 0.4).toInt();
     final int endX = (w * 0.6).toInt();
@@ -241,7 +242,7 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
       int count = 0;
       for (int y = startY; y < endY; y++) {
         for (int x = startX; x < endX; x++) {
-          final pixel = cropped.getPixel(x, y);
+          final pixel = unpadded.getPixel(x, y);
           sumR += pixel.r.toDouble();
           sumG += pixel.g.toDouble();
           sumB += pixel.b.toDouble();
@@ -252,7 +253,7 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
         color = [sumR / count, sumG / count, sumB / count];
       }
     } else if (w > 0 && h > 0) {
-      final centerPixel = cropped.getPixel(w ~/ 2, h ~/ 2);
+      final centerPixel = unpadded.getPixel(w ~/ 2, h ~/ 2);
       color = [
         centerPixel.r.toDouble(),
         centerPixel.g.toDouble(),
@@ -260,7 +261,32 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
       ];
     }
 
-    final jpgBytes = Uint8List.fromList(img.encodeJpg(cropped, quality: 90));
+    // 2. Padded crop for the UI icon so it doesn't look cut-off or blurry
+    final padX = (det.box.width * 0.5).round();
+    final padY = (det.box.height * 0.5).round();
+
+    final cropX1 = (det.box.left - padX).clamp(0, originalImage.width - 1);
+    final cropY1 = (det.box.top - padY).clamp(0, originalImage.height - 1);
+    final cropX2 = (det.box.left + det.box.width + padX).clamp(1, originalImage.width);
+    final cropY2 = (det.box.top + det.box.height + padY).clamp(1, originalImage.height);
+
+    var padded = img.copyCrop(
+      originalImage,
+      x: cropX1,
+      y: cropY1,
+      width: cropX2 - cropX1,
+      height: cropY2 - cropY1,
+    );
+
+    // Upscale small crops so the bird is large enough to identify in the UI
+    if (padded.width < 150 || padded.height < 150) {
+      final scale = 150 / max(padded.width, padded.height);
+      final newW = (padded.width * scale).round();
+      final newH = (padded.height * scale).round();
+      padded = img.copyResize(padded, width: newW, height: newH, interpolation: img.Interpolation.linear);
+    }
+
+    final jpgBytes = Uint8List.fromList(img.encodeJpg(padded, quality: 90));
     crops.add(BirdCrop(jpgBytes, color, det.score, det.box));
   }
 
