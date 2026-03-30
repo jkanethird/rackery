@@ -61,6 +61,7 @@ class ChecklistController extends ChangeNotifier {
 
   // Right panel scroll controller
   final ScrollController observationScrollController = ScrollController();
+  Observation? expandedObservation;
 
   // Individual selection
   final Set<int> selectedIndividualIndices = {};

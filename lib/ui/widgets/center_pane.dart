@@ -18,6 +18,7 @@ class CenterPane extends StatelessWidget {
   final VoidCallback onToggleBoundingBoxes;
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
+  final void Function(Observation obs, int globalIndex)? onIndividualSelected;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
   const CenterPane({
@@ -31,6 +32,7 @@ class CenterPane extends StatelessWidget {
     required this.onToggleBoundingBoxes,
     required this.getDisplayPath,
     required this.getImageSize,
+    this.onIndividualSelected,
     this.onDrawBoundingBox,
   });
 
@@ -87,8 +89,7 @@ class CenterPane extends StatelessWidget {
     final double? lat = exif?.latitude;
     final double? lon = exif?.longitude;
 
-    List<Rectangle<int>> photoBoxes = [];
-    List<String> photoNames = [];
+    List<PhotoBoxData> boxData = [];
 
     if (boxVisibility == BoundingBoxVisibility.all) {
       for (final o in allObservations) {
@@ -105,9 +106,15 @@ class CenterPane extends StatelessWidget {
           }
           
           for (int li = 0; li < oBoxes.length; li++) {
-            photoBoxes.add(oBoxes[li]);
             final idx = offset + li;
-            photoNames.add(idx < o.individualNames.length ? o.individualNames[idx] : '?');
+            final name = idx < o.individualNames.length ? o.individualNames[idx] : '?';
+            boxData.add(PhotoBoxData(
+              box: oBoxes[li],
+              name: name,
+              species: o.speciesName,
+              globalIndex: idx,
+              obs: o,
+            ));
           }
         }
       }
@@ -118,44 +125,37 @@ class CenterPane extends StatelessWidget {
       );
       allPhotoBoxes.sort((a, b) => a.left.compareTo(b.left));
 
-      photoBoxes = allPhotoBoxes;
-      List<String>? focusedNames;
-
       if (obs != null) {
-        focusedNames = [];
+        Set<int> localSelected;
+        if (selectedIndividualIndices.isNotEmpty) {
+          localSelected = selectedIndividualIndices
+              .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
+              .map((gi) => globalIndexMap[gi]!.localIndex)
+              .toSet();
+        } else {
+          localSelected = {for (int i=0; i < allPhotoBoxes.length; i++) i};
+        }
+
         for (int li = 0; li < allPhotoBoxes.length; li++) {
+          if (!localSelected.contains(li) && selectedIndividualIndices.isNotEmpty) continue;
+          
           final entry = globalIndexMap.entries.firstWhere(
             (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
             orElse: () => const MapEntry(-1, (imagePath: '', localIndex: -1)),
           );
-          if (entry.key >= 0 && entry.key < obs.individualNames.length) {
-            focusedNames.add(obs.individualNames[entry.key]);
-          } else {
-            focusedNames.add('?');
-          }
-        }
-      }
+          final gIdx = entry.key;
+          final name = (gIdx >= 0 && gIdx < obs.individualNames.length) 
+              ? obs.individualNames[gIdx] : '?';
 
-      if (selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
-        // Map selected global indices to the local box indices for THIS photo.
-        final localSelected = selectedIndividualIndices
-            .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
-            .map((gi) => globalIndexMap[gi]!.localIndex)
-            .toSet();
-        if (localSelected.isNotEmpty) {
-          photoBoxes = [
-            for (int li = 0; li < allPhotoBoxes.length; li++)
-              if (localSelected.contains(li)) allPhotoBoxes[li],
-          ];
-          if (focusedNames != null) {
-            focusedNames = [
-              for (int li = 0; li < allPhotoBoxes.length; li++)
-                if (localSelected.contains(li)) focusedNames[li],
-            ];
-          }
+          boxData.add(PhotoBoxData(
+            box: allPhotoBoxes[li],
+            name: name,
+            species: obs.speciesName,
+            globalIndex: gIdx,
+            obs: obs,
+          ));
         }
       }
-      photoNames = focusedNames ?? [];
     }
 
     return Expanded(
@@ -184,10 +184,12 @@ class CenterPane extends StatelessWidget {
                         displayPath: displayPath,
                         rawPath: rawPath,
                         imageSize: sizeSnap.data!,
-                        photoBoxes: photoBoxes,
-                        photoNames: photoNames,
+                        boxData: boxData,
                         boxVisibility: boxVisibility,
                         onToggleBoundingBoxes: onToggleBoundingBoxes,
+                        onIndividualSelected: onIndividualSelected != null ? (data) {
+                          onIndividualSelected!(data.obs, data.globalIndex);
+                        } : null,
                         onDrawBoundingBox: onDrawBoundingBox,
                       );
                     },

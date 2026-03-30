@@ -38,16 +38,35 @@ extension SelectionActions on ChecklistController {
     selectedIndividualIndices.clear();
     selectedIndividualIndices.add(i);
     lastSelectedIndividualIndex = i;
+    expandedObservation = obs;
     ensureBoundingBoxesVisible();
+    scrollToObservation(obs);
     notify();
   }
 
-  void scrollToObservationForImage(String imagePath) {
+  void toggleExpanded(Observation obs) {
+    if (expandedObservation == obs) {
+      expandedObservation = null;
+    } else {
+      expandedObservation = obs;
+    }
+    notify();
+  }
+
+  void scrollToObservation(Observation obs) async {
+    // Wait for the ObservationCard's AnimatedSize expansion (300ms) to complete
+    // so that the scroll controller's maxScrollExtent grows appropriately.
+    await Future.delayed(const Duration(milliseconds: 310));
+    
     if (!observationScrollController.hasClients) return;
-    final idx = observations.indexWhere((o) => o.imagePath == imagePath);
-    if (idx < 0) return;
-    const estimatedItemHeight = 96.0;
-    final target = (idx * estimatedItemHeight).clamp(
+    final originalIdx = observations.indexOf(obs);
+    if (originalIdx < 0) return;
+    
+    // The ListView builder produces items in reverse order.
+    final listIdx = observations.length - 1 - originalIdx;
+    
+    const estimatedItemHeight = 120.0;
+    final target = (listIdx * estimatedItemHeight).clamp(
       0.0,
       observationScrollController.position.maxScrollExtent,
     );
@@ -56,5 +75,10 @@ extension SelectionActions on ChecklistController {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  void scrollToObservationForImage(String imagePath) {
+    final obs = observations.where((o) => o.imagePath == imagePath).firstOrNull;
+    if (obs != null) scrollToObservation(obs);
   }
 }

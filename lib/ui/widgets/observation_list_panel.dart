@@ -8,6 +8,7 @@ import 'package:ebird_generator/ui/widgets/observation_card.dart' hide DragData;
 class ObservationListPanel extends StatelessWidget {
   final List<Observation> observations;
   final Observation? selectedObservation;
+  final Observation? expandedObservation;
   final Set<int> selectedIndividualIndices;
   final int? lastSelectedIndividualIndex;
   final int? draggingIndex;
@@ -17,6 +18,7 @@ class ObservationListPanel extends StatelessWidget {
   // Card interaction callbacks
   final void Function(Observation obs) onTapCard;
   final void Function(Observation obs, int i) onTapIndividual;
+  final void Function(Observation obs) onToggleExpanded;
   final void Function(Observation obs, String val) onSpeciesChanged;
   final void Function(Observation obs, String choice) onSpeciesSelected;
   final void Function(Observation obs, int count) onCountChanged;
@@ -35,6 +37,7 @@ class ObservationListPanel extends StatelessWidget {
     super.key,
     required this.observations,
     required this.selectedObservation,
+    required this.expandedObservation,
     required this.selectedIndividualIndices,
     required this.lastSelectedIndividualIndex,
     required this.draggingIndex,
@@ -42,6 +45,7 @@ class ObservationListPanel extends StatelessWidget {
     required this.scrollController,
     required this.onTapCard,
     required this.onTapIndividual,
+    required this.onToggleExpanded,
     required this.onSpeciesChanged,
     required this.onSpeciesSelected,
     required this.onCountChanged,
@@ -73,6 +77,7 @@ class ObservationListPanel extends StatelessWidget {
         final index = observations.length - 1 - i;
         final obs = observations[index];
         final isSelected = selectedObservation == obs;
+        final isExpanded = expandedObservation == obs;
         final isDragging = draggingIndex == index;
 
         final observationItem = ObservationCard(
@@ -80,11 +85,13 @@ class ObservationListPanel extends StatelessWidget {
           obs: obs,
           index: index,
           isSelected: isSelected,
+          isExpanded: isExpanded,
           isDragging: isDragging,
           selectedIndividualIndices: selectedIndividualIndices.toList(),
           lastSelectedIndividualIndex: lastSelectedIndividualIndex,
           onTapCard: () => onTapCard(obs),
           onTapIndividual: (int i) => onTapIndividual(obs, i),
+          onToggleExpanded: () => onToggleExpanded(obs),
           onSpeciesChanged: (val) => onSpeciesChanged(obs, val),
           onSpeciesSelected: (choice) => onSpeciesSelected(obs, choice),
           onCountChanged: (count) => onCountChanged(obs, count),

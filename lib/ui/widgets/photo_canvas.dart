@@ -4,18 +4,35 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/controllers/checklist_controller.dart';
 import 'package:ebird_generator/ui/widgets/bounding_box_painter.dart';
 import 'package:ebird_generator/ui/widgets/superellipse_border.dart';
+
+class PhotoBoxData {
+  final Rectangle<int> box;
+  final String name;
+  final String species;
+  final int globalIndex;
+  final Observation obs;
+
+  const PhotoBoxData({
+    required this.box,
+    required this.name,
+    required this.species,
+    required this.globalIndex,
+    required this.obs,
+  });
+}
 
 class PhotoCanvas extends StatefulWidget {
   final String displayPath;
   final String rawPath;
   final Size imageSize;
-  final List<Rectangle<int>> photoBoxes;
-  final List<String>? photoNames;
+  final List<PhotoBoxData> boxData;
   final BoundingBoxVisibility boxVisibility;
   final VoidCallback onToggleBoundingBoxes;
+  final void Function(PhotoBoxData data)? onIndividualSelected;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
   const PhotoCanvas({
@@ -23,10 +40,10 @@ class PhotoCanvas extends StatefulWidget {
     required this.displayPath,
     required this.rawPath,
     required this.imageSize,
-    required this.photoBoxes,
-    this.photoNames,
+    required this.boxData,
     required this.boxVisibility,
     required this.onToggleBoundingBoxes,
+    this.onIndividualSelected,
     this.onDrawBoundingBox,
   });
 
@@ -78,17 +95,52 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                         width: double.infinity,
                         fit: BoxFit.contain,
                       ),
-                      if (widget.photoBoxes.isNotEmpty &&
+                      if (widget.boxData.isNotEmpty &&
                           widget.boxVisibility != BoundingBoxVisibility.hidden)
                         Positioned.fill(
                           child: CustomPaint(
                             painter: BoundingBoxPainter(
-                              boxes: widget.photoBoxes,
-                              names: widget.photoNames,
+                              boxes: widget.boxData.map((d) => d.box).toList(),
+                              names: widget.boxData.map((d) => d.name).toList(),
                               imageSize: widget.imageSize,
                             ),
                           ),
                         ),
+                      if (widget.boxData.isNotEmpty &&
+                          widget.boxVisibility != BoundingBoxVisibility.hidden &&
+                          !_isDrawingMode)
+                        ...widget.boxData.map((data) {
+                            final s = min(
+                              constraints.maxWidth / widget.imageSize.width,
+                              constraints.maxHeight / widget.imageSize.height,
+                            );
+                            final dx = (constraints.maxWidth - widget.imageSize.width * s) / 2;
+                            final dy = (constraints.maxHeight - widget.imageSize.height * s) / 2;
+
+                            final rectLeft = dx + data.box.left * s;
+                            final rectTop = dy + data.box.top * s;
+                            final rectWidth = data.box.width * s;
+                            final rectHeight = data.box.height * s;
+
+                            return Positioned(
+                              left: rectLeft,
+                              top: rectTop,
+                              width: rectWidth,
+                              height: rectHeight,
+                              child: Tooltip(
+                                message: '${data.name} (${data.species})',
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {
+                                      widget.onIndividualSelected?.call(data);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ); 
+                        }),
                       if (_isDrawingMode &&
                           _drawStart != null &&
                           _drawCurrent != null)

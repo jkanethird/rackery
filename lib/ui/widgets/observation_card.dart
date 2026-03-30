@@ -12,12 +12,14 @@ class ObservationCard extends StatefulWidget {
   final Observation obs;
   final int index;
   final bool isSelected;
+  final bool isExpanded;
   final bool isDragging;
   final List<int> selectedIndividualIndices;
   final int? lastSelectedIndividualIndex;
 
   final Function() onTapCard;
   final Function(int) onTapIndividual;
+  final Function() onToggleExpanded;
   final Function(String) onSpeciesChanged;
   final Function(String) onSpeciesSelected;
   final void Function(int count) onCountChanged;
@@ -35,11 +37,13 @@ class ObservationCard extends StatefulWidget {
     required this.obs,
     required this.index,
     required this.isSelected,
+    required this.isExpanded,
     required this.isDragging,
     required this.selectedIndividualIndices,
     required this.lastSelectedIndividualIndex,
     required this.onTapCard,
     required this.onTapIndividual,
+    required this.onToggleExpanded,
     required this.onSpeciesChanged,
     required this.onSpeciesSelected,
     required this.onCountChanged,
@@ -58,7 +62,6 @@ class ObservationCard extends StatefulWidget {
 
 class _ObservationCardState extends State<ObservationCard>
     with SingleTickerProviderStateMixin {
-  bool _isExpanded = false;
   late final TextEditingController _speciesController;
   late final FocusNode _speciesFocusNode;
   late final AnimationController _fadeController;
@@ -194,6 +197,7 @@ class _ObservationCardState extends State<ObservationCard>
   @override
   void didUpdateWidget(ObservationCard oldWidget) {
     super.didUpdateWidget(oldWidget);
+    
     if (!widget.isSelected && oldWidget.isSelected) {
       if (_speciesFocusNode.hasFocus) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -223,7 +227,7 @@ class _ObservationCardState extends State<ObservationCard>
 
   Widget _buildSplitButtonHalf({required bool isTop}) {
     return InkWell(
-      onTap: () => setState(() => _isExpanded = !_isExpanded),
+      onTap: widget.onToggleExpanded,
       child: Container(
         width: double.infinity,
         height: 20,
@@ -357,7 +361,7 @@ class _ObservationCardState extends State<ObservationCard>
           _buildHeader(scientificName),
           _buildSplitButtonHalf(isTop: true),
           _buildIndividualsList(),
-          if (_isExpanded) _buildSplitButtonHalf(isTop: false),
+          if (widget.isExpanded) _buildSplitButtonHalf(isTop: false),
         ],
       ),
     );
@@ -535,7 +539,7 @@ class _ObservationCardState extends State<ObservationCard>
       alignment: Alignment.topCenter,
       child: Container(
         constraints:
-            _isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 0),
+            widget.isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 0),
         child: Column(
           children: [
             for (int i in sortedIndices)
