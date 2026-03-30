@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ebird_generator/models/observation.dart';
+import 'package:ebird_generator/controllers/checklist_controller.dart';
 import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/ui/widgets/photo_canvas.dart';
 import 'package:ebird_generator/ui/widgets/photo_header.dart';
@@ -12,7 +13,8 @@ class CenterPane extends StatelessWidget {
   final Set<int> selectedIndividualIndices;
   final String? currentlyDisplayedImage;
   final Map<String, ExifData> imageExifData;
-  final bool showBoundingBoxes;
+  final BoundingBoxVisibility boxVisibility;
+  final List<Observation> allObservations;
   final VoidCallback onToggleBoundingBoxes;
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
@@ -24,7 +26,8 @@ class CenterPane extends StatelessWidget {
     required this.selectedIndividualIndices,
     required this.currentlyDisplayedImage,
     required this.imageExifData,
-    required this.showBoundingBoxes,
+    required this.boxVisibility,
+    required this.allObservations,
     required this.onToggleBoundingBoxes,
     required this.getDisplayPath,
     required this.getImageSize,
@@ -84,48 +87,75 @@ class CenterPane extends StatelessWidget {
     final double? lat = exif?.latitude;
     final double? lon = exif?.longitude;
 
-    final allPhotoBoxes = List<Rectangle<int>>.from(
-      obs?.boxesByImagePath[rawPath] ??
-          (obs?.imagePath == rawPath ? obs!.boundingBoxes : const []),
-    );
-    allPhotoBoxes.sort((a, b) => a.left.compareTo(b.left));
+    List<Rectangle<int>> photoBoxes = [];
+    List<String> photoNames = [];
 
-    List<Rectangle<int>> photoBoxes = allPhotoBoxes;
-    List<String>? photoNames;
+    if (boxVisibility == BoundingBoxVisibility.all) {
+      for (final o in allObservations) {
+        final oBoxes = List<Rectangle<int>>.from(
+          o.boxesByImagePath[rawPath] ??
+              (o.imagePath == rawPath ? o.boundingBoxes : const []),
+        )..sort((a, b) => a.left.compareTo(b.left));
 
-    if (obs != null) {
-      photoNames = [];
-      for (int li = 0; li < allPhotoBoxes.length; li++) {
-        final entry = globalIndexMap.entries.firstWhere(
-          (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
-          orElse: () => const MapEntry(-1, (imagePath: '', localIndex: -1)),
-        );
-        if (entry.key >= 0 && entry.key < obs.individualNames.length) {
-          photoNames.add(obs.individualNames[entry.key]);
-        } else {
-          photoNames.add('?');
+        if (oBoxes.isNotEmpty) {
+          int offset = 0;
+          for (final src in o.sourceImages) {
+            if (src.imagePath == rawPath) break;
+            offset += (o.boxesByImagePath[src.imagePath] ?? []).length;
+          }
+          
+          for (int li = 0; li < oBoxes.length; li++) {
+            photoBoxes.add(oBoxes[li]);
+            final idx = offset + li;
+            photoNames.add(idx < o.individualNames.length ? o.individualNames[idx] : '?');
+          }
         }
       }
-    }
+    } else {
+      final allPhotoBoxes = List<Rectangle<int>>.from(
+        obs?.boxesByImagePath[rawPath] ??
+            (obs?.imagePath == rawPath ? obs!.boundingBoxes : const []),
+      );
+      allPhotoBoxes.sort((a, b) => a.left.compareTo(b.left));
 
-    if (selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
-      // Map selected global indices to the local box indices for THIS photo.
-      final localSelected = selectedIndividualIndices
-          .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
-          .map((gi) => globalIndexMap[gi]!.localIndex)
-          .toSet();
-      if (localSelected.isNotEmpty) {
-        photoBoxes = [
-          for (int li = 0; li < allPhotoBoxes.length; li++)
-            if (localSelected.contains(li)) allPhotoBoxes[li],
-        ];
-        if (photoNames != null) {
-          photoNames = [
+      photoBoxes = allPhotoBoxes;
+      List<String>? focusedNames;
+
+      if (obs != null) {
+        focusedNames = [];
+        for (int li = 0; li < allPhotoBoxes.length; li++) {
+          final entry = globalIndexMap.entries.firstWhere(
+            (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
+            orElse: () => const MapEntry(-1, (imagePath: '', localIndex: -1)),
+          );
+          if (entry.key >= 0 && entry.key < obs.individualNames.length) {
+            focusedNames.add(obs.individualNames[entry.key]);
+          } else {
+            focusedNames.add('?');
+          }
+        }
+      }
+
+      if (selectedIndividualIndices.isNotEmpty && allPhotoBoxes.isNotEmpty) {
+        // Map selected global indices to the local box indices for THIS photo.
+        final localSelected = selectedIndividualIndices
+            .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
+            .map((gi) => globalIndexMap[gi]!.localIndex)
+            .toSet();
+        if (localSelected.isNotEmpty) {
+          photoBoxes = [
             for (int li = 0; li < allPhotoBoxes.length; li++)
-              if (localSelected.contains(li)) photoNames[li],
+              if (localSelected.contains(li)) allPhotoBoxes[li],
           ];
+          if (focusedNames != null) {
+            focusedNames = [
+              for (int li = 0; li < allPhotoBoxes.length; li++)
+                if (localSelected.contains(li)) focusedNames[li],
+            ];
+          }
         }
       }
+      photoNames = focusedNames ?? [];
     }
 
     return Expanded(
@@ -156,7 +186,7 @@ class CenterPane extends StatelessWidget {
                         imageSize: sizeSnap.data!,
                         photoBoxes: photoBoxes,
                         photoNames: photoNames,
-                        showBoundingBoxes: showBoundingBoxes,
+                        boxVisibility: boxVisibility,
                         onToggleBoundingBoxes: onToggleBoundingBoxes,
                         onDrawBoundingBox: onDrawBoundingBox,
                       );

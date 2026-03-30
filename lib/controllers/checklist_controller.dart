@@ -23,6 +23,12 @@ part 'manual_detection_actions.dart';
 part 'photo_processing_actions.dart';
 part 'export_actions.dart';
 
+enum BoundingBoxVisibility {
+  focused,
+  all,
+  hidden,
+}
+
 class ChecklistController extends ChangeNotifier {
   // ─── Services ────────────────────────────────────────────────────────────
   final BirdClassifier _classifier = BirdClassifier();
@@ -60,19 +66,28 @@ class ChecklistController extends ChangeNotifier {
   final Set<int> selectedIndividualIndices = {};
   int? lastSelectedIndividualIndex;
   int? draggingIndex;
-
   // Dropdown UI state
   bool isDropdownOpen = false;
-  bool showBoundingBoxes = true;
+  BoundingBoxVisibility boxVisibility = BoundingBoxVisibility.focused;
 
   void toggleBoundingBoxes() {
-    showBoundingBoxes = !showBoundingBoxes;
+    switch (boxVisibility) {
+      case BoundingBoxVisibility.focused:
+        boxVisibility = BoundingBoxVisibility.all;
+        break;
+      case BoundingBoxVisibility.all:
+        boxVisibility = BoundingBoxVisibility.hidden;
+        break;
+      case BoundingBoxVisibility.hidden:
+        boxVisibility = BoundingBoxVisibility.focused;
+        break;
+    }
     notify();
   }
 
   void ensureBoundingBoxesVisible() {
-    if (!showBoundingBoxes) {
-      showBoundingBoxes = true;
+    if (boxVisibility == BoundingBoxVisibility.hidden) {
+      boxVisibility = BoundingBoxVisibility.focused;
       notify();
     }
   }

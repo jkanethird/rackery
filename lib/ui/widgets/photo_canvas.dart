@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:ebird_generator/controllers/checklist_controller.dart';
 import 'package:ebird_generator/ui/widgets/bounding_box_painter.dart';
 import 'package:ebird_generator/ui/widgets/superellipse_border.dart';
 
@@ -13,7 +14,7 @@ class PhotoCanvas extends StatefulWidget {
   final Size imageSize;
   final List<Rectangle<int>> photoBoxes;
   final List<String>? photoNames;
-  final bool showBoundingBoxes;
+  final BoundingBoxVisibility boxVisibility;
   final VoidCallback onToggleBoundingBoxes;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
@@ -24,7 +25,7 @@ class PhotoCanvas extends StatefulWidget {
     required this.imageSize,
     required this.photoBoxes,
     this.photoNames,
-    required this.showBoundingBoxes,
+    required this.boxVisibility,
     required this.onToggleBoundingBoxes,
     this.onDrawBoundingBox,
   });
@@ -78,7 +79,7 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                         fit: BoxFit.contain,
                       ),
                       if (widget.photoBoxes.isNotEmpty &&
-                          widget.showBoundingBoxes)
+                          widget.boxVisibility != BoundingBoxVisibility.hidden)
                         Positioned.fill(
                           child: CustomPaint(
                             painter: BoundingBoxPainter(
@@ -179,14 +180,18 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
             child: Row(
               children: [
                 Tooltip(
-                  message: widget.showBoundingBoxes
-                      ? 'Hide Bounding Boxes'
-                      : 'Show Bounding Boxes',
+                  message: widget.boxVisibility == BoundingBoxVisibility.focused
+                      ? 'Show All Boundary Boxes'
+                      : widget.boxVisibility == BoundingBoxVisibility.all
+                          ? 'Hide Boundary Boxes'
+                          : 'Show Focused Boundary Boxes',
                   child: IconButton(
                     icon: Icon(
-                      widget.showBoundingBoxes
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      widget.boxVisibility == BoundingBoxVisibility.focused
+                          ? Icons.filter_center_focus
+                          : widget.boxVisibility == BoundingBoxVisibility.all
+                              ? Icons.border_all
+                              : Icons.visibility_off,
                     ),
                     onPressed: widget.onToggleBoundingBoxes,
                     color: Theme.of(context).colorScheme.primary,
