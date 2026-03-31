@@ -180,7 +180,8 @@ class BirdClassifier {
     final String locationGuide =
         (latitude != null && longitude != null)
         ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}.'
-              ' Prioritize species known to occur in that region.'
+              ' ONLY suggest species whose known range includes this region.'
+              ' Do NOT suggest species from other continents or regions.'
         : '';
 
     final String dateGuide;
@@ -199,7 +200,8 @@ class BirdClassifier {
       };
       dateGuide =
           ' Photo taken in $month ${photoDate.year} ($season).'
-          ' Consider $season plumage and $season visitors for this region.';
+          ' Only suggest species that would realistically be present in this'
+          ' region during $season, including year-round residents and $season visitors.';
     } else {
       dateGuide = '';
     }
