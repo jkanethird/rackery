@@ -136,8 +136,8 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
             (current.box.width + existing.box.width +
                 current.box.height + existing.box.height) / 8;
 
-        if (iou > 0.20 || ioMin > 0.40 ||
-            (intersectArea > 0 && centerDist < distThreshold * 1.5)) {
+        if (iou > 0.30 || ioMin > 0.50 ||
+            (iou > 0.10 && centerDist < distThreshold)) {
           isDuplicate = true;
           break;
         }

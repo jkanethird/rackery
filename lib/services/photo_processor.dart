@@ -224,6 +224,7 @@ class PhotoProcessor {
                   latitude: res.exifData.latitude,
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
+                  allowNoBird: true,
                 );
                 // Empty list = model said no bird is present — skip this photo.
                 if (speciesList.isNotEmpty) {
@@ -276,6 +277,8 @@ class PhotoProcessor {
                   latitude: res.exifData.latitude,
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
+                  allowNoBird: true,
+                  cropBytes: clusterCrops.first.croppedJpgBytes,
                 );
                 // Empty list = model said this crop isn't a bird — skip it.
                 if (speciesList.isEmpty) {

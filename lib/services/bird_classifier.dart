@@ -16,12 +16,16 @@ class BirdClassifier {
   Future<void> init() async {}
 
   /// Classifies the bird in the image at [imagePath].
+  ///
+  /// When [allowNoBird] is true, the model may respond that no bird is
+  /// present — callers receive an empty list and should discard the crop.
   Future<List<String>> classifyFile(
     String imagePath, {
     Rectangle<int>? box,
     double? latitude,
     double? longitude,
     DateTime? photoDate,
+    bool allowNoBird = false,
   }) async {
     final boxes = box != null ? [box] : <Rectangle<int>>[];
     return _classifyWithBoxes(
@@ -31,6 +35,7 @@ class BirdClassifier {
       longitude: longitude,
       isCluster: false,
       photoDate: photoDate,
+      allowNoBird: allowNoBird,
     );
   }
 
@@ -40,6 +45,8 @@ class BirdClassifier {
     double? latitude,
     double? longitude,
     DateTime? photoDate,
+    bool allowNoBird = false,
+    Uint8List? cropBytes,
   }) async {
     return _classifyWithBoxes(
       imagePath,
@@ -48,6 +55,8 @@ class BirdClassifier {
       longitude: longitude,
       isCluster: true,
       photoDate: photoDate,
+      allowNoBird: allowNoBird,
+      cropBytes: cropBytes,
     );
   }
 
@@ -58,8 +67,18 @@ class BirdClassifier {
     double? longitude,
     required bool isCluster,
     DateTime? photoDate,
+    bool allowNoBird = false,
+    Uint8List? cropBytes,
   }) async {
     try {
+      // Step 1: When crop bytes are available, run a quick verification pass
+      // to reject false positives BEFORE attempting species classification.
+      if (allowNoBird && cropBytes != null) {
+        final isConfirmedBird = await _verifyBirdPresence(cropBytes);
+        if (!isConfirmedBird) return [];
+      }
+
+      // Step 2: Species classification using the full annotated image.
       final bytes = await File(imagePath).readAsBytes();
       final fullImage = await compute(img.decodeImage, bytes);
       if (fullImage == null) return ["Unknown Bird"];
@@ -68,8 +87,8 @@ class BirdClassifier {
         annotateAndEncode,
         AnnotationParams(fullImage, boxes, fullImage.width, fullImage.height),
       );
-      
       final base64Image = base64Encode(jpgBytes);
+
       final prompt = _buildPrompt(boxes, latitude, longitude, photoDate);
       final response = await http.post(
         Uri.parse(_kOllamaUrl),
@@ -99,6 +118,43 @@ class BirdClassifier {
       debugPrint('Error classifying with Ollama: $e');
       return ["Unknown Bird"];
     }
+  }
+
+  /// Quick YES/NO verification: sends ONLY the crop to the model with a
+  /// focused prompt. Returns true if a bird is confirmed present.
+  Future<bool> _verifyBirdPresence(Uint8List cropBytes) async {
+    try {
+      final base64Crop = base64Encode(cropBytes);
+      final response = await http.post(
+        Uri.parse(_kOllamaUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'model': _kModel,
+          'prompt':
+              'Look at this close-up image carefully. Is there a bird in this image? '
+              'Common false positives include dead leaves, knots in bark, rocks, '
+              'shadows, and other non-bird objects on branches. '
+              'Respond with ONLY "YES" or "NO".',
+          'images': [base64Crop],
+          'stream': false,
+          'options': {'temperature': 0.0, 'num_predict': 8},
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final answer = data['response'].toString().trim().toUpperCase();
+        final confirmed = answer.startsWith('YES');
+        if (!confirmed) {
+          debugPrint('Bird verification rejected: "$answer"');
+        }
+        return confirmed;
+      }
+    } catch (e) {
+      debugPrint('Bird verification error: $e');
+    }
+    // On error, assume bird is present to avoid losing real detections.
+    return true;
   }
 
   String _buildPrompt(
