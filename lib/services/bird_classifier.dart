@@ -216,7 +216,7 @@ class BirdClassifier {
       dateGuide = '';
     }
 
-    return 'You are an expert ornithologist helping build an eBird checklist. '
+    return 'You are an expert in the field of Ornithology helping build an eBird checklist. '
         'Carefully examine this photograph.$boxGuide$locationGuide$dateGuide\n'
         'Provide your top 1 to 5 bird species guesses formatted as a numbered list of common names.\n'
         'CRITICAL: Do not include any text other than the numbered list.';
