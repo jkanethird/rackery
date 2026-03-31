@@ -63,10 +63,14 @@ extension ManualDetectionActions on ChecklistController {
       final fullImage = await compute(img.decodeImage, bytes);
       if (fullImage == null) return;
 
-      final x = box.left.clamp(0, fullImage.width - 1);
-      final y = box.top.clamp(0, fullImage.height - 1);
-      final w = box.width.clamp(1, fullImage.width - x);
-      final h = box.height.clamp(1, fullImage.height - y);
+      // 50% padding around the box — matches annotateAndEncode's single-bird crop
+      final padX = (box.width * 0.5).round();
+      final padY = (box.height * 0.5).round();
+
+      final x = (box.left - padX).clamp(0, fullImage.width - 1);
+      final y = (box.top - padY).clamp(0, fullImage.height - 1);
+      final w = (box.width + padX * 2).clamp(1, fullImage.width - x);
+      final h = (box.height + padY * 2).clamp(1, fullImage.height - y);
 
       final cropped = img.copyCrop(fullImage, x: x, y: y, width: w, height: h);
       final jpgBytes = img.encodeJpg(cropped, quality: 85);
