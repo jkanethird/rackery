@@ -177,19 +177,29 @@ class BirdClassifier {
       boxGuide = '';
     }
 
-    final String locationGuide =
-        (latitude != null && longitude != null)
+    final String locationGuide = (latitude != null && longitude != null)
         ? ' This photo was taken in ${GeoRegionService.describe(latitude, longitude)}.'
-              ' ONLY suggest species whose known range includes this region.'
-              ' Do NOT suggest species from other continents or regions.'
+              ' ONLY suggest species that are native to, or have been introduced to'
+              ' and established populations in, this region.'
+              ' Do NOT suggest species found only on other continents.'
         : '';
 
     final String dateGuide;
     if (photoDate != null) {
       const months = [
         '',
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ];
       final month = months[photoDate.month];
       final season = switch (photoDate.month) {
