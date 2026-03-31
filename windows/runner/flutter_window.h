@@ -15,6 +15,11 @@ class FlutterWindow : public Win32Window {
   explicit FlutterWindow(const flutter::DartProject& project);
   virtual ~FlutterWindow();
 
+  // Creates the Flutter engine and view controller at the window's current
+  // client size.  Must be called after the window is shown and positioned
+  // (so that external tools like FancyZones have already applied their layout).
+  bool InitFlutterEngine();
+
  protected:
   // Win32Window:
   bool OnCreate() override;
@@ -28,6 +33,9 @@ class FlutterWindow : public Win32Window {
 
   // The Flutter instance hosted by this window.
   std::unique_ptr<flutter::FlutterViewController> flutter_controller_;
+
+  // Remaining redraw timer ticks for the startup safety net.
+  int redraw_timer_remaining_ = 0;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

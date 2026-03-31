@@ -180,7 +180,8 @@ class _MainScreenState extends State<MainScreen> {
                     context: context,
                     applicationName: 'eBird Checklist Generator',
                     applicationVersion: '1.0.0',
-                    applicationIcon: const Icon(Icons.flutter_dash, size: 48),
+                    applicationIcon:
+                        const Icon(Icons.flutter_dash, size: 48),
                     applicationLegalese:
                         'Built with Llama 3.2 Vision.\nPowered by TensorFlow Lite.',
                   );
@@ -196,8 +197,8 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               IconButton(
                 icon: const Icon(Icons.download),
-                onPressed:
-                    _controller.observations.isEmpty || _controller.isProcessing
+                onPressed: _controller.observations.isEmpty ||
+                        _controller.isProcessing
                     ? null
                     : () => _controller.exportCsv(context),
                 tooltip: 'Export CSV',
