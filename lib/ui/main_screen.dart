@@ -66,6 +66,7 @@ class _MainScreenState extends State<MainScreen> {
       Object.hashAll(_controller.selectedIndividualIndices),
       _controller.currentlyDisplayedImage,
       _controller.boxVisibility,
+      Object.hashAll(_controller.processingFiles),
     );
     if (hash != _centerPaneHash || _cachedCenterPane == null) {
       _centerPaneHash = hash;
@@ -76,7 +77,8 @@ class _MainScreenState extends State<MainScreen> {
         imageExifData: _controller.imageExifData,
         boxVisibility: _controller.boxVisibility,
         allObservations: _controller.observations,
-        onToggleBoundingBoxes: _controller.toggleBoundingBoxes,
+        onSetBoxVisibility: _controller.setBoundingBoxVisibility,
+        processingFiles: _controller.processingFiles,
         getDisplayPath: _controller.getDisplayPath,
         getImageSize: _controller.getImageSize,
         onIndividualSelected: _controller.selectIndividual,

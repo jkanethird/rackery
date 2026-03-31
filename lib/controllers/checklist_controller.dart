@@ -86,6 +86,13 @@ class ChecklistController extends ChangeNotifier {
     notify();
   }
 
+  void setBoundingBoxVisibility(BoundingBoxVisibility v) {
+    if (boxVisibility != v) {
+      boxVisibility = v;
+      notify();
+    }
+  }
+
   void ensureBoundingBoxesVisible() {
     if (boxVisibility != BoundingBoxVisibility.focused) {
       boxVisibility = BoundingBoxVisibility.focused;

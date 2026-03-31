@@ -31,7 +31,8 @@ class PhotoCanvas extends StatefulWidget {
   final Size imageSize;
   final List<PhotoBoxData> boxData;
   final BoundingBoxVisibility boxVisibility;
-  final VoidCallback onToggleBoundingBoxes;
+  final ValueChanged<BoundingBoxVisibility> onSetBoxVisibility;
+  final bool isPhotoProcessing;
   final void Function(PhotoBoxData data)? onIndividualSelected;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
@@ -42,7 +43,8 @@ class PhotoCanvas extends StatefulWidget {
     required this.imageSize,
     required this.boxData,
     required this.boxVisibility,
-    required this.onToggleBoundingBoxes,
+    required this.onSetBoxVisibility,
+    this.isPhotoProcessing = false,
     this.onIndividualSelected,
     this.onDrawBoundingBox,
   });
@@ -55,6 +57,7 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
   bool _isDrawingMode = false;
   Offset? _drawStart;
   Offset? _drawCurrent;
+  BoundingBoxVisibility? _hoveredVisibility;
 
   @override
   Widget build(BuildContext context) {
@@ -231,29 +234,56 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
             left: 16,
             child: Row(
               children: [
-                Tooltip(
-                  message: widget.boxVisibility == BoundingBoxVisibility.focused
-                      ? 'Show All Boundary Boxes'
-                      : widget.boxVisibility == BoundingBoxVisibility.all
-                          ? 'Hide Boundary Boxes'
-                          : 'Show Focused Boundary Boxes',
-                  child: IconButton(
-                    icon: Icon(
-                      widget.boxVisibility == BoundingBoxVisibility.focused
-                          ? Icons.filter_center_focus
-                          : widget.boxVisibility == BoundingBoxVisibility.all
-                              ? Icons.border_all
-                              : Icons.visibility_off,
-                    ),
-                    onPressed: widget.onToggleBoundingBoxes,
-                    color: Theme.of(context).colorScheme.primary,
-                    style: IconButton.styleFrom(
-                      backgroundColor:
-                          Colors.grey.shade800.withValues(alpha: 0.5),
-                      hoverColor:
-                          Colors.grey.shade900.withValues(alpha: 0.7),
-                      shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-                    ),
+                Container(
+                  height: 40,
+                  decoration: ShapeDecoration(
+                    color: Colors.grey.shade800.withValues(alpha: 0.5),
+                    shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final entry in [
+                        (BoundingBoxVisibility.focused, Icons.filter_center_focus, 'Show Focused Boundary Boxes'),
+                        (BoundingBoxVisibility.all, Icons.border_all, 'Show All Boundary Boxes'),
+                        (BoundingBoxVisibility.hidden, Icons.visibility_off, 'Hide Boundary Boxes'),
+                      ])
+                        Tooltip(
+                          message: entry.$3,
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            onEnter: (_) => setState(() => _hoveredVisibility = entry.$1),
+                            onExit: (_) => setState(() {
+                              if (_hoveredVisibility == entry.$1) _hoveredVisibility = null;
+                            }),
+                            child: GestureDetector(
+                              onTap: () => widget.onSetBoxVisibility(entry.$1),
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: ShapeDecoration(
+                                  color: widget.boxVisibility == entry.$1
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withValues(alpha: 0.3)
+                                      : _hoveredVisibility == entry.$1
+                                          ? Colors.grey.shade900.withValues(alpha: 0.7)
+                                          : Colors.transparent,
+                                  shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                                ),
+                                child: Icon(
+                                  entry.$2,
+                                  size: 20,
+                                  color: widget.boxVisibility == entry.$1
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.white70,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -264,13 +294,15 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                     icon: Icon(
                       _isDrawingMode ? Icons.close : Icons.add_box,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isDrawingMode = !_isDrawingMode;
-                        _drawStart = null;
-                        _drawCurrent = null;
-                      });
-                    },
+                    onPressed: widget.isPhotoProcessing
+                        ? null
+                        : () {
+                            setState(() {
+                              _isDrawingMode = !_isDrawingMode;
+                              _drawStart = null;
+                              _drawCurrent = null;
+                            });
+                          },
                     color: _isDrawingMode
                         ? Theme.of(context).colorScheme.error
                         : Theme.of(context).colorScheme.primary,

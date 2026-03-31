@@ -15,7 +15,8 @@ class CenterPane extends StatelessWidget {
   final Map<String, ExifData> imageExifData;
   final BoundingBoxVisibility boxVisibility;
   final List<Observation> allObservations;
-  final VoidCallback onToggleBoundingBoxes;
+  final ValueChanged<BoundingBoxVisibility> onSetBoxVisibility;
+  final Set<String> processingFiles;
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
   final void Function(Observation obs, int globalIndex)? onIndividualSelected;
@@ -29,7 +30,8 @@ class CenterPane extends StatelessWidget {
     required this.imageExifData,
     required this.boxVisibility,
     required this.allObservations,
-    required this.onToggleBoundingBoxes,
+    required this.onSetBoxVisibility,
+    required this.processingFiles,
     required this.getDisplayPath,
     required this.getImageSize,
     this.onIndividualSelected,
@@ -186,7 +188,8 @@ class CenterPane extends StatelessWidget {
                         imageSize: sizeSnap.data!,
                         boxData: boxData,
                         boxVisibility: boxVisibility,
-                        onToggleBoundingBoxes: onToggleBoundingBoxes,
+                        onSetBoxVisibility: onSetBoxVisibility,
+                        isPhotoProcessing: processingFiles.contains(rawPath),
                         onIndividualSelected: onIndividualSelected != null ? (data) {
                           onIndividualSelected!(data.obs, data.globalIndex);
                         } : null,
