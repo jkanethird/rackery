@@ -66,6 +66,7 @@ class _MainScreenState extends State<MainScreen> {
       Object.hashAll(_controller.selectedIndividualIndices),
       _controller.currentlyDisplayedImage,
       _controller.boxVisibility,
+      _controller.observationVersion,
       Object.hashAll(_controller.processingFiles),
     );
     if (hash != _centerPaneHash || _cachedCenterPane == null) {

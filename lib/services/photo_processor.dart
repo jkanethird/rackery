@@ -11,6 +11,7 @@ import 'package:ebird_generator/services/bird_classifier.dart';
 import 'package:ebird_generator/services/bird_clusterer.dart';
 import 'package:ebird_generator/services/bird_detector.dart';
 import 'package:ebird_generator/services/image_converter.dart';
+import 'package:ebird_generator/utils/name_generator.dart';
 
 /// Intermediate result from Phase 1 (detection).
 class Phase1Result {
@@ -57,6 +58,9 @@ class PhotoProcessor {
   /// - [onFileCompleted] — called when a single file finishes phase 1 + 2.
   /// - [onError] — called with (filePath, error) when a file fails.
 
+  static String _boxKey(String imagePath, Rectangle<int> box) =>
+      '$imagePath:${box.left},${box.top},${box.width},${box.height}';
+
   /// Snapshot the current [burstGroupsBySpecies] state, emitting new species
   /// and updating already-emitted observations in-place.
   static void _emitBurstUpdates(
@@ -65,6 +69,7 @@ class PhotoProcessor {
     String burstId,
     void Function(List<Observation>) onObservationAdded,
     void Function() onObservationsChanged,
+    void Function(Observation obs, Map<int, int> oldToNew)? onIndicesRemapped,
   ) {
     final List<Observation> newlyEmitted = [];
     bool existingUpdated = false;
@@ -77,13 +82,78 @@ class PhotoProcessor {
       if (emittedObs.containsKey(species)) {
         // Update existing observation in-place from BurstGroup
         final existing = emittedObs[species]!;
+        // Snapshot old box→name mapping using the same sort order as
+        // center_pane (sourceImages order, boxes sorted left-to-right).
+        final Map<String, String> oldBoxNames = {};
+        int oldGi = 0;
+        for (final src in existing.sourceImages) {
+          final boxes = List<Rectangle<int>>.from(
+            existing.boxesByImagePath[src.imagePath] ?? [],
+          )..sort((a, b) => a.left.compareTo(b.left));
+          for (final box in boxes) {
+            if (oldGi < existing.individualNames.length) {
+              oldBoxNames[_boxKey(src.imagePath, box)] =
+                  existing.individualNames[oldGi];
+            }
+            oldGi++;
+          }
+        }
+
+        // Also compute old→new global index mapping so the UI can remap
+        // selected individual indices.
+        final Map<String, int> oldKeyToGi = {};
+        int oldGi2 = 0;
+        for (final src in existing.sourceImages) {
+          final boxes = List<Rectangle<int>>.from(
+            existing.boxesByImagePath[src.imagePath] ?? [],
+          )..sort((a, b) => a.left.compareTo(b.left));
+          for (final box in boxes) {
+            oldKeyToGi[_boxKey(src.imagePath, box)] = oldGi2++;
+          }
+        }
+
+        // Update fields.
         final updated = bg.toObservation(burstId: burstId);
         existing.count = updated.count;
         existing.sourceImages = updated.sourceImages;
         existing.boxesByImagePath = updated.boxesByImagePath;
         existing.boundingBoxes = updated.boundingBoxes;
         existing.possibleSpecies = updated.possibleSpecies;
-        existing.individualNames = updated.individualNames;
+
+        // Rebuild names in new sorted order, preserving old assignments.
+        final List<String> newNames = [];
+        for (final src in existing.sourceImages) {
+          final boxes = List<Rectangle<int>>.from(
+            existing.boxesByImagePath[src.imagePath] ?? [],
+          )..sort((a, b) => a.left.compareTo(b.left));
+          for (final box in boxes) {
+            final key = _boxKey(src.imagePath, box);
+            newNames.add(
+              oldBoxNames[key] ?? generatePronounceableName(),
+            );
+          }
+        }
+        existing.individualNames = newNames;
+
+        // Build old→new index mapping and notify.
+        final Map<int, int> oldToNew = {};
+        int newGi = 0;
+        for (final src in existing.sourceImages) {
+          final boxes = List<Rectangle<int>>.from(
+            existing.boxesByImagePath[src.imagePath] ?? [],
+          )..sort((a, b) => a.left.compareTo(b.left));
+          for (final box in boxes) {
+            final key = _boxKey(src.imagePath, box);
+            final oldIdx = oldKeyToGi[key];
+            if (oldIdx != null) {
+              oldToNew[oldIdx] = newGi;
+            }
+            newGi++;
+          }
+        }
+        if (oldToNew.entries.any((e) => e.key != e.value)) {
+          onIndicesRemapped?.call(existing, oldToNew);
+        }
         existingUpdated = true;
       } else {
         // New species — emit
@@ -107,6 +177,7 @@ class PhotoProcessor {
     required void Function(String filePath) onFileStarted,
     required void Function(String filePath) onFileCompleted,
     required void Function(String filePath, dynamic error) onError,
+    void Function(Observation obs, Map<int, int> oldToNew)? onIndicesRemapped,
   }) async {
     final newPathSet = newPaths.toSet();
 
@@ -254,6 +325,7 @@ class PhotoProcessor {
                   _emitBurstUpdates(
                     burstGroupsBySpecies, emittedObs, burstIds[i],
                     onObservationAdded, onObservationsChanged,
+                    onIndicesRemapped,
                   );
                 }
                 completedIdentifications++;
@@ -334,6 +406,7 @@ class PhotoProcessor {
                 _emitBurstUpdates(
                   burstGroupsBySpecies, emittedObs, burstIds[i],
                   onObservationAdded, onObservationsChanged,
+                  onIndicesRemapped,
                 );
 
                 completedIdentifications++;

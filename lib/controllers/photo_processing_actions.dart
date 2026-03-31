@@ -97,6 +97,24 @@ extension PhotoProcessingActions on ChecklistController {
           );
         }
       },
+      onIndicesRemapped: (obs, oldToNew) {
+        if (identical(obs, selectedObservation) &&
+            selectedIndividualIndices.isNotEmpty) {
+          final remapped = selectedIndividualIndices
+              .map((i) => oldToNew[i])
+              .whereType<int>()
+              .toSet();
+          if (remapped.isNotEmpty) {
+            selectedIndividualIndices
+              ..clear()
+              ..addAll(remapped);
+          }
+          if (lastSelectedIndividualIndex != null) {
+            lastSelectedIndividualIndex =
+                oldToNew[lastSelectedIndividualIndex!];
+          }
+        }
+      },
     );
 
     isProcessing = false;
