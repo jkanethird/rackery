@@ -277,8 +277,9 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                             onEnter: (_) =>
                                 setState(() => _hoveredVisibility = entry.$1),
                             onExit: (_) => setState(() {
-                              if (_hoveredVisibility == entry.$1)
+                              if (_hoveredVisibility == entry.$1) {
                                 _hoveredVisibility = null;
+                              }
                             }),
                             child: GestureDetector(
                               onTap: () => widget.onSetBoxVisibility(entry.$1),

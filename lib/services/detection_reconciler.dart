@@ -7,15 +7,17 @@ bool _isAbutting(Rectangle<int> a, Rectangle<int> b) {
   final bool intersectY = a.top <= b.bottom && a.bottom >= b.top;
 
   double distX = 0;
-  if (!intersectX)
+  if (!intersectX) {
     distX = a.right < b.left
         ? (b.left - a.right).toDouble()
         : (a.left - b.right).toDouble();
+  }
   double distY = 0;
-  if (!intersectY)
+  if (!intersectY) {
     distY = a.bottom < b.top
         ? (b.top - a.bottom).toDouble()
         : (a.top - b.bottom).toDouble();
+  }
 
   double dist = sqrt(distX * distX + distY * distY);
   double threshold = min(a.width, b.width) * 0.15;

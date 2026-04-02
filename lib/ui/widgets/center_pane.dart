@@ -146,8 +146,9 @@ class CenterPane extends StatelessWidget {
 
         for (int li = 0; li < allPhotoBoxes.length; li++) {
           if (!localSelected.contains(li) &&
-              selectedIndividualIndices.isNotEmpty)
+              selectedIndividualIndices.isNotEmpty) {
             continue;
+          }
 
           final entry = globalIndexMap.entries.firstWhere(
             (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
