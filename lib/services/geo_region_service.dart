@@ -142,6 +142,82 @@ class GeoRegionService {
     return null;
   }
 
+  /// Returns an eBird-compatible region code (e.g., "US-NY") based on bounding boxes.
+  /// Falls back to country level, and returns null if out of bounds.
+  static String? getEbirdRegionCode(double lat, double lon) {
+    // US States
+    final stateBoxes = <String, List<double>>{
+      'US-ME': [43.1, 47.5, -71.1, -66.9],
+      'US-NH': [42.7, 45.3, -72.6, -70.6],
+      'US-VT': [42.7, 45.0, -73.4, -71.5],
+      'US-MA': [41.2, 42.9, -73.5, -69.9],
+      'US-RI': [41.1, 42.0, -71.9, -71.1],
+      'US-CT': [40.9, 42.0, -73.7, -71.8],
+      'US-NY': [40.5, 45.0, -79.8, -71.8],
+      'US-NJ': [38.9, 41.4, -75.6, -73.9],
+      'US-PA': [39.7, 42.3, -80.5, -74.7],
+      'US-DE': [38.4, 39.8, -75.8, -75.0],
+      'US-MD': [37.9, 39.7, -79.5, -75.0],
+      'US-VA': [36.5, 39.5, -83.7, -75.2],
+      'US-WV': [37.2, 40.6, -82.6, -77.7],
+      'US-NC': [33.8, 36.6, -84.3, -75.5],
+      'US-SC': [32.0, 35.2, -83.4, -78.5],
+      'US-GA': [30.4, 35.0, -85.6, -80.8],
+      'US-FL': [24.4, 31.0, -87.6, -80.0],
+      'US-AL': [30.1, 35.0, -88.5, -84.9],
+      'US-MS': [30.1, 35.0, -91.7, -88.1],
+      'US-TN': [34.9, 36.7, -90.3, -81.6],
+      'US-KY': [36.5, 39.1, -89.6, -81.9],
+      'US-OH': [38.4, 42.3, -84.8, -80.5],
+      'US-IN': [37.8, 41.8, -88.1, -84.8],
+      'US-MI': [41.7, 48.3, -90.4, -82.4],
+      'US-IL': [36.9, 42.5, -91.5, -87.0],
+      'US-WI': [42.5, 47.1, -92.9, -86.2],
+      'US-MN': [43.5, 49.4, -97.2, -89.5],
+      'US-IA': [40.4, 43.5, -96.6, -90.1],
+      'US-MO': [36.0, 40.6, -95.8, -89.1],
+      'US-AR': [33.0, 36.5, -94.6, -89.6],
+      'US-LA': [28.9, 33.0, -94.0, -88.8],
+      'US-TX': [25.8, 36.5, -106.6, -93.5],
+      'US-OK': [33.6, 37.0, -103.0, -94.4],
+      'US-KS': [37.0, 40.0, -102.1, -94.6],
+      'US-NE': [40.0, 43.0, -104.1, -95.3],
+      'US-SD': [42.5, 45.9, -104.1, -96.4],
+      'US-ND': [45.9, 49.0, -104.1, -96.6],
+      'US-MT': [44.4, 49.0, -116.0, -104.0],
+      'US-WY': [41.0, 45.0, -111.1, -104.1],
+      'US-CO': [37.0, 41.0, -109.1, -102.0],
+      'US-NM': [31.3, 37.0, -109.0, -103.0],
+      'US-AZ': [31.3, 37.0, -114.8, -109.0],
+      'US-UT': [37.0, 42.0, -114.1, -109.0],
+      'US-NV': [35.0, 42.0, -120.0, -114.0],
+      'US-ID': [42.0, 49.0, -117.2, -111.0],
+      'US-OR': [42.0, 46.3, -124.7, -116.5],
+      'US-WA': [45.5, 49.0, -124.8, -116.9],
+      'US-CA': [32.5, 42.0, -124.4, -114.1],
+      'US-AK': [54.0, 71.5, -168.0, -130.0],
+      'US-HI': [18.9, 28.4, -178.4, -154.8],
+    };
+
+    for (final entry in stateBoxes.entries) {
+      final b = entry.value;
+      if (lat >= b[0] && lat <= b[1] && lon >= b[2] && lon <= b[3]) {
+        return entry.key;
+      }
+    }
+    
+    // Canada check
+    if (lat >= 42 && lat <= 83 && lon >= -141 && lon <= -52) {
+      return 'CA';
+    }
+
+    // Rough world regions (fallback to country)
+    if (lat > 14 && lat < 32 && lon > -118 && lon < -86) return 'MX'; // Mexico
+
+    // If completely unknown, just return null so we use standard classifier without masking
+    return null;
+  }
+
   static String _usSubregion(double lat) {
     if (lat > 45) return 'northern United States';
     if (lat > 37) return 'northeastern/midwestern United States';

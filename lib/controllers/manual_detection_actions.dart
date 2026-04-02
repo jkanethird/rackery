@@ -101,12 +101,22 @@ extension ManualDetectionActions on ChecklistController {
       if (resolved != null) classifyPath = resolved;
     }
 
+    Set<String>? allowedMask;
+    if (obs.exifData.latitude != null && obs.exifData.longitude != null) {
+      allowedMask = await EbirdApiService.getSpeciesMask(
+        obs.exifData.latitude!,
+        obs.exifData.longitude!,
+        obs.exifData.dateTime,
+      );
+    }
+
     final suggestions = await _classifier.classifyFile(
       classifyPath,
       box: box,
       latitude: obs.exifData.latitude,
       longitude: obs.exifData.longitude,
       photoDate: obs.exifData.dateTime,
+      allowedSpeciesKeys: allowedMask,
     );
 
     // Only update if the observation wasn't deleted by the user while classifying

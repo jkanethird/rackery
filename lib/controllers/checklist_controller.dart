@@ -12,6 +12,7 @@ import 'package:ebird_generator/services/csv_service.dart';
 import 'package:ebird_generator/services/image_converter.dart';
 import 'package:ebird_generator/services/bird_detector.dart';
 import 'package:ebird_generator/services/photo_processor.dart';
+import 'package:ebird_generator/services/ebird_api_service.dart';
 import 'package:ebird_generator/services/ingestion_pipeline.dart';
 import 'package:ebird_generator/services/exif_service.dart';
 import 'package:ebird_generator/utils/name_generator.dart';

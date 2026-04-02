@@ -112,6 +112,7 @@ class BirdClassifier {
     double? longitude,
     DateTime? photoDate,
     bool allowNoBird = false,
+    Set<String>? allowedSpeciesKeys,
   }) async {
     final bytes = await File(imagePath).readAsBytes();
     final decoded = await compute(img.decodeImage, bytes);
@@ -128,7 +129,7 @@ class BirdClassifier {
           )
         : decoded;
 
-    return _classifyImage(cropped, allowNoBird: allowNoBird);
+    return _classifyImage(cropped, allowNoBird: allowNoBird, allowedSpeciesKeys: allowedSpeciesKeys);
   }
 
   /// Classifies a cluster of bounding boxes (all the same species).
@@ -141,6 +142,7 @@ class BirdClassifier {
     double? longitude,
     DateTime? photoDate,
     bool allowNoBird = false,
+    Set<String>? allowedSpeciesKeys,
     Uint8List? cropBytes,
   }) async {
     img.Image? image;
@@ -165,7 +167,7 @@ class BirdClassifier {
       }
     }
 
-    return _classifyImage(image, allowNoBird: allowNoBird);
+    return _classifyImage(image, allowNoBird: allowNoBird, allowedSpeciesKeys: allowedSpeciesKeys);
   }
 
   /// Stub — no external server to unload. Kept for caller compatibility
@@ -177,6 +179,7 @@ class BirdClassifier {
   Future<List<String>> _classifyImage(
     img.Image image, {
     required bool allowNoBird,
+    Set<String>? allowedSpeciesKeys,
   }) async {
     if (!isReady) return ['Unknown Bird'];
 
@@ -197,7 +200,7 @@ class BirdClassifier {
       _l2Normalize(embedding);
 
       // 4. Compute cosine similarities against all species.
-      final similarities = _cosineSimilarities(embedding);
+      final similarities = _cosineSimilarities(embedding, allowedSpeciesKeys);
 
       // 5. Dispose ORT resources.
       inputOrt.dispose();
@@ -235,10 +238,16 @@ class BirdClassifier {
 
   /// Dot product of the image embedding against every species embedding.
   /// Both are assumed to be L2-normalised, so dot = cosine similarity.
-  Float32List _cosineSimilarities(Float32List imageEmb) {
+  /// If [allowedSpeciesKeys] is provided, sets similarity of unallowed species to -1.0.
+  Float32List _cosineSimilarities(Float32List imageEmb, Set<String>? allowedSpeciesKeys) {
     final sims = Float32List(_numSpecies);
     final emb = _speciesEmbeddings!;
     for (int i = 0; i < _numSpecies; i++) {
+      if (allowedSpeciesKeys != null && !allowedSpeciesKeys.contains(_speciesLabels![i])) {
+        sims[i] = -1.0;
+        continue;
+      }
+
       double dot = 0.0;
       final offset = i * _embeddingDim;
       for (int j = 0; j < _embeddingDim; j++) {

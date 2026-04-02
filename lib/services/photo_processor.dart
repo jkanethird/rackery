@@ -11,6 +11,7 @@ import 'package:ebird_generator/services/bird_classifier.dart';
 import 'package:ebird_generator/services/bird_clusterer.dart';
 import 'package:ebird_generator/services/bird_detector.dart';
 import 'package:ebird_generator/services/image_converter.dart';
+import 'package:ebird_generator/services/ebird_api_service.dart';
 import 'package:ebird_generator/utils/name_generator.dart';
 
 /// Intermediate result from Phase 1 (detection).
@@ -292,12 +293,22 @@ class PhotoProcessor {
           try {
             if (res.isFallback) {
               if (res.fallbackImg != null) {
+                Set<String>? allowedMask;
+                if (res.exifData.latitude != null && res.exifData.longitude != null) {
+                  allowedMask = await EbirdApiService.getSpeciesMask(
+                    res.exifData.latitude!,
+                    res.exifData.longitude!,
+                    res.exifData.dateTime,
+                  );
+                }
+
                 final speciesList = await classifier.classifyFile(
                   res.processedPath,
                   latitude: res.exifData.latitude,
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
                   allowNoBird: true,
+                  allowedSpeciesKeys: allowedMask,
                 );
                 // Empty list = model said no bird is present — skip this photo.
                 if (speciesList.isNotEmpty) {
@@ -344,6 +355,15 @@ class PhotoProcessor {
                 final clusterCrops = res.clusters[ci];
                 final clusterBoxes = clusterCrops.map((c) => c.box).toList();
 
+                Set<String>? allowedMask;
+                if (res.exifData.latitude != null && res.exifData.longitude != null) {
+                  allowedMask = await EbirdApiService.getSpeciesMask(
+                    res.exifData.latitude!,
+                    res.exifData.longitude!,
+                    res.exifData.dateTime,
+                  );
+                }
+
                 final speciesList = await classifier.classifyCluster(
                   res.processedPath,
                   boxes: clusterBoxes,
@@ -351,6 +371,7 @@ class PhotoProcessor {
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
                   allowNoBird: true,
+                  allowedSpeciesKeys: allowedMask,
                   cropBytes: clusterCrops.first.croppedJpgBytes,
                 );
                 // Empty list = model said this crop isn't a bird — skip it.

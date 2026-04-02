@@ -5,6 +5,7 @@ import 'package:ebird_generator/ui/sine_wave_progress.dart';
 import 'package:ebird_generator/ui/widgets/file_list_panel.dart';
 import 'package:ebird_generator/ui/widgets/center_pane.dart';
 import 'package:ebird_generator/ui/widgets/observation_list_panel.dart';
+import 'package:ebird_generator/services/ebird_api_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -172,6 +173,44 @@ class _MainScreenState extends State<MainScreen> {
           appBar: AppBar(
             title: const Text('eBird Checklist Generator'),
             actions: [
+              IconButton(
+                icon: const Icon(Icons.settings),
+                tooltip: 'Settings (eBird API Key)',
+                onPressed: () async {
+                  final currentKey = await EbirdApiService.getApiKey() ?? '';
+                  final controller = TextEditingController(text: currentKey);
+                  if (!context.mounted) return;
+                  
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Settings'),
+                      content: TextField(
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          labelText: 'eBird API Key',
+                          hintText: 'Paste your eBird API Token here',
+                          helperText: 'Required for geographic & seasonal filtering.',
+                        ),
+                        obscureText: true,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            EbirdApiService.setApiKey(controller.text.trim());
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.info_outline),
                 tooltip: 'About & Licenses',
