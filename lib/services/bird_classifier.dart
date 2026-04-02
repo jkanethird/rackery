@@ -19,6 +19,9 @@ const _kStd = [0.26862954, 0.26130258, 0.27577711];
 /// How many top-K species to return.
 const int _kTopK = 5;
 
+/// Bonus added to the cosine similarity score for species present on the local checklist.
+const double _kLocalBonus = 0.08;
+
 class BirdClassifier {
   final _ort = OnnxRuntime();
   OrtSession? _session;
@@ -238,21 +241,23 @@ class BirdClassifier {
 
   /// Dot product of the image embedding against every species embedding.
   /// Both are assumed to be L2-normalised, so dot = cosine similarity.
-  /// If [allowedSpeciesKeys] is provided, sets similarity of unallowed species to -1.0.
+  /// If [allowedSpeciesKeys] is provided, applies a bonus to those species.
   Float32List _cosineSimilarities(Float32List imageEmb, Set<String>? allowedSpeciesKeys) {
     final sims = Float32List(_numSpecies);
     final emb = _speciesEmbeddings!;
+    
     for (int i = 0; i < _numSpecies; i++) {
-      if (allowedSpeciesKeys != null && !allowedSpeciesKeys.contains(_speciesLabels![i])) {
-        sims[i] = -1.0;
-        continue;
-      }
-
       double dot = 0.0;
       final offset = i * _embeddingDim;
       for (int j = 0; j < _embeddingDim; j++) {
         dot += imageEmb[j] * emb[offset + j];
       }
+      
+      // Apply local bird bonus (Soft Masking)
+      if (allowedSpeciesKeys != null && allowedSpeciesKeys.contains(_speciesLabels![i])) {
+        dot += _kLocalBonus;
+      }
+      
       sims[i] = dot;
     }
     return sims;
