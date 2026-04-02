@@ -173,9 +173,6 @@ class BirdClassifier {
     return _classifyImage(image, allowNoBird: allowNoBird, allowedSpeciesKeys: allowedSpeciesKeys);
   }
 
-  /// Stub — no external server to unload. Kept for caller compatibility
-  /// during migration; callers can safely remove these calls.
-  Future<void> unloadModel() async {}
 
   // ─── Core inference ───────────────────────────────────────────────────
 
