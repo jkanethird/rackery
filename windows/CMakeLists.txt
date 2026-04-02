@@ -118,3 +118,9 @@ install(
   DESTINATION "${CMAKE_INSTALL_PREFIX}/"
   OPTIONAL
 )
+install(
+  FILES "${CMAKE_CURRENT_SOURCE_DIR}/../blobs/onnxruntime_providers_cuda.dll"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../blobs/onnxruntime_providers_shared.dll"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/"
+  OPTIONAL
+)
