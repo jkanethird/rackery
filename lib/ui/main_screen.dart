@@ -182,7 +182,7 @@ class _MainScreenState extends State<MainScreen> {
                     applicationVersion: '1.0.0',
                     applicationIcon: const Icon(Icons.flutter_dash, size: 48),
                     applicationLegalese:
-                        'Built with Llama 3.2 Vision.\nPowered by TensorFlow Lite.',
+                        'Powered by BioCLIP (ONNX Runtime) and TensorFlow Lite.',
                   );
                 },
               ),

@@ -7,8 +7,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   LicenseRegistry.addLicense(() async* {
-    final license = await rootBundle.loadString('assets/LICENSE_EMOJI.md');
-    yield LicenseEntryWithLineBreaks(['Emoji Kitchen Icon'], license);
+    final emojiLicense =
+        await rootBundle.loadString('assets/LICENSE_EMOJI.md');
+    yield LicenseEntryWithLineBreaks(['Emoji Kitchen Icon'], emojiLicense);
+
+    final bioClipLicense =
+        await rootBundle.loadString('assets/LICENSE_BIOCLIP.md');
+    yield LicenseEntryWithLineBreaks(['BioCLIP Vision Model'], bioClipLicense);
   });
 
   runApp(const MyApp());

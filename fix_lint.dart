@@ -7,12 +7,8 @@ void main() {
     '/home/jkane/ebird_generator/test/test_detector_pure.dart',
     '/home/jkane/ebird_generator/test/test_detector_raw.dart',
     '/home/jkane/ebird_generator/test/test_detector2.dart',
-    '/home/jkane/ebird_generator/test/test_ollama_reasoning3.dart',
     '/home/jkane/ebird_generator/test/test_geo.dart',
     '/home/jkane/ebird_generator/test/test_detector.dart',
-    '/home/jkane/ebird_generator/test/test_ollama_reasoning.dart',
-    '/home/jkane/ebird_generator/test/test_ollama_reasoning2.dart',
-    '/home/jkane/ebird_generator/test/test_ollama_crop.dart',
     '/home/jkane/ebird_generator/test/test_detector_heic.dart',
     '/home/jkane/ebird_generator/bin/test_turnstone.dart',
   ];
