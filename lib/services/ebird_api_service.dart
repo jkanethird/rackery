@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'geo_region_service.dart';
@@ -42,7 +43,7 @@ class EbirdApiService {
         }
       }
     } catch (e) {
-      print('Failed to fetch taxonomy: $e');
+      debugPrint('Failed to fetch taxonomy: $e');
     }
   }
 
@@ -98,7 +99,7 @@ class EbirdApiService {
         return allowedSpecies.isNotEmpty ? allowedSpecies : null;
       }
     } catch (e) {
-      print('eBird API recent obs error: $e');
+      debugPrint('eBird API recent obs error: $e');
     }
     return null;
   }
@@ -131,7 +132,7 @@ class EbirdApiService {
         return allowedSpecies.isNotEmpty ? allowedSpecies : null;
       }
     } catch (e) {
-      print('eBird API regional spplist error: $e');
+      debugPrint('eBird API regional spplist error: $e');
     }
     return null;
   }

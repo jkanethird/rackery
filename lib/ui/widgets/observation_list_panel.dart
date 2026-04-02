@@ -111,32 +111,38 @@ class ObservationListPanel extends StatelessWidget {
             index < observations.length - 1 &&
             observations[index].burstId != observations[index + 1].burstId;
 
-        Widget dropZone(int insertIndex) {
+        Widget dropZone(int targetIndex, {Widget? child}) {
           return DragTarget<DragData>(
             onWillAcceptWithDetails: (details) {
-              if (details.data.indIndices == null) return false;
-              final srcObs = observations[details.data.obsIndex];
-              return srcObs.burstId == observations[index].burstId;
+              if (details.data.indIndices == null) {
+                debugPrint('Drag reject: indIndices is null');
+                return false;
+              }
+              // We allow dropping here to create a new observation set.
+              // To be safe, we allow any valid individual drag. 
+              // The ChecklistController will handle the array insertion safely.
+              return true;
             },
             onAcceptWithDetails: (details) {
               onExtractIndividuals(
                 details.data.obsIndex,
                 details.data.indIndices!,
-                insertIndex,
+                targetIndex,
               );
             },
             builder: (context, candidateData, rejectedData) {
               return Container(
-                height: 12,
-                margin: const EdgeInsets.symmetric(horizontal: 24),
+                width: double.infinity,
+                margin: child == null 
+                    ? const EdgeInsets.symmetric(horizontal: 24)
+                    : EdgeInsets.zero,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: candidateData.isNotEmpty
-                      ? Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.5)
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)
                       : Colors.transparent,
                 ),
+                child: child ?? const SizedBox(height: 12),
               );
             },
           );
@@ -146,17 +152,25 @@ class ObservationListPanel extends StatelessWidget {
           key: ObjectKey(obs),
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Ensure the very top drop zone is rendered above the highest indexed item
+            if (index == observations.length - 1)
+              dropZone(index + 1),
+              
             if (isFirstInBurst)
-              const Divider(
+              dropZone(index + 1, child: const Divider(
                 height: 32,
                 thickness: 1,
                 indent: 32,
                 endIndent: 32,
                 color: Colors.white24,
-              ),
-            dropZone(index),
+              ))
+            else if (index < observations.length - 1)
+              // Only need the 12px drop zone if we didn't just render a full divider
+              dropZone(index + 1),
+              
             observationItem,
-            if (index == 0) dropZone(index + 1),
+            
+            if (index == 0) dropZone(0),
           ],
         );
       },
