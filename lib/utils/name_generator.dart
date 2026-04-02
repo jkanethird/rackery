@@ -1,7 +1,27 @@
 import 'dart:math';
 
 final _random = Random();
-const _consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'y', 'z'];
+const _consonants = [
+  'b',
+  'c',
+  'd',
+  'f',
+  'g',
+  'h',
+  'j',
+  'k',
+  'l',
+  'm',
+  'n',
+  'p',
+  'r',
+  's',
+  't',
+  'v',
+  'w',
+  'y',
+  'z',
+];
 const _vowels = ['a', 'e', 'i', 'o', 'u'];
 
 String generatePronounceableName() {
@@ -14,7 +34,7 @@ String generatePronounceableName() {
       buffer.write(_vowels[_random.nextInt(_vowels.length)]);
     }
   }
-  
+
   final str = buffer.toString();
   return str[0].toUpperCase() + str.substring(1);
 }

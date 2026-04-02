@@ -9,17 +9,15 @@ class SuperellipseBorder extends OutlinedBorder {
   final double m;
   final double n;
 
-  const SuperellipseBorder({
-    required this.m,
-    required this.n,
-    super.side,
-  });
+  const SuperellipseBorder({required this.m, required this.n, super.side});
 
   @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => _getPath(rect);
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
+      _getPath(rect);
 
   @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) => _getPath(rect);
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
+      _getPath(rect);
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {

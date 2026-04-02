@@ -46,15 +46,17 @@ class CsvService {
 
       String genus = "";
       String species = "";
-      
-      final match = scientificToCommon.entries.where((e) => e.value == obs.speciesName);
+
+      final match = scientificToCommon.entries.where(
+        (e) => e.value == obs.speciesName,
+      );
       if (match.isNotEmpty) {
         final scientificName = match.first.key;
         final parts = scientificName.split(' ');
         if (parts.isNotEmpty) {
           genus = parts.first;
           if (parts.length > 1) {
-            species = parts.sublist(1).join(' '); 
+            species = parts.sublist(1).join(' ');
           }
         }
       }

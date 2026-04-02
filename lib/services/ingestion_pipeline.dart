@@ -39,8 +39,16 @@ class IngestionPipeline {
       type: FileType.custom,
       initialDirectory: lastDir,
       allowedExtensions: [
-        'jpg', 'jpeg', 'png', 'heic', 'heif',
-        'JPG', 'JPEG', 'PNG', 'HEIC', 'HEIF',
+        'jpg',
+        'jpeg',
+        'png',
+        'heic',
+        'heif',
+        'JPG',
+        'JPEG',
+        'PNG',
+        'HEIC',
+        'HEIF',
       ],
     );
 
@@ -52,12 +60,16 @@ class IngestionPipeline {
     }
 
     final pickedPaths = result.files.map((f) => f.path!).toSet();
-    final newPaths = pickedPaths.difference(currentSelectedFiles.toSet()).toList();
+    final newPaths = pickedPaths
+        .difference(currentSelectedFiles.toSet())
+        .toList();
     if (newPaths.isEmpty) return null;
 
     if (onStartProcessing != null) onStartProcessing();
 
-    newPaths.sort((a, b) => File(a).lengthSync().compareTo(File(b).lengthSync()));
+    newPaths.sort(
+      (a, b) => File(a).lengthSync().compareTo(File(b).lengthSync()),
+    );
 
     final Map<String, ExifData> updatedExifData = Map.of(currentExifData);
     for (final path in newPaths) {
@@ -68,13 +80,16 @@ class IngestionPipeline {
       }
     }
 
-    final Map<String, String> newHashes = await EnvHasher.computeHashes(newPaths);
-    final Map<String, String> updatedVisualHashes = Map.of(currentVisualHashes)..addAll(newHashes);
+    final Map<String, String> newHashes = await EnvHasher.computeHashes(
+      newPaths,
+    );
+    final Map<String, String> updatedVisualHashes = Map.of(currentVisualHashes)
+      ..addAll(newHashes);
 
     final allFiles = [...currentSelectedFiles, ...newPaths];
     final allFileData = allFiles.map((path) {
       return {
-        'path': path, 
+        'path': path,
         'exif': updatedExifData[path] ?? ExifData(),
         'visualHash': updatedVisualHashes[path],
       };

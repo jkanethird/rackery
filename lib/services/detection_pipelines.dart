@@ -19,10 +19,15 @@ Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
 
     final tileImage = img.copyCrop(
       originalImage,
-      x: tile.left, y: tile.top, width: tile.width, height: tile.height,
+      x: tile.left,
+      y: tile.top,
+      width: tile.width,
+      height: tile.height,
     );
     final imageInput = img.copyResize(
-      tileImage, width: data.targetW, height: data.targetH,
+      tileImage,
+      width: data.targetW,
+      height: data.targetH,
       interpolation: img.Interpolation.linear,
     );
 
@@ -34,7 +39,7 @@ Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
   }
 
   final finalDetections = _applyNms(rawDetections);
-  
+
   final reconciledDetections = await _reconcileAbuttingBoxes(
     finalDetections,
     origW,
@@ -45,10 +50,15 @@ Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
         await Future.delayed(Duration.zero);
         final tileImage = img.copyCrop(
           originalImage,
-          x: tile.left, y: tile.top, width: tile.width, height: tile.height,
+          x: tile.left,
+          y: tile.top,
+          width: tile.width,
+          height: tile.height,
         );
         final imageInput = img.copyResize(
-          tileImage, width: data.targetW, height: data.targetH,
+          tileImage,
+          width: data.targetW,
+          height: data.targetH,
           interpolation: img.Interpolation.linear,
         );
 
@@ -56,7 +66,9 @@ Future<List<BirdCrop>> _detectorWorker(_DetectorRequest data) async {
         final outputs = _allocateOutputs();
         interpreter.runForMultipleInputs([tensor], outputs);
 
-        customDetections.addAll(_extractDetections(outputs, tile, origW, origH));
+        customDetections.addAll(
+          _extractDetections(outputs, tile, origW, origH),
+        );
       }
       return _applyNms(customDetections);
     },
@@ -75,22 +87,28 @@ _PrepareTilesResult _prepareTiles(_PrepareTilesRequest req) {
 
   final List<Rectangle<int>> tiles;
   if (req.customTiles != null) {
-    tiles = req.customTiles!.map((rect) => Rectangle<int>(rect[0], rect[1], rect[2], rect[3])).toList();
+    tiles = req.customTiles!
+        .map((rect) => Rectangle<int>(rect[0], rect[1], rect[2], rect[3]))
+        .toList();
   } else {
     tiles = _buildTiles(image.width, image.height);
   }
-  
+
   final List<Uint8List> pixelData = [];
   final List<List<int>> rects = [];
 
   for (final tile in tiles) {
     final tileImage = img.copyCrop(
       image,
-      x: tile.left, y: tile.top, width: tile.width, height: tile.height,
+      x: tile.left,
+      y: tile.top,
+      width: tile.width,
+      height: tile.height,
     );
     final resized = img.copyResize(
       tileImage,
-      width: req.targetW, height: req.targetH,
+      width: req.targetW,
+      height: req.targetH,
       interpolation: img.Interpolation.linear,
     );
 
@@ -118,10 +136,12 @@ List<BirdCrop> _postProcessDetections(_PostProcessRequest req) {
   if (originalImage == null) return [];
 
   final rawDetections = req.detections
-      .map((d) => _RawDetection(
-            Rectangle<int>(d[0], d[1], d[2], d[3]),
-            d[4] / 1000.0,
-          ))
+      .map(
+        (d) => _RawDetection(
+          Rectangle<int>(d[0], d[1], d[2], d[3]),
+          d[4] / 1000.0,
+        ),
+      )
       .toList();
 
   final finalDetections = _applyNms(rawDetections);

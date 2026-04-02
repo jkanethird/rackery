@@ -11,7 +11,11 @@ class BoundingBoxPainter extends CustomPainter {
   final List<String>? names;
   final Size imageSize;
 
-  const BoundingBoxPainter({required this.boxes, this.names, required this.imageSize});
+  const BoundingBoxPainter({
+    required this.boxes,
+    this.names,
+    required this.imageSize,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -39,9 +43,9 @@ class BoundingBoxPainter extends CustomPainter {
         box.width * scale,
         box.height * scale,
       );
-      
+
       canvas.drawRect(rect, paint);
-      
+
       if (names != null && i < names!.length) {
         final tp = TextPainter(
           text: TextSpan(
@@ -68,8 +72,8 @@ class BoundingBoxPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BoundingBoxPainter oldDelegate) =>
-      oldDelegate.boxes != boxes || 
-      oldDelegate.names != names || 
+      oldDelegate.boxes != boxes ||
+      oldDelegate.names != names ||
       oldDelegate.imageSize != imageSize;
 }
 

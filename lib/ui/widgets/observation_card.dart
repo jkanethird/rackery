@@ -25,7 +25,7 @@ class ObservationCard extends StatefulWidget {
   final void Function(int count) onCountChanged;
   final void Function(int fromObsIdx, int intoIdx) onMergeObservations;
   final void Function(int fromObsIdx, List<int> indIndices, int intoIdx)
-      onMergeIndividuals;
+  onMergeIndividuals;
   final void Function(int dragIndex) onDragStarted;
   final void Function() onDragEnded;
   final void Function(bool isOpen)? onDropdownToggled;
@@ -72,7 +72,9 @@ class _ObservationCardState extends State<ObservationCard>
   void initState() {
     super.initState();
     _speciesController = TextEditingController(
-      text: widget.obs.speciesName == 'Unknown Bird' ? '' : widget.obs.speciesName,
+      text: widget.obs.speciesName == 'Unknown Bird'
+          ? ''
+          : widget.obs.speciesName,
     );
     _speciesFocusNode = FocusNode();
     _speciesFocusNode.addListener(_onFocusChanged);
@@ -130,12 +132,18 @@ class _ObservationCardState extends State<ObservationCard>
           builder: (context, value, child) {
             final query = value.text.toLowerCase();
             final modelCommons = widget.obs.possibleSpecies
-                .where((s) => s.toLowerCase().contains(query) && s != 'Unknown Bird')
+                .where(
+                  (s) => s.toLowerCase().contains(query) && s != 'Unknown Bird',
+                )
                 .toList();
             final taxonomyCommons = query.isNotEmpty
                 ? scientificToCommon.values
-                    .where((s) => s.toLowerCase().contains(query) && !modelCommons.contains(s))
-                    .take(15)
+                      .where(
+                        (s) =>
+                            s.toLowerCase().contains(query) &&
+                            !modelCommons.contains(s),
+                      )
+                      .take(15)
                 : <String>[];
             final options = [...modelCommons, ...taxonomyCommons];
 
@@ -179,8 +187,12 @@ class _ObservationCardState extends State<ObservationCard>
                 CompositedTransformFollower(
                   link: _layerLink,
                   showWhenUnlinked: false,
-                  targetAnchor: flipUp ? Alignment.topLeft : Alignment.bottomLeft,
-                  followerAnchor: flipUp ? Alignment.bottomLeft : Alignment.topLeft,
+                  targetAnchor: flipUp
+                      ? Alignment.topLeft
+                      : Alignment.bottomLeft,
+                  followerAnchor: flipUp
+                      ? Alignment.bottomLeft
+                      : Alignment.topLeft,
                   offset: flipUp ? const Offset(0, -4) : const Offset(0, 4),
                   child: list,
                 ),
@@ -197,7 +209,7 @@ class _ObservationCardState extends State<ObservationCard>
   @override
   void didUpdateWidget(ObservationCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (!widget.isSelected && oldWidget.isSelected) {
       if (_speciesFocusNode.hasFocus) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -209,7 +221,9 @@ class _ObservationCardState extends State<ObservationCard>
     }
     if (widget.obs.speciesName != oldWidget.obs.speciesName &&
         _speciesController.text != widget.obs.speciesName) {
-      _speciesController.text = widget.obs.speciesName == 'Unknown Bird' ? '' : widget.obs.speciesName;
+      _speciesController.text = widget.obs.speciesName == 'Unknown Bird'
+          ? ''
+          : widget.obs.speciesName;
     }
   }
 
@@ -231,10 +245,7 @@ class _ObservationCardState extends State<ObservationCard>
       child: Container(
         width: double.infinity,
         height: 20,
-        margin: EdgeInsets.only(
-          top: isTop ? 0 : 4,
-          bottom: isTop ? 4 : 0,
-        ),
+        margin: EdgeInsets.only(top: isTop ? 0 : 4, bottom: isTop ? 4 : 0),
         color: Colors.transparent,
         child: Center(
           child: Row(
@@ -252,10 +263,9 @@ class _ObservationCardState extends State<ObservationCard>
       height: 4,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .onSurfaceVariant
-            .withValues(alpha: 0.5),
+        color: Theme.of(
+          context,
+        ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         shape: BoxShape.circle,
       ),
     );
@@ -268,15 +278,17 @@ class _ObservationCardState extends State<ObservationCard>
     // Resolve scientific name for display beneath the species field
     String? scientificName;
     if (widget.obs.speciesName != "Unknown Bird") {
-      final match = scientificToCommon.entries
-          .where((e) => e.value == widget.obs.speciesName);
+      final match = scientificToCommon.entries.where(
+        (e) => e.value == widget.obs.speciesName,
+      );
       if (match.isNotEmpty) scientificName = match.first.key;
     }
 
     final cardChild = _buildCardChild(scientificName);
 
     Widget observationItem = DragTarget<DragData>(
-      onWillAcceptWithDetails: (details) => details.data.obsIndex != widget.index,
+      onWillAcceptWithDetails: (details) =>
+          details.data.obsIndex != widget.index,
       onAcceptWithDetails: (details) {
         if (details.data.indIndices == null) {
           widget.onMergeObservations(details.data.obsIndex, widget.index);
@@ -429,7 +441,8 @@ class _ObservationCardState extends State<ObservationCard>
 
   Widget _buildSpeciesField() {
     final bool hasSelection =
-        widget.obs.speciesName.isNotEmpty && widget.obs.speciesName != 'Unknown Bird';
+        widget.obs.speciesName.isNotEmpty &&
+        widget.obs.speciesName != 'Unknown Bird';
 
     if (hasSelection) {
       final button = OutlinedButton.icon(
@@ -454,9 +467,7 @@ class _ObservationCardState extends State<ObservationCard>
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: const SuperellipseBorder(m: 200.0, n: 20.0),
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.outlineVariant,
-          ),
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
           minimumSize: Size.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
@@ -519,17 +530,18 @@ class _ObservationCardState extends State<ObservationCard>
       );
     }
 
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: field,
-    );
+    return CompositedTransformTarget(link: _layerLink, child: field);
   }
 
   Widget _buildIndividualsList() {
     final sortedIndices = List.generate(widget.obs.count, (i) => i);
     sortedIndices.sort((a, b) {
-      final nameA = a < widget.obs.individualNames.length ? widget.obs.individualNames[a] : 'Individual ${a + 1}';
-      final nameB = b < widget.obs.individualNames.length ? widget.obs.individualNames[b] : 'Individual ${b + 1}';
+      final nameA = a < widget.obs.individualNames.length
+          ? widget.obs.individualNames[a]
+          : 'Individual ${a + 1}';
+      final nameB = b < widget.obs.individualNames.length
+          ? widget.obs.individualNames[b]
+          : 'Individual ${b + 1}';
       return nameA.compareTo(nameB);
     });
 
@@ -538,13 +550,11 @@ class _ObservationCardState extends State<ObservationCard>
       curve: Curves.easeInOutCubic,
       alignment: Alignment.topCenter,
       child: Container(
-        constraints:
-            widget.isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 0),
+        constraints: widget.isExpanded
+            ? const BoxConstraints()
+            : const BoxConstraints(maxHeight: 0),
         child: Column(
-          children: [
-            for (int i in sortedIndices)
-              _buildIndividualTile(i),
-          ],
+          children: [for (int i in sortedIndices) _buildIndividualTile(i)],
         ),
       ),
     );
@@ -554,8 +564,9 @@ class _ObservationCardState extends State<ObservationCard>
     final individualName = i < widget.obs.individualNames.length
         ? widget.obs.individualNames[i]
         : 'Individual ${i + 1}';
-        
-    final isMultiSelected = widget.isSelected &&
+
+    final isMultiSelected =
+        widget.isSelected &&
         widget.selectedIndividualIndices.contains(i) &&
         widget.selectedIndividualIndices.length > 1;
     final label = isMultiSelected
@@ -582,7 +593,10 @@ class _ObservationCardState extends State<ObservationCard>
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       childWhenDragging: Opacity(
@@ -599,41 +613,63 @@ class _ObservationCardState extends State<ObservationCard>
           ListTile(
             contentPadding: const EdgeInsets.only(left: 82, right: 16),
             title: Text(individualName, style: const TextStyle(fontSize: 13)),
-            selected: widget.isSelected && widget.selectedIndividualIndices.contains(i),
+            selected:
+                widget.isSelected &&
+                widget.selectedIndividualIndices.contains(i),
             selectedColor: Theme.of(context).colorScheme.primary,
-            selectedTileColor:
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            selectedTileColor: Theme.of(
+              context,
+            ).colorScheme.primary.withValues(alpha: 0.1),
             onTap: () => widget.onTapIndividual(i),
-            trailing: widget.isSelected && widget.selectedIndividualIndices.contains(i)
+            trailing:
+                widget.isSelected &&
+                    widget.selectedIndividualIndices.contains(i)
                 ? IconButton(
                     icon: const Icon(Icons.delete_outline, size: 20),
                     color: Theme.of(context).colorScheme.error,
                     tooltip: 'Delete individual',
                     onPressed: () {
-                       if (widget.onDeleteIndividuals != null) {
-                           widget.onDeleteIndividuals!(widget.selectedIndividualIndices.toList());
-                       }
+                      if (widget.onDeleteIndividuals != null) {
+                        widget.onDeleteIndividuals!(
+                          widget.selectedIndividualIndices.toList(),
+                        );
+                      }
                     },
                   )
                 : null,
           ),
-          if (widget.isSelected && widget.selectedIndividualIndices.contains(i) && widget.obs.sourceImages.length > 1)
+          if (widget.isSelected &&
+              widget.selectedIndividualIndices.contains(i) &&
+              widget.obs.sourceImages.length > 1)
             Padding(
               padding: const EdgeInsets.only(left: 82, right: 16, bottom: 8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: widget.obs.sourceImages.map((src) {
-                  final filename = src.imagePath.split('/').last.split('\\').last;
+                  final filename = src.imagePath
+                      .split('/')
+                      .last
+                      .split('\\')
+                      .last;
                   return InkWell(
                     onTap: () => widget.onTapPhoto(src.imagePath),
                     borderRadius: BorderRadius.circular(6),
-                    hoverColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                    hoverColor: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.05),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: Row(
                         children: [
-                          Icon(Icons.photo_outlined, size: 16, color: Theme.of(context).colorScheme.primary),
+                          Icon(
+                            Icons.photo_outlined,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(

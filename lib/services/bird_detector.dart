@@ -35,7 +35,12 @@ class _DetectorRequest {
   final int targetW;
   final int targetH;
 
-  _DetectorRequest(this.fileBytes, this.interpreterAddress, this.targetW, this.targetH);
+  _DetectorRequest(
+    this.fileBytes,
+    this.interpreterAddress,
+    this.targetW,
+    this.targetH,
+  );
 }
 
 /// Request for computing all tile pixel data in a background isolate.
@@ -45,7 +50,12 @@ class _PrepareTilesRequest {
   final int targetH;
   final List<List<int>>? customTiles;
 
-  _PrepareTilesRequest(this.fileBytes, this.targetW, this.targetH, [this.customTiles]);
+  _PrepareTilesRequest(
+    this.fileBytes,
+    this.targetW,
+    this.targetH, [
+    this.customTiles,
+  ]);
 }
 
 /// Result from the tile preparation compute isolate.
@@ -118,7 +128,10 @@ class BirdDetector {
       return await _detectWindows(fileBytes, targetW, targetH);
     } else {
       final request = _DetectorRequest(
-        fileBytes, _interpreter!.address, targetW, targetH,
+        fileBytes,
+        _interpreter!.address,
+        targetW,
+        targetH,
       );
       return await compute(_detectorWorker, request);
     }
@@ -152,24 +165,30 @@ class BirdDetector {
 
       final rect = prepared.tileRects[ti];
       final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
-      rawDetections.addAll(_extractDetections(
-        outputs, tile, prepared.origW, prepared.origH,
-      ));
+      rawDetections.addAll(
+        _extractDetections(outputs, tile, prepared.origW, prepared.origH),
+      );
     }
 
     if (rawDetections.isEmpty) return [];
 
     final nmsDetections = _applyNms(rawDetections);
-    
+
     final reconciledDetections = await _reconcileAbuttingBoxes(
       nmsDetections,
-      prepared.origW, prepared.origH,
+      prepared.origW,
+      prepared.origH,
       (customTiles) async {
         if (customTiles.isEmpty) return [];
-        
+
         final prepCust = await compute(
           _prepareTiles,
-          _PrepareTilesRequest(fileBytes, targetW, targetH, customTiles.map((r) => [r.left, r.top, r.width, r.height]).toList()),
+          _PrepareTilesRequest(
+            fileBytes,
+            targetW,
+            targetH,
+            customTiles.map((r) => [r.left, r.top, r.width, r.height]).toList(),
+          ),
         );
 
         List<_RawDetection> customDets = [];
@@ -180,19 +199,27 @@ class BirdDetector {
 
           final rect = prepCust.tileRects[ti];
           final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
-          customDets.addAll(_extractDetections(
-            outputs, tile, prepCust.origW, prepCust.origH,
-          ));
+          customDets.addAll(
+            _extractDetections(outputs, tile, prepCust.origW, prepCust.origH),
+          );
         }
         return _applyNms(customDets);
-      }
+      },
     );
 
     if (reconciledDetections.isEmpty) return [];
 
-    List<List<int>> finalFormattedList = reconciledDetections.map((d) => [
-      d.box.left, d.box.top, d.box.width, d.box.height, (d.score * 1000).toInt(),
-    ]).toList();
+    List<List<int>> finalFormattedList = reconciledDetections
+        .map(
+          (d) => [
+            d.box.left,
+            d.box.top,
+            d.box.width,
+            d.box.height,
+            (d.score * 1000).toInt(),
+          ],
+        )
+        .toList();
 
     // Step 3: NMS (noop since already applied) + crop + encode in compute isolate
     return await compute(

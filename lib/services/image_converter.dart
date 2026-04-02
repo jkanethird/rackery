@@ -8,7 +8,7 @@ import 'ffi_heif.dart';
 class ImageConverter {
   static Future<String> convertToJpegIfNeeded(String imagePath) async {
     final extension = p.extension(imagePath).toLowerCase();
-    
+
     // If it's already a JPEG/PNG, just return the original path
     if (extension == '.jpg' || extension == '.jpeg' || extension == '.png') {
       return imagePath;
@@ -23,7 +23,10 @@ class ImageConverter {
       }
 
       final fileNameWithoutExt = p.basenameWithoutExtension(imagePath);
-      final cachedJpgPath = p.join(heicCacheDir.path, '$fileNameWithoutExt.jpg');
+      final cachedJpgPath = p.join(
+        heicCacheDir.path,
+        '$fileNameWithoutExt.jpg',
+      );
 
       if (await File(cachedJpgPath).exists()) {
         return cachedJpgPath;
@@ -31,7 +34,10 @@ class ImageConverter {
 
       try {
         // Use Native FFI
-        return await compute(_processHeicWrapper, _HeicJob(imagePath, cachedJpgPath));
+        return await compute(
+          _processHeicWrapper,
+          _HeicJob(imagePath, cachedJpgPath),
+        );
       } catch (e) {
         debugPrint('ImageConverter FFI exception for $imagePath: $e');
         // fallback to returning original if we absolutely can't decode it
@@ -56,7 +62,7 @@ class _HeicJob {
 Future<String> _processHeicWrapper(_HeicJob job) async {
   final libHeif = LibHeif(); // singleton isolated safely in compute spawn
   final heicData = libHeif.decodeHeic(job.sourcePath);
-  
+
   final image = img.Image.fromBytes(
     width: heicData.width,
     height: heicData.height,
@@ -65,7 +71,7 @@ Future<String> _processHeicWrapper(_HeicJob job) async {
     numChannels: 3,
     order: img.ChannelOrder.rgb,
   );
-  
+
   final jpgBytes = img.encodeJpg(image, quality: 90);
   await File(job.destPath).writeAsBytes(jpgBytes);
   return job.destPath;

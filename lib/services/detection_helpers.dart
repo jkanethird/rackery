@@ -104,7 +104,13 @@ List<_RawDetection> _extractDetections(
       continue;
     }
 
-    detections.add(_RawDetection(Rectangle<int>(globalX, globalY, localW, localH), score, tile));
+    detections.add(
+      _RawDetection(
+        Rectangle<int>(globalX, globalY, localW, localH),
+        score,
+        tile,
+      ),
+    );
   }
 
   return detections;
@@ -120,9 +126,12 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
     for (var existing in kept) {
       final intersect = existing.box.intersection(current.box);
       if (intersect != null && intersect.width > 0 && intersect.height > 0) {
-        final double intersectArea = (intersect.width * intersect.height).toDouble();
-        final double area1 = (current.box.width * current.box.height).toDouble();
-        final double area2 = (existing.box.width * existing.box.height).toDouble();
+        final double intersectArea = (intersect.width * intersect.height)
+            .toDouble();
+        final double area1 = (current.box.width * current.box.height)
+            .toDouble();
+        final double area2 = (existing.box.width * existing.box.height)
+            .toDouble();
         final double iou = intersectArea / (area1 + area2 - intersectArea);
         final double ioMin = intersectArea / min(area1, area2);
 
@@ -133,10 +142,14 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
 
         final double centerDist = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
         final double distThreshold =
-            (current.box.width + existing.box.width +
-                current.box.height + existing.box.height) / 8;
+            (current.box.width +
+                existing.box.width +
+                current.box.height +
+                existing.box.height) /
+            8;
 
-        if (iou > 0.30 || ioMin > 0.50 ||
+        if (iou > 0.30 ||
+            ioMin > 0.50 ||
             (iou > 0.10 && centerDist < distThreshold)) {
           isDuplicate = true;
           break;
@@ -151,7 +164,10 @@ List<_RawDetection> _applyNms(List<_RawDetection> rawDetections) {
 
 /// Crops detected birds from the original image, extracts center color, and
 /// JPG-encodes each crop.
-List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detections) {
+List<BirdCrop> _cropAndEncode(
+  img.Image originalImage,
+  List<_RawDetection> detections,
+) {
   final List<BirdCrop> crops = [];
 
   for (final det in detections) {
@@ -202,8 +218,14 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
 
     final cropX1 = (det.box.left - padX).clamp(0, originalImage.width - 1);
     final cropY1 = (det.box.top - padY).clamp(0, originalImage.height - 1);
-    final cropX2 = (det.box.left + det.box.width + padX).clamp(1, originalImage.width);
-    final cropY2 = (det.box.top + det.box.height + padY).clamp(1, originalImage.height);
+    final cropX2 = (det.box.left + det.box.width + padX).clamp(
+      1,
+      originalImage.width,
+    );
+    final cropY2 = (det.box.top + det.box.height + padY).clamp(
+      1,
+      originalImage.height,
+    );
 
     var padded = img.copyCrop(
       originalImage,
@@ -218,7 +240,12 @@ List<BirdCrop> _cropAndEncode(img.Image originalImage, List<_RawDetection> detec
       final scale = 150 / max(padded.width, padded.height);
       final newW = (padded.width * scale).round();
       final newH = (padded.height * scale).round();
-      padded = img.copyResize(padded, width: newW, height: newH, interpolation: img.Interpolation.linear);
+      padded = img.copyResize(
+        padded,
+        width: newW,
+        height: newH,
+        interpolation: img.Interpolation.linear,
+      );
     }
 
     final jpgBytes = Uint8List.fromList(img.encodeJpg(padded, quality: 90));

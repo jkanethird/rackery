@@ -57,14 +57,14 @@ extension SelectionActions on ChecklistController {
     // Wait for the ObservationCard's AnimatedSize expansion (300ms) to complete
     // so that the scroll controller's maxScrollExtent grows appropriately.
     await Future.delayed(const Duration(milliseconds: 310));
-    
+
     if (!observationScrollController.hasClients) return;
     final originalIdx = observations.indexOf(obs);
     if (originalIdx < 0) return;
-    
+
     // The ListView builder produces items in reverse order.
     final listIdx = observations.length - 1 - originalIdx;
-    
+
     const estimatedItemHeight = 120.0;
     final target = (listIdx * estimatedItemHeight).clamp(
       0.0,

@@ -110,39 +110,46 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                           ),
                         ),
                       if (widget.boxData.isNotEmpty &&
-                          widget.boxVisibility != BoundingBoxVisibility.hidden &&
+                          widget.boxVisibility !=
+                              BoundingBoxVisibility.hidden &&
                           !_isDrawingMode)
                         ...widget.boxData.map((data) {
-                            final s = min(
-                              constraints.maxWidth / widget.imageSize.width,
-                              constraints.maxHeight / widget.imageSize.height,
-                            );
-                            final dx = (constraints.maxWidth - widget.imageSize.width * s) / 2;
-                            final dy = (constraints.maxHeight - widget.imageSize.height * s) / 2;
+                          final s = min(
+                            constraints.maxWidth / widget.imageSize.width,
+                            constraints.maxHeight / widget.imageSize.height,
+                          );
+                          final dx =
+                              (constraints.maxWidth -
+                                  widget.imageSize.width * s) /
+                              2;
+                          final dy =
+                              (constraints.maxHeight -
+                                  widget.imageSize.height * s) /
+                              2;
 
-                            final rectLeft = dx + data.box.left * s;
-                            final rectTop = dy + data.box.top * s;
-                            final rectWidth = data.box.width * s;
-                            final rectHeight = data.box.height * s;
+                          final rectLeft = dx + data.box.left * s;
+                          final rectTop = dy + data.box.top * s;
+                          final rectWidth = data.box.width * s;
+                          final rectHeight = data.box.height * s;
 
-                            return Positioned(
-                              left: rectLeft,
-                              top: rectTop,
-                              width: rectWidth,
-                              height: rectHeight,
-                              child: Tooltip(
-                                message: '${data.name} (${data.species})',
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    onTap: () {
-                                      widget.onIndividualSelected?.call(data);
-                                    },
-                                  ),
+                          return Positioned(
+                            left: rectLeft,
+                            top: rectTop,
+                            width: rectWidth,
+                            height: rectHeight,
+                            child: Tooltip(
+                              message: '${data.name} (${data.species})',
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    widget.onIndividualSelected?.call(data);
+                                  },
                                 ),
                               ),
-                            ); 
+                            ),
+                          );
                         }),
                       if (_isDrawingMode &&
                           _drawStart != null &&
@@ -150,7 +157,9 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                         Positioned.fill(
                           child: CustomPaint(
                             painter: DrawingBoxPainter(
-                                _drawStart!, _drawCurrent!),
+                              _drawStart!,
+                              _drawCurrent!,
+                            ),
                           ),
                         ),
                     ],
@@ -182,19 +191,20 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                             final dx = (constraints.maxWidth - dw) / 2;
                             final dy = (constraints.maxHeight - dh) / 2;
 
-                            int mapX(double x) =>
-                                ((x - dx) / s)
-                                    .clamp(0, widget.imageSize.width)
-                                    .toInt();
-                            int mapY(double y) =>
-                                ((y - dy) / s)
-                                    .clamp(0, widget.imageSize.height)
-                                    .toInt();
+                            int mapX(double x) => ((x - dx) / s)
+                                .clamp(0, widget.imageSize.width)
+                                .toInt();
+                            int mapY(double y) => ((y - dy) / s)
+                                .clamp(0, widget.imageSize.height)
+                                .toInt();
 
                             final left = min(_drawStart!.dx, _drawCurrent!.dx);
                             final right = max(_drawStart!.dx, _drawCurrent!.dx);
                             final top = min(_drawStart!.dy, _drawCurrent!.dy);
-                            final bottom = max(_drawStart!.dy, _drawCurrent!.dy);
+                            final bottom = max(
+                              _drawStart!.dy,
+                              _drawCurrent!.dy,
+                            );
 
                             final imgLeft = mapX(left);
                             final imgRight = mapX(right);
@@ -244,17 +254,31 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       for (final entry in [
-                        (BoundingBoxVisibility.focused, Icons.filter_center_focus, 'Show Focused Boundary Boxes'),
-                        (BoundingBoxVisibility.all, Icons.border_all, 'Show All Boundary Boxes'),
-                        (BoundingBoxVisibility.hidden, Icons.visibility_off, 'Hide Boundary Boxes'),
+                        (
+                          BoundingBoxVisibility.focused,
+                          Icons.filter_center_focus,
+                          'Show Focused Boundary Boxes',
+                        ),
+                        (
+                          BoundingBoxVisibility.all,
+                          Icons.border_all,
+                          'Show All Boundary Boxes',
+                        ),
+                        (
+                          BoundingBoxVisibility.hidden,
+                          Icons.visibility_off,
+                          'Hide Boundary Boxes',
+                        ),
                       ])
                         Tooltip(
                           message: entry.$3,
                           child: MouseRegion(
                             cursor: SystemMouseCursors.click,
-                            onEnter: (_) => setState(() => _hoveredVisibility = entry.$1),
+                            onEnter: (_) =>
+                                setState(() => _hoveredVisibility = entry.$1),
                             onExit: (_) => setState(() {
-                              if (_hoveredVisibility == entry.$1) _hoveredVisibility = null;
+                              if (_hoveredVisibility == entry.$1)
+                                _hoveredVisibility = null;
                             }),
                             child: GestureDetector(
                               onTap: () => widget.onSetBoxVisibility(entry.$1),
@@ -263,14 +287,17 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                                 height: 40,
                                 decoration: ShapeDecoration(
                                   color: widget.boxVisibility == entry.$1
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withValues(alpha: 0.3)
+                                      ? Theme.of(context).colorScheme.primary
+                                            .withValues(alpha: 0.3)
                                       : _hoveredVisibility == entry.$1
-                                          ? Colors.grey.shade900.withValues(alpha: 0.7)
-                                          : Colors.transparent,
-                                  shape: const SuperellipseBorder(m: 200.0, n: 20.0),
+                                      ? Colors.grey.shade900.withValues(
+                                          alpha: 0.7,
+                                        )
+                                      : Colors.transparent,
+                                  shape: const SuperellipseBorder(
+                                    m: 200.0,
+                                    n: 20.0,
+                                  ),
                                 ),
                                 child: Icon(
                                   entry.$2,
@@ -288,12 +315,11 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                 ),
                 const SizedBox(width: 8),
                 Tooltip(
-                  message:
-                      _isDrawingMode ? 'Cancel Drawing' : 'Draw Boundary Box',
+                  message: _isDrawingMode
+                      ? 'Cancel Drawing'
+                      : 'Draw Boundary Box',
                   child: IconButton(
-                    icon: Icon(
-                      _isDrawingMode ? Icons.close : Icons.add_box,
-                    ),
+                    icon: Icon(_isDrawingMode ? Icons.close : Icons.add_box),
                     onPressed: widget.isPhotoProcessing
                         ? null
                         : () {
@@ -307,10 +333,10 @@ class _PhotoCanvasState extends State<PhotoCanvas> {
                         ? Theme.of(context).colorScheme.error
                         : Theme.of(context).colorScheme.primary,
                     style: IconButton.styleFrom(
-                      backgroundColor:
-                          Colors.grey.shade800.withValues(alpha: 0.5),
-                      hoverColor:
-                          Colors.grey.shade900.withValues(alpha: 0.7),
+                      backgroundColor: Colors.grey.shade800.withValues(
+                        alpha: 0.5,
+                      ),
+                      hoverColor: Colors.grey.shade900.withValues(alpha: 0.7),
                       shape: const SuperellipseBorder(m: 200.0, n: 20.0),
                     ),
                   ),

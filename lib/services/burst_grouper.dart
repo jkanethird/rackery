@@ -15,10 +15,11 @@ class BurstGrouper {
     if (h1.length != h2.length) return 64; // Fallback
     int dist = 0;
     for (int i = 0; i < h1.length; i++) {
-        int v1 = int.parse(h1[i], radix: 16);
-        int v2 = int.parse(h2[i], radix: 16);
-        int xor = v1 ^ v2;
-        dist += (xor & 1) + ((xor >> 1) & 1) + ((xor >> 2) & 1) + ((xor >> 3) & 1);
+      int v1 = int.parse(h1[i], radix: 16);
+      int v2 = int.parse(h2[i], radix: 16);
+      int xor = v1 ^ v2;
+      dist +=
+          (xor & 1) + ((xor >> 1) & 1) + ((xor >> 2) & 1) + ((xor >> 3) & 1);
     }
     return dist;
   }
@@ -58,7 +59,7 @@ class BurstGrouper {
       // 2. Strict Environmental Overrule
       if (currentHash != null && lastHash != null) {
         final dist = _hammingDistance(currentHash, lastHash);
-        
+
         if (dist > 20) {
           // If the visual background shifts significantly, BREAK the burst immediately!
           // This prevents rapid-fire turning from getting lumped into one burst.
@@ -66,7 +67,9 @@ class BurstGrouper {
         } else if (dist <= 15) {
           // If the visual background is very similar, FORCE the burst to group!
           // This bridges photos taken minutes apart if the user stood completely still.
-          if (date == null || lastTime == null || date.difference(lastTime).inSeconds.abs() <= 300) {
+          if (date == null ||
+              lastTime == null ||
+              date.difference(lastTime).inSeconds.abs() <= 300) {
             isSameBurst = true;
           }
         }
@@ -78,7 +81,7 @@ class BurstGrouper {
         bursts.add(List.from(currentBurst));
         currentBurst = [path];
       }
-      
+
       // Update tracking markers based on latest photo
       lastTime = date ?? lastTime;
       lastHash = currentHash ?? lastHash;

@@ -128,9 +128,7 @@ class PhotoProcessor {
           )..sort((a, b) => a.left.compareTo(b.left));
           for (final box in boxes) {
             final key = _boxKey(src.imagePath, box);
-            newNames.add(
-              oldBoxNames[key] ?? generatePronounceableName(),
-            );
+            newNames.add(oldBoxNames[key] ?? generatePronounceableName());
           }
         }
         existing.individualNames = newNames;
@@ -166,6 +164,7 @@ class PhotoProcessor {
     if (newlyEmitted.isNotEmpty) onObservationAdded(newlyEmitted);
     if (existingUpdated) onObservationsChanged();
   }
+
   Future<void> run({
     required List<String> newPaths,
     required List<List<String>> bursts,
@@ -208,14 +207,15 @@ class PhotoProcessor {
           if (!newPathSet.contains(filePath)) continue;
           onFileStarted(filePath);
           try {
-            final processedPath = await ImageConverter.convertToJpegIfNeeded(filePath);
+            final processedPath = await ImageConverter.convertToJpegIfNeeded(
+              filePath,
+            );
             final exifData = await ExifService.extractExif(filePath);
             final detectedBirds = await detector.detectAndCrop(processedPath);
 
             if (detectedBirds.isEmpty) {
               final fallbackBytes = await File(processedPath).readAsBytes();
-              final fallbackImg =
-                  await compute(img.decodeImage, fallbackBytes);
+              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
               phase1Results[filePath] = Phase1Result(
                 processedPath: processedPath,
                 exifData: exifData,
@@ -238,8 +238,9 @@ class PhotoProcessor {
             final p1 = totalBytesPhase1 > 0
                 ? processedBytesPhase1 / totalBytesPhase1
                 : 1.0;
-            final p2 =
-                totalBursts > 0 ? completedBurstsPhase2 / totalBursts : 1.0;
+            final p2 = totalBursts > 0
+                ? completedBurstsPhase2 / totalBursts
+                : 1.0;
             onProgress(p1 * 0.5 + p2 * 0.5);
           }
         }
@@ -265,8 +266,9 @@ class PhotoProcessor {
           if (!newPathSet.contains(filePath)) continue;
           final res = phase1Results[filePath];
           if (res == null) continue;
-          burstIdentifications +=
-              res.isFallback ? (res.fallbackImg != null ? 1 : 0) : res.clusters.length;
+          burstIdentifications += res.isFallback
+              ? (res.fallbackImg != null ? 1 : 0)
+              : res.clusters.length;
         }
         totalIdentifications += burstIdentifications;
         onProgressMessage(
@@ -323,15 +325,15 @@ class PhotoProcessor {
 
                   // Emit / update immediately
                   _emitBurstUpdates(
-                    burstGroupsBySpecies, emittedObs, burstIds[i],
-                    onObservationAdded, onObservationsChanged,
+                    burstGroupsBySpecies,
+                    emittedObs,
+                    burstIds[i],
+                    onObservationAdded,
+                    onObservationsChanged,
                     onIndicesRemapped,
                   );
                 }
                 completedIdentifications++;
-                if (completedIdentifications % 15 == 0) {
-                  await classifier.unloadModel();
-                }
                 onProgressMessage(
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
@@ -340,8 +342,7 @@ class PhotoProcessor {
               // Cluster-level classification — emit after each cluster
               for (int ci = 0; ci < res.clusters.length; ci++) {
                 final clusterCrops = res.clusters[ci];
-                final clusterBoxes =
-                    clusterCrops.map((c) => c.box).toList();
+                final clusterBoxes = clusterCrops.map((c) => c.box).toList();
 
                 final speciesList = await classifier.classifyCluster(
                   res.processedPath,
@@ -355,9 +356,6 @@ class PhotoProcessor {
                 // Empty list = model said this crop isn't a bird — skip it.
                 if (speciesList.isEmpty) {
                   completedIdentifications++;
-                  if (completedIdentifications % 15 == 0) {
-                    await classifier.unloadModel();
-                  }
                   onProgressMessage(
                     'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                   );
@@ -370,8 +368,9 @@ class PhotoProcessor {
                 // in this file (subsequent clusters reuse the existing crop).
                 final bool isNewSpeciesInFile =
                     !burstGroupsBySpecies.containsKey(species) ||
-                    !burstGroupsBySpecies[species]!.observations
-                        .any((o) => o.imagePath == filePath);
+                    !burstGroupsBySpecies[species]!.observations.any(
+                      (o) => o.imagePath == filePath,
+                    );
 
                 String cropPath;
                 if (isNewSpeciesInFile) {
@@ -404,15 +403,15 @@ class PhotoProcessor {
 
                 // Emit / update immediately after each cluster
                 _emitBurstUpdates(
-                  burstGroupsBySpecies, emittedObs, burstIds[i],
-                  onObservationAdded, onObservationsChanged,
+                  burstGroupsBySpecies,
+                  emittedObs,
+                  burstIds[i],
+                  onObservationAdded,
+                  onObservationsChanged,
                   onIndicesRemapped,
                 );
 
                 completedIdentifications++;
-                if (completedIdentifications % 15 == 0) {
-                  await classifier.unloadModel();
-                }
                 onProgressMessage(
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
@@ -431,17 +430,13 @@ class PhotoProcessor {
         final p1 = totalBytesPhase1 > 0
             ? processedBytesPhase1 / totalBytesPhase1
             : 1.0;
-        final p2 =
-            totalBursts > 0 ? completedBurstsPhase2 / totalBursts : 1.0;
+        final p2 = totalBursts > 0 ? completedBurstsPhase2 / totalBursts : 1.0;
         onProgress(p1 * 0.5 + p2 * 0.5);
       } // end for burst
 
       // Unload after the entire selected batch of photos is processed
-      await classifier.unloadModel();
     });
 
     await Future.wait([phase1Worker, phase2Worker]);
   }
 }
-
-

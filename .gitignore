@@ -67,3 +67,4 @@ ebird_generator.code-workspace
 **/linux/flutter/generated_plugin_registrant.h
 **/linux/flutter/generated_plugins.cmake
 
+tool/.venv/

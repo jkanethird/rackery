@@ -23,11 +23,7 @@ part 'manual_detection_actions.dart';
 part 'photo_processing_actions.dart';
 part 'export_actions.dart';
 
-enum BoundingBoxVisibility {
-  focused,
-  all,
-  hidden,
-}
+enum BoundingBoxVisibility { focused, all, hidden }
 
 class ChecklistController extends ChangeNotifier {
   // ─── Services ────────────────────────────────────────────────────────────

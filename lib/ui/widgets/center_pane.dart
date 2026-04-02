@@ -62,7 +62,8 @@ class CenterPane extends StatelessWidget {
 
     SourceImage? activeSource;
     if (currentlyDisplayedImage != null) {
-      activeSource = obs?.sourceImages
+      activeSource =
+          obs?.sourceImages
               .where((s) => s.imagePath == currentlyDisplayedImage)
               .firstOrNull ??
           (
@@ -81,7 +82,8 @@ class CenterPane extends StatelessWidget {
     }
 
     final rawPath = activeSource.imagePath;
-    final resolvedFuture = activeSource.fullImageDisplayPath != null &&
+    final resolvedFuture =
+        activeSource.fullImageDisplayPath != null &&
             !activeSource.fullImageDisplayPath!.toLowerCase().endsWith('.heic')
         ? Future.value(activeSource.fullImageDisplayPath)
         : getDisplayPath(rawPath);
@@ -106,17 +108,21 @@ class CenterPane extends StatelessWidget {
             if (src.imagePath == rawPath) break;
             offset += (o.boxesByImagePath[src.imagePath] ?? []).length;
           }
-          
+
           for (int li = 0; li < oBoxes.length; li++) {
             final idx = offset + li;
-            final name = idx < o.individualNames.length ? o.individualNames[idx] : '?';
-            boxData.add(PhotoBoxData(
-              box: oBoxes[li],
-              name: name,
-              species: o.speciesName,
-              globalIndex: idx,
-              obs: o,
-            ));
+            final name = idx < o.individualNames.length
+                ? o.individualNames[idx]
+                : '?';
+            boxData.add(
+              PhotoBoxData(
+                box: oBoxes[li],
+                name: name,
+                species: o.speciesName,
+                globalIndex: idx,
+                obs: o,
+              ),
+            );
           }
         }
       }
@@ -135,27 +141,32 @@ class CenterPane extends StatelessWidget {
               .map((gi) => globalIndexMap[gi]!.localIndex)
               .toSet();
         } else {
-          localSelected = {for (int i=0; i < allPhotoBoxes.length; i++) i};
+          localSelected = {for (int i = 0; i < allPhotoBoxes.length; i++) i};
         }
 
         for (int li = 0; li < allPhotoBoxes.length; li++) {
-          if (!localSelected.contains(li) && selectedIndividualIndices.isNotEmpty) continue;
-          
+          if (!localSelected.contains(li) &&
+              selectedIndividualIndices.isNotEmpty)
+            continue;
+
           final entry = globalIndexMap.entries.firstWhere(
             (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
             orElse: () => const MapEntry(-1, (imagePath: '', localIndex: -1)),
           );
           final gIdx = entry.key;
-          final name = (gIdx >= 0 && gIdx < obs.individualNames.length) 
-              ? obs.individualNames[gIdx] : '?';
+          final name = (gIdx >= 0 && gIdx < obs.individualNames.length)
+              ? obs.individualNames[gIdx]
+              : '?';
 
-          boxData.add(PhotoBoxData(
-            box: allPhotoBoxes[li],
-            name: name,
-            species: obs.speciesName,
-            globalIndex: gIdx,
-            obs: obs,
-          ));
+          boxData.add(
+            PhotoBoxData(
+              box: allPhotoBoxes[li],
+              name: name,
+              species: obs.speciesName,
+              globalIndex: gIdx,
+              obs: obs,
+            ),
+          );
         }
       }
     }
@@ -190,9 +201,14 @@ class CenterPane extends StatelessWidget {
                         boxVisibility: boxVisibility,
                         onSetBoxVisibility: onSetBoxVisibility,
                         isPhotoProcessing: processingFiles.contains(rawPath),
-                        onIndividualSelected: onIndividualSelected != null ? (data) {
-                          onIndividualSelected!(data.obs, data.globalIndex);
-                        } : null,
+                        onIndividualSelected: onIndividualSelected != null
+                            ? (data) {
+                                onIndividualSelected!(
+                                  data.obs,
+                                  data.globalIndex,
+                                );
+                              }
+                            : null,
                         onDrawBoundingBox: onDrawBoundingBox,
                       );
                     },
@@ -200,11 +216,7 @@ class CenterPane extends StatelessWidget {
                 },
               ),
             ),
-            PhotoHeader(
-              filename: filename,
-              latitude: lat,
-              longitude: lon,
-            ),
+            PhotoHeader(filename: filename, latitude: lat, longitude: lon),
           ],
         ),
       ),

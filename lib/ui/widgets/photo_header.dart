@@ -29,13 +29,17 @@ class PhotoHeader extends StatelessWidget {
               Flexible(
                 child: FutureBuilder<String>(
                   future: GeoRegionService.getDetailedLocation(
-                      latitude!, longitude!),
+                    latitude!,
+                    longitude!,
+                  ),
                   builder: (context, snapshot) {
                     return SelectableText(
                       snapshot.data ??
                           GeoRegionService.describe(latitude!, longitude!),
-                      style:
-                          const TextStyle(fontSize: 11, color: Colors.blueGrey),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.blueGrey,
+                      ),
                       textAlign: TextAlign.center,
                     );
                   },

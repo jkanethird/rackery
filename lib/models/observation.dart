@@ -47,7 +47,7 @@ class Observation {
        boxesByImagePath =
            boxesByImagePath ??
            {if (boundingBoxes.isNotEmpty) imagePath: List.of(boundingBoxes)},
-       individualNames = individualNames ?? List.generate(count, (_) => generatePronounceableName());
+       individualNames =
+           individualNames ??
+           List.generate(count, (_) => generatePronounceableName());
 }
-
-

@@ -24,11 +24,11 @@ class ObservationListPanel extends StatelessWidget {
   final void Function(Observation obs, int count) onCountChanged;
   final void Function(int fromIdx, int intoIdx) onMergeObservations;
   final void Function(int fromObsIdx, List<int> indIndices, int intoIdx)
-      onMergeIndividuals;
+  onMergeIndividuals;
   final void Function(int dragIndex) onDragStarted;
   final void Function() onDragEnded;
   final void Function(int fromObsIdx, List<int> indIndices, int insertAtIdx)
-      onExtractIndividuals;
+  onExtractIndividuals;
   final void Function(String imagePath) onTapPhoto;
   final void Function(bool isOpen)? onDropdownToggled;
   final void Function(int obsIdx, List<int> indIndices)? onDeleteIndividuals;
@@ -101,12 +101,14 @@ class ObservationListPanel extends StatelessWidget {
           onDragEnded: onDragEnded,
           onTapPhoto: onTapPhoto,
           onDropdownToggled: onDropdownToggled,
-          onDeleteIndividuals: (indIndices) => onDeleteIndividuals?.call(index, indIndices),
+          onDeleteIndividuals: (indIndices) =>
+              onDeleteIndividuals?.call(index, indIndices),
         );
 
         // In reversed display order, index+1 is the item visually *above*.
         // Show a separator when this item's burst differs from the one below.
-        final isFirstInBurst = index < observations.length - 1 &&
+        final isFirstInBurst =
+            index < observations.length - 1 &&
             observations[index].burstId != observations[index + 1].burstId;
 
         Widget dropZone(int insertIndex) {
@@ -130,10 +132,9 @@ class ObservationListPanel extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: candidateData.isNotEmpty
-                      ? Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.5)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.5)
                       : Colors.transparent,
                 ),
               );
@@ -161,5 +162,4 @@ class ObservationListPanel extends StatelessWidget {
       },
     );
   }
-
 }

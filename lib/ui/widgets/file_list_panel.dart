@@ -127,7 +127,9 @@ class _FileListPanelState extends State<FileListPanel> {
           String? timerLabel;
           if (widget.fileStartTimes.containsKey(file)) {
             // Currently processing — show live elapsed time
-            final elapsed = DateTime.now().difference(widget.fileStartTimes[file]!);
+            final elapsed = DateTime.now().difference(
+              widget.fileStartTimes[file]!,
+            );
             timerLabel = _formatDuration(elapsed);
           } else if (widget.fileElapsedTimes.containsKey(file)) {
             // Finished — show final elapsed time
@@ -180,8 +182,9 @@ class _FileListPanelState extends State<FileListPanel> {
                       filename,
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
                             : null,
@@ -212,10 +215,9 @@ class _FileListPanelState extends State<FileListPanel> {
                         vertical: 1,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.15),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(

@@ -19,10 +19,9 @@ class GeoRegionService {
       final url = Uri.parse(
         'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=10',
       );
-      final response = await http.get(
-        url,
-        headers: {'User-Agent': 'ebird_generator/1.0.0'},
-      ).timeout(const Duration(seconds: 5));
+      final response = await http
+          .get(url, headers: {'User-Agent': 'ebird_generator/1.0.0'})
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -61,6 +60,7 @@ class GeoRegionService {
     _locationCache[cacheKey] = fallback;
     return fallback;
   }
+
   /// Returns a natural language location string suitable for an ornithology prompt,
   /// e.g. "New Jersey, USA (northeastern United States)"
   static String describe(double lat, double lon) {

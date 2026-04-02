@@ -7,9 +7,15 @@ bool _isAbutting(Rectangle<int> a, Rectangle<int> b) {
   final bool intersectY = a.top <= b.bottom && a.bottom >= b.top;
 
   double distX = 0;
-  if (!intersectX) distX = a.right < b.left ? (b.left - a.right).toDouble() : (a.left - b.right).toDouble();
+  if (!intersectX)
+    distX = a.right < b.left
+        ? (b.left - a.right).toDouble()
+        : (a.left - b.right).toDouble();
   double distY = 0;
-  if (!intersectY) distY = a.bottom < b.top ? (b.top - a.bottom).toDouble() : (a.top - b.bottom).toDouble();
+  if (!intersectY)
+    distY = a.bottom < b.top
+        ? (b.top - a.bottom).toDouble()
+        : (a.top - b.bottom).toDouble();
 
   double dist = sqrt(distX * distX + distY * distY);
   double threshold = min(a.width, b.width) * 0.15;
@@ -19,7 +25,8 @@ bool _isAbutting(Rectangle<int> a, Rectangle<int> b) {
   return dist <= threshold;
 }
 
-typedef _ReInferCallback = Future<List<_RawDetection>> Function(List<Rectangle<int>> customTiles);
+typedef _ReInferCallback =
+    Future<List<_RawDetection>> Function(List<Rectangle<int>> customTiles);
 
 Future<List<_RawDetection>> _reconcileAbuttingBoxes(
   List<_RawDetection> initialDetections,
@@ -65,32 +72,32 @@ Future<List<_RawDetection>> _reconcileAbuttingBoxes(
 
     int w = maxX - minX;
     int h = maxY - minY;
-    
+
     // Force a perfectly square custom tile to prevent aspect ratio distortion
     // when scaling down to model input size (usually 320x320)
     int maxDim = max(w, h);
     int pad = (maxDim * 0.3).toInt(); // 30% padding
     int size = maxDim + pad * 2;
-    
+
     int cx = minX + (w ~/ 2) - (size ~/ 2);
     int cy = minY + (h ~/ 2) - (size ~/ 2);
-    
+
     // Clamp safely to image boundaries
     if (cx < 0) {
       cx = 0;
     } else if (cx + size > origW) {
       cx = max(0, origW - size);
     }
-    
+
     if (cy < 0) {
       cy = 0;
     } else if (cy + size > origH) {
       cy = max(0, origH - size);
     }
-    
+
     int cw = min(size, origW - cx);
     int ch = min(size, origH - cy);
-    
+
     customTiles.add(Rectangle<int>(cx, cy, cw, ch));
   }
 
@@ -102,14 +109,16 @@ Future<List<_RawDetection>> _reconcileAbuttingBoxes(
     final macroBox = Rectangle<int>(
       cluster.map((d) => d.box.left).reduce(min),
       cluster.map((d) => d.box.top).reduce(min),
-      cluster.map((d) => d.box.right).reduce(max) - cluster.map((d) => d.box.left).reduce(min),
-      cluster.map((d) => d.box.bottom).reduce(max) - cluster.map((d) => d.box.top).reduce(min),
+      cluster.map((d) => d.box.right).reduce(max) -
+          cluster.map((d) => d.box.left).reduce(min),
+      cluster.map((d) => d.box.bottom).reduce(max) -
+          cluster.map((d) => d.box.top).reduce(min),
     );
 
     final List<_RawDetection> mainReplacements = newDetections.where((d) {
       final inter = macroBox.intersection(d.box);
       if (inter == null) return false;
-      
+
       // We consider it a "main replacement bird" if it covers a large portion of the macroBox
       // OR if the macroBox covers a large portion of it.
       double interArea = (inter.width * inter.height).toDouble();
