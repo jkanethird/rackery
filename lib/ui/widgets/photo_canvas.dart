@@ -13,14 +13,14 @@ class PhotoBoxData {
   final Rectangle<int> box;
   final String name;
   final String species;
-  final int globalIndex;
+  final int individualIndex;
   final Observation obs;
 
   const PhotoBoxData({
     required this.box,
     required this.name,
     required this.species,
-    required this.globalIndex,
+    required this.individualIndex,
     required this.obs,
   });
 }

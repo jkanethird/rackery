@@ -19,7 +19,7 @@ class CenterPane extends StatelessWidget {
   final Set<String> processingFiles;
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
-  final void Function(Observation obs, int globalIndex)? onIndividualSelected;
+  final void Function(Observation obs, int individualIndex)? onIndividualSelected;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
   const CenterPane({
@@ -42,22 +42,10 @@ class CenterPane extends StatelessWidget {
   Widget build(BuildContext context) {
     final obs = selectedObservation;
 
-    // Build a global individual index → (imagePath, perPhotoBoxIndex) mapping.
-    // Global indices are assigned by iterating sourceImages in order — first
-    // photo's boxes get indices 0..n0-1, second photo's get n0..n0+n1-1, etc.
-    // Within each photo, boxes are sorted left-to-right to match the order
-    // ObservationCard assigns "Individual 1", "Individual 2", etc.
-    final Map<int, ({String imagePath, int localIndex})> globalIndexMap = {};
+    // With BurstGroup changes, individual identity is represented by the 
+    // left-to-right local index (li) in each photo. `individualNames` has exactly `count` items.
     if (obs != null) {
-      int gi = 0;
-      for (final src in obs.sourceImages) {
-        final boxes = List<Rectangle<int>>.from(
-          obs.boxesByImagePath[src.imagePath] ?? [],
-        )..sort((a, b) => a.left.compareTo(b.left));
-        for (int li = 0; li < boxes.length; li++) {
-          globalIndexMap[gi++] = (imagePath: src.imagePath, localIndex: li);
-        }
-      }
+      // Nothing needed here right now, we use localIndex directly.
     }
 
     SourceImage? activeSource;
@@ -103,23 +91,16 @@ class CenterPane extends StatelessWidget {
         )..sort((a, b) => a.left.compareTo(b.left));
 
         if (oBoxes.isNotEmpty) {
-          int offset = 0;
-          for (final src in o.sourceImages) {
-            if (src.imagePath == rawPath) break;
-            offset += (o.boxesByImagePath[src.imagePath] ?? []).length;
-          }
-
           for (int li = 0; li < oBoxes.length; li++) {
-            final idx = offset + li;
-            final name = idx < o.individualNames.length
-                ? o.individualNames[idx]
+            final name = li < o.individualNames.length
+                ? o.individualNames[li]
                 : '?';
             boxData.add(
               PhotoBoxData(
                 box: oBoxes[li],
                 name: name,
                 species: o.speciesName,
-                globalIndex: idx,
+                individualIndex: li,
                 obs: o,
               ),
             );
@@ -136,10 +117,7 @@ class CenterPane extends StatelessWidget {
       if (obs != null) {
         Set<int> localSelected;
         if (selectedIndividualIndices.isNotEmpty) {
-          localSelected = selectedIndividualIndices
-              .where((gi) => globalIndexMap[gi]?.imagePath == rawPath)
-              .map((gi) => globalIndexMap[gi]!.localIndex)
-              .toSet();
+          localSelected = selectedIndividualIndices;
         } else {
           localSelected = {for (int i = 0; i < allPhotoBoxes.length; i++) i};
         }
@@ -150,13 +128,8 @@ class CenterPane extends StatelessWidget {
             continue;
           }
 
-          final entry = globalIndexMap.entries.firstWhere(
-            (e) => e.value.imagePath == rawPath && e.value.localIndex == li,
-            orElse: () => const MapEntry(-1, (imagePath: '', localIndex: -1)),
-          );
-          final gIdx = entry.key;
-          final name = (gIdx >= 0 && gIdx < obs.individualNames.length)
-              ? obs.individualNames[gIdx]
+          final name = li < obs.individualNames.length
+              ? obs.individualNames[li]
               : '?';
 
           boxData.add(
@@ -164,7 +137,7 @@ class CenterPane extends StatelessWidget {
               box: allPhotoBoxes[li],
               name: name,
               species: obs.speciesName,
-              globalIndex: gIdx,
+              individualIndex: li,
               obs: obs,
             ),
           );
@@ -206,7 +179,7 @@ class CenterPane extends StatelessWidget {
                             ? (data) {
                                 onIndividualSelected!(
                                   data.obs,
-                                  data.globalIndex,
+                                  data.individualIndex,
                                 );
                               }
                             : null,
