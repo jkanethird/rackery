@@ -7,7 +7,7 @@ import 'geo_region_service.dart';
 class EbirdApiService {
   static const String _baseUrl = 'https://api.ebird.org/v2';
   static Map<String, String>? _speciesCodeToComNameCache;
-  static final Map<String, Set<String>> _maskCache = {};
+  static final Map<String, Future<Set<String>?>> _maskCache = {};
 
   /// Retrieves the stored eBird API Key
   static Future<String?> getApiKey() async {
@@ -21,30 +21,46 @@ class EbirdApiService {
     await prefs.setString('ebird_api_key', key);
   }
 
+  static Future<void>? _taxonomyFuture;
+  static bool _taxonomyFailed = false;
+
   /// Ensures the taxonomy map is populated so we can map 'speciesCode' to 'comName'
   static Future<void> _ensureTaxonomy(String apiKey) async {
     if (_speciesCodeToComNameCache != null) return;
+    if (_taxonomyFailed) return; // Prevent endless stalling on subsequent photos
+    if (_taxonomyFuture != null) return _taxonomyFuture;
 
-    try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/ref/taxonomy/ebird?fmt=json'),
-        headers: {'X-eBirdApiToken': apiKey},
-      ).timeout(const Duration(seconds: 15));
+    _taxonomyFuture = () async {
+      try {
+        final response = await http.get(
+          Uri.parse('$_baseUrl/ref/taxonomy/ebird?fmt=json'),
+          headers: {'X-eBirdApiToken': apiKey},
+        ).timeout(const Duration(seconds: 45));
 
-      if (response.statusCode == 200) {
-        final List<dynamic> taxonomy = jsonDecode(response.body);
-        _speciesCodeToComNameCache = {};
-        for (final item in taxonomy) {
-          final code = item['speciesCode'] as String?;
-          final comName = item['comName'] as String?;
-          if (code != null && comName != null) {
-            _speciesCodeToComNameCache![code] = comName;
+        if (response.statusCode == 200) {
+          final List<dynamic> taxonomy = jsonDecode(response.body);
+          _speciesCodeToComNameCache = {};
+          for (final item in taxonomy) {
+            final code = item['speciesCode'] as String?;
+            final comName = item['comName'] as String?;
+            if (code != null && comName != null) {
+              _speciesCodeToComNameCache![code] = comName;
+            }
           }
+        } else {
+          _taxonomyFailed = true;
+        }
+      } catch (e) {
+        debugPrint('Failed to fetch taxonomy: $e');
+        _taxonomyFailed = true;
+      } finally {
+        if (_speciesCodeToComNameCache == null) {
+          _taxonomyFailed = true;
         }
       }
-    } catch (e) {
-      debugPrint('Failed to fetch taxonomy: $e');
-    }
+    }();
+
+    return _taxonomyFuture;
   }
 
   /// Gets a Set of common names allowed for a given date and location.
@@ -63,17 +79,12 @@ class EbirdApiService {
       return _maskCache[cacheKey];
     }
 
-    Set<String>? mask;
-    if (isRecent) {
-      mask = await _getRecentSpecies(lat, lon, apiKey);
-    } else {
-      mask = await _getRegionalSpecies(lat, lon, apiKey);
-    }
+    final future = isRecent
+        ? _getRecentSpecies(lat, lon, apiKey)
+        : _getRegionalSpecies(lat, lon, apiKey);
 
-    if (mask != null) {
-      _maskCache[cacheKey] = mask;
-    }
-    return mask;
+    _maskCache[cacheKey] = future;
+    return future;
   }
 
   static Future<Set<String>?> _getRecentSpecies(
