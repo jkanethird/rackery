@@ -59,14 +59,11 @@ extension SelectionActions on ChecklistController {
     await Future.delayed(const Duration(milliseconds: 310));
 
     if (!observationScrollController.hasClients) return;
-    final originalIdx = observations.indexOf(obs);
-    if (originalIdx < 0) return;
-
-    // The ListView builder produces items in reverse order.
-    final listIdx = observations.length - 1 - originalIdx;
+    final index = observations.indexOf(obs);
+    if (index < 0) return;
 
     const estimatedItemHeight = 120.0;
-    final target = (listIdx * estimatedItemHeight).clamp(
+    final target = (index * estimatedItemHeight).clamp(
       0.0,
       observationScrollController.position.maxScrollExtent,
     );

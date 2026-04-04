@@ -70,12 +70,11 @@ class ObservationListPanel extends StatelessWidget {
         if (key is ObjectKey && key.value is Observation) {
           final obs = key.value as Observation;
           final idx = observations.indexOf(obs);
-          if (idx >= 0) return observations.length - 1 - idx;
+          if (idx >= 0) return idx;
         }
         return null;
       },
-      itemBuilder: (context, i) {
-        final index = observations.length - 1 - i;
+      itemBuilder: (context, index) {
         final obs = observations[index];
         final isSelected = selectedObservation == obs;
         final isExpanded = expandedObservation == obs;
@@ -106,9 +105,8 @@ class ObservationListPanel extends StatelessWidget {
               onDeleteIndividuals?.call(index, indIndices),
         );
 
-        // In reversed display order, index+1 is the item visually *above*.
-        // Show a separator when this item's burst differs from the one below.
-        final isFirstInBurst =
+        // Show a burst separator between this item and the next if bursts differ.
+        final isLastInBurst =
             index < observations.length - 1 &&
             observations[index].burstId != observations[index + 1].burstId;
 
@@ -153,25 +151,28 @@ class ObservationListPanel extends StatelessWidget {
           key: ObjectKey(obs),
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Ensure the very top drop zone is rendered above the highest indexed item
-            if (index == observations.length - 1)
-              dropZone(index + 1),
-              
-            if (isFirstInBurst)
-              dropZone(index + 1, child: const Divider(
-                height: 32,
-                thickness: 1,
-                indent: 32,
-                endIndent: 32,
-                color: Colors.white24,
-              ))
-            else if (index < observations.length - 1)
-              // Only need the 12px drop zone if we didn't just render a full divider
-              dropZone(index + 1),
+            // Drop zone above the first item
+            if (index == 0)
+              dropZone(0),
               
             observationItem,
-            
-            if (index == 0) dropZone(0),
+
+            // Between items: burst divider or plain drop zone (but not for last item)
+            if (index < observations.length - 1) ...[
+              if (isLastInBurst)
+                dropZone(index + 1, child: const Divider(
+                  height: 32,
+                  thickness: 1,
+                  indent: 32,
+                  endIndent: 32,
+                  color: Colors.white24,
+                ))
+              else
+                dropZone(index + 1),
+            ],
+              
+            // Drop zone below the last item
+            if (index == observations.length - 1) dropZone(observations.length),
           ],
         );
       },
