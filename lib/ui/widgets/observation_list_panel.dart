@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ebird_generator/models/observation.dart';
 import 'package:ebird_generator/ui/drag_data.dart';
 import 'package:ebird_generator/ui/widgets/observation_card.dart' hide DragData;
+import 'package:ebird_generator/ui/widgets/superellipse_border.dart';
 
 /// Right-side panel: a scrollable list of [ObservationCard]s with drag-and-drop
 /// support for merging observations and extracting individuals.
@@ -61,7 +62,7 @@ class ObservationListPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    final listView = ListView.builder(
       controller: scrollController,
       physics: isDropdownOpen ? const NeverScrollableScrollPhysics() : null,
       itemCount: observations.length,
@@ -175,5 +176,165 @@ class ObservationListPanel extends StatelessWidget {
         );
       },
     );
+
+    return Stack(
+      children: [
+        listView,
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: ListenableBuilder(
+            listenable: scrollController,
+            builder: (context, _) {
+              final show = scrollController.hasClients && 
+                           scrollController.position.hasContentDimensions && 
+                           scrollController.position.maxScrollExtent > 0 &&
+                           scrollController.position.pixels > 0;
+              if (!show) return const SizedBox.shrink();
+              return _buildScrollButton(
+                context: context,
+                tooltip: 'Go to top',
+                pointingUp: true,
+                onPressed: () {
+                  scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: ListenableBuilder(
+            listenable: scrollController,
+            builder: (context, _) {
+              final show = scrollController.hasClients && 
+                           scrollController.position.hasContentDimensions && 
+                           scrollController.position.maxScrollExtent > 0 &&
+                           scrollController.position.pixels < scrollController.position.maxScrollExtent;
+              if (!show) return const SizedBox.shrink();
+              return _buildScrollButton(
+                context: context,
+                tooltip: 'Go to bottom',
+                pointingUp: false,
+                onPressed: () {
+                  void scrollToBottom([bool isInitial = true]) {
+                    if (!scrollController.hasClients) return;
+                    scrollController.animateTo(
+                      scrollController.position.maxScrollExtent,
+                      duration: Duration(milliseconds: isInitial ? 300 : 100),
+                      curve: isInitial ? Curves.easeOut : Curves.linear,
+                    ).then((_) {
+                      if (scrollController.hasClients && 
+                          scrollController.position.pixels < scrollController.position.maxScrollExtent) {
+                        scrollToBottom(false);
+                      }
+                    });
+                  }
+                  scrollToBottom();
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScrollButton({
+    required BuildContext context,
+    required String tooltip,
+    required bool pointingUp,
+    required VoidCallback onPressed,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        top: pointingUp ? 8.0 : 0.0,
+        bottom: pointingUp ? 0.0 : 8.0,
+      ),
+      child: Center(
+        child: ClipRect(
+          child: Align(
+            alignment: pointingUp ? Alignment.topCenter : Alignment.bottomCenter,
+            heightFactor: 0.5,
+            child: SizedBox(
+              width: double.infinity,
+              height: 32, // Shorter height, 16px when clipped
+              child: Material(
+                color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
+                shape: const SuperellipseBorder(m: 200, n: 20),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: onPressed,
+                  mouseCursor: SystemMouseCursors.click,
+                  child: Tooltip(
+                    message: tooltip,
+                    child: Align(
+                      alignment: pointingUp ? const Alignment(0, -0.6) : const Alignment(0, 0.6),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 8,
+                          child: CustomPaint(
+                            painter: _WideChevronPainter(
+                              pointingUp: pointingUp,
+                              color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WideChevronPainter extends CustomPainter {
+  final bool pointingUp;
+  final Color color;
+
+  _WideChevronPainter({required this.pointingUp, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+
+    final path = Path();
+    if (pointingUp) {
+      path.moveTo(0, size.height);
+      path.lineTo(size.width / 2, 0);
+      path.lineTo(size.width, size.height);
+    } else {
+      path.moveTo(0, 0);
+      path.lineTo(size.width / 2, size.height);
+      path.lineTo(size.width, 0);
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_WideChevronPainter oldDelegate) {
+    return pointingUp != oldDelegate.pointingUp || color != oldDelegate.color;
   }
 }
