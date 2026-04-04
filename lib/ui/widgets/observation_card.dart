@@ -424,17 +424,43 @@ class _ObservationCardState extends State<ObservationCard>
         'Lat: ${widget.obs.exifData.latitude?.toStringAsFixed(4) ?? "?"}, '
         'Lon: ${widget.obs.exifData.longitude?.toStringAsFixed(4) ?? "?"}',
       ),
-      trailing: SizedBox(
-        width: 45,
-        child: TextFormField(
-          key: ValueKey('count_${widget.obs.hashCode}_${widget.obs.count}'),
-          initialValue: widget.obs.count.toString(),
-          decoration: const InputDecoration(labelText: 'Count'),
-          keyboardType: TextInputType.number,
-          onChanged: (val) {
-            widget.onCountChanged(int.tryParse(val) ?? 1);
-          },
-        ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            icon: const Icon(Icons.remove, size: 20),
+            onPressed: widget.obs.count > 1
+                ? () => widget.onCountChanged(widget.obs.count - 1)
+                : null,
+          ),
+          SizedBox(
+            width: 40,
+            child: TextFormField(
+              key: ValueKey('count_${widget.obs.hashCode}_${widget.obs.count}'),
+              initialValue: widget.obs.count.toString(),
+              textAlign: TextAlign.center,
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 8),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (val) {
+                final intVal = int.tryParse(val);
+                if (intVal != null && intVal > 0) {
+                  widget.onCountChanged(intVal);
+                }
+              },
+            ),
+          ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            icon: const Icon(Icons.add, size: 20),
+            onPressed: () => widget.onCountChanged(widget.obs.count + 1),
+          ),
+        ],
       ),
     );
   }

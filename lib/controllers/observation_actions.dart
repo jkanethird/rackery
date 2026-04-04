@@ -4,6 +4,7 @@ part of 'checklist_controller.dart';
 extension ObservationActions on ChecklistController {
   void updateObservationSpecies(Observation obs, String species) {
     obs.speciesName = species;
+    observationVersion++;
     notify();
   }
 
@@ -15,6 +16,7 @@ extension ObservationActions on ChecklistController {
     if (obs.individualNames.length > count) {
       obs.individualNames.removeRange(count, obs.individualNames.length);
     }
+    observationVersion++;
     notify();
   }
 
