@@ -133,7 +133,12 @@ class BirdClassifier {
           )
         : decoded;
 
-    return _classifyImage(cropped, allowNoBird: allowNoBird, isFallback: isFallback, allowedSpeciesKeys: allowedSpeciesKeys);
+    return _classifyImage(
+      cropped,
+      allowNoBird: allowNoBird,
+      isFallback: isFallback,
+      allowedSpeciesKeys: allowedSpeciesKeys,
+    );
   }
 
   /// Classifies a cluster of bounding boxes (all the same species).
@@ -171,9 +176,12 @@ class BirdClassifier {
       }
     }
 
-    return _classifyImage(image, allowNoBird: allowNoBird, allowedSpeciesKeys: allowedSpeciesKeys);
+    return _classifyImage(
+      image,
+      allowNoBird: allowNoBird,
+      allowedSpeciesKeys: allowedSpeciesKeys,
+    );
   }
-
 
   // ─── Core inference ───────────────────────────────────────────────────
 
@@ -223,7 +231,9 @@ class BirdClassifier {
 
       // Check confidence based on raw score (without local bonus)
       final topSpeciesLabel = _speciesLabels![indices[0]];
-      final bool hasBonus = allowedSpeciesKeys != null && allowedSpeciesKeys.contains(topSpeciesLabel);
+      final bool hasBonus =
+          allowedSpeciesKeys != null &&
+          allowedSpeciesKeys.contains(topSpeciesLabel);
       final rawScore = topScore - (hasBonus ? _kLocalBonus : 0.0);
       final threshold = isFallback ? 0.25 : _kMinConfidence;
 
@@ -247,22 +257,26 @@ class BirdClassifier {
   /// Dot product of the image embedding against every species embedding.
   /// Both are assumed to be L2-normalised, so dot = cosine similarity.
   /// If [allowedSpeciesKeys] is provided, applies a bonus to those species.
-  Float32List _cosineSimilarities(Float32List imageEmb, Set<String>? allowedSpeciesKeys) {
+  Float32List _cosineSimilarities(
+    Float32List imageEmb,
+    Set<String>? allowedSpeciesKeys,
+  ) {
     final sims = Float32List(_numSpecies);
     final emb = _speciesEmbeddings!;
-    
+
     for (int i = 0; i < _numSpecies; i++) {
       double dot = 0.0;
       final offset = i * _embeddingDim;
       for (int j = 0; j < _embeddingDim; j++) {
         dot += imageEmb[j] * emb[offset + j];
       }
-      
+
       // Apply local bird bonus (Soft Masking)
-      if (allowedSpeciesKeys != null && allowedSpeciesKeys.contains(_speciesLabels![i])) {
+      if (allowedSpeciesKeys != null &&
+          allowedSpeciesKeys.contains(_speciesLabels![i])) {
         dot += _kLocalBonus;
       }
-      
+
       sims[i] = dot;
     }
     return sims;

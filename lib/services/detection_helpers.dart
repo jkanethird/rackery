@@ -74,7 +74,7 @@ List<_RawDetection> _extractDetections(
     final double score = scores[0][i];
     final int detectedClass = classes[0][i].toInt();
 
-    if (score <= 0.25 || (detectedClass != 16 && detectedClass != 15)) continue;
+    if (score <= 0.45 || (detectedClass != 16 && detectedClass != 15)) continue;
 
     final box = locations[0][i];
     final double ymin = box[0].clamp(0.0, 1.0);
