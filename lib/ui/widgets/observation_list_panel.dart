@@ -148,7 +148,7 @@ class ObservationListPanel extends StatelessWidget {
         }
 
         return Column(
-          key: ObjectKey(obs),
+          key: GlobalObjectKey(obs),
           mainAxisSize: MainAxisSize.min,
           children: [
             // Drop zone above the first item

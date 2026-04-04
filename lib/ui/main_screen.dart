@@ -113,7 +113,7 @@ class _MainScreenState extends State<MainScreen> {
         isDropdownOpen: _controller.isDropdownOpen,
         scrollController: _controller.observationScrollController,
         onTapCard: _controller.selectObservation,
-        onTapIndividual: _controller.selectIndividual,
+        onTapIndividual: (obs, i) => _controller.selectIndividual(obs, i, scroll: false),
         onToggleExpanded: _controller.toggleExpanded,
         onSpeciesChanged: _controller.updateObservationSpecies,
         onSpeciesSelected: _controller.updateObservationSpecies,

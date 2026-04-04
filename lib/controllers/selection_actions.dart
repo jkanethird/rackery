@@ -28,7 +28,7 @@ extension SelectionActions on ChecklistController {
     notify();
   }
 
-  void selectIndividual(Observation obs, int i) {
+  void selectIndividual(Observation obs, int i, {bool scroll = true}) {
     if (selectedObservation != obs) {
       selectedObservation = obs;
       currentlyDisplayedImage = obs.imagePath;
@@ -40,7 +40,7 @@ extension SelectionActions on ChecklistController {
     lastSelectedIndividualIndex = i;
     expandedObservation = obs;
     ensureBoundingBoxesVisible();
-    scrollToObservation(obs);
+    if (scroll) scrollToObservation(obs);
     notify();
   }
 
@@ -62,16 +62,28 @@ extension SelectionActions on ChecklistController {
     final index = observations.indexOf(obs);
     if (index < 0) return;
 
+    // Phase 1: Jump roughly so the lazy ListView builds the target item.
     const estimatedItemHeight = 120.0;
-    final target = (index * estimatedItemHeight).clamp(
+    final roughTarget = (index * estimatedItemHeight).clamp(
       0.0,
       observationScrollController.position.maxScrollExtent,
     );
-    observationScrollController.animateTo(
-      target,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
+    observationScrollController.jumpTo(roughTarget);
+
+    // Let the frame rebuild so the widget is in the tree.
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    // Phase 2: Use the actual widget position for pixel-perfect scrolling.
+    final key = GlobalObjectKey(obs);
+    final ctx = key.currentContext;
+    if (ctx != null) {
+      await Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
+    }
   }
 
   void scrollToObservationForImage(String imagePath) {
