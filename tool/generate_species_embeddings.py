@@ -36,12 +36,13 @@ def extract_common_names(dart_path: str) -> list[str]:
     with open(dart_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # Match values in the map:  'Scientific Name': 'Common Name',
-    pattern = re.compile(r"'[^']+'\s*:\s*'([^']+)'")
+    # Match values but correctly ignore escaped quotes, e.g., 'David\'s Fulvetta'
+    # Captures the scientific name in group 1, and the common name in group 2
+    pattern = re.compile(r"'((?:[^'\\]|\\.)*)'\s*:\s*'((?:[^'\\]|\\.)*)'")
     names = []
     seen = set()
     for m in pattern.finditer(content):
-        name = m.group(1)
+        name = m.group(2).replace("\\'", "'").replace('\\\\', '\\')
         if name not in seen:
             seen.add(name)
             names.append(name)

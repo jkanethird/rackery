@@ -115,6 +115,7 @@ class BirdClassifier {
     double? longitude,
     DateTime? photoDate,
     bool allowNoBird = false,
+    bool isFallback = false,
     Set<String>? allowedSpeciesKeys,
   }) async {
     final bytes = await File(imagePath).readAsBytes();
@@ -132,7 +133,7 @@ class BirdClassifier {
           )
         : decoded;
 
-    return _classifyImage(cropped, allowNoBird: allowNoBird, allowedSpeciesKeys: allowedSpeciesKeys);
+    return _classifyImage(cropped, allowNoBird: allowNoBird, isFallback: isFallback, allowedSpeciesKeys: allowedSpeciesKeys);
   }
 
   /// Classifies a cluster of bounding boxes (all the same species).
@@ -179,6 +180,7 @@ class BirdClassifier {
   Future<List<String>> _classifyImage(
     img.Image image, {
     required bool allowNoBird,
+    bool isFallback = false,
     Set<String>? allowedSpeciesKeys,
   }) async {
     if (!isReady) return ['Unknown Bird'];
@@ -219,10 +221,16 @@ class BirdClassifier {
         '(score=${topScore.toStringAsFixed(3)})',
       );
 
+      // Check confidence based on raw score (without local bonus)
+      final topSpeciesLabel = _speciesLabels![indices[0]];
+      final bool hasBonus = allowedSpeciesKeys != null && allowedSpeciesKeys.contains(topSpeciesLabel);
+      final rawScore = topScore - (hasBonus ? _kLocalBonus : 0.0);
+      final threshold = isFallback ? 0.25 : _kMinConfidence;
+
       // If auto-detect and confidence is too low, reject as non-bird.
-      if (allowNoBird && topScore < _kMinConfidence) {
+      if (allowNoBird && rawScore < threshold) {
         debugPrint(
-          'BioCLIP: confidence $topScore < $_kMinConfidence → rejected',
+          'BioCLIP: raw confidence $rawScore < $threshold (fallback=$isFallback) → rejected',
         );
         return [];
       }

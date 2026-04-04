@@ -308,6 +308,7 @@ class PhotoProcessor {
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
                   allowNoBird: true,
+                  isFallback: true,
                   allowedSpeciesKeys: allowedMask,
                 );
                 // Empty list = model said no bird is present — skip this photo.
