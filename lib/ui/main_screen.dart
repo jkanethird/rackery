@@ -236,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
                   showAboutDialog(
                     context: context,
                     applicationName: 'Rackery',
-                    applicationVersion: '1.0.0',
+                    applicationVersion: '0.1.0',
                     applicationIcon: const Icon(Icons.flutter_dash, size: 48),
                     applicationLegalese:
                         'Powered by BioCLIP (ONNX Runtime) and TensorFlow Lite.',
