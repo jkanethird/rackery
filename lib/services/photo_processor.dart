@@ -4,14 +4,14 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/models/burst_group.dart';
-import 'package:ebird_generator/services/exif_service.dart';
-import 'package:ebird_generator/services/bird_classifier.dart';
-import 'package:ebird_generator/services/bird_clusterer.dart';
-import 'package:ebird_generator/services/bird_detector.dart';
-import 'package:ebird_generator/services/image_converter.dart';
-import 'package:ebird_generator/services/ebird_api_service.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/models/burst_group.dart';
+import 'package:rackery/services/exif_service.dart';
+import 'package:rackery/services/bird_classifier.dart';
+import 'package:rackery/services/bird_clusterer.dart';
+import 'package:rackery/services/bird_detector.dart';
+import 'package:rackery/services/image_converter.dart';
+import 'package:rackery/services/ebird_api_service.dart';
 
 /// Intermediate result from Phase 1 (detection).
 class Phase1Result {
@@ -57,7 +57,6 @@ class PhotoProcessor {
   ///   updated in-place (e.g. count/individuals from subsequent burst photos).
   /// - [onFileCompleted] — called when a single file finishes phase 1 + 2.
   /// - [onError] — called with (filePath, error) when a file fails.
-
 
   /// Snapshot the current [burstGroupsBySpecies] state, emitting new species
   /// and updating already-emitted observations in-place.
@@ -231,7 +230,8 @@ class PhotoProcessor {
             if (res.isFallback) {
               if (res.fallbackImg != null) {
                 Set<String>? allowedMask;
-                if (res.exifData.latitude != null && res.exifData.longitude != null) {
+                if (res.exifData.latitude != null &&
+                    res.exifData.longitude != null) {
                   allowedMask = await EbirdApiService.getSpeciesMask(
                     res.exifData.latitude!,
                     res.exifData.longitude!,
@@ -294,7 +294,8 @@ class PhotoProcessor {
                 final clusterBoxes = clusterCrops.map((c) => c.box).toList();
 
                 Set<String>? allowedMask;
-                if (res.exifData.latitude != null && res.exifData.longitude != null) {
+                if (res.exifData.latitude != null &&
+                    res.exifData.longitude != null) {
                   allowedMask = await EbirdApiService.getSpeciesMask(
                     res.exifData.latitude!,
                     res.exifData.longitude!,

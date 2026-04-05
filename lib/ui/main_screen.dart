@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:ebird_generator/controllers/checklist_controller.dart';
-import 'package:ebird_generator/ui/sine_wave_progress.dart';
-import 'package:ebird_generator/ui/widgets/file_list_panel.dart';
-import 'package:ebird_generator/ui/widgets/center_pane.dart';
-import 'package:ebird_generator/ui/widgets/observation_list_panel.dart';
-import 'package:ebird_generator/services/ebird_api_service.dart';
+import 'package:rackery/controllers/checklist_controller.dart';
+import 'package:rackery/ui/sine_wave_progress.dart';
+import 'package:rackery/ui/widgets/file_list_panel.dart';
+import 'package:rackery/ui/widgets/center_pane.dart';
+import 'package:rackery/ui/widgets/observation_list_panel.dart';
+import 'package:rackery/services/ebird_api_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

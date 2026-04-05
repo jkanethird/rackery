@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ebird_generator/services/exif_service.dart';
-import 'package:ebird_generator/services/burst_grouper.dart';
-import 'package:ebird_generator/services/env_hasher.dart';
+import 'package:rackery/services/exif_service.dart';
+import 'package:rackery/services/burst_grouper.dart';
+import 'package:rackery/services/env_hasher.dart';
 
 const _kLastPickerDirKey = 'last_picker_directory';
 

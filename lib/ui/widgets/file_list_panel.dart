@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/services/exif_service.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/services/exif_service.dart';
 
 /// Left-side panel that displays all selected files grouped into bursts,
 /// with timestamps, processing indicators, elapsed timers, and

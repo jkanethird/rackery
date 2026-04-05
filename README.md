@@ -1,4 +1,4 @@
-# ebird_generator
+# rackery
 
 A new Flutter project.
 

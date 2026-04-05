@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:ebird_generator/services/exif_service.dart';
-import 'package:ebird_generator/utils/name_generator.dart';
+import 'package:rackery/services/exif_service.dart';
+import 'package:rackery/utils/name_generator.dart';
 
 // BurstGroup has been moved to models/burst_group.dart
 

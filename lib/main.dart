@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:system_theme/system_theme.dart';
-import 'package:ebird_generator/ui/main_screen.dart';
+import 'package:rackery/ui/main_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 

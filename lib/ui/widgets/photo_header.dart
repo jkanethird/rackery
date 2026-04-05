@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ebird_generator/services/geo_region_service.dart';
+import 'package:rackery/services/geo_region_service.dart';
 
 class PhotoHeader extends StatelessWidget {
   final double? latitude;

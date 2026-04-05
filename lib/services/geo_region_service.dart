@@ -20,7 +20,7 @@ class GeoRegionService {
         'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=10',
       );
       final response = await http
-          .get(url, headers: {'User-Agent': 'ebird_generator/1.0.0'})
+          .get(url, headers: {'User-Agent': 'rackery/1.0.0'})
           .timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
@@ -205,7 +205,7 @@ class GeoRegionService {
         return entry.key;
       }
     }
-    
+
     // Canada check
     if (lat >= 42 && lat <= 83 && lon >= -141 && lon <= -52) {
       return 'CA';

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
-import 'package:ebird_generator/services/image_converter.dart';
+import 'package:rackery/services/image_converter.dart';
 
 void main() {
   test('Detect Turnstone with Converter', () async {

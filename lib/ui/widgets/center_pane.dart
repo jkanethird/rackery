@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/controllers/checklist_controller.dart';
-import 'package:ebird_generator/services/exif_service.dart';
-import 'package:ebird_generator/ui/widgets/photo_canvas.dart';
-import 'package:ebird_generator/ui/widgets/photo_header.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/controllers/checklist_controller.dart';
+import 'package:rackery/services/exif_service.dart';
+import 'package:rackery/ui/widgets/photo_canvas.dart';
+import 'package:rackery/ui/widgets/photo_header.dart';
 
 /// The centre pane: shows the full photo(s) for the selected observation with
 /// bounding-box overlays. Supports single-image and multi-image (PageView) modes.
@@ -19,7 +19,8 @@ class CenterPane extends StatelessWidget {
   final Set<String> processingFiles;
   final Future<String?> Function(String imagePath) getDisplayPath;
   final Future<Size> Function(String path) getImageSize;
-  final void Function(Observation obs, int individualIndex)? onIndividualSelected;
+  final void Function(Observation obs, int individualIndex)?
+  onIndividualSelected;
   final void Function(String imagePath, Rectangle<int> box)? onDrawBoundingBox;
 
   const CenterPane({
@@ -42,7 +43,7 @@ class CenterPane extends StatelessWidget {
   Widget build(BuildContext context) {
     final obs = selectedObservation;
 
-    // With BurstGroup changes, individual identity is represented by the 
+    // With BurstGroup changes, individual identity is represented by the
     // left-to-right local index (li) in each photo. `individualNames` has exactly `count` items.
     if (obs != null) {
       // Nothing needed here right now, we use localIndex directly.

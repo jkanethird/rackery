@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/services/bird_names.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/services/bird_names.dart';
 
 class CsvService {
   static Future<void> generateEbirdCsv(

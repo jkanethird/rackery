@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/ui/drag_data.dart';
-import 'package:ebird_generator/ui/widgets/observation_card.dart' hide DragData;
-import 'package:ebird_generator/ui/widgets/superellipse_border.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/ui/drag_data.dart';
+import 'package:rackery/ui/widgets/observation_card.dart' hide DragData;
+import 'package:rackery/ui/widgets/superellipse_border.dart';
 
 /// Right-side panel: a scrollable list of [ObservationCard]s with drag-and-drop
 /// support for merging observations and extracting individuals.
@@ -118,7 +118,7 @@ class ObservationListPanel extends StatelessWidget {
                 return false;
               }
               // We allow dropping here to create a new observation set.
-              // To be safe, we allow any valid individual drag. 
+              // To be safe, we allow any valid individual drag.
               // The ChecklistController will handle the array insertion safely.
               return true;
             },
@@ -132,13 +132,15 @@ class ObservationListPanel extends StatelessWidget {
             builder: (context, candidateData, rejectedData) {
               return Container(
                 width: double.infinity,
-                margin: child == null 
+                margin: child == null
                     ? const EdgeInsets.symmetric(horizontal: 24)
                     : EdgeInsets.zero,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: candidateData.isNotEmpty
-                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.5)
                       : Colors.transparent,
                 ),
                 child: child ?? const SizedBox(height: 12),
@@ -152,25 +154,27 @@ class ObservationListPanel extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Drop zone above the first item
-            if (index == 0)
-              dropZone(0),
-              
+            if (index == 0) dropZone(0),
+
             observationItem,
 
             // Between items: burst divider or plain drop zone (but not for last item)
             if (index < observations.length - 1) ...[
               if (isLastInBurst)
-                dropZone(index + 1, child: const Divider(
-                  height: 32,
-                  thickness: 1,
-                  indent: 32,
-                  endIndent: 32,
-                  color: Colors.white24,
-                ))
+                dropZone(
+                  index + 1,
+                  child: const Divider(
+                    height: 32,
+                    thickness: 1,
+                    indent: 32,
+                    endIndent: 32,
+                    color: Colors.white24,
+                  ),
+                )
               else
                 dropZone(index + 1),
             ],
-              
+
             // Drop zone below the last item
             if (index == observations.length - 1) dropZone(observations.length),
           ],
@@ -188,10 +192,11 @@ class ObservationListPanel extends StatelessWidget {
           child: ListenableBuilder(
             listenable: scrollController,
             builder: (context, _) {
-              final show = scrollController.hasClients && 
-                           scrollController.position.hasContentDimensions && 
-                           scrollController.position.maxScrollExtent > 0 &&
-                           scrollController.position.pixels > 0;
+              final show =
+                  scrollController.hasClients &&
+                  scrollController.position.hasContentDimensions &&
+                  scrollController.position.maxScrollExtent > 0 &&
+                  scrollController.position.pixels > 0;
               if (!show) return const SizedBox.shrink();
               return _buildScrollButton(
                 context: context,
@@ -215,10 +220,12 @@ class ObservationListPanel extends StatelessWidget {
           child: ListenableBuilder(
             listenable: scrollController,
             builder: (context, _) {
-              final show = scrollController.hasClients && 
-                           scrollController.position.hasContentDimensions && 
-                           scrollController.position.maxScrollExtent > 0 &&
-                           scrollController.position.pixels < scrollController.position.maxScrollExtent;
+              final show =
+                  scrollController.hasClients &&
+                  scrollController.position.hasContentDimensions &&
+                  scrollController.position.maxScrollExtent > 0 &&
+                  scrollController.position.pixels <
+                      scrollController.position.maxScrollExtent;
               if (!show) return const SizedBox.shrink();
               return _buildScrollButton(
                 context: context,
@@ -227,17 +234,23 @@ class ObservationListPanel extends StatelessWidget {
                 onPressed: () {
                   void scrollToBottom([bool isInitial = true]) {
                     if (!scrollController.hasClients) return;
-                    scrollController.animateTo(
-                      scrollController.position.maxScrollExtent,
-                      duration: Duration(milliseconds: isInitial ? 300 : 100),
-                      curve: isInitial ? Curves.easeOut : Curves.linear,
-                    ).then((_) {
-                      if (scrollController.hasClients && 
-                          scrollController.position.pixels < scrollController.position.maxScrollExtent) {
-                        scrollToBottom(false);
-                      }
-                    });
+                    scrollController
+                        .animateTo(
+                          scrollController.position.maxScrollExtent,
+                          duration: Duration(
+                            milliseconds: isInitial ? 300 : 100,
+                          ),
+                          curve: isInitial ? Curves.easeOut : Curves.linear,
+                        )
+                        .then((_) {
+                          if (scrollController.hasClients &&
+                              scrollController.position.pixels <
+                                  scrollController.position.maxScrollExtent) {
+                            scrollToBottom(false);
+                          }
+                        });
                   }
+
                   scrollToBottom();
                 },
               );
@@ -264,13 +277,17 @@ class ObservationListPanel extends StatelessWidget {
       child: Center(
         child: ClipRect(
           child: Align(
-            alignment: pointingUp ? Alignment.topCenter : Alignment.bottomCenter,
+            alignment: pointingUp
+                ? Alignment.topCenter
+                : Alignment.bottomCenter,
             heightFactor: 0.5,
             child: SizedBox(
               width: double.infinity,
               height: 32, // Shorter height, 16px when clipped
               child: Material(
-                color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primaryContainer.withValues(alpha: 0.8),
                 shape: const SuperellipseBorder(m: 200, n: 20),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
@@ -279,7 +296,9 @@ class ObservationListPanel extends StatelessWidget {
                   child: Tooltip(
                     message: tooltip,
                     child: Align(
-                      alignment: pointingUp ? const Alignment(0, -0.6) : const Alignment(0, 0.6),
+                      alignment: pointingUp
+                          ? const Alignment(0, -0.6)
+                          : const Alignment(0, 0.6),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: SizedBox(
@@ -288,7 +307,10 @@ class ObservationListPanel extends StatelessWidget {
                           child: CustomPaint(
                             painter: _WideChevronPainter(
                               pointingUp: pointingUp,
-                              color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer
+                                  .withValues(alpha: 0.8),
                             ),
                           ),
                         ),

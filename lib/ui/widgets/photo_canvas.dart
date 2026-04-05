@@ -4,10 +4,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/controllers/checklist_controller.dart';
-import 'package:ebird_generator/ui/widgets/bounding_box_painter.dart';
-import 'package:ebird_generator/ui/widgets/superellipse_border.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/controllers/checklist_controller.dart';
+import 'package:rackery/ui/widgets/bounding_box_painter.dart';
+import 'package:rackery/ui/widgets/superellipse_border.dart';
 
 class PhotoBoxData {
   final Rectangle<int> box;

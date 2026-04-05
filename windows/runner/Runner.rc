@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "ebird_generator" "\0"
+            VALUE "FileDescription", "rackery" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "ebird_generator" "\0"
+            VALUE "InternalName", "rackery" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "ebird_generator.exe" "\0"
-            VALUE "ProductName", "ebird_generator" "\0"
+            VALUE "OriginalFilename", "rackery.exe" "\0"
+            VALUE "ProductName", "rackery" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

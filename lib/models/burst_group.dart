@@ -1,7 +1,7 @@
 import 'dart:math';
-import 'package:ebird_generator/models/observation.dart';
-import 'package:ebird_generator/services/exif_service.dart';
-import 'package:ebird_generator/utils/name_generator.dart';
+import 'package:rackery/models/observation.dart';
+import 'package:rackery/services/exif_service.dart';
+import 'package:rackery/utils/name_generator.dart';
 
 class BurstGroup {
   final List<Observation> observations = [];

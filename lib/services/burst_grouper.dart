@@ -1,4 +1,4 @@
-import 'package:ebird_generator/services/exif_service.dart';
+import 'package:rackery/services/exif_service.dart';
 
 /// Groups a sorted list of file-exif pairs into "bursts" — sequences of photos
 /// taken within [burstGapSeconds] of each other.

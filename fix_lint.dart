@@ -3,14 +3,14 @@ import 'dart:io';
 
 void main() {
   final files = [
-    '/home/jkane/ebird_generator/test/test_exif.dart',
-    '/home/jkane/ebird_generator/test/test_detector_pure.dart',
-    '/home/jkane/ebird_generator/test/test_detector_raw.dart',
-    '/home/jkane/ebird_generator/test/test_detector2.dart',
-    '/home/jkane/ebird_generator/test/test_geo.dart',
-    '/home/jkane/ebird_generator/test/test_detector.dart',
-    '/home/jkane/ebird_generator/test/test_detector_heic.dart',
-    '/home/jkane/ebird_generator/bin/test_turnstone.dart',
+    '/home/jkane/repos/rackery/test/test_exif.dart',
+    '/home/jkane/repos/rackery/test/test_detector_pure.dart',
+    '/home/jkane/repos/rackery/test/test_detector_raw.dart',
+    '/home/jkane/repos/rackery/test/test_detector2.dart',
+    '/home/jkane/repos/rackery/test/test_geo.dart',
+    '/home/jkane/repos/rackery/test/test_detector.dart',
+    '/home/jkane/repos/rackery/test/test_detector_heic.dart',
+    '/home/jkane/repos/rackery/bin/test_turnstone.dart',
   ];
 
   final ignoreLine =

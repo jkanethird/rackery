@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:ebird_generator/services/bird_detector.dart';
+import 'package:rackery/services/bird_detector.dart';
 
 /// Groups detected bird crops from a single photo into clusters of likely
 /// same-species birds, using bounding-box size and aspect ratio similarity.
