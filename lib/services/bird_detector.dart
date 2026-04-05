@@ -108,11 +108,11 @@ class BirdDetector {
       ..threads = min(4, Platform.numberOfProcessors);
 
     // Enable XNNPack delegate for SIMD-optimized CPU inference.
-    if (Platform.isWindows) {
+    if (Platform.isWindows || Platform.isMacOS) {
       try {
         options.addDelegate(XNNPackDelegate());
       } catch (_) {
-        // XNNPack not available in the loaded TFLite DLL
+        // XNNPack not available in the loaded TFLite DLL/dylib
       }
     }
 
