@@ -241,7 +241,7 @@ class _MainScreenState extends State<MainScreen> {
                     _controller.observations.isEmpty || _controller.isProcessing
                     ? null
                     : () => _controller.exportCsv(context),
-                tooltip: 'Export CSV',
+                tooltip: 'Export eBird checklist CSV',
               ),
             ],
           ),

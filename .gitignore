@@ -46,7 +46,7 @@ app.*.map.json
 
 # VS Code settings
 .vscode/*
-ebird_generator.code-workspace
+rackery.code-workspace
 
 # macOS
 **/Flutter/ephemeral/
