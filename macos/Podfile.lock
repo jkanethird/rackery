@@ -1,0 +1,60 @@
+PODS:
+  - file_picker (0.0.1):
+    - FlutterMacOS
+  - flutter_onnxruntime (0.0.1):
+    - FlutterMacOS
+    - onnxruntime-objc (= 1.22.0)
+  - FlutterMacOS (1.0.0)
+  - onnxruntime-c (1.22.0)
+  - onnxruntime-objc (1.22.0):
+    - onnxruntime-objc/Core (= 1.22.0)
+  - onnxruntime-objc/Core (1.22.0):
+    - onnxruntime-c (= 1.22.0)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - system_theme (3.2.0):
+    - FlutterMacOS
+  - tflite_flutter (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
+  - flutter_onnxruntime (from `Flutter/ephemeral/.symlinks/plugins/flutter_onnxruntime/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - system_theme (from `Flutter/ephemeral/.symlinks/plugins/system_theme/macos`)
+  - tflite_flutter (from `Flutter/ephemeral/.symlinks/plugins/tflite_flutter/macos`)
+
+SPEC REPOS:
+  trunk:
+    - onnxruntime-c
+    - onnxruntime-objc
+
+EXTERNAL SOURCES:
+  file_picker:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
+  flutter_onnxruntime:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_onnxruntime/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  shared_preferences_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
+  system_theme:
+    :path: Flutter/ephemeral/.symlinks/plugins/system_theme/macos
+  tflite_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/tflite_flutter/macos
+
+SPEC CHECKSUMS:
+  file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
+  flutter_onnxruntime: 07103445f6b566bf12df4ceae61ef7b901d3e6ec
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  onnxruntime-c: 7f778680e96145956c0a31945f260321eed2611a
+  onnxruntime-objc: 83d28b87525bd971259a66e153ea32b5d023de19
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  system_theme: 6a419772fd834d53d9eb27accb3653b399c74426
+  tflite_flutter: d1496f2e968aa5a142fb282da8f5d754fcee5613
+
+PODFILE CHECKSUM: 4248b9136768c39e1eb5f5de06bb6c3a5df25e71
+
+COCOAPODS: 1.16.2
