@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return SystemThemeBuilder(
       builder: (context, accent) {
         return MaterialApp(
-          title: 'eBird Checklist Generator',
+          title: 'Rackery',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: accent.accent,

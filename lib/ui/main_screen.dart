@@ -113,7 +113,8 @@ class _MainScreenState extends State<MainScreen> {
         isDropdownOpen: _controller.isDropdownOpen,
         scrollController: _controller.observationScrollController,
         onTapCard: _controller.selectObservation,
-        onTapIndividual: (obs, i) => _controller.selectIndividual(obs, i, scroll: false),
+        onTapIndividual: (obs, i) =>
+            _controller.selectIndividual(obs, i, scroll: false),
         onToggleExpanded: _controller.toggleExpanded,
         onSpeciesChanged: _controller.updateObservationSpecies,
         onSpeciesSelected: _controller.updateObservationSpecies,
@@ -171,7 +172,7 @@ class _MainScreenState extends State<MainScreen> {
         }
         return Scaffold(
           appBar: AppBar(
-            title: const Text('eBird Checklist Generator'),
+            title: const Text('Rackery'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings),
@@ -180,7 +181,7 @@ class _MainScreenState extends State<MainScreen> {
                   final currentKey = await EbirdApiService.getApiKey() ?? '';
                   final controller = TextEditingController(text: currentKey);
                   if (!context.mounted) return;
-                  
+
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -190,7 +191,8 @@ class _MainScreenState extends State<MainScreen> {
                         decoration: const InputDecoration(
                           labelText: 'eBird API Key',
                           hintText: 'Paste your eBird API Token here',
-                          helperText: 'Required for geographic & seasonal filtering.',
+                          helperText:
+                              'Required for geographic & seasonal filtering.',
                         ),
                         obscureText: true,
                       ),
@@ -217,7 +219,7 @@ class _MainScreenState extends State<MainScreen> {
                 onPressed: () {
                   showAboutDialog(
                     context: context,
-                    applicationName: 'eBird Checklist Generator',
+                    applicationName: 'Rackery',
                     applicationVersion: '1.0.0',
                     applicationIcon: const Icon(Icons.flutter_dash, size: 48),
                     applicationLegalese:

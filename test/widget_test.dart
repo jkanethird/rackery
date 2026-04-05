@@ -1,4 +1,4 @@
-// Basic smoke test for the eBird Checklist Generator app.
+// Basic smoke test for the Rackery app.
 
 import 'package:flutter_test/flutter_test.dart';
 
