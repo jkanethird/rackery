@@ -92,7 +92,7 @@ extension SelectionActions on ChecklistController {
     // Phase 2: Use the actual widget position for pixel-perfect scrolling.
     final key = GlobalObjectKey(obs);
     final ctx = key.currentContext;
-    if (ctx != null) {
+    if (ctx != null && ctx.mounted) {
       await Scrollable.ensureVisible(
         ctx,
         duration: const Duration(milliseconds: 300),
