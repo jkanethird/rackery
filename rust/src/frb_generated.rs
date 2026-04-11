@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1430370213;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 349694375;
 
 // Section: executor
 
@@ -46,6 +46,45 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__pipeline__classify_crop_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "classify_crop",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_crop_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_allowed_species = <Option<Vec<String>>>::sse_decode(&mut deserializer);
+            let api_is_fallback = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::pipeline::classify_crop(
+                        api_crop_bytes,
+                        api_allowed_species,
+                        api_is_fallback,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__simple__greet_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -110,7 +149,7 @@ fn wire__crate__api__simple__init_app_impl(
         },
     )
 }
-fn wire__crate__api__image_utils__prepare_tiles_impl(
+fn wire__crate__api__pipeline__init_pipeline_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -118,7 +157,48 @@ fn wire__crate__api__image_utils__prepare_tiles_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "prepare_tiles",
+            debug_name: "init_pipeline",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_detector_model_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_classifier_model_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_embeddings_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_labels_json = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::pipeline::init_pipeline(
+                        api_detector_model_bytes,
+                        api_classifier_model_bytes,
+                        api_embeddings_bytes,
+                        api_labels_json,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__pipeline__process_pipeline_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_pipeline",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -133,18 +213,19 @@ fn wire__crate__api__image_utils__prepare_tiles_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_file_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
-            let api_target_w = <u32>::sse_decode(&mut deserializer);
-            let api_target_h = <u32>::sse_decode(&mut deserializer);
-            let api_custom_tiles = <Option<Vec<Vec<u32>>>>::sse_decode(&mut deserializer);
+            let api_allowed_species = <Option<Vec<String>>>::sse_decode(&mut deserializer);
+            let api_stream = <StreamSink<
+                crate::api::pipeline::PipelineEvent,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::image_utils::prepare_tiles(
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::pipeline::process_pipeline(
                         api_file_bytes,
-                        api_target_w,
-                        api_target_h,
-                        api_custom_tiles,
-                    ))?;
+                        api_allowed_species,
+                        api_stream,
+                    )?;
                     Ok(output_ok)
                 })())
             }
@@ -154,6 +235,27 @@ fn wire__crate__api__image_utils__prepare_tiles_impl(
 
 // Section: dart2rust
 
+impl SseDecode for flutter_rust_bridge::for_generated::anyhow::Error {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::anyhow::anyhow!("{}", inner);
+    }
+}
+
+impl SseDecode
+    for StreamSink<
+        crate::api::pipeline::PipelineEvent,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
+    }
+}
+
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -162,37 +264,63 @@ impl SseDecode for String {
     }
 }
 
-impl SseDecode for Vec<Vec<u32>> {
+impl SseDecode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u8().unwrap() != 0
+    }
+}
+
+impl SseDecode for crate::api::pipeline::ClassificationResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_species = <Vec<String>>::sse_decode(deserializer);
+        return crate::api::pipeline::ClassificationResult {
+            species: var_species,
+        };
+    }
+}
+
+impl SseDecode for f64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_f64::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for Vec<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
-            ans_.push(<Vec<u32>>::sse_decode(deserializer));
+            ans_.push(<String>::sse_decode(deserializer));
         }
         return ans_;
     }
 }
 
-impl SseDecode for Vec<Vec<u8>> {
+impl SseDecode for Vec<crate::api::pipeline::NativeBirdResult> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
-            ans_.push(<Vec<u8>>::sse_decode(deserializer));
+            ans_.push(<crate::api::pipeline::NativeBirdResult>::sse_decode(
+                deserializer,
+            ));
         }
         return ans_;
     }
 }
 
-impl SseDecode for Vec<u32> {
+impl SseDecode for Vec<f64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
-            ans_.push(<u32>::sse_decode(deserializer));
+            ans_.push(<f64>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -210,42 +338,74 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Option<crate::api::image_utils::PrepareTilesResult> {
+impl SseDecode for crate::api::pipeline::NativeBirdResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_species = <String>::sse_decode(deserializer);
+        let mut var_possibleSpecies = <Vec<String>>::sse_decode(deserializer);
+        let mut var_confidence = <f64>::sse_decode(deserializer);
+        let mut var_boxX = <u32>::sse_decode(deserializer);
+        let mut var_boxY = <u32>::sse_decode(deserializer);
+        let mut var_boxW = <u32>::sse_decode(deserializer);
+        let mut var_boxH = <u32>::sse_decode(deserializer);
+        let mut var_centerColor = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_cropJpgBytes = <Vec<u8>>::sse_decode(deserializer);
+        return crate::api::pipeline::NativeBirdResult {
+            species: var_species,
+            possible_species: var_possibleSpecies,
+            confidence: var_confidence,
+            box_x: var_boxX,
+            box_y: var_boxY,
+            box_w: var_boxW,
+            box_h: var_boxH,
+            center_color: var_centerColor,
+            crop_jpg_bytes: var_cropJpgBytes,
+        };
+    }
+}
+
+impl SseDecode for Option<Vec<String>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
-            return Some(<crate::api::image_utils::PrepareTilesResult>::sse_decode(
-                deserializer,
-            ));
+            return Some(<Vec<String>>::sse_decode(deserializer));
         } else {
             return None;
         }
     }
 }
 
-impl SseDecode for Option<Vec<Vec<u32>>> {
+impl SseDecode for crate::api::pipeline::PipelineEvent {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        if (<bool>::sse_decode(deserializer)) {
-            return Some(<Vec<Vec<u32>>>::sse_decode(deserializer));
-        } else {
-            return None;
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::pipeline::PipelineEvent::Progress(var_field0);
+            }
+            1 => {
+                let mut var_field0 =
+                    <crate::api::pipeline::PipelineResult>::sse_decode(deserializer);
+                return crate::api::pipeline::PipelineEvent::Complete(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
         }
     }
 }
 
-impl SseDecode for crate::api::image_utils::PrepareTilesResult {
+impl SseDecode for crate::api::pipeline::PipelineResult {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_tilePixels = <Vec<Vec<u8>>>::sse_decode(deserializer);
-        let mut var_tileRects = <Vec<Vec<u32>>>::sse_decode(deserializer);
-        let mut var_origW = <u32>::sse_decode(deserializer);
-        let mut var_origH = <u32>::sse_decode(deserializer);
-        return crate::api::image_utils::PrepareTilesResult {
-            tile_pixels: var_tilePixels,
-            tile_rects: var_tileRects,
-            orig_w: var_origW,
-            orig_h: var_origH,
+        let mut var_birds = <Vec<crate::api::pipeline::NativeBirdResult>>::sse_decode(deserializer);
+        let mut var_detectionMs = <u64>::sse_decode(deserializer);
+        let mut var_classificationMs = <u64>::sse_decode(deserializer);
+        return crate::api::pipeline::PipelineResult {
+            birds: var_birds,
+            detection_ms: var_detectionMs,
+            classification_ms: var_classificationMs,
         };
     }
 }
@@ -254,6 +414,13 @@ impl SseDecode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
     }
 }
 
@@ -276,13 +443,6 @@ impl SseDecode for i32 {
     }
 }
 
-impl SseDecode for bool {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_u8().unwrap() != 0
-    }
-}
-
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -292,8 +452,10 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        2 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
-        3 => wire__crate__api__image_utils__prepare_tiles_impl(port, ptr, rust_vec_len, data_len),
+        1 => wire__crate__api__pipeline__classify_crop_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__pipeline__init_pipeline_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__pipeline__process_pipeline_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -306,7 +468,7 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
+        2 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -314,26 +476,116 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::image_utils::PrepareTilesResult {
+impl flutter_rust_bridge::IntoDart for crate::api::pipeline::ClassificationResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.species.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::pipeline::ClassificationResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::pipeline::ClassificationResult>
+    for crate::api::pipeline::ClassificationResult
+{
+    fn into_into_dart(self) -> crate::api::pipeline::ClassificationResult {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::pipeline::NativeBirdResult {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.tile_pixels.into_into_dart().into_dart(),
-            self.tile_rects.into_into_dart().into_dart(),
-            self.orig_w.into_into_dart().into_dart(),
-            self.orig_h.into_into_dart().into_dart(),
+            self.species.into_into_dart().into_dart(),
+            self.possible_species.into_into_dart().into_dart(),
+            self.confidence.into_into_dart().into_dart(),
+            self.box_x.into_into_dart().into_dart(),
+            self.box_y.into_into_dart().into_dart(),
+            self.box_w.into_into_dart().into_dart(),
+            self.box_h.into_into_dart().into_dart(),
+            self.center_color.into_into_dart().into_dart(),
+            self.crop_jpg_bytes.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::image_utils::PrepareTilesResult
+    for crate::api::pipeline::NativeBirdResult
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::image_utils::PrepareTilesResult>
-    for crate::api::image_utils::PrepareTilesResult
+impl flutter_rust_bridge::IntoIntoDart<crate::api::pipeline::NativeBirdResult>
+    for crate::api::pipeline::NativeBirdResult
 {
-    fn into_into_dart(self) -> crate::api::image_utils::PrepareTilesResult {
+    fn into_into_dart(self) -> crate::api::pipeline::NativeBirdResult {
         self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::pipeline::PipelineEvent {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::pipeline::PipelineEvent::Progress(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::pipeline::PipelineEvent::Complete(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::pipeline::PipelineEvent
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::pipeline::PipelineEvent>
+    for crate::api::pipeline::PipelineEvent
+{
+    fn into_into_dart(self) -> crate::api::pipeline::PipelineEvent {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::pipeline::PipelineResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.birds.into_into_dart().into_dart(),
+            self.detection_ms.into_into_dart().into_dart(),
+            self.classification_ms.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::pipeline::PipelineResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::pipeline::PipelineResult>
+    for crate::api::pipeline::PipelineResult
+{
+    fn into_into_dart(self) -> crate::api::pipeline::PipelineResult {
+        self
+    }
+}
+
+impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(format!("{:?}", self), serializer);
+    }
+}
+
+impl SseEncode
+    for StreamSink<
+        crate::api::pipeline::PipelineEvent,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
     }
 }
 
@@ -344,32 +596,53 @@ impl SseEncode for String {
     }
 }
 
-impl SseEncode for Vec<Vec<u32>> {
+impl SseEncode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u8(self as _).unwrap();
+    }
+}
+
+impl SseEncode for crate::api::pipeline::ClassificationResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.species, serializer);
+    }
+}
+
+impl SseEncode for f64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_f64::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for Vec<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <Vec<u32>>::sse_encode(item, serializer);
+            <String>::sse_encode(item, serializer);
         }
     }
 }
 
-impl SseEncode for Vec<Vec<u8>> {
+impl SseEncode for Vec<crate::api::pipeline::NativeBirdResult> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <Vec<u8>>::sse_encode(item, serializer);
+            <crate::api::pipeline::NativeBirdResult>::sse_encode(item, serializer);
         }
     }
 }
 
-impl SseEncode for Vec<u32> {
+impl SseEncode for Vec<f64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <u32>::sse_encode(item, serializer);
+            <f64>::sse_encode(item, serializer);
         }
     }
 }
@@ -384,33 +657,56 @@ impl SseEncode for Vec<u8> {
     }
 }
 
-impl SseEncode for Option<crate::api::image_utils::PrepareTilesResult> {
+impl SseEncode for crate::api::pipeline::NativeBirdResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.species, serializer);
+        <Vec<String>>::sse_encode(self.possible_species, serializer);
+        <f64>::sse_encode(self.confidence, serializer);
+        <u32>::sse_encode(self.box_x, serializer);
+        <u32>::sse_encode(self.box_y, serializer);
+        <u32>::sse_encode(self.box_w, serializer);
+        <u32>::sse_encode(self.box_h, serializer);
+        <Vec<f64>>::sse_encode(self.center_color, serializer);
+        <Vec<u8>>::sse_encode(self.crop_jpg_bytes, serializer);
+    }
+}
+
+impl SseEncode for Option<Vec<String>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
-            <crate::api::image_utils::PrepareTilesResult>::sse_encode(value, serializer);
+            <Vec<String>>::sse_encode(value, serializer);
         }
     }
 }
 
-impl SseEncode for Option<Vec<Vec<u32>>> {
+impl SseEncode for crate::api::pipeline::PipelineEvent {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.is_some(), serializer);
-        if let Some(value) = self {
-            <Vec<Vec<u32>>>::sse_encode(value, serializer);
+        match self {
+            crate::api::pipeline::PipelineEvent::Progress(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::pipeline::PipelineEvent::Complete(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <crate::api::pipeline::PipelineResult>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
         }
     }
 }
 
-impl SseEncode for crate::api::image_utils::PrepareTilesResult {
+impl SseEncode for crate::api::pipeline::PipelineResult {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<Vec<u8>>>::sse_encode(self.tile_pixels, serializer);
-        <Vec<Vec<u32>>>::sse_encode(self.tile_rects, serializer);
-        <u32>::sse_encode(self.orig_w, serializer);
-        <u32>::sse_encode(self.orig_h, serializer);
+        <Vec<crate::api::pipeline::NativeBirdResult>>::sse_encode(self.birds, serializer);
+        <u64>::sse_encode(self.detection_ms, serializer);
+        <u64>::sse_encode(self.classification_ms, serializer);
     }
 }
 
@@ -418,6 +714,13 @@ impl SseEncode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -437,13 +740,6 @@ impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for bool {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_u8(self as _).unwrap();
     }
 }
 

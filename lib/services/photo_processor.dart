@@ -18,55 +18,26 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
-import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as p;
 import 'package:rackery/models/observation.dart';
 import 'package:rackery/models/burst_group.dart';
 import 'package:rackery/services/exif_service.dart';
-import 'package:rackery/services/bird_classifier.dart';
 import 'package:rackery/services/bird_detector.dart';
 import 'package:rackery/services/image_converter.dart';
 import 'package:rackery/services/ebird_api_service.dart';
 
-/// Intermediate result from Phase 1 (detection).
-class Phase1Result {
-  final String processedPath;
-  final ExifData exifData;
-  final List<BirdCrop> crops;
-  final bool isFallback;
-  final img.Image? fallbackImg;
-
-  Phase1Result({
-    required this.processedPath,
-    required this.exifData,
-    required this.crops,
-    required this.isFallback,
-    this.fallbackImg,
-  });
-}
-
-/// Drives the two-phase detection + classification pipeline for a batch of
-/// image files organised into bursts.
+/// Drives the unified native pipeline for a batch of image files organised
+/// into bursts.
 ///
-/// Emits progress and individual [Observation] results via callbacks so the
-/// UI can update incrementally without coupling to the processing logic.
+/// The entire detect → classify flow runs in Rust. Dart only handles:
+/// - File I/O / JPEG conversion
+/// - EXIF extraction
+/// - eBird geographic species mask (network call)
+/// - Assembling Observations from pipeline results
 class PhotoProcessor {
-  final BirdClassifier classifier;
-  final BirdDetector detector;
+  final NativePipeline pipeline;
 
-  const PhotoProcessor({required this.classifier, required this.detector});
-
-  /// Process [newPaths] organised into [bursts].
-  ///
-  /// Callbacks:
-  /// - [onProgress] — called with a value in [0, 1].
-  /// - [onProgressMessage] — human-readable status string.
-  /// - [onObservationAdded] — called with new observations as birds are
-  ///   identified so the UI can display them immediately.
-  /// - [onObservationsChanged] — called when existing observations are
-  ///   updated in-place (e.g. count/individuals from subsequent burst photos).
-  /// - [onFileCompleted] — called when a single file finishes phase 1 + 2.
-  /// - [onError] — called with (filePath, error) when a file fails.
+  const PhotoProcessor({required this.pipeline});
 
   /// Snapshot the current [burstGroupsBySpecies] state, emitting new species
   /// and updating already-emitted observations in-place.
@@ -128,347 +99,161 @@ class PhotoProcessor {
     final newPathSet = newPaths.toSet();
 
     // Progress accounting
-    int totalBytesPhase1 = 0;
-    for (final p in newPaths) {
-      totalBytesPhase1 += File(p).lengthSync();
-    }
-    int processedBytesPhase1 = 0;
-    final int totalBursts = bursts.length;
-    int completedBurstsPhase2 = 0;
-    int totalIdentifications = 0;
-    int completedIdentifications = 0;
+    int totalFiles = newPaths.length;
+    int completedFiles = 0;
 
-    onProgressMessage('Detecting & Classifying...');
+    onProgressMessage('Processing photos...');
     onProgress(0.0);
 
     final Map<String, PhotoProfile> photoProfiles = {};
-    final Map<String, Phase1Result> phase1Results = {};
-    final List<Completer<void>> burstCompleters = List.generate(
-      bursts.length,
-      (_) => Completer<void>(),
-    );
 
-    // ── Phase 1: Detection (sequential across bursts, parallel within burst) ──
-    final Future<void> phase1Worker = Future(() async {
-      for (int i = 0; i < bursts.length; i++) {
-        final burstJobs = bursts[i].map((filePath) async {
-          if (!newPathSet.contains(filePath)) return null;
-          onFileStarted(filePath);
-          try {
-            final t1 = Stopwatch()..start();
-            final processedPath = await ImageConverter.convertToJpegIfNeeded(
-              filePath,
+    // Process bursts sequentially, files within burst sequentially
+    // (pipeline is fully sequential in Rust due to Mutex<Session>)
+    for (int i = 0; i < bursts.length; i++) {
+      final burstFiles = bursts[i];
+      final burstHasNew = burstFiles.any(newPathSet.contains);
+      if (!burstHasNew) continue;
+
+      final Map<String, BurstGroup> burstGroupsBySpecies = {};
+      final Map<String, Observation> emittedObs = {};
+
+      for (final filePath in burstFiles) {
+        if (!newPathSet.contains(filePath)) continue;
+        onFileStarted(filePath);
+
+        try {
+          // Pre-process: JPEG conversion + EXIF
+          final t1 = Stopwatch()..start();
+          final processedPath = await ImageConverter.convertToJpegIfNeeded(filePath);
+          final jpegTime = t1.elapsed;
+          final exifData = await ExifService.extractExif(filePath);
+
+          // Fetch eBird geographic mask (Dart network call)
+          Set<String>? allowedMask;
+          if (exifData.latitude != null && exifData.longitude != null) {
+            allowedMask = await EbirdApiService.getSpeciesMask(
+              exifData.latitude!,
+              exifData.longitude!,
+              exifData.dateTime,
             );
-            final jpegTime = t1.elapsed;
-            final exifData = await ExifService.extractExif(filePath);
-            return {
-              'f': filePath,
-              'p': processedPath,
-              'e': exifData,
-              'jt': jpegTime,
-            };
-          } catch (e) {
-            debugPrint('Error decoding $filePath: $e');
-            return null;
           }
-        });
 
-        final prepped = await Future.wait(burstJobs);
+          // Run full native pipeline (detect + classify)
+          final pipelineOutput = await pipeline.processPhoto(
+            processedPath,
+            allowedSpecies: allowedMask,
+            onProgress: onProgressMessage,
+          );
 
-        final detectionJobs = prepped.map((item) async {
-          if (item == null) return;
-          final filePath = item['f'] as String;
-          final processedPath = item['p'] as String;
-          final exifData = item['e'] as ExifData;
-          final jpegTime = item['jt'] as Duration;
+          photoProfiles[filePath] = PhotoProfile()
+            ..jpegConvertTime = jpegTime
+            ..detectionTime = pipelineOutput.detectionTime
+            ..classificationTime = pipelineOutput.classificationTime;
 
-          try {
-            final detectionResult = await detector.detectAndCrop(processedPath);
-            photoProfiles[filePath] = PhotoProfile()
-              ..jpegConvertTime = jpegTime
-              ..createTilesTime = detectionResult.createTilesTime
-              ..birdDetectionTime = detectionResult.birdDetectionTime;
+          if (pipelineOutput.birds.isEmpty) {
+            // Fallback: classify entire image
+            onProgressMessage('Fallback classification for ${p.basename(filePath)}...');
 
-            if (detectionResult.crops.isEmpty) {
-              final fallbackBytes = await File(processedPath).readAsBytes();
-              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
-              phase1Results[filePath] = Phase1Result(
-                processedPath: processedPath,
-                exifData: exifData,
-                crops: [],
-                isFallback: true,
-                fallbackImg: fallbackImg,
-              );
-            } else {
-              phase1Results[filePath] = Phase1Result(
-                processedPath: processedPath,
-                exifData: exifData,
-                crops: detectionResult.crops,
-                isFallback: false,
+            final fallbackSpecies = await pipeline.classifyFile(
+              processedPath,
+              allowedSpecies: allowedMask,
+              isFallback: true,
+            );
+
+            if (fallbackSpecies.isNotEmpty) {
+              final species = fallbackSpecies.first;
+
+              burstGroupsBySpecies
+                  .putIfAbsent(species, BurstGroup.new)
+                  .addObservation(
+                    Observation(
+                      imagePath: filePath,
+                      displayPath: processedPath,
+                      fullImageDisplayPath: processedPath,
+                      speciesName: species,
+                      possibleSpecies: fallbackSpecies,
+                      exifData: exifData,
+                      count: 1,
+                      boundingBoxes: [Rectangle<int>(0, 0, 0, 0)], // Full image
+                    ),
+                  );
+
+              _emitBurstUpdates(
+                burstGroupsBySpecies, emittedObs, burstIds[i],
+                onObservationAdded, onObservationsChanged, onIndicesRemapped,
               );
             }
-          } catch (e) {
-            debugPrint('Error in phase 1 detection for $filePath: $e');
-          } finally {
-            processedBytesPhase1 += File(filePath).lengthSync();
-            final p1 = totalBytesPhase1 > 0
-                ? processedBytesPhase1 / totalBytesPhase1
-                : 1.0;
-            final p2 = totalBursts > 0
-                ? completedBurstsPhase2 / totalBursts
-                : 1.0;
-            onProgress(p1 * 0.5 + p2 * 0.5);
-          }
-        });
+          } else {
+            // Process each identified bird
+            for (int ci = 0; ci < pipelineOutput.birds.length; ci++) {
+              final bird = pipelineOutput.birds[ci];
+              final species = bird.species;
 
-        await Future.wait(detectionJobs);
-        burstCompleters[i].complete();
-      }
-    });
-
-    // ── Phase 2: Classification (waits for each burst's phase-1 to finish) ──
-    final Future<void> phase2Worker = Future(() async {
-      for (int i = 0; i < bursts.length; i++) {
-        await burstCompleters[i].future;
-
-        final burstFiles = bursts[i];
-        final burstHasNew = burstFiles.any(newPathSet.contains);
-        if (!burstHasNew) {
-          completedBurstsPhase2++;
-          continue;
-        }
-
-        // Count total identifications in this burst up front for progress display
-        int burstIdentifications = 0;
-        for (final filePath in burstFiles) {
-          if (!newPathSet.contains(filePath)) continue;
-          final res = phase1Results[filePath];
-          if (res == null) continue;
-          burstIdentifications += res.isFallback
-              ? (res.fallbackImg != null ? 1 : 0)
-              : res.crops.length;
-        }
-        totalIdentifications += burstIdentifications;
-        onProgressMessage(
-          'Classifying... ($completedIdentifications of $totalIdentifications birds)',
-        );
-
-        final Map<String, BurstGroup> burstGroupsBySpecies = {};
-        // Track already-emitted observations so we can update them in-place
-        final Map<String, Observation> emittedObs = {};
-
-        for (final filePath in burstFiles) {
-          if (!newPathSet.contains(filePath)) continue;
-          onFileStarted(filePath);
-
-          final res = phase1Results[filePath];
-          if (res == null) {
-            onFileCompleted(filePath);
-            continue;
-          }
-
-          try {
-            if (res.isFallback) {
-              if (res.fallbackImg != null) {
-                Set<String>? allowedMask;
-                if (res.exifData.latitude != null &&
-                    res.exifData.longitude != null) {
-                  allowedMask = await EbirdApiService.getSpeciesMask(
-                    res.exifData.latitude!,
-                    res.exifData.longitude!,
-                    res.exifData.dateTime,
+              // Write crop file
+              final bool isNewSpeciesInFile =
+                  !burstGroupsBySpecies.containsKey(species) ||
+                  !burstGroupsBySpecies[species]!.observations.any(
+                    (o) => o.imagePath == filePath,
                   );
-                }
 
-                final classifyStopwatch = Stopwatch()..start();
-                final speciesList = await classifier.classifyFile(
-                  res.processedPath,
-                  latitude: res.exifData.latitude,
-                  longitude: res.exifData.longitude,
-                  photoDate: res.exifData.dateTime,
-                  allowNoBird: true,
-                  isFallback: true,
-                  allowedSpeciesKeys: allowedMask,
-                );
-                photoProfiles[filePath]?.birdClassificationTime =
-                    classifyStopwatch.elapsed;
-
-                // Empty list = model said no bird is present — skip this photo.
-                if (speciesList.isNotEmpty) {
-                  final species = speciesList.first;
-                  final fullImageBox = Rectangle<int>(
-                    0,
-                    0,
-                    res.fallbackImg!.width,
-                    res.fallbackImg!.height,
-                  );
-                  burstGroupsBySpecies
-                      .putIfAbsent(species, BurstGroup.new)
-                      .addObservation(
-                        Observation(
-                          imagePath: filePath,
-                          displayPath: res.processedPath,
-                          fullImageDisplayPath: res.processedPath,
-                          speciesName: species,
-                          possibleSpecies: speciesList,
-                          exifData: res.exifData,
-                          count: 1,
-                          boundingBoxes: [fullImageBox],
-                        ),
-                      );
-
-                  // Emit / update immediately
-                  _emitBurstUpdates(
-                    burstGroupsBySpecies,
-                    emittedObs,
-                    burstIds[i],
-                    onObservationAdded,
-                    onObservationsChanged,
-                    onIndicesRemapped,
-                  );
-                }
-                completedIdentifications++;
-                onProgressMessage(
-                  'Classifying... ($completedIdentifications of $totalIdentifications birds)',
-                );
+              String cropPath;
+              if (isNewSpeciesInFile) {
+                final tempDir = await Directory.systemTemp.createTemp();
+                final filename = p.basename(filePath);
+                cropPath = '${tempDir.path}/crop_${ci}_$filename';
+                await File(cropPath).writeAsBytes(bird.cropJpgBytes);
+              } else {
+                cropPath = burstGroupsBySpecies[species]!.observations
+                    .firstWhere((o) => o.imagePath == filePath)
+                    .displayPath!;
               }
-            } else {
-              // Individual crop-level classification mapped concurrently (limited by Classifier Session Pool)
-              final cropJobs = res.crops.asMap().entries.map((entry) async {
-                final ci = entry.key;
-                final crop = entry.value;
-                final box = crop.box;
 
-                Set<String>? allowedMask;
-                if (res.exifData.latitude != null &&
-                    res.exifData.longitude != null) {
-                  allowedMask = await EbirdApiService.getSpeciesMask(
-                    res.exifData.latitude!,
-                    res.exifData.longitude!,
-                    res.exifData.dateTime,
+              burstGroupsBySpecies
+                  .putIfAbsent(species, BurstGroup.new)
+                  .addObservation(
+                    Observation(
+                      imagePath: filePath,
+                      displayPath: cropPath,
+                      fullImageDisplayPath: processedPath,
+                      speciesName: species,
+                      possibleSpecies: bird.possibleSpecies,
+                      exifData: exifData,
+                      count: 1,
+                      boundingBoxes: [bird.box],
+                    ),
                   );
-                }
 
-                final speciesList = await classifier.classifyCrop(
-                  res.processedPath,
-                  box: box,
-                  latitude: res.exifData.latitude,
-                  longitude: res.exifData.longitude,
-                  photoDate: res.exifData.dateTime,
-                  allowNoBird: true,
-                  allowedSpeciesKeys: allowedMask,
-                  cropBytes: crop.croppedJpgBytes,
-                );
-                // Empty list = model said this crop isn't a bird — skip it.
-                if (speciesList.isEmpty) {
-                  completedIdentifications++;
-                  onProgressMessage(
-                    'Classifying... ($completedIdentifications of $totalIdentifications birds)',
-                  );
-                  return;
-                }
-
-                final species = speciesList.first;
-
-                // Write crop file only for the first instance of this species
-                // in this file (subsequent instances reuse the existing crop).
-                final bool isNewSpeciesInFile =
-                    !burstGroupsBySpecies.containsKey(species) ||
-                    !burstGroupsBySpecies[species]!.observations.any(
-                      (o) => o.imagePath == filePath,
-                    );
-
-                String cropPath;
-                if (isNewSpeciesInFile) {
-                  final cropBytes = crop.croppedJpgBytes;
-                  final tempDir = await Directory.systemTemp.createTemp();
-                  final filename = p.basename(filePath);
-                  cropPath = '${tempDir.path}/crop_${ci}_$filename';
-                  await File(cropPath).writeAsBytes(cropBytes);
-                } else {
-                  // Reuse the first observation's crop path for this species
-                  cropPath = burstGroupsBySpecies[species]!.observations
-                      .firstWhere((o) => o.imagePath == filePath)
-                      .displayPath!;
-                }
-
-                burstGroupsBySpecies
-                    .putIfAbsent(species, BurstGroup.new)
-                    .addObservation(
-                      Observation(
-                        imagePath: filePath,
-                        displayPath: cropPath,
-                        fullImageDisplayPath: res.processedPath,
-                        speciesName: species,
-                        possibleSpecies: speciesList,
-                        exifData: res.exifData,
-                        count: 1,
-                        boundingBoxes: [box],
-                      ),
-                    );
-
-                // Emit / update immediately after each individual
-                _emitBurstUpdates(
-                  burstGroupsBySpecies,
-                  emittedObs,
-                  burstIds[i],
-                  onObservationAdded,
-                  onObservationsChanged,
-                  onIndicesRemapped,
-                );
-
-                completedIdentifications++;
-                onProgressMessage(
-                  'Classifying... ($completedIdentifications of $totalIdentifications birds)',
-                );
-              });
-
-              final classifyStopwatch = Stopwatch()..start();
-              await Future.wait(cropJobs);
-              photoProfiles[filePath]?.birdClassificationTime =
-                  classifyStopwatch.elapsed;
+              _emitBurstUpdates(
+                burstGroupsBySpecies, emittedObs, burstIds[i],
+                onObservationAdded, onObservationsChanged, onIndicesRemapped,
+              );
             }
-          } catch (e) {
-            onError(filePath, e);
           }
+        } catch (e) {
+          onError(filePath, e);
+        }
 
-          onFileCompleted(filePath);
-          photoProfiles[filePath]?.printProfile(filePath);
-        } // end for filePath
-
-        // Unload logic handled per-15 birds and at the end of the batch
-
-        completedBurstsPhase2++;
-        final p1 = totalBytesPhase1 > 0
-            ? processedBytesPhase1 / totalBytesPhase1
-            : 1.0;
-        final p2 = totalBursts > 0 ? completedBurstsPhase2 / totalBursts : 1.0;
-        onProgress(p1 * 0.5 + p2 * 0.5);
-      } // end for burst
-
-      // Unload after the entire selected batch of photos is processed
-    });
-
-    await Future.wait([phase1Worker, phase2Worker]);
+        completedFiles++;
+        onProgress(completedFiles / totalFiles);
+        onFileCompleted(filePath);
+        photoProfiles[filePath]?.printProfile(filePath);
+      }
+    }
   }
 }
 
 class PhotoProfile {
   Duration jpegConvertTime = Duration.zero;
-  Duration createTilesTime = Duration.zero;
-  Duration birdDetectionTime = Duration.zero;
-  Duration birdClassificationTime = Duration.zero;
+  Duration detectionTime = Duration.zero;
+  Duration classificationTime = Duration.zero;
 
   Duration get totalTime =>
-      jpegConvertTime +
-      createTilesTime +
-      birdDetectionTime +
-      birdClassificationTime;
+      jpegConvertTime + detectionTime + classificationTime;
 
   void printProfile(String filePath) {
     if (totalTime == Duration.zero) return;
     int totalMs = totalTime.inMilliseconds;
-    if (totalMs == 0) totalMs = 1; // avoid division by zero
+    if (totalMs == 0) totalMs = 1;
 
     double percent(Duration d) => (d.inMilliseconds / totalMs) * 100;
 
@@ -477,13 +262,10 @@ class PhotoProfile {
       'Convert to JPEG: ${jpegConvertTime.inMilliseconds}ms (${percent(jpegConvertTime).toStringAsFixed(1)}%)',
     );
     debugPrint(
-      'Create Tiles: ${createTilesTime.inMilliseconds}ms (${percent(createTilesTime).toStringAsFixed(1)}%)',
+      'Detection: ${detectionTime.inMilliseconds}ms (${percent(detectionTime).toStringAsFixed(1)}%)',
     );
     debugPrint(
-      'Bird Detection: ${birdDetectionTime.inMilliseconds}ms (${percent(birdDetectionTime).toStringAsFixed(1)}%)',
-    );
-    debugPrint(
-      'Bird Classification: ${birdClassificationTime.inMilliseconds}ms (${percent(birdClassificationTime).toStringAsFixed(1)}%)',
+      'Classification: ${classificationTime.inMilliseconds}ms (${percent(classificationTime).toStringAsFixed(1)}%)',
     );
     debugPrint('Total Time: ${totalMs}ms');
     debugPrint('-----------------------------------');

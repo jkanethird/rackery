@@ -6,7 +6,7 @@
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
-import 'api/image_utils.dart';
+import 'api/pipeline.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -22,19 +22,36 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
+  RustStreamSink<PipelineEvent> dco_decode_StreamSink_pipeline_event_Sse(
+    dynamic raw,
+  );
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
-  PrepareTilesResult dco_decode_box_autoadd_prepare_tiles_result(dynamic raw);
+  bool dco_decode_bool(dynamic raw);
 
   @protected
-  List<Uint32List> dco_decode_list_list_prim_u_32_strict(dynamic raw);
+  PipelineResult dco_decode_box_autoadd_pipeline_result(dynamic raw);
 
   @protected
-  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
+  ClassificationResult dco_decode_classification_result(dynamic raw);
 
   @protected
-  Uint32List dco_decode_list_prim_u_32_strict(dynamic raw);
+  double dco_decode_f_64(dynamic raw);
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<NativeBirdResult> dco_decode_list_native_bird_result(dynamic raw);
+
+  @protected
+  Float64List dco_decode_list_prim_f_64_strict(dynamic raw);
 
   @protected
   List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
@@ -43,18 +60,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  PrepareTilesResult? dco_decode_opt_box_autoadd_prepare_tiles_result(
-    dynamic raw,
-  );
+  NativeBirdResult dco_decode_native_bird_result(dynamic raw);
 
   @protected
-  List<Uint32List>? dco_decode_opt_list_list_prim_u_32_strict(dynamic raw);
+  List<String>? dco_decode_opt_list_String(dynamic raw);
 
   @protected
-  PrepareTilesResult dco_decode_prepare_tiles_result(dynamic raw);
+  PipelineEvent dco_decode_pipeline_event(dynamic raw);
+
+  @protected
+  PipelineResult dco_decode_pipeline_result(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -63,25 +84,42 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void dco_decode_unit(dynamic raw);
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<PipelineEvent> sse_decode_StreamSink_pipeline_event_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  PrepareTilesResult sse_decode_box_autoadd_prepare_tiles_result(
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  PipelineResult sse_decode_box_autoadd_pipeline_result(
     SseDeserializer deserializer,
   );
 
   @protected
-  List<Uint32List> sse_decode_list_list_prim_u_32_strict(
+  ClassificationResult sse_decode_classification_result(
     SseDeserializer deserializer,
   );
 
   @protected
-  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+  double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<NativeBirdResult> sse_decode_list_native_bird_result(
     SseDeserializer deserializer,
   );
 
   @protected
-  Uint32List sse_decode_list_prim_u_32_strict(SseDeserializer deserializer);
+  Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer);
 
   @protected
   List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
@@ -90,22 +128,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  PrepareTilesResult? sse_decode_opt_box_autoadd_prepare_tiles_result(
-    SseDeserializer deserializer,
-  );
+  NativeBirdResult sse_decode_native_bird_result(SseDeserializer deserializer);
 
   @protected
-  List<Uint32List>? sse_decode_opt_list_list_prim_u_32_strict(
-    SseDeserializer deserializer,
-  );
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
 
   @protected
-  PrepareTilesResult sse_decode_prepare_tiles_result(
-    SseDeserializer deserializer,
-  );
+  PipelineEvent sse_decode_pipeline_event(SseDeserializer deserializer);
+
+  @protected
+  PipelineResult sse_decode_pipeline_result(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -117,32 +155,50 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_pipeline_event_Sse(
+    RustStreamSink<PipelineEvent> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_prepare_tiles_result(
-    PrepareTilesResult self,
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_pipeline_result(
+    PipelineResult self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_list_list_prim_u_32_strict(
-    List<Uint32List> self,
+  void sse_encode_classification_result(
+    ClassificationResult self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_list_list_prim_u_8_strict(
-    List<Uint8List> self,
+  void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_native_bird_result(
+    List<NativeBirdResult> self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_list_prim_u_32_strict(
-    Uint32List self,
+  void sse_encode_list_prim_f_64_strict(
+    Float64List self,
     SseSerializer serializer,
   );
 
@@ -156,25 +212,28 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
-  void sse_encode_opt_box_autoadd_prepare_tiles_result(
-    PrepareTilesResult? self,
+  void sse_encode_native_bird_result(
+    NativeBirdResult self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_opt_list_list_prim_u_32_strict(
-    List<Uint32List>? self,
-    SseSerializer serializer,
-  );
+  void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_prepare_tiles_result(
-    PrepareTilesResult self,
+  void sse_encode_pipeline_event(PipelineEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pipeline_result(
+    PipelineResult self,
     SseSerializer serializer,
   );
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -184,9 +243,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

@@ -126,13 +126,9 @@ extension ManualDetectionActions on ChecklistController {
       );
     }
 
-    final suggestions = await _classifier.classifyFile(
+    final suggestions = await _pipeline.classifyFile(
       classifyPath,
-      box: box,
-      latitude: obs.exifData.latitude,
-      longitude: obs.exifData.longitude,
-      photoDate: obs.exifData.dateTime,
-      allowedSpeciesKeys: allowedMask,
+      allowedSpecies: allowedMask,
     );
 
     // Only update if the observation wasn't deleted by the user while classifying

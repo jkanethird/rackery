@@ -3,7 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/image_utils.dart';
+import 'api/pipeline.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -1430370213;
+  int get rustContentHash => 349694375;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -79,15 +79,26 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<ClassificationResult> crateApiPipelineClassifyCrop({
+    required List<int> cropBytes,
+    List<String>? allowedSpecies,
+    required bool isFallback,
+  });
+
   String crateApiSimpleGreet({required String name});
 
   Future<void> crateApiSimpleInitApp();
 
-  Future<PrepareTilesResult?> crateApiImageUtilsPrepareTiles({
+  Future<void> crateApiPipelineInitPipeline({
+    required List<int> detectorModelBytes,
+    required List<int> classifierModelBytes,
+    required List<int> embeddingsBytes,
+    required String labelsJson,
+  });
+
+  Stream<PipelineEvent> crateApiPipelineProcessPipeline({
     required List<int> fileBytes,
-    required int targetW,
-    required int targetH,
-    List<Uint32List>? customTiles,
+    List<String>? allowedSpecies,
   });
 }
 
@@ -100,13 +111,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  Future<ClassificationResult> crateApiPipelineClassifyCrop({
+    required List<int> cropBytes,
+    List<String>? allowedSpecies,
+    required bool isFallback,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(cropBytes, serializer);
+          sse_encode_opt_list_String(allowedSpecies, serializer);
+          sse_encode_bool(isFallback, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 1,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_classification_result,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiPipelineClassifyCropConstMeta,
+        argValues: [cropBytes, allowedSpecies, isFallback],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiPipelineClassifyCropConstMeta =>
+      const TaskConstMeta(
+        debugName: "classify_crop",
+        argNames: ["cropBytes", "allowedSpecies", "isFallback"],
+      );
+
+  @override
   String crateApiSimpleGreet({required String name}) {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(name, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -131,7 +179,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 2,
+            funcId: 3,
             port: port_,
           );
         },
@@ -150,43 +198,107 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   @override
-  Future<PrepareTilesResult?> crateApiImageUtilsPrepareTiles({
-    required List<int> fileBytes,
-    required int targetW,
-    required int targetH,
-    List<Uint32List>? customTiles,
+  Future<void> crateApiPipelineInitPipeline({
+    required List<int> detectorModelBytes,
+    required List<int> classifierModelBytes,
+    required List<int> embeddingsBytes,
+    required String labelsJson,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_list_prim_u_8_loose(fileBytes, serializer);
-          sse_encode_u_32(targetW, serializer);
-          sse_encode_u_32(targetH, serializer);
-          sse_encode_opt_list_list_prim_u_32_strict(customTiles, serializer);
+          sse_encode_list_prim_u_8_loose(detectorModelBytes, serializer);
+          sse_encode_list_prim_u_8_loose(classifierModelBytes, serializer);
+          sse_encode_list_prim_u_8_loose(embeddingsBytes, serializer);
+          sse_encode_String(labelsJson, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 4,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_prepare_tiles_result,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_String,
         ),
-        constMeta: kCrateApiImageUtilsPrepareTilesConstMeta,
-        argValues: [fileBytes, targetW, targetH, customTiles],
+        constMeta: kCrateApiPipelineInitPipelineConstMeta,
+        argValues: [
+          detectorModelBytes,
+          classifierModelBytes,
+          embeddingsBytes,
+          labelsJson,
+        ],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiImageUtilsPrepareTilesConstMeta =>
+  TaskConstMeta get kCrateApiPipelineInitPipelineConstMeta =>
       const TaskConstMeta(
-        debugName: "prepare_tiles",
-        argNames: ["fileBytes", "targetW", "targetH", "customTiles"],
+        debugName: "init_pipeline",
+        argNames: [
+          "detectorModelBytes",
+          "classifierModelBytes",
+          "embeddingsBytes",
+          "labelsJson",
+        ],
       );
+
+  @override
+  Stream<PipelineEvent> crateApiPipelineProcessPipeline({
+    required List<int> fileBytes,
+    List<String>? allowedSpecies,
+  }) {
+    final stream = RustStreamSink<PipelineEvent>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_list_prim_u_8_loose(fileBytes, serializer);
+            sse_encode_opt_list_String(allowedSpecies, serializer);
+            sse_encode_StreamSink_pipeline_event_Sse(stream, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 5,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateApiPipelineProcessPipelineConstMeta,
+          argValues: [fileBytes, allowedSpecies, stream],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return stream.stream;
+  }
+
+  TaskConstMeta get kCrateApiPipelineProcessPipelineConstMeta =>
+      const TaskConstMeta(
+        debugName: "process_pipeline",
+        argNames: ["fileBytes", "allowedSpecies", "stream"],
+      );
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
+
+  @protected
+  RustStreamSink<PipelineEvent> dco_decode_StreamSink_pipeline_event_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
 
   @protected
   String dco_decode_String(dynamic raw) {
@@ -195,29 +307,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PrepareTilesResult dco_decode_box_autoadd_prepare_tiles_result(dynamic raw) {
+  bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_prepare_tiles_result(raw);
+    return raw as bool;
   }
 
   @protected
-  List<Uint32List> dco_decode_list_list_prim_u_32_strict(dynamic raw) {
+  PipelineResult dco_decode_box_autoadd_pipeline_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>)
-        .map(dco_decode_list_prim_u_32_strict)
-        .toList();
+    return dco_decode_pipeline_result(raw);
   }
 
   @protected
-  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw) {
+  ClassificationResult dco_decode_classification_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_list_prim_u_8_strict).toList();
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return ClassificationResult(species: dco_decode_list_String(arr[0]));
   }
 
   @protected
-  Uint32List dco_decode_list_prim_u_32_strict(dynamic raw) {
+  double dco_decode_f_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as Uint32List;
+    return raw as double;
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
+  List<NativeBirdResult> dco_decode_list_native_bird_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_native_bird_result).toList();
+  }
+
+  @protected
+  Float64List dco_decode_list_prim_f_64_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Float64List;
   }
 
   @protected
@@ -233,32 +364,55 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PrepareTilesResult? dco_decode_opt_box_autoadd_prepare_tiles_result(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null
-        ? null
-        : dco_decode_box_autoadd_prepare_tiles_result(raw);
-  }
-
-  @protected
-  List<Uint32List>? dco_decode_opt_list_list_prim_u_32_strict(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_list_list_prim_u_32_strict(raw);
-  }
-
-  @protected
-  PrepareTilesResult dco_decode_prepare_tiles_result(dynamic raw) {
+  NativeBirdResult dco_decode_native_bird_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return PrepareTilesResult(
-      tilePixels: dco_decode_list_list_prim_u_8_strict(arr[0]),
-      tileRects: dco_decode_list_list_prim_u_32_strict(arr[1]),
-      origW: dco_decode_u_32(arr[2]),
-      origH: dco_decode_u_32(arr[3]),
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
+    return NativeBirdResult(
+      species: dco_decode_String(arr[0]),
+      possibleSpecies: dco_decode_list_String(arr[1]),
+      confidence: dco_decode_f_64(arr[2]),
+      boxX: dco_decode_u_32(arr[3]),
+      boxY: dco_decode_u_32(arr[4]),
+      boxW: dco_decode_u_32(arr[5]),
+      boxH: dco_decode_u_32(arr[6]),
+      centerColor: dco_decode_list_prim_f_64_strict(arr[7]),
+      cropJpgBytes: dco_decode_list_prim_u_8_strict(arr[8]),
+    );
+  }
+
+  @protected
+  List<String>? dco_decode_opt_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_String(raw);
+  }
+
+  @protected
+  PipelineEvent dco_decode_pipeline_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return PipelineEvent_Progress(dco_decode_String(raw[1]));
+      case 1:
+        return PipelineEvent_Complete(
+          dco_decode_box_autoadd_pipeline_result(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  PipelineResult dco_decode_pipeline_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return PipelineResult(
+      birds: dco_decode_list_native_bird_result(arr[0]),
+      detectionMs: dco_decode_u_64(arr[1]),
+      classificationMs: dco_decode_u_64(arr[2]),
     );
   }
 
@@ -266,6 +420,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -281,6 +441,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
+  RustStreamSink<PipelineEvent> sse_decode_StreamSink_pipeline_event_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
@@ -288,46 +463,65 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PrepareTilesResult sse_decode_box_autoadd_prepare_tiles_result(
-    SseDeserializer deserializer,
-  ) {
+  bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_prepare_tiles_result(deserializer));
+    return deserializer.buffer.getUint8() != 0;
   }
 
   @protected
-  List<Uint32List> sse_decode_list_list_prim_u_32_strict(
+  PipelineResult sse_decode_box_autoadd_pipeline_result(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pipeline_result(deserializer));
+  }
+
+  @protected
+  ClassificationResult sse_decode_classification_result(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_species = sse_decode_list_String(deserializer);
+    return ClassificationResult(species: var_species);
+  }
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Uint32List>[];
+    var ans_ = <String>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_list_prim_u_32_strict(deserializer));
+      ans_.add(sse_decode_String(deserializer));
     }
     return ans_;
   }
 
   @protected
-  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+  List<NativeBirdResult> sse_decode_list_native_bird_result(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Uint8List>[];
+    var ans_ = <NativeBirdResult>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_list_prim_u_8_strict(deserializer));
+      ans_.add(sse_decode_native_bird_result(deserializer));
     }
     return ans_;
   }
 
   @protected
-  Uint32List sse_decode_list_prim_u_32_strict(SseDeserializer deserializer) {
+  Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
-    return deserializer.buffer.getUint32List(len_);
+    return deserializer.buffer.getFloat64List(len_);
   }
 
   @protected
@@ -345,45 +539,68 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PrepareTilesResult? sse_decode_opt_box_autoadd_prepare_tiles_result(
-    SseDeserializer deserializer,
-  ) {
+  NativeBirdResult sse_decode_native_bird_result(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_species = sse_decode_String(deserializer);
+    var var_possibleSpecies = sse_decode_list_String(deserializer);
+    var var_confidence = sse_decode_f_64(deserializer);
+    var var_boxX = sse_decode_u_32(deserializer);
+    var var_boxY = sse_decode_u_32(deserializer);
+    var var_boxW = sse_decode_u_32(deserializer);
+    var var_boxH = sse_decode_u_32(deserializer);
+    var var_centerColor = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_cropJpgBytes = sse_decode_list_prim_u_8_strict(deserializer);
+    return NativeBirdResult(
+      species: var_species,
+      possibleSpecies: var_possibleSpecies,
+      confidence: var_confidence,
+      boxX: var_boxX,
+      boxY: var_boxY,
+      boxW: var_boxW,
+      boxH: var_boxH,
+      centerColor: var_centerColor,
+      cropJpgBytes: var_cropJpgBytes,
+    );
+  }
+
+  @protected
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_prepare_tiles_result(deserializer));
+      return (sse_decode_list_String(deserializer));
     } else {
       return null;
     }
   }
 
   @protected
-  List<Uint32List>? sse_decode_opt_list_list_prim_u_32_strict(
-    SseDeserializer deserializer,
-  ) {
+  PipelineEvent sse_decode_pipeline_event(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_list_list_prim_u_32_strict(deserializer));
-    } else {
-      return null;
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_String(deserializer);
+        return PipelineEvent_Progress(var_field0);
+      case 1:
+        var var_field0 = sse_decode_box_autoadd_pipeline_result(deserializer);
+        return PipelineEvent_Complete(var_field0);
+      default:
+        throw UnimplementedError('');
     }
   }
 
   @protected
-  PrepareTilesResult sse_decode_prepare_tiles_result(
-    SseDeserializer deserializer,
-  ) {
+  PipelineResult sse_decode_pipeline_result(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_tilePixels = sse_decode_list_list_prim_u_8_strict(deserializer);
-    var var_tileRects = sse_decode_list_list_prim_u_32_strict(deserializer);
-    var var_origW = sse_decode_u_32(deserializer);
-    var var_origH = sse_decode_u_32(deserializer);
-    return PrepareTilesResult(
-      tilePixels: var_tilePixels,
-      tileRects: var_tileRects,
-      origW: var_origW,
-      origH: var_origH,
+    var var_birds = sse_decode_list_native_bird_result(deserializer);
+    var var_detectionMs = sse_decode_u_64(deserializer);
+    var var_classificationMs = sse_decode_u_64(deserializer);
+    return PipelineResult(
+      birds: var_birds,
+      detectionMs: var_detectionMs,
+      classificationMs: var_classificationMs,
     );
   }
 
@@ -391,6 +608,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -411,9 +634,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
+    sse_encode_String(self.message, serializer);
+  }
+
+  @protected
+  void sse_encode_StreamSink_pipeline_event_Sse(
+    RustStreamSink<PipelineEvent> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_pipeline_event,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
   }
 
   @protected
@@ -423,46 +666,64 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_prepare_tiles_result(
-    PrepareTilesResult self,
-    SseSerializer serializer,
-  ) {
+  void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_prepare_tiles_result(self, serializer);
+    serializer.buffer.putUint8(self ? 1 : 0);
   }
 
   @protected
-  void sse_encode_list_list_prim_u_32_strict(
-    List<Uint32List> self,
+  void sse_encode_box_autoadd_pipeline_result(
+    PipelineResult self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pipeline_result(self, serializer);
+  }
+
+  @protected
+  void sse_encode_classification_result(
+    ClassificationResult self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.species, serializer);
+  }
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_native_bird_result(
+    List<NativeBirdResult> self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_list_prim_u_32_strict(item, serializer);
+      sse_encode_native_bird_result(item, serializer);
     }
   }
 
   @protected
-  void sse_encode_list_list_prim_u_8_strict(
-    List<Uint8List> self,
+  void sse_encode_list_prim_f_64_strict(
+    Float64List self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_list_prim_u_8_strict(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_prim_u_32_strict(
-    Uint32List self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    serializer.buffer.putUint32List(self);
+    serializer.buffer.putFloat64List(self);
   }
 
   @protected
@@ -488,47 +749,69 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_opt_box_autoadd_prepare_tiles_result(
-    PrepareTilesResult? self,
+  void sse_encode_native_bird_result(
+    NativeBirdResult self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.species, serializer);
+    sse_encode_list_String(self.possibleSpecies, serializer);
+    sse_encode_f_64(self.confidence, serializer);
+    sse_encode_u_32(self.boxX, serializer);
+    sse_encode_u_32(self.boxY, serializer);
+    sse_encode_u_32(self.boxW, serializer);
+    sse_encode_u_32(self.boxH, serializer);
+    sse_encode_list_prim_f_64_strict(self.centerColor, serializer);
+    sse_encode_list_prim_u_8_strict(self.cropJpgBytes, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_list_String(
+    List<String>? self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_box_autoadd_prepare_tiles_result(self, serializer);
+      sse_encode_list_String(self, serializer);
     }
   }
 
   @protected
-  void sse_encode_opt_list_list_prim_u_32_strict(
-    List<Uint32List>? self,
-    SseSerializer serializer,
-  ) {
+  void sse_encode_pipeline_event(PipelineEvent self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_list_list_prim_u_32_strict(self, serializer);
+    switch (self) {
+      case PipelineEvent_Progress(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_String(field0, serializer);
+      case PipelineEvent_Complete(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_pipeline_result(field0, serializer);
     }
   }
 
   @protected
-  void sse_encode_prepare_tiles_result(
-    PrepareTilesResult self,
+  void sse_encode_pipeline_result(
+    PipelineResult self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_list_prim_u_8_strict(self.tilePixels, serializer);
-    sse_encode_list_list_prim_u_32_strict(self.tileRects, serializer);
-    sse_encode_u_32(self.origW, serializer);
-    sse_encode_u_32(self.origH, serializer);
+    sse_encode_list_native_bird_result(self.birds, serializer);
+    sse_encode_u_64(self.detectionMs, serializer);
+    sse_encode_u_64(self.classificationMs, serializer);
   }
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -546,11 +829,5 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
   }
 }

@@ -16,17 +16,11 @@
 
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
-import 'package:image/image.dart' as img;
-import 'package:tflite_flutter/tflite_flutter.dart';
-import 'package:rackery/src/rust/api/image_utils.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:rackery/src/rust/api/pipeline.dart' as rust;
 
-part 'detection_helpers.dart';
-part 'detection_reconciler.dart';
-part 'detection_pipelines.dart';
-
-// ── Public types ───────────────────────────────────────────────────────────
+// ── Public Types ───────────────────────────────────────────────────────────
 
 class BirdCrop {
   final Uint8List croppedJpgBytes;
@@ -44,229 +38,152 @@ class DetectionResult {
   DetectionResult(this.crops, this.createTilesTime, this.birdDetectionTime);
 }
 
-// ── Internal types ─────────────────────────────────────────────────────────
+/// Result from the full native pipeline: detection + classification in one call.
+class PipelineOutput {
+  final List<IdentifiedBird> birds;
+  final Duration detectionTime;
+  final Duration classificationTime;
 
-class _RawDetection {
+  PipelineOutput({
+    required this.birds,
+    required this.detectionTime,
+    required this.classificationTime,
+  });
+}
+
+/// A fully-identified bird from the native pipeline.
+class IdentifiedBird {
+  final String species;
+  final List<String> possibleSpecies;
+  final double confidence;
   final Rectangle<int> box;
-  final double score;
-  final Rectangle<int>? sourceTile;
+  final List<double> centerColor;
+  final Uint8List cropJpgBytes;
 
-  _RawDetection(this.box, this.score, [this.sourceTile]);
+  IdentifiedBird({
+    required this.species,
+    required this.possibleSpecies,
+    required this.confidence,
+    required this.box,
+    required this.centerColor,
+    required this.cropJpgBytes,
+  });
 }
 
-/// Request for post-processing in a compute isolate.
-class _PostProcessRequest {
-  final Uint8List fileBytes;
-  final List<List<int>> detections; // [x, y, w, h, score*1000]
+// ── NativePipeline ─────────────────────────────────────────────────────────
 
-  _PostProcessRequest(this.fileBytes, this.detections);
-}
-
-// ── BirdDetector class ─────────────────────────────────────────────────────
-
-class BirdDetector {
-  late final int _poolSize;
-  final List<Interpreter> _interpreters = [];
-  final List<IsolateInterpreter> _isolateInterpreters = [];
-  final List<bool> _interpreterBusy = [];
+/// Thin Dart wrapper around the unified Rust detection + classification pipeline.
+///
+/// The entire pipeline (decode → tile → detect → NMS → classify → crop → encode)
+/// runs natively in Rust. Only lightweight results cross the FFI boundary.
+class NativePipeline {
+  bool _isInit = false;
+  bool get isReady => _isInit;
 
   Future<void> init() async {
-    final options = InterpreterOptions()
-      ..threads = min(4, Platform.numberOfProcessors);
+    if (_isInit) return;
 
-    // Enable XNNPack delegate for SIMD-optimized CPU inference.
-    if (Platform.isWindows || Platform.isMacOS) {
-      try {
-        options.addDelegate(XNNPackDelegate());
-      } catch (_) {
-        // XNNPack not available in the loaded TFLite DLL/dylib
-      }
-    }
+    // Load all model/data assets in parallel
+    final futures = await Future.wait([
+      rootBundle.load('assets/efficientdet_lite4.onnx'),
+      rootBundle.load('assets/bioclip_vision.onnx'),
+      rootBundle.load('assets/species_embeddings.bin'),
+      rootBundle.loadString('assets/species_labels.json'),
+    ]);
 
-    // Force pool size to 1.
-    // TFLite uses native C++ threading (`options..threads`). If we spawn multiple
-    // concurrent models here, it causes extreme CPU context switching and cache thrashing
-    // which significantly slows down overall performance.
-    _poolSize = 1;
+    final detectorBytes = (futures[0] as ByteData).buffer.asUint8List();
+    final classifierBytes = (futures[1] as ByteData).buffer.asUint8List();
+    final embeddingsBytes = (futures[2] as ByteData).buffer.asUint8List();
+    final labelsJson = futures[3] as String;
 
-    for (int i = 0; i < _poolSize; i++) {
-      final interpreter = await Interpreter.fromAsset(
-        'assets/efficientdet_lite4.tflite',
-        options: options,
-      );
-      final isolateInterpreter = await IsolateInterpreter.create(
-        address: interpreter.address,
-      );
+    await rust.initPipeline(
+      detectorModelBytes: detectorBytes,
+      classifierModelBytes: classifierBytes,
+      embeddingsBytes: embeddingsBytes,
+      labelsJson: labelsJson,
+    );
 
-      _interpreters.add(interpreter);
-      _isolateInterpreters.add(isolateInterpreter);
-      _interpreterBusy.add(false);
-    }
+    _isInit = true;
+    debugPrint('NativePipeline initialized (detector + classifier + embeddings)');
   }
 
-  Future<IsolateInterpreter> _acquireDetector() async {
-    while (true) {
-      for (int i = 0; i < _isolateInterpreters.length; i++) {
-        if (!_interpreterBusy[i]) {
-          _interpreterBusy[i] = true;
-          return _isolateInterpreters[i];
-        }
-      }
-      await Future.delayed(const Duration(milliseconds: 10));
-    }
-  }
-
-  void _releaseDetector(IsolateInterpreter s) {
-    final idx = _isolateInterpreters.indexOf(s);
-    if (idx != -1) {
-      _interpreterBusy[idx] = false;
-    }
-  }
-
-  Future<DetectionResult> detectAndCrop(String imagePath) async {
-    if (_interpreters.isEmpty) {
-      throw Exception('Detector not initialized');
-    }
+  /// Run the full detection + classification pipeline on a single image file.
+  ///
+  /// Returns identified birds with species names, bounding boxes, and thumbnails.
+  /// The [allowedSpecies] set enables geographic soft-boosting from eBird.
+  Future<PipelineOutput> processPhoto(
+    String imagePath, {
+    Set<String>? allowedSpecies,
+    void Function(String)? onProgress,
+  }) async {
+    if (!_isInit) throw Exception('Pipeline not initialized');
 
     final fileBytes = await File(imagePath).readAsBytes();
 
-    final inputShape = _interpreters.first.getInputTensor(0).shape;
-    final int targetW = inputShape[1];
-    final int targetH = inputShape[2];
+    final eventStream = rust.processPipeline(
+      fileBytes: fileBytes,
+      allowedSpecies: allowedSpecies?.toList(),
+    );
 
-    return await _detect(fileBytes, targetW, targetH);
+    PipelineOutput? result;
+
+    await for (final event in eventStream) {
+      event.when(
+        progress: (msg) => onProgress?.call(msg),
+        complete: (rustResult) {
+          result = PipelineOutput(
+            birds: rustResult.birds.map((b) => IdentifiedBird(
+              species: b.species,
+              possibleSpecies: b.possibleSpecies,
+              confidence: b.confidence,
+              box: Rectangle<int>(b.boxX, b.boxY, b.boxW, b.boxH),
+              centerColor: b.centerColor.toList(),
+              cropJpgBytes: b.cropJpgBytes,
+            )).toList(),
+            detectionTime: Duration(milliseconds: rustResult.detectionMs.toInt()),
+            classificationTime: Duration(milliseconds: rustResult.classificationMs.toInt()),
+          );
+        },
+      );
+    }
+
+    return result ?? PipelineOutput(
+      birds: [],
+      detectionTime: Duration.zero,
+      classificationTime: Duration.zero,
+    );
   }
 
-  /// Platform-agnostic pipeline — fully async, no heavy work on main isolate.
+  /// Classify a single crop image (for manual bounding box, re-classification, etc.)
   ///
-  /// 1. compute() isolate: decode + crop + resize all tiles → flat Uint8Lists
-  /// 2. Main isolate: pass flat pixels to pooled IsolateInterpreter (async inference)
-  /// 3. compute() isolate: NMS + crop + JPG encode
-  Future<DetectionResult> _detect(
-    Uint8List fileBytes,
-    int targetW,
-    int targetH,
-  ) async {
-    final stopwatch = Stopwatch()..start();
+  /// Returns ordered list of species names (top-K). Empty list = not a bird.
+  Future<List<String>> classifyCrop(
+    Uint8List cropBytes, {
+    Set<String>? allowedSpecies,
+    bool isFallback = false,
+  }) async {
+    if (!_isInit) return ['Unknown Bird'];
 
-    // Step 1: All heavy image ops in compute isolate
-    final prepared = await prepareTiles(
-      fileBytes: fileBytes,
-      targetW: targetW,
-      targetH: targetH,
+    final result = await rust.classifyCrop(
+      cropBytes: cropBytes,
+      allowedSpecies: allowedSpecies?.toList(),
+      isFallback: isFallback,
     );
 
-    final createTilesTime = stopwatch.elapsed;
-    stopwatch.reset();
+    return result.species;
+  }
 
-    if (prepared == null || prepared.tilePixels.isEmpty) {
-      return DetectionResult([], createTilesTime, Duration.zero);
-    }
-
-    // Step 2: Inference via IsolateInterpreter (async, no UI blocking)
-    List<_RawDetection> rawDetections = [];
-
-    IsolateInterpreter? isolateInterpreter;
-    try {
-      isolateInterpreter = await _acquireDetector();
-
-      for (int ti = 0; ti < prepared.tilePixels.length; ti++) {
-        final pixels = prepared.tilePixels[ti];
-        final outputs = _allocateOutputs();
-        await isolateInterpreter.runForMultipleInputs([pixels], outputs);
-
-        final rect = prepared.tileRects[ti];
-        final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
-        rawDetections.addAll(
-          _extractDetections(outputs, tile, prepared.origW, prepared.origH),
-        );
-      }
-    } finally {
-      if (isolateInterpreter != null) {
-        _releaseDetector(isolateInterpreter);
-      }
-    }
-
-    if (rawDetections.isEmpty) {
-      return DetectionResult([], createTilesTime, stopwatch.elapsed);
-    }
-
-    final nmsDetections = _applyNms(rawDetections);
-
-    final reconciledDetections = await _reconcileAbuttingBoxes(
-      nmsDetections,
-      prepared.origW,
-      prepared.origH,
-      (customTiles) async {
-        if (customTiles.isEmpty) return [];
-
-        final prepCust = await prepareTiles(
-          fileBytes: fileBytes,
-          targetW: targetW,
-          targetH: targetH,
-          customTiles: customTiles.map((r) => Uint32List.fromList([r.left, r.top, r.width, r.height])).toList(),
-        );
-
-        if (prepCust == null || prepCust.tilePixels.isEmpty) return [];
-
-        List<_RawDetection> customDets = [];
-        IsolateInterpreter? customIsolate;
-        try {
-          customIsolate = await _acquireDetector();
-          for (int ti = 0; ti < prepCust.tilePixels.length; ti++) {
-            final pixels = prepCust.tilePixels[ti];
-            final outputs = _allocateOutputs();
-            await customIsolate.runForMultipleInputs([pixels], outputs);
-
-            final rect = prepCust.tileRects[ti];
-            final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
-            customDets.addAll(
-              _extractDetections(outputs, tile, prepCust.origW, prepCust.origH),
-            );
-          }
-        } finally {
-          if (customIsolate != null) {
-            _releaseDetector(customIsolate);
-          }
-        }
-        return _applyNms(customDets);
-      },
-    );
-
-    if (reconciledDetections.isEmpty) {
-      return DetectionResult([], createTilesTime, stopwatch.elapsed);
-    }
-
-    List<List<int>> finalFormattedList = reconciledDetections
-        .map(
-          (d) => [
-            d.box.left,
-            d.box.top,
-            d.box.width,
-            d.box.height,
-            (d.score * 1000).toInt(),
-          ],
-        )
-        .toList();
-
-    // Step 3: NMS (noop since already applied) + crop + encode in compute isolate
-    final crops = await compute(
-      _postProcessDetections,
-      _PostProcessRequest(fileBytes, finalFormattedList),
-    );
-
-    return DetectionResult(crops, createTilesTime, stopwatch.elapsed);
+  /// Classify a full image file (for fallback when no birds detected).
+  Future<List<String>> classifyFile(
+    String imagePath, {
+    Set<String>? allowedSpecies,
+    bool isFallback = false,
+  }) async {
+    final bytes = await File(imagePath).readAsBytes();
+    return classifyCrop(bytes, allowedSpecies: allowedSpecies, isFallback: isFallback);
   }
 
   void dispose() {
-    for (final isolateInterpreter in _isolateInterpreters) {
-      isolateInterpreter.close();
-    }
-    for (final interpreter in _interpreters) {
-      interpreter.close();
-    }
-    _isolateInterpreters.clear();
-    _interpreters.clear();
-    _interpreterBusy.clear();
+    _isInit = false;
   }
 }

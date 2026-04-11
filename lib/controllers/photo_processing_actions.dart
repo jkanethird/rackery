@@ -66,8 +66,7 @@ extension PhotoProcessingActions on ChecklistController {
     notify();
 
     final processor = PhotoProcessor(
-      classifier: _classifier,
-      detector: _detector,
+      pipeline: _pipeline,
     );
 
     await processor.run(

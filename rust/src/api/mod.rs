@@ -1,2 +1,2 @@
 pub mod simple;
-pub mod image_utils;
+pub mod pipeline;

@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:file_picker/file_picker.dart';
 import 'package:rackery/models/observation.dart';
-import 'package:rackery/services/bird_classifier.dart';
 import 'package:rackery/services/burst_grouper.dart';
 import 'package:rackery/services/csv_service.dart';
 import 'package:rackery/services/image_converter.dart';
@@ -43,8 +42,7 @@ enum BoundingBoxVisibility { focused, all, hidden }
 
 class ChecklistController extends ChangeNotifier {
   // ─── Services ────────────────────────────────────────────────────────────
-  final BirdClassifier _classifier = BirdClassifier();
-  final BirdDetector _detector = BirdDetector();
+  final NativePipeline _pipeline = NativePipeline();
   final BurstGrouper _burstGrouper = const BurstGrouper();
 
   // Caches
@@ -122,19 +120,17 @@ class ChecklistController extends ChangeNotifier {
 
   Future<void> _initClassifier() async {
     try {
-      await _classifier.init();
-      await _detector.init();
+      await _pipeline.init();
       isInit = true;
       notifyListeners();
     } catch (e) {
-      debugPrint('Error initializing classifier: $e');
+      debugPrint('Error initializing pipeline: $e');
     }
   }
 
   @override
   void dispose() {
-    _classifier.dispose();
-    _detector.dispose();
+    _pipeline.dispose();
     observationScrollController.dispose();
     super.dispose();
   }
