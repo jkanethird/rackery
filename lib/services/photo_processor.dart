@@ -154,36 +154,51 @@ class PhotoProcessor {
     final Future<void> phase1Worker = Future(() async {
       for (int i = 0; i < bursts.length; i++) {
         final burstJobs = bursts[i].map((filePath) async {
-          if (!newPathSet.contains(filePath)) return;
+          if (!newPathSet.contains(filePath)) return null;
           onFileStarted(filePath);
           try {
             final processedPath = await ImageConverter.convertToJpegIfNeeded(
               filePath,
             );
             final exifData = await ExifService.extractExif(filePath);
-            final detectedBirds = await detector.detectAndCrop(processedPath);
-
-            if (detectedBirds.isEmpty) {
-              final fallbackBytes = await File(processedPath).readAsBytes();
-              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
-              phase1Results[filePath] = Phase1Result(
-                processedPath: processedPath,
-                exifData: exifData,
-                crops: [],
-                isFallback: true,
-                fallbackImg: fallbackImg,
-              );
-            } else {
-              phase1Results[filePath] = Phase1Result(
-                processedPath: processedPath,
-                exifData: exifData,
-                crops: detectedBirds,
-                isFallback: false,
-              );
-            }
+            return {'f': filePath, 'p': processedPath, 'e': exifData};
           } catch (e) {
-            debugPrint('Error in phase 1 for $filePath: $e');
-          } finally {
+            debugPrint('Error decoding $filePath: $e');
+            return null;
+          }
+        });
+        
+        final prepped = await Future.wait(burstJobs);
+        
+        for (final item in prepped) {
+          if (item == null) continue;
+          final filePath = item['f'] as String;
+          final processedPath = item['p'] as String;
+          final exifData = item['e'] as ExifData;
+          
+          try {
+             final detectedBirds = await detector.detectAndCrop(processedPath);
+             if (detectedBirds.isEmpty) {
+               final fallbackBytes = await File(processedPath).readAsBytes();
+               final fallbackImg = await compute(img.decodeImage, fallbackBytes);
+               phase1Results[filePath] = Phase1Result(
+                 processedPath: processedPath,
+                 exifData: exifData,
+                 crops: [],
+                 isFallback: true,
+                 fallbackImg: fallbackImg,
+               );
+             } else {
+               phase1Results[filePath] = Phase1Result(
+                 processedPath: processedPath,
+                 exifData: exifData,
+                 crops: detectedBirds,
+                 isFallback: false,
+               );
+             }
+          } catch (e) {
+             debugPrint('Error in phase 1 detection for $filePath: $e');
+          } finally { 
             processedBytesPhase1 += File(filePath).lengthSync();
             final p1 = totalBytesPhase1 > 0
                 ? processedBytesPhase1 / totalBytesPhase1
@@ -193,9 +208,7 @@ class PhotoProcessor {
                 : 1.0;
             onProgress(p1 * 0.5 + p2 * 0.5);
           }
-        });
-        
-        await Future.wait(burstJobs);
+        }
         burstCompleters[i].complete();
       }
     });
