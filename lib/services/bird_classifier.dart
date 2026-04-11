@@ -232,6 +232,13 @@ class BirdClassifier {
 
       // 6. Rank and threshold.
       final indices = List<int>.generate(_numSpecies, (i) => i);
+      indices.retainWhere((i) {
+        final label = _speciesLabels![i];
+        if (label.contains('/')) return false;
+        if (label.contains(' x ')) return false;
+        if (label.contains('(hybrid)')) return false;
+        return true;
+      });
       indices.sort((a, b) => similarities[b].compareTo(similarities[a]));
 
       final topScore = similarities[indices[0]];
