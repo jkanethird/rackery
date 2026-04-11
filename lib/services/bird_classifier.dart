@@ -40,7 +40,10 @@ const double _kLocalBonus = 0.08;
 
 class BirdClassifier {
   final _ort = OnnxRuntime();
-  OrtSession? _session;
+  
+  static const int _poolSize = 2;
+  final List<OrtSession> _sessions = [];
+  final List<bool> _sessionBusy = [];
 
   /// Pre-computed L2-normalised text embeddings, shape [N × D], stored
   /// row-major.
@@ -61,7 +64,7 @@ class BirdClassifier {
   /// Name of the ONNX model output node.
   String? _outputName;
 
-  bool get isReady => _session != null;
+  bool get isReady => _sessions.isNotEmpty;
 
   // ─── Lifecycle ──────────────────────────────────────────────────────────
 
@@ -75,15 +78,20 @@ class BirdClassifier {
     }
     providers.add(OrtProvider.CPU);
 
-    _session = await _ort.createSessionFromAsset(
-      'assets/bioclip_vision.onnx',
-      options: OrtSessionOptions(providers: providers),
-    );
-    _inputName = _session!.inputNames.first;
-    _outputName = _session!.outputNames.first;
+    for (int i = 0; i < _poolSize; i++) {
+      final session = await _ort.createSessionFromAsset(
+        'assets/bioclip_vision.onnx',
+        options: OrtSessionOptions(providers: providers),
+      );
+      _sessions.add(session);
+      _sessionBusy.add(false);
+    }
+
+    _inputName = _sessions.first.inputNames.first;
+    _outputName = _sessions.first.outputNames.first;
     debugPrint(
-      'BioCLIP session loaded (inputs=${_session!.inputNames}, '
-      'outputs=${_session!.outputNames})',
+      'BioCLIP session pool loaded (size=$_poolSize, inputs=${_sessions.first.inputNames}, '
+      'outputs=${_sessions.first.outputNames})',
     );
 
     // 2. Load pre-computed species embeddings from binary asset.
@@ -110,8 +118,30 @@ class BirdClassifier {
   }
 
   void dispose() {
-    _session?.close();
-    _session = null;
+    for (final s in _sessions) {
+      s.close();
+    }
+    _sessions.clear();
+    _sessionBusy.clear();
+  }
+
+  Future<OrtSession> _acquireSession() async {
+    while (true) {
+      for (int i = 0; i < _sessions.length; i++) {
+        if (!_sessionBusy[i]) {
+          _sessionBusy[i] = true;
+          return _sessions[i];
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+  }
+
+  void _releaseSession(OrtSession s) {
+    final idx = _sessions.indexOf(s);
+    if (idx != -1) {
+      _sessionBusy[idx] = false;
+    }
   }
 
   // ─── Public API (matches old BirdClassifier signature) ────────────────
@@ -204,13 +234,17 @@ class BirdClassifier {
   }) async {
     if (!isReady) return ['Unknown Bird'];
 
+    OrtSession? session;
     try {
       // 1. Preprocess: resize → normalise → CHW Float32List.
       final tensor = await compute(_preprocessImage, image);
 
+      // Acquire a free session from the pool (blocks if all are busy)
+      session = await _acquireSession();
+
       // 2. Run ONNX inference.
       final inputOrt = await OrtValue.fromList(tensor, [1, 3, 224, 224]);
-      final outputs = await _session!.run({_inputName!: inputOrt});
+      final outputs = await session.run({_inputName!: inputOrt});
       final outputOrt = outputs[_outputName]!;
 
       // 3. Extract raw embedding and L2-normalise.
@@ -267,6 +301,10 @@ class BirdClassifier {
     } catch (e) {
       debugPrint('BioCLIP inference error: $e');
       return ['Unknown Bird'];
+    } finally {
+      if (session != null) {
+        _releaseSession(session);
+      }
     }
   }
 

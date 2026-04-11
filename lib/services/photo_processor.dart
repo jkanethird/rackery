@@ -316,9 +316,10 @@ class PhotoProcessor {
                 );
               }
             } else {
-              // Individual crop-level classification
-              for (int ci = 0; ci < res.crops.length; ci++) {
-                final crop = res.crops[ci];
+              // Individual crop-level classification mapped concurrently (limited by Classifier Session Pool)
+              final cropJobs = res.crops.asMap().entries.map((entry) async {
+                final ci = entry.key;
+                final crop = entry.value;
                 final box = crop.box;
 
                 Set<String>? allowedMask;
@@ -347,7 +348,7 @@ class PhotoProcessor {
                   onProgressMessage(
                     'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                   );
-                  continue;
+                  return;
                 }
 
                 final species = speciesList.first;
@@ -403,7 +404,9 @@ class PhotoProcessor {
                 onProgressMessage(
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
-              }
+              });
+              
+              await Future.wait(cropJobs);
             }
           } catch (e) {
             onError(filePath, e);
