@@ -126,8 +126,22 @@ extension ManualDetectionActions on ChecklistController {
       );
     }
 
-    final suggestions = await _pipeline.classifyFile(
-      classifyPath,
+    // Read and crop to bounding box before classifying
+    final fileBytes = await File(classifyPath).readAsBytes();
+    final fullImage = await compute(img.decodeImage, fileBytes);
+    if (fullImage == null) return;
+
+    final cropped = img.copyCrop(
+      fullImage,
+      x: box.left,
+      y: box.top,
+      width: box.width,
+      height: box.height,
+    );
+    final cropBytes = Uint8List.fromList(img.encodeJpg(cropped, quality: 90));
+
+    final suggestions = await _pipeline.classifyCrop(
+      cropBytes,
       allowedSpecies: allowedMask,
     );
 
