@@ -54,7 +54,6 @@ class MyApp extends StatelessWidget {
                 accent.darkest,
               ).withLightness(0.025).toColor(),
             ),
-            useMaterial3: true,
           ),
           themeMode: ThemeMode.dark,
           home: const MainScreen(),
