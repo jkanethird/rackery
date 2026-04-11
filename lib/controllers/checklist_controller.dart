@@ -22,7 +22,6 @@ import 'package:image/image.dart' as img;
 import 'package:file_picker/file_picker.dart';
 import 'package:rackery/models/observation.dart';
 import 'package:rackery/services/bird_classifier.dart';
-import 'package:rackery/services/bird_clusterer.dart';
 import 'package:rackery/services/burst_grouper.dart';
 import 'package:rackery/services/csv_service.dart';
 import 'package:rackery/services/image_converter.dart';
@@ -46,7 +45,6 @@ class ChecklistController extends ChangeNotifier {
   // ─── Services ────────────────────────────────────────────────────────────
   final BirdClassifier _classifier = BirdClassifier();
   final BirdDetector _detector = BirdDetector();
-  final BirdClusterer _clusterer = const BirdClusterer();
   final BurstGrouper _burstGrouper = const BurstGrouper();
 
   // Caches

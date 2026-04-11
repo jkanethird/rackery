@@ -68,7 +68,6 @@ extension PhotoProcessingActions on ChecklistController {
     final processor = PhotoProcessor(
       classifier: _classifier,
       detector: _detector,
-      clusterer: _clusterer,
     );
 
     await processor.run(

@@ -157,12 +157,12 @@ class BirdClassifier {
     );
   }
 
-  /// Classifies a cluster of bounding boxes (all the same species).
+  /// Classifies a single detected bird crop.
   ///
-  /// Uses [cropBytes] (JPEG of the first crop) for high-resolution input.
-  Future<List<String>> classifyCluster(
+  /// Uses [cropBytes] (JPEG of the crop) for high-resolution input.
+  Future<List<String>> classifyCrop(
     String imagePath, {
-    required List<Rectangle<int>> boxes,
+    required Rectangle<int> box,
     double? latitude,
     double? longitude,
     DateTime? photoDate,
@@ -178,18 +178,13 @@ class BirdClassifier {
       final bytes = await File(imagePath).readAsBytes();
       final decoded = await compute(img.decodeImage, bytes);
       if (decoded == null) return ['Unknown Bird'];
-      if (boxes.isNotEmpty) {
-        final b = boxes.first;
-        image = img.copyCrop(
-          decoded,
-          x: b.left,
-          y: b.top,
-          width: b.width,
-          height: b.height,
-        );
-      } else {
-        image = decoded;
-      }
+      image = img.copyCrop(
+        decoded,
+        x: box.left,
+        y: box.top,
+        width: box.width,
+        height: box.height,
+      );
     }
 
     return _classifyImage(

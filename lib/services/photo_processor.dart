@@ -24,7 +24,6 @@ import 'package:rackery/models/observation.dart';
 import 'package:rackery/models/burst_group.dart';
 import 'package:rackery/services/exif_service.dart';
 import 'package:rackery/services/bird_classifier.dart';
-import 'package:rackery/services/bird_clusterer.dart';
 import 'package:rackery/services/bird_detector.dart';
 import 'package:rackery/services/image_converter.dart';
 import 'package:rackery/services/ebird_api_service.dart';
@@ -33,14 +32,14 @@ import 'package:rackery/services/ebird_api_service.dart';
 class Phase1Result {
   final String processedPath;
   final ExifData exifData;
-  final List<List<BirdCrop>> clusters;
+  final List<BirdCrop> crops;
   final bool isFallback;
   final img.Image? fallbackImg;
 
   Phase1Result({
     required this.processedPath,
     required this.exifData,
-    required this.clusters,
+    required this.crops,
     required this.isFallback,
     this.fallbackImg,
   });
@@ -54,12 +53,10 @@ class Phase1Result {
 class PhotoProcessor {
   final BirdClassifier classifier;
   final BirdDetector detector;
-  final BirdClusterer clusterer;
 
   const PhotoProcessor({
     required this.classifier,
     required this.detector,
-    required this.clusterer,
   });
 
   /// Process [newPaths] organised into [bursts].
@@ -172,7 +169,7 @@ class PhotoProcessor {
               phase1Results[filePath] = Phase1Result(
                 processedPath: processedPath,
                 exifData: exifData,
-                clusters: [],
+                crops: [],
                 isFallback: true,
                 fallbackImg: fallbackImg,
               );
@@ -180,7 +177,7 @@ class PhotoProcessor {
               phase1Results[filePath] = Phase1Result(
                 processedPath: processedPath,
                 exifData: exifData,
-                clusters: clusterer.cluster(detectedBirds),
+                crops: detectedBirds,
                 isFallback: false,
               );
             }
@@ -221,7 +218,7 @@ class PhotoProcessor {
           if (res == null) continue;
           burstIdentifications += res.isFallback
               ? (res.fallbackImg != null ? 1 : 0)
-              : res.clusters.length;
+              : res.crops.length;
         }
         totalIdentifications += burstIdentifications;
         onProgressMessage(
@@ -304,10 +301,10 @@ class PhotoProcessor {
                 );
               }
             } else {
-              // Cluster-level classification — emit after each cluster
-              for (int ci = 0; ci < res.clusters.length; ci++) {
-                final clusterCrops = res.clusters[ci];
-                final clusterBoxes = clusterCrops.map((c) => c.box).toList();
+              // Individual crop-level classification
+              for (int ci = 0; ci < res.crops.length; ci++) {
+                final crop = res.crops[ci];
+                final box = crop.box;
 
                 Set<String>? allowedMask;
                 if (res.exifData.latitude != null &&
@@ -319,15 +316,15 @@ class PhotoProcessor {
                   );
                 }
 
-                final speciesList = await classifier.classifyCluster(
+                final speciesList = await classifier.classifyCrop(
                   res.processedPath,
-                  boxes: clusterBoxes,
+                  box: box,
                   latitude: res.exifData.latitude,
                   longitude: res.exifData.longitude,
                   photoDate: res.exifData.dateTime,
                   allowNoBird: true,
                   allowedSpeciesKeys: allowedMask,
-                  cropBytes: clusterCrops.first.croppedJpgBytes,
+                  cropBytes: crop.croppedJpgBytes,
                 );
                 // Empty list = model said this crop isn't a bird — skip it.
                 if (speciesList.isEmpty) {
@@ -340,8 +337,8 @@ class PhotoProcessor {
 
                 final species = speciesList.first;
 
-                // Write crop file only for the first cluster of this species
-                // in this file (subsequent clusters reuse the existing crop).
+                // Write crop file only for the first instance of this species
+                // in this file (subsequent instances reuse the existing crop).
                 final bool isNewSpeciesInFile =
                     !burstGroupsBySpecies.containsKey(species) ||
                     !burstGroupsBySpecies[species]!.observations.any(
@@ -350,10 +347,10 @@ class PhotoProcessor {
 
                 String cropPath;
                 if (isNewSpeciesInFile) {
-                  final cropBytes = clusterCrops.first.croppedJpgBytes;
+                  final cropBytes = crop.croppedJpgBytes;
                   final tempDir = await Directory.systemTemp.createTemp();
                   final filename = p.basename(filePath);
-                  cropPath = '${tempDir.path}/cluster_${ci}_$filename';
+                  cropPath = '${tempDir.path}/crop_${ci}_$filename';
                   await File(cropPath).writeAsBytes(cropBytes);
                 } else {
                   // Reuse the first observation's crop path for this species
@@ -372,12 +369,12 @@ class PhotoProcessor {
                         speciesName: species,
                         possibleSpecies: speciesList,
                         exifData: res.exifData,
-                        count: clusterCrops.length,
-                        boundingBoxes: clusterBoxes,
+                        count: 1,
+                        boundingBoxes: [box],
                       ),
                     );
 
-                // Emit / update immediately after each cluster
+                // Emit / update immediately after each individual
                 _emitBurstUpdates(
                   burstGroupsBySpecies,
                   emittedObs,
