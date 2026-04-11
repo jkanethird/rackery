@@ -104,10 +104,11 @@ class BirdDetector {
       }
     }
 
-    // Dynamic pool size bounds based on active CPU logical cores
-    // EfficientDet is light internally (~20MB), but instances scale cleanly per internal block size
-    // We scale 1 detector pool instance per 4 logical cores, capped tightly to 4 max parallel pipelines
-    _poolSize = max(1, min(4, (Platform.numberOfProcessors / 4).ceil()));
+    // Force pool size to 1.
+    // TFLite uses native C++ threading (`options..threads`). If we spawn multiple
+    // concurrent models here, it causes extreme CPU context switching and cache thrashing
+    // which significantly slows down overall performance.
+    _poolSize = 1;
 
     for (int i = 0; i < _poolSize; i++) {
       final interpreter = await Interpreter.fromAsset(
@@ -117,7 +118,7 @@ class BirdDetector {
       final isolateInterpreter = await IsolateInterpreter.create(
         address: interpreter.address,
       );
-      
+
       _interpreters.add(interpreter);
       _isolateInterpreters.add(isolateInterpreter);
       _interpreterBusy.add(false);
@@ -177,7 +178,7 @@ class BirdDetector {
 
     // Step 2: Inference via IsolateInterpreter (async, no UI blocking)
     List<_RawDetection> rawDetections = [];
-    
+
     IsolateInterpreter? isolateInterpreter;
     try {
       isolateInterpreter = await _acquireDetector();
