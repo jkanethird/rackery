@@ -49,6 +49,9 @@ class ChecklistController extends ChangeNotifier {
   final BirdClusterer _clusterer = const BirdClusterer();
   final BurstGrouper _burstGrouper = const BurstGrouper();
 
+  // Caches
+  final Map<String, Size> _imageSizeCache = {};
+
   // ─── App State ───────────────────────────────────────────────────────────
   bool isInit = false;
   bool isProcessing = false;
@@ -158,9 +161,12 @@ class ChecklistController extends ChangeNotifier {
   }
 
   Future<Size> getImageSize(String path) async {
+    if (_imageSizeCache.containsKey(path)) return _imageSizeCache[path]!;
     final bytes = await File(path).readAsBytes();
     final decoded = await decodeImageFromList(bytes);
-    return Size(decoded.width.toDouble(), decoded.height.toDouble());
+    final size = Size(decoded.width.toDouble(), decoded.height.toDouble());
+    _imageSizeCache[path] = size;
+    return size;
   }
 
   // ─── Simple setters ─────────────────────────────────────────────────────
@@ -191,6 +197,7 @@ class ChecklistController extends ChangeNotifier {
     activeFiles.clear();
     imageExifData.clear();
     imageVisualHashes.clear();
+    _imageSizeCache.clear();
     fileStartTimes.clear();
     fileElapsedTimes.clear();
     progress = 0.0;

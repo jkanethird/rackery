@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:exif/exif.dart';
 
 class ExifData {
@@ -32,87 +33,88 @@ class ExifData {
 
 class ExifService {
   static Future<ExifData> extractExif(String filePath) async {
-    final fileBytes = await File(filePath).readAsBytes();
-    final tags = await readExifFromBytes(fileBytes);
+    return compute(_extractExifWorker, filePath);
+  }
+}
 
-    if (tags.isEmpty) return ExifData();
+Future<ExifData> _extractExifWorker(String filePath) async {
+  final tags = await readExifFromFile(File(filePath));
 
-    DateTime? dateTime;
-    if (tags.containsKey('Image DateTime')) {
-      final dateString = tags['Image DateTime']!.printable;
-      dateTime = _parseExifDate(dateString);
-    } else if (tags.containsKey('EXIF DateTimeOriginal')) {
-      final dateString = tags['EXIF DateTimeOriginal']!.printable;
-      dateTime = _parseExifDate(dateString);
-    }
+  if (tags.isEmpty) return ExifData();
 
-    double? lat;
-    double? lon;
-
-    if (tags.containsKey('GPS GPSLatitude') &&
-        tags.containsKey('GPS GPSLatitudeRef') &&
-        tags.containsKey('GPS GPSLongitude') &&
-        tags.containsKey('GPS GPSLongitudeRef')) {
-      final latValues = tags['GPS GPSLatitude']!.values.toList();
-      final latRef = tags['GPS GPSLatitudeRef']!.printable;
-      lat = _getCoordinate(latValues, latRef);
-
-      final lonValues = tags['GPS GPSLongitude']!.values.toList();
-      final lonRef = tags['GPS GPSLongitudeRef']!.printable;
-      lon = _getCoordinate(lonValues, lonRef);
-    }
-
-    return ExifData(dateTime: dateTime, latitude: lat, longitude: lon);
+  DateTime? dateTime;
+  if (tags.containsKey('Image DateTime')) {
+    final dateString = tags['Image DateTime']!.printable;
+    dateTime = _parseExifDate(dateString);
+  } else if (tags.containsKey('EXIF DateTimeOriginal')) {
+    final dateString = tags['EXIF DateTimeOriginal']!.printable;
+    dateTime = _parseExifDate(dateString);
   }
 
-  static DateTime? _parseExifDate(String dateString) {
-    try {
-      // Standard EXIF format: 'YYYY:MM:DD HH:MM:SS'
-      final formattedDate = dateString
-          .replaceFirst(':', '-')
-          .replaceFirst(':', '-');
-      return DateTime.parse(formattedDate);
-    } catch (e) {
-      return null;
-    }
+  double? lat;
+  double? lon;
+
+  if (tags.containsKey('GPS GPSLatitude') &&
+      tags.containsKey('GPS GPSLatitudeRef') &&
+      tags.containsKey('GPS GPSLongitude') &&
+      tags.containsKey('GPS GPSLongitudeRef')) {
+    final latValues = tags['GPS GPSLatitude']!.values.toList();
+    final latRef = tags['GPS GPSLatitudeRef']!.printable;
+    lat = _getCoordinate(latValues, latRef);
+
+    final lonValues = tags['GPS GPSLongitude']!.values.toList();
+    final lonRef = tags['GPS GPSLongitudeRef']!.printable;
+    lon = _getCoordinate(lonValues, lonRef);
   }
 
-  static double? _getCoordinate(List<dynamic> values, String ref) {
-    if (values.length != 3) return null;
+  return ExifData(dateTime: dateTime, latitude: lat, longitude: lon);
+}
 
-    double degrees = _parseRatio(values[0]);
-    double minutes = _parseRatio(values[1]);
-    double seconds = _parseRatio(values[2]);
-
-    double coord = degrees + (minutes / 60.0) + (seconds / 3600.0);
-    if (ref == 'S' || ref == 'W') {
-      coord = -coord;
-    }
-    return coord;
+DateTime? _parseExifDate(String dateString) {
+  try {
+    final formattedDate = dateString
+        .replaceFirst(':', '-')
+        .replaceFirst(':', '-');
+    return DateTime.parse(formattedDate);
+  } catch (e) {
+    return null;
   }
+}
 
-  static double _parseRatio(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is num) return value.toDouble();
+double? _getCoordinate(List<dynamic> values, String ref) {
+  if (values.length != 3) return null;
 
-    // The exif package often returns a custom Ratio object for GPS coordinates
-    try {
-      if (value.denominator != 0) {
-        return value.numerator / value.denominator;
+  double degrees = _parseRatio(values[0]);
+  double minutes = _parseRatio(values[1]);
+  double seconds = _parseRatio(values[2]);
+
+  double coord = degrees + (minutes / 60.0) + (seconds / 3600.0);
+  if (ref == 'S' || ref == 'W') {
+    coord = -coord;
+  }
+  return coord;
+}
+
+double _parseRatio(dynamic value) {
+  if (value == null) return 0.0;
+  if (value is num) return value.toDouble();
+
+  try {
+    if (value.denominator != 0) {
+      return value.numerator / value.denominator;
+    }
+  } catch (_) {}
+
+  final str = value.toString();
+  if (str.contains('/')) {
+    final parts = str.split('/');
+    if (parts.length == 2) {
+      final num = double.tryParse(parts[0]);
+      final den = double.tryParse(parts[1]);
+      if (num != null && den != null && den != 0) {
+        return num / den;
       }
-    } catch (_) {}
-
-    final str = value.toString();
-    if (str.contains('/')) {
-      final parts = str.split('/');
-      if (parts.length == 2) {
-        final num = double.tryParse(parts[0]);
-        final den = double.tryParse(parts[1]);
-        if (num != null && den != null && den != 0) {
-          return num / den;
-        }
-      }
     }
-    return double.tryParse(str) ?? 0.0;
   }
+  return double.tryParse(str) ?? 0.0;
 }
