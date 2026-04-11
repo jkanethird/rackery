@@ -54,10 +54,7 @@ class PhotoProcessor {
   final BirdClassifier classifier;
   final BirdDetector detector;
 
-  const PhotoProcessor({
-    required this.classifier,
-    required this.detector,
-  });
+  const PhotoProcessor({required this.classifier, required this.detector});
 
   /// Process [newPaths] organised into [bursts].
   ///
@@ -144,6 +141,7 @@ class PhotoProcessor {
     onProgressMessage('Detecting & Classifying...');
     onProgress(0.0);
 
+    final Map<String, PhotoProfile> photoProfiles = {};
     final Map<String, Phase1Result> phase1Results = {};
     final List<Completer<void>> burstCompleters = List.generate(
       bursts.length,
@@ -157,48 +155,61 @@ class PhotoProcessor {
           if (!newPathSet.contains(filePath)) return null;
           onFileStarted(filePath);
           try {
+            final t1 = Stopwatch()..start();
             final processedPath = await ImageConverter.convertToJpegIfNeeded(
               filePath,
             );
+            final jpegTime = t1.elapsed;
             final exifData = await ExifService.extractExif(filePath);
-            return {'f': filePath, 'p': processedPath, 'e': exifData};
+            return {
+              'f': filePath,
+              'p': processedPath,
+              'e': exifData,
+              'jt': jpegTime,
+            };
           } catch (e) {
             debugPrint('Error decoding $filePath: $e');
             return null;
           }
         });
-        
+
         final prepped = await Future.wait(burstJobs);
-        
+
         final detectionJobs = prepped.map((item) async {
           if (item == null) return;
           final filePath = item['f'] as String;
           final processedPath = item['p'] as String;
           final exifData = item['e'] as ExifData;
-          
+          final jpegTime = item['jt'] as Duration;
+
           try {
-             final detectedBirds = await detector.detectAndCrop(processedPath);
-             if (detectedBirds.isEmpty) {
-               final fallbackBytes = await File(processedPath).readAsBytes();
-               final fallbackImg = await compute(img.decodeImage, fallbackBytes);
-               phase1Results[filePath] = Phase1Result(
-                 processedPath: processedPath,
-                 exifData: exifData,
-                 crops: [],
-                 isFallback: true,
-                 fallbackImg: fallbackImg,
-               );
-             } else {
-               phase1Results[filePath] = Phase1Result(
-                 processedPath: processedPath,
-                 exifData: exifData,
-                 crops: detectedBirds,
-                 isFallback: false,
-               );
-             }
+            final detectionResult = await detector.detectAndCrop(processedPath);
+            photoProfiles[filePath] = PhotoProfile()
+              ..jpegConvertTime = jpegTime
+              ..createTilesTime = detectionResult.createTilesTime
+              ..birdDetectionTime = detectionResult.birdDetectionTime;
+
+            if (detectionResult.crops.isEmpty) {
+              final fallbackBytes = await File(processedPath).readAsBytes();
+              final fallbackImg = await compute(img.decodeImage, fallbackBytes);
+              phase1Results[filePath] = Phase1Result(
+                processedPath: processedPath,
+                exifData: exifData,
+                crops: [],
+                isFallback: true,
+                fallbackImg: fallbackImg,
+              );
+            } else {
+              phase1Results[filePath] = Phase1Result(
+                processedPath: processedPath,
+                exifData: exifData,
+                crops: detectionResult.crops,
+                isFallback: false,
+              );
+            }
           } catch (e) {
-             debugPrint('Error in phase 1 detection for $filePath: $e');
-          } finally { 
+            debugPrint('Error in phase 1 detection for $filePath: $e');
+          } finally {
             processedBytesPhase1 += File(filePath).lengthSync();
             final p1 = totalBytesPhase1 > 0
                 ? processedBytesPhase1 / totalBytesPhase1
@@ -269,6 +280,7 @@ class PhotoProcessor {
                   );
                 }
 
+                final classifyStopwatch = Stopwatch()..start();
                 final speciesList = await classifier.classifyFile(
                   res.processedPath,
                   latitude: res.exifData.latitude,
@@ -278,6 +290,9 @@ class PhotoProcessor {
                   isFallback: true,
                   allowedSpeciesKeys: allowedMask,
                 );
+                photoProfiles[filePath]?.birdClassificationTime =
+                    classifyStopwatch.elapsed;
+
                 // Empty list = model said no bird is present — skip this photo.
                 if (speciesList.isNotEmpty) {
                   final species = speciesList.first;
@@ -407,14 +422,18 @@ class PhotoProcessor {
                   'Classifying... ($completedIdentifications of $totalIdentifications birds)',
                 );
               });
-              
+
+              final classifyStopwatch = Stopwatch()..start();
               await Future.wait(cropJobs);
+              photoProfiles[filePath]?.birdClassificationTime =
+                  classifyStopwatch.elapsed;
             }
           } catch (e) {
             onError(filePath, e);
           }
 
           onFileCompleted(filePath);
+          photoProfiles[filePath]?.printProfile(filePath);
         } // end for filePath
 
         // Unload logic handled per-15 birds and at the end of the batch
@@ -431,5 +450,42 @@ class PhotoProcessor {
     });
 
     await Future.wait([phase1Worker, phase2Worker]);
+  }
+}
+
+class PhotoProfile {
+  Duration jpegConvertTime = Duration.zero;
+  Duration createTilesTime = Duration.zero;
+  Duration birdDetectionTime = Duration.zero;
+  Duration birdClassificationTime = Duration.zero;
+
+  Duration get totalTime =>
+      jpegConvertTime +
+      createTilesTime +
+      birdDetectionTime +
+      birdClassificationTime;
+
+  void printProfile(String filePath) {
+    if (totalTime == Duration.zero) return;
+    int totalMs = totalTime.inMilliseconds;
+    if (totalMs == 0) totalMs = 1; // avoid division by zero
+
+    double percent(Duration d) => (d.inMilliseconds / totalMs) * 100;
+
+    debugPrint('--- Profile for $filePath ---');
+    debugPrint(
+      'Convert to JPEG: ${jpegConvertTime.inMilliseconds}ms (${percent(jpegConvertTime).toStringAsFixed(1)}%)',
+    );
+    debugPrint(
+      'Create Tiles: ${createTilesTime.inMilliseconds}ms (${percent(createTilesTime).toStringAsFixed(1)}%)',
+    );
+    debugPrint(
+      'Bird Detection: ${birdDetectionTime.inMilliseconds}ms (${percent(birdDetectionTime).toStringAsFixed(1)}%)',
+    );
+    debugPrint(
+      'Bird Classification: ${birdClassificationTime.inMilliseconds}ms (${percent(birdClassificationTime).toStringAsFixed(1)}%)',
+    );
+    debugPrint('Total Time: ${totalMs}ms');
+    debugPrint('-----------------------------------');
   }
 }

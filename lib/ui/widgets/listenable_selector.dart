@@ -19,10 +19,12 @@ class ListenableSelector<T extends Listenable, R> extends StatefulWidget {
   });
 
   @override
-  State<ListenableSelector<T, R>> createState() => _ListenableSelectorState<T, R>();
+  State<ListenableSelector<T, R>> createState() =>
+      _ListenableSelectorState<T, R>();
 }
 
-class _ListenableSelectorState<T extends Listenable, R> extends State<ListenableSelector<T, R>> {
+class _ListenableSelectorState<T extends Listenable, R>
+    extends State<ListenableSelector<T, R>> {
   late R _value;
 
   @override

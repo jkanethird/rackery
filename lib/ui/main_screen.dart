@@ -171,8 +171,9 @@ class _MainScreenState extends State<MainScreen> {
             final (isEmpty, isProcessing) = state as (bool, bool);
             return IconButton(
               icon: const Icon(Icons.download),
-              onPressed:
-                  isEmpty || isProcessing ? null : () => _controller.exportCsv(context),
+              onPressed: isEmpty || isProcessing
+                  ? null
+                  : () => _controller.exportCsv(context),
               tooltip: 'Export eBird checklist CSV',
             );
           },
@@ -199,9 +200,9 @@ class _MainScreenState extends State<MainScreen> {
           progress,
           batchStartTime,
           batchElapsedTime,
-          obsLength
+          obsLength,
         ) = state as (bool, String, double, DateTime?, Duration?, int);
-        
+
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(

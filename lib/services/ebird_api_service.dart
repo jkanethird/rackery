@@ -43,15 +43,19 @@ class EbirdApiService {
   /// Ensures the taxonomy map is populated so we can map 'speciesCode' to 'comName'
   static Future<void> _ensureTaxonomy(String apiKey) async {
     if (_speciesCodeToComNameCache != null) return;
-    if (_taxonomyFailed) return; // Prevent endless stalling on subsequent photos
+    if (_taxonomyFailed) {
+      return; // Prevent endless stalling on subsequent photos
+    }
     if (_taxonomyFuture != null) return _taxonomyFuture;
 
     _taxonomyFuture = () async {
       try {
-        final response = await http.get(
-          Uri.parse('$_baseUrl/ref/taxonomy/ebird?fmt=json'),
-          headers: {'X-eBirdApiToken': apiKey},
-        ).timeout(const Duration(seconds: 45));
+        final response = await http
+            .get(
+              Uri.parse('$_baseUrl/ref/taxonomy/ebird?fmt=json'),
+              headers: {'X-eBirdApiToken': apiKey},
+            )
+            .timeout(const Duration(seconds: 45));
 
         if (response.statusCode == 200) {
           final List<dynamic> taxonomy = jsonDecode(response.body);
@@ -83,14 +87,18 @@ class EbirdApiService {
   /// If the date is within the last 30 days, fetches recent observations (seasonal & geographic).
   /// If older, falls back to the regional checklist (geographic only).
   static Future<Set<String>?> getSpeciesMask(
-      double lat, double lon, DateTime? date) async {
+    double lat,
+    double lon,
+    DateTime? date,
+  ) async {
     final apiKey = await getApiKey();
     if (apiKey == null || apiKey.isEmpty) return null;
 
     final now = DateTime.now();
     final isRecent = date == null || now.difference(date).inDays <= 30;
 
-    final cacheKey = '${lat.toStringAsFixed(2)},${lon.toStringAsFixed(2)}_$isRecent';
+    final cacheKey =
+        '${lat.toStringAsFixed(2)},${lon.toStringAsFixed(2)}_$isRecent';
     if (_maskCache.containsKey(cacheKey)) {
       return _maskCache[cacheKey];
     }
@@ -104,25 +112,32 @@ class EbirdApiService {
   }
 
   static Future<Set<String>?> _getRecentSpecies(
-      double lat, double lon, String apiKey) async {
+    double lat,
+    double lon,
+    String apiKey,
+  ) async {
     try {
       // Fetch recent observations within a 50km radius
-      final response = await http.get(
-        Uri.parse('$_baseUrl/data/obs/geo/recent?lat=$lat&lng=$lon&dist=50&back=30'),
-        headers: {'X-eBirdApiToken': apiKey},
-      ).timeout(const Duration(seconds: 10));
+      final response = await http
+          .get(
+            Uri.parse(
+              '$_baseUrl/data/obs/geo/recent?lat=$lat&lng=$lon&dist=50&back=30',
+            ),
+            headers: {'X-eBirdApiToken': apiKey},
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final List<dynamic> observations = jsonDecode(response.body);
         final Set<String> allowedSpecies = {};
-        
+
         for (final obs in observations) {
           final comName = obs['comName'] as String?;
           if (comName != null) {
             allowedSpecies.add(comName);
           }
         }
-        
+
         return allowedSpecies.isNotEmpty ? allowedSpecies : null;
       }
     } catch (e) {
@@ -132,7 +147,10 @@ class EbirdApiService {
   }
 
   static Future<Set<String>?> _getRegionalSpecies(
-      double lat, double lon, String apiKey) async {
+    double lat,
+    double lon,
+    String apiKey,
+  ) async {
     final regionCode = GeoRegionService.getEbirdRegionCode(lat, lon);
     if (regionCode == null) return null;
 
@@ -140,22 +158,24 @@ class EbirdApiService {
     if (_speciesCodeToComNameCache == null) return null;
 
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/product/spplist/$regionCode'),
-        headers: {'X-eBirdApiToken': apiKey},
-      ).timeout(const Duration(seconds: 10));
+      final response = await http
+          .get(
+            Uri.parse('$_baseUrl/product/spplist/$regionCode'),
+            headers: {'X-eBirdApiToken': apiKey},
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final List<dynamic> speciesCodes = jsonDecode(response.body);
         final Set<String> allowedSpecies = {};
-        
+
         for (final code in speciesCodes) {
           final comName = _speciesCodeToComNameCache![code.toString()];
           if (comName != null) {
             allowedSpecies.add(comName);
           }
         }
-        
+
         return allowedSpecies.isNotEmpty ? allowedSpecies : null;
       }
     } catch (e) {

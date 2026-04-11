@@ -16,9 +16,11 @@
 
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:rackery/src/rust/api/image_utils.dart';
 
 part 'detection_helpers.dart';
 part 'detection_reconciler.dart';
@@ -35,6 +37,13 @@ class BirdCrop {
   BirdCrop(this.croppedJpgBytes, this.centerColor, this.confidence, this.box);
 }
 
+class DetectionResult {
+  final List<BirdCrop> crops;
+  final Duration createTilesTime;
+  final Duration birdDetectionTime;
+  DetectionResult(this.crops, this.createTilesTime, this.birdDetectionTime);
+}
+
 // ── Internal types ─────────────────────────────────────────────────────────
 
 class _RawDetection {
@@ -43,36 +52,6 @@ class _RawDetection {
   final Rectangle<int>? sourceTile;
 
   _RawDetection(this.box, this.score, [this.sourceTile]);
-}
-
-/// Request for computing all tile pixel data in a background isolate.
-class _PrepareTilesRequest {
-  final Uint8List fileBytes;
-  final int targetW;
-  final int targetH;
-  final List<List<int>>? customTiles;
-
-  _PrepareTilesRequest(
-    this.fileBytes,
-    this.targetW,
-    this.targetH, [
-    this.customTiles,
-  ]);
-}
-
-/// Result from the tile preparation compute isolate.
-/// Uses only primitives and Uint8List for efficient isolate transfer.
-class _PrepareTilesResult {
-  /// Flat pixel data (RGB) per tile, each Uint8List is targetW*targetH*3 bytes.
-  final List<Uint8List> tilePixels;
-
-  /// Tile rectangles as [x, y, w, h] per tile.
-  final List<List<int>> tileRects;
-
-  final int origW;
-  final int origH;
-
-  _PrepareTilesResult(this.tilePixels, this.tileRects, this.origW, this.origH);
 }
 
 /// Request for post-processing in a compute isolate.
@@ -144,7 +123,7 @@ class BirdDetector {
     }
   }
 
-  Future<List<BirdCrop>> detectAndCrop(String imagePath) async {
+  Future<DetectionResult> detectAndCrop(String imagePath) async {
     if (_interpreters.isEmpty) {
       throw Exception('Detector not initialized');
     }
@@ -163,18 +142,26 @@ class BirdDetector {
   /// 1. compute() isolate: decode + crop + resize all tiles → flat Uint8Lists
   /// 2. Main isolate: pass flat pixels to pooled IsolateInterpreter (async inference)
   /// 3. compute() isolate: NMS + crop + JPG encode
-  Future<List<BirdCrop>> _detect(
+  Future<DetectionResult> _detect(
     Uint8List fileBytes,
     int targetW,
     int targetH,
   ) async {
+    final stopwatch = Stopwatch()..start();
+
     // Step 1: All heavy image ops in compute isolate
-    final prepared = await compute(
-      _prepareTiles,
-      _PrepareTilesRequest(fileBytes, targetW, targetH),
+    final prepared = await prepareTiles(
+      fileBytes: fileBytes,
+      targetW: targetW,
+      targetH: targetH,
     );
 
-    if (prepared.tilePixels.isEmpty) return [];
+    final createTilesTime = stopwatch.elapsed;
+    stopwatch.reset();
+
+    if (prepared == null || prepared.tilePixels.isEmpty) {
+      return DetectionResult([], createTilesTime, Duration.zero);
+    }
 
     // Step 2: Inference via IsolateInterpreter (async, no UI blocking)
     List<_RawDetection> rawDetections = [];
@@ -200,7 +187,9 @@ class BirdDetector {
       }
     }
 
-    if (rawDetections.isEmpty) return [];
+    if (rawDetections.isEmpty) {
+      return DetectionResult([], createTilesTime, stopwatch.elapsed);
+    }
 
     final nmsDetections = _applyNms(rawDetections);
 
@@ -211,15 +200,14 @@ class BirdDetector {
       (customTiles) async {
         if (customTiles.isEmpty) return [];
 
-        final prepCust = await compute(
-          _prepareTiles,
-          _PrepareTilesRequest(
-            fileBytes,
-            targetW,
-            targetH,
-            customTiles.map((r) => [r.left, r.top, r.width, r.height]).toList(),
-          ),
+        final prepCust = await prepareTiles(
+          fileBytes: fileBytes,
+          targetW: targetW,
+          targetH: targetH,
+          customTiles: customTiles.map((r) => Uint32List.fromList([r.left, r.top, r.width, r.height])).toList(),
         );
+
+        if (prepCust == null || prepCust.tilePixels.isEmpty) return [];
 
         List<_RawDetection> customDets = [];
         IsolateInterpreter? customIsolate;
@@ -245,7 +233,9 @@ class BirdDetector {
       },
     );
 
-    if (reconciledDetections.isEmpty) return [];
+    if (reconciledDetections.isEmpty) {
+      return DetectionResult([], createTilesTime, stopwatch.elapsed);
+    }
 
     List<List<int>> finalFormattedList = reconciledDetections
         .map(
@@ -260,10 +250,12 @@ class BirdDetector {
         .toList();
 
     // Step 3: NMS (noop since already applied) + crop + encode in compute isolate
-    return await compute(
+    final crops = await compute(
       _postProcessDetections,
       _PostProcessRequest(fileBytes, finalFormattedList),
     );
+
+    return DetectionResult(crops, createTilesTime, stopwatch.elapsed);
   }
 
   void dispose() {

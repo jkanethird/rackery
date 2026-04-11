@@ -19,9 +19,11 @@ import 'package:system_theme/system_theme.dart';
 import 'package:rackery/ui/main_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:rackery/src/rust/frb_generated.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await RustLib.init();
   await SystemTheme.accentColor.load();
 
   LicenseRegistry.addLicense(() async* {

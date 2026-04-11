@@ -18,35 +18,6 @@ part of 'bird_detector.dart';
 
 // ── Shared helpers ─────────────────────────────────────────────────────────
 
-/// Generates overlapping tile rectangles for a given image size.
-List<Rectangle<int>> _buildTiles(int origW, int origH) {
-  const int tileSize = 1536;
-  const int stride = tileSize ~/ 2;
-
-  List<Rectangle<int>> tiles = [Rectangle<int>(0, 0, origW, origH)];
-
-  if (origW > tileSize || origH > tileSize) {
-    for (int y = 0; y < origH; y += stride) {
-      for (int x = 0; x < origW; x += stride) {
-        int cropX = x;
-        int cropY = y;
-
-        if (cropX + tileSize > origW) cropX = max(0, origW - tileSize);
-        if (cropY + tileSize > origH) cropY = max(0, origH - tileSize);
-
-        int cropW = min(tileSize, origW - cropX);
-        int cropH = min(tileSize, origH - cropY);
-
-        tiles.add(Rectangle<int>(cropX, cropY, cropW, cropH));
-      }
-    }
-  }
-
-  return tiles.toSet().toList();
-}
-
-
-
 /// Allocates fresh TFLite output buffers.
 Map<int, Object> _allocateOutputs() => {
   0: List<List<List<double>>>.filled(1, List.filled(25, List.filled(4, 0.0))),

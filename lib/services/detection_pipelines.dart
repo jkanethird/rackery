@@ -18,57 +18,6 @@ part of 'bird_detector.dart';
 
 // ── Tile prep in compute, inference via IsolateInterpreter ────────
 
-/// Runs in a compute isolate: decodes image, crops/resizes all tiles,
-/// packs pixel data into flat Uint8Lists for efficient transfer.
-_PrepareTilesResult _prepareTiles(_PrepareTilesRequest req) {
-  final image = img.decodeImage(req.fileBytes);
-  if (image == null) return _PrepareTilesResult([], [], 0, 0);
-
-  final List<Rectangle<int>> tiles;
-  if (req.customTiles != null) {
-    tiles = req.customTiles!
-        .map((rect) => Rectangle<int>(rect[0], rect[1], rect[2], rect[3]))
-        .toList();
-  } else {
-    tiles = _buildTiles(image.width, image.height);
-  }
-
-  final List<Uint8List> pixelData = [];
-  final List<List<int>> rects = [];
-
-  for (final tile in tiles) {
-    final tileImage = img.copyCrop(
-      image,
-      x: tile.left,
-      y: tile.top,
-      width: tile.width,
-      height: tile.height,
-    );
-    final resized = img.copyResize(
-      tileImage,
-      width: req.targetW,
-      height: req.targetH,
-      interpolation: img.Interpolation.linear,
-    );
-
-    // Pack pixels into flat Uint8List (TypedData = efficient isolate transfer)
-    final pixels = Uint8List(req.targetW * req.targetH * 3);
-    int idx = 0;
-    for (int y = 0; y < req.targetH; y++) {
-      for (int x = 0; x < req.targetW; x++) {
-        final p = resized.getPixel(x, y);
-        pixels[idx++] = p.r.toInt();
-        pixels[idx++] = p.g.toInt();
-        pixels[idx++] = p.b.toInt();
-      }
-    }
-    pixelData.add(pixels);
-    rects.add([tile.left, tile.top, tile.width, tile.height]);
-  }
-
-  return _PrepareTilesResult(pixelData, rects, image.width, image.height);
-}
-
 /// Runs in a compute isolate: NMS + crop + JPG encode.
 List<BirdCrop> _postProcessDetections(_PostProcessRequest req) {
   final originalImage = img.decodeImage(req.fileBytes);
