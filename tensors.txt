@@ -1,7 +1,0 @@
-INPUTS:
-normalized_input_image_tensor type: uint8 shape: [1, 300, 300, 3]
-OUTPUTS:
-TFLite_Detection_PostProcess type: float32 shape: [1, 10, 4]
-TFLite_Detection_PostProcess:1 type: float32 shape: [1, 10]
-TFLite_Detection_PostProcess:2 type: float32 shape: [1, 10]
-TFLite_Detection_PostProcess:3 type: float32 shape: [1]

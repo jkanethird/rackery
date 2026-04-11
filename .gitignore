@@ -68,3 +68,4 @@ rackery.code-workspace
 **/linux/flutter/generated_plugins.cmake
 
 tool/.venv/
+tensors_lite4.txt
