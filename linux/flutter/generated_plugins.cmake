@@ -3,13 +3,11 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  flutter_onnxruntime
   system_theme
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   rust_lib_rackery
-  tflite_flutter
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
