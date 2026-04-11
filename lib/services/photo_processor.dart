@@ -153,8 +153,8 @@ class PhotoProcessor {
     // ── Phase 1: Detection (sequential across bursts, parallel within burst) ──
     final Future<void> phase1Worker = Future(() async {
       for (int i = 0; i < bursts.length; i++) {
-        for (final filePath in bursts[i]) {
-          if (!newPathSet.contains(filePath)) continue;
+        final burstJobs = bursts[i].map((filePath) async {
+          if (!newPathSet.contains(filePath)) return;
           onFileStarted(filePath);
           try {
             final processedPath = await ImageConverter.convertToJpegIfNeeded(
@@ -193,7 +193,9 @@ class PhotoProcessor {
                 : 1.0;
             onProgress(p1 * 0.5 + p2 * 0.5);
           }
-        }
+        });
+        
+        await Future.wait(burstJobs);
         burstCompleters[i].complete();
       }
     });
