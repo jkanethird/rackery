@@ -45,20 +45,6 @@ class _RawDetection {
   _RawDetection(this.box, this.score, [this.sourceTile]);
 }
 
-class _DetectorRequest {
-  final Uint8List fileBytes;
-  final int interpreterAddress;
-  final int targetW;
-  final int targetH;
-
-  _DetectorRequest(
-    this.fileBytes,
-    this.interpreterAddress,
-    this.targetW,
-    this.targetH,
-  );
-}
-
 /// Request for computing all tile pixel data in a background isolate.
 class _PrepareTilesRequest {
   final Uint8List fileBytes;
@@ -100,8 +86,10 @@ class _PostProcessRequest {
 // ── BirdDetector class ─────────────────────────────────────────────────────
 
 class BirdDetector {
-  Interpreter? _interpreter;
-  IsolateInterpreter? _isolateInterpreter;
+  late final int _poolSize;
+  final List<Interpreter> _interpreters = [];
+  final List<IsolateInterpreter> _isolateInterpreters = [];
+  final List<bool> _interpreterBusy = [];
 
   Future<void> init() async {
     final options = InterpreterOptions()
@@ -116,49 +104,65 @@ class BirdDetector {
       }
     }
 
-    _interpreter = await Interpreter.fromAsset(
-      'assets/efficientdet_lite4.tflite',
-      options: options,
-    );
+    // Dynamic pool size bounds based on active CPU logical cores
+    // EfficientDet is light internally (~20MB), but instances scale cleanly per internal block size
+    // We scale 1 detector pool instance per 4 logical cores, capped tightly to 4 max parallel pipelines
+    _poolSize = max(1, min(4, (Platform.numberOfProcessors / 4).ceil()));
 
-    // Use IsolateInterpreter on Windows to run inference off the main thread.
-    if (Platform.isWindows) {
-      _isolateInterpreter = await IsolateInterpreter.create(
-        address: _interpreter!.address,
+    for (int i = 0; i < _poolSize; i++) {
+      final interpreter = await Interpreter.fromAsset(
+        'assets/efficientdet_lite4.tflite',
+        options: options,
       );
+      final isolateInterpreter = await IsolateInterpreter.create(
+        address: interpreter.address,
+      );
+      
+      _interpreters.add(interpreter);
+      _isolateInterpreters.add(isolateInterpreter);
+      _interpreterBusy.add(false);
+    }
+  }
+
+  Future<IsolateInterpreter> _acquireDetector() async {
+    while (true) {
+      for (int i = 0; i < _isolateInterpreters.length; i++) {
+        if (!_interpreterBusy[i]) {
+          _interpreterBusy[i] = true;
+          return _isolateInterpreters[i];
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+  }
+
+  void _releaseDetector(IsolateInterpreter s) {
+    final idx = _isolateInterpreters.indexOf(s);
+    if (idx != -1) {
+      _interpreterBusy[idx] = false;
     }
   }
 
   Future<List<BirdCrop>> detectAndCrop(String imagePath) async {
-    if (_interpreter == null) {
+    if (_interpreters.isEmpty) {
       throw Exception('Detector not initialized');
     }
 
     final fileBytes = await File(imagePath).readAsBytes();
 
-    final inputShape = _interpreter!.getInputTensor(0).shape;
+    final inputShape = _interpreters.first.getInputTensor(0).shape;
     final int targetW = inputShape[1];
     final int targetH = inputShape[2];
 
-    if (Platform.isWindows) {
-      return await _detectWindows(fileBytes, targetW, targetH);
-    } else {
-      final request = _DetectorRequest(
-        fileBytes,
-        _interpreter!.address,
-        targetW,
-        targetH,
-      );
-      return await compute(_detectorWorker, request);
-    }
+    return await _detect(fileBytes, targetW, targetH);
   }
 
-  /// Windows pipeline — fully async, no heavy work on main isolate.
+  /// Platform-agnostic pipeline — fully async, no heavy work on main isolate.
   ///
   /// 1. compute() isolate: decode + crop + resize all tiles → flat Uint8Lists
-  /// 2. Main isolate: pass flat pixels to IsolateInterpreter (async inference)
+  /// 2. Main isolate: pass flat pixels to pooled IsolateInterpreter (async inference)
   /// 3. compute() isolate: NMS + crop + JPG encode
-  Future<List<BirdCrop>> _detectWindows(
+  Future<List<BirdCrop>> _detect(
     Uint8List fileBytes,
     int targetW,
     int targetH,
@@ -173,17 +177,26 @@ class BirdDetector {
 
     // Step 2: Inference via IsolateInterpreter (async, no UI blocking)
     List<_RawDetection> rawDetections = [];
+    
+    IsolateInterpreter? isolateInterpreter;
+    try {
+      isolateInterpreter = await _acquireDetector();
 
-    for (int ti = 0; ti < prepared.tilePixels.length; ti++) {
-      final pixels = prepared.tilePixels[ti];
-      final outputs = _allocateOutputs();
-      await _isolateInterpreter!.runForMultipleInputs([pixels], outputs);
+      for (int ti = 0; ti < prepared.tilePixels.length; ti++) {
+        final pixels = prepared.tilePixels[ti];
+        final outputs = _allocateOutputs();
+        await isolateInterpreter.runForMultipleInputs([pixels], outputs);
 
-      final rect = prepared.tileRects[ti];
-      final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
-      rawDetections.addAll(
-        _extractDetections(outputs, tile, prepared.origW, prepared.origH),
-      );
+        final rect = prepared.tileRects[ti];
+        final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
+        rawDetections.addAll(
+          _extractDetections(outputs, tile, prepared.origW, prepared.origH),
+        );
+      }
+    } finally {
+      if (isolateInterpreter != null) {
+        _releaseDetector(isolateInterpreter);
+      }
     }
 
     if (rawDetections.isEmpty) return [];
@@ -208,16 +221,24 @@ class BirdDetector {
         );
 
         List<_RawDetection> customDets = [];
-        for (int ti = 0; ti < prepCust.tilePixels.length; ti++) {
-          final pixels = prepCust.tilePixels[ti];
-          final outputs = _allocateOutputs();
-          await _isolateInterpreter!.runForMultipleInputs([pixels], outputs);
+        IsolateInterpreter? customIsolate;
+        try {
+          customIsolate = await _acquireDetector();
+          for (int ti = 0; ti < prepCust.tilePixels.length; ti++) {
+            final pixels = prepCust.tilePixels[ti];
+            final outputs = _allocateOutputs();
+            await customIsolate.runForMultipleInputs([pixels], outputs);
 
-          final rect = prepCust.tileRects[ti];
-          final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
-          customDets.addAll(
-            _extractDetections(outputs, tile, prepCust.origW, prepCust.origH),
-          );
+            final rect = prepCust.tileRects[ti];
+            final tile = Rectangle<int>(rect[0], rect[1], rect[2], rect[3]);
+            customDets.addAll(
+              _extractDetections(outputs, tile, prepCust.origW, prepCust.origH),
+            );
+          }
+        } finally {
+          if (customIsolate != null) {
+            _releaseDetector(customIsolate);
+          }
         }
         return _applyNms(customDets);
       },
@@ -245,7 +266,14 @@ class BirdDetector {
   }
 
   void dispose() {
-    _isolateInterpreter?.close();
-    _interpreter?.close();
+    for (final isolateInterpreter in _isolateInterpreters) {
+      isolateInterpreter.close();
+    }
+    for (final interpreter in _interpreters) {
+      interpreter.close();
+    }
+    _isolateInterpreters.clear();
+    _interpreters.clear();
+    _interpreterBusy.clear();
   }
 }

@@ -170,8 +170,8 @@ class PhotoProcessor {
         
         final prepped = await Future.wait(burstJobs);
         
-        for (final item in prepped) {
-          if (item == null) continue;
+        final detectionJobs = prepped.map((item) async {
+          if (item == null) return;
           final filePath = item['f'] as String;
           final processedPath = item['p'] as String;
           final exifData = item['e'] as ExifData;
@@ -208,7 +208,9 @@ class PhotoProcessor {
                 : 1.0;
             onProgress(p1 * 0.5 + p2 * 0.5);
           }
-        }
+        });
+
+        await Future.wait(detectionJobs);
         burstCompleters[i].complete();
       }
     });

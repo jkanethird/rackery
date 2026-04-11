@@ -41,7 +41,7 @@ const double _kLocalBonus = 0.08;
 class BirdClassifier {
   final _ort = OnnxRuntime();
   
-  static const int _poolSize = 2;
+  late final int _poolSize;
   final List<OrtSession> _sessions = [];
   final List<bool> _sessionBusy = [];
 
@@ -77,6 +77,11 @@ class BirdClassifier {
       debugPrint('BioCLIP: CUDA execution provider available');
     }
     providers.add(OrtProvider.CPU);
+
+    // Dynamically scale pool size based on hardware resources to prevent overloading RAM/VRAM
+    // BioCLIP requires ~300MB/instance, plus ~200MB execution payload
+    // Limits scale to 1 instance per 4 logical cores, up to max tightly constrained parallelism (3)
+    _poolSize = max(1, min(3, (Platform.numberOfProcessors / 4).ceil()));
 
     for (int i = 0; i < _poolSize; i++) {
       final session = await _ort.createSessionFromAsset(

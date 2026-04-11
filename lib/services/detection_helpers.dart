@@ -45,23 +45,7 @@ List<Rectangle<int>> _buildTiles(int origW, int origH) {
   return tiles.toSet().toList();
 }
 
-/// Builds a [1,H,W,3] int tensor from an img.Image.
-List<List<List<List<int>>>> _buildTensor(
-  img.Image imageInput,
-  int targetW,
-  int targetH,
-) {
-  return List.generate(
-    1,
-    (_) => List.generate(
-      targetH,
-      (y) => List.generate(targetW, (x) {
-        final pixel = imageInput.getPixel(x, y);
-        return [pixel.r.toInt(), pixel.g.toInt(), pixel.b.toInt()];
-      }),
-    ),
-  );
-}
+
 
 /// Allocates fresh TFLite output buffers.
 Map<int, Object> _allocateOutputs() => {
