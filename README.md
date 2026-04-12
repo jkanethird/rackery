@@ -24,3 +24,10 @@ samples, guidance on mobile development, and a full API reference.
 ## Rust Setup
 
 - [Rust Installation](https://rust-lang.org/tools/install/)
+
+## Running the app
+
+1. Clone the repo
+2. `flutter run -d [windows/linux]` 
+   * runs in debug mode
+3. Alternatively, `flutter build [windows/linux]` to build an executable
