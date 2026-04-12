@@ -1,7 +1,7 @@
 ![App Icon](assets/icon.png?raw=true)
 # Rackery
 
-A desktop app vibe-coded in Dart using Flutter for identifying birds and generating an eBird checklist formatted CSV for import into eBird. EfficientNet-lite is used for detecting birds in photos and BioCLIP for classification. An ebird API Key can optionally be provided to favor identifying for species that are present in the region during the season the photo was taken. Photo metadata is used to determine the date and location of the photo. Runs on Windows, Linux, and (probably) MacOS. This project is in an early state of development.
+This is a desktop app vibe-coded in Dart, Flutter, and Rust for identifying birds and generating an eBird checklist formatted CSV for import into eBird. EfficientNet-lite is used for detecting birds in photos and BioCLIP for classification. An ebird API Key can optionally be provided to favor identifying for species that are present in the region during the season the photo was taken. Photo metadata is used to determine the date and location of the photo. Runs on Windows, Linux, and (probably) MacOS. This project is in an early state of development.
 
 ## Getting Started
 
