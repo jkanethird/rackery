@@ -64,6 +64,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.13.1
   freezed: ^3.2.5
+  msix: ^3.16.13
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -123,3 +124,14 @@ flutter_launcher_icons:
   linux:
     generate: true
     image_path: "assets/icon.png"
+
+msix_config:
+  display_name: Rackery
+  publisher_display_name: Rackery
+  identity_name: com.rackery.app
+  publisher: CN=Rackery Self-Signed
+  msix_version: 0.1.0.0
+  logo_path: assets/icon.png
+  certificate_path: windows/packaging/msix/rackery.pfx
+  certificate_password: rackery123
+  capabilities: internetClient, picturesLibrary, documentsLibrary
