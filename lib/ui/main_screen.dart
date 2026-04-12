@@ -152,7 +152,7 @@ class _MainScreenState extends State<MainScreen> {
               applicationVersion: '0.1.0',
               applicationIcon: const Icon(Icons.flutter_dash, size: 48),
               applicationLegalese:
-                  'Powered by BioCLIP (ONNX Runtime) and TensorFlow Lite.',
+                  'Powered by BioCLIP and ONNX Runtime.',
             );
           },
         ),

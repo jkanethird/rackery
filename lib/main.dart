@@ -34,6 +34,14 @@ void main() async {
       'assets/LICENSE_BIOCLIP.md',
     );
     yield LicenseEntryWithLineBreaks(['BioCLIP Vision Model'], bioClipLicense);
+
+    final ortLicense = await rootBundle.loadString(
+      'assets/LICENSE_ONNXRUNTIME.md',
+    );
+    yield LicenseEntryWithLineBreaks(
+      ['ONNX Runtime', 'Microsoft ONNX Runtime'],
+      ortLicense,
+    );
   });
 
   runApp(const MyApp());
