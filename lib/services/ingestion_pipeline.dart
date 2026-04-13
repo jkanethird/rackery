@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rackery/services/exif_service.dart';
 import 'package:rackery/services/burst_grouper.dart';
@@ -50,32 +50,33 @@ class IngestionPipeline {
     final prefs = await SharedPreferences.getInstance();
     final lastDir = prefs.getString(_kLastPickerDirKey);
 
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
+    final result = await openFiles(
       initialDirectory: lastDir,
-      allowedExtensions: [
-        'jpg',
-        'jpeg',
-        'png',
-        'heic',
-        'heif',
-        'JPG',
-        'JPEG',
-        'PNG',
-        'HEIC',
-        'HEIF',
+      acceptedTypeGroups: [
+        const XTypeGroup(
+          label: 'Images',
+          extensions: [
+            'jpg',
+            'jpeg',
+            'png',
+            'heic',
+            'heif',
+            'JPG',
+            'JPEG',
+            'PNG',
+            'HEIC',
+            'HEIF',
+          ],
+        ),
       ],
     );
 
-    if (result == null) return null;
+    if (result.isEmpty) return null;
 
-    final firstPath = result.files.first.path;
-    if (firstPath != null) {
-      await prefs.setString(_kLastPickerDirKey, File(firstPath).parent.path);
-    }
+    final firstPath = result.first.path;
+    await prefs.setString(_kLastPickerDirKey, File(firstPath).parent.path);
 
-    final pickedPaths = result.files.map((f) => f.path!).toSet();
+    final pickedPaths = result.map((f) => f.path).toSet();
     final newPaths = pickedPaths
         .difference(currentSelectedFiles.toSet())
         .toList();

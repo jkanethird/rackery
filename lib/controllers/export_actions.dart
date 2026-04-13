@@ -19,13 +19,14 @@ part of 'checklist_controller.dart';
 /// CSV export actions for [ChecklistController].
 extension ExportActions on ChecklistController {
   Future<void> exportCsv(BuildContext context) async {
-    String? outputFile = await FilePicker.platform.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: 'ebird_checklist.csv',
-      type: FileType.custom,
-      allowedExtensions: ['csv'],
+    final saveLocation = await getSaveLocation(
+      suggestedName: 'ebird_checklist.csv',
+      acceptedTypeGroups: [
+        const XTypeGroup(label: 'CSV', extensions: ['csv']),
+      ],
     );
-    if (outputFile == null) return;
+    if (saveLocation == null) return;
+    String outputFile = saveLocation.path;
 
     if (!outputFile.endsWith('.csv')) outputFile += '.csv';
     await CsvService.generateEbirdCsv(observations, outputFile);
