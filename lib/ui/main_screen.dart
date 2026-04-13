@@ -61,37 +61,34 @@ class _MainScreenState extends State<MainScreen> {
         }
         return Scaffold(
           appBar: _buildAppBar(),
-          body: NotificationListener<ScrollNotification>(
-            onNotification: (_) => true, // Absorb scroll notifications
-            child: Column(
-              children: [
-                _buildToolbar(),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left: file list
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          color: Theme.of(context).cardColor,
-                          child: _buildFileListPanel(),
-                        ),
+          body: Column(
+            children: [
+              _buildToolbar(),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Left: file list
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        color: Theme.of(context).cardColor,
+                        child: _buildFileListPanel(),
                       ),
-                      const VerticalDivider(width: 1),
+                    ),
+                    const VerticalDivider(width: 1),
 
-                      // Centre: photo viewer
-                      _buildCenterPane(),
+                    // Centre: photo viewer
+                    _buildCenterPane(),
 
-                      const VerticalDivider(width: 1),
+                    const VerticalDivider(width: 1),
 
-                      // Right: observations list
-                      Expanded(flex: 1, child: _buildObsPanel()),
-                    ],
-                  ),
+                    // Right: observations list
+                    Expanded(flex: 1, child: _buildObsPanel()),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -100,8 +97,7 @@ class _MainScreenState extends State<MainScreen> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      scrolledUnderElevation: 0,
-      surfaceTintColor: Colors.transparent,
+      forceMaterialTransparency: true,
       title: const Text('Rackery'),
       actions: [
         IconButton(
