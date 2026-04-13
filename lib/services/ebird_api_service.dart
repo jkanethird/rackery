@@ -37,6 +37,25 @@ class EbirdApiService {
     await prefs.setString('ebird_api_key', key);
   }
 
+  /// Verifies an eBird API Key by making a lightweight request
+  static Future<bool> verifyApiKey(String apiKey) async {
+    if (apiKey.trim().isEmpty) return false;
+    try {
+      // Use the regional species list endpoint for a fixed region.
+      // This is highly cached by eBird and much faster than querying recent observations.
+      final response = await http
+          .get(
+            Uri.parse('$_baseUrl/product/spplist/US-NY'),
+            headers: {'X-eBirdApiToken': apiKey.trim()},
+          )
+          .timeout(const Duration(seconds: 10));
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Failed to verify API key: $e');
+      return false;
+    }
+  }
+
   static Future<void>? _taxonomyFuture;
   static bool _taxonomyFailed = false;
 
@@ -55,7 +74,7 @@ class EbirdApiService {
               Uri.parse('$_baseUrl/ref/taxonomy/ebird?fmt=json'),
               headers: {'X-eBirdApiToken': apiKey},
             )
-            .timeout(const Duration(seconds: 45));
+            .timeout(const Duration(seconds: 60));
 
         if (response.statusCode == 200) {
           final List<dynamic> taxonomy = jsonDecode(response.body);
@@ -125,7 +144,7 @@ class EbirdApiService {
             ),
             headers: {'X-eBirdApiToken': apiKey},
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         final List<dynamic> observations = jsonDecode(response.body);
@@ -163,7 +182,7 @@ class EbirdApiService {
             Uri.parse('$_baseUrl/product/spplist/$regionCode'),
             headers: {'X-eBirdApiToken': apiKey},
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         final List<dynamic> speciesCodes = jsonDecode(response.body);
