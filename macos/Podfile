@@ -43,5 +43,57 @@ post_install do |installer|
       config.build_settings['OTHER_LIBTOOLFLAGS'] = '$(inherited) -no_warning_for_no_symbols'
       config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
     end
+
+    # The ort crate's ONNX Runtime build includes onnx-ml.pb.cc.o twice in the
+    # static archive (from onnxruntime_static + onnx_proto compilation units).
+    # When Runner force-loads the .a, the linker fails on the 756 duplicate symbols.
+    # Fix: after Cargokit builds librust_lib_rackery.a, deduplicate it by extracting
+    # all objects (ar -x overwrites duplicates → natural dedup) and re-archiving.
+    if target.name == 'rust_lib_rackery'
+      dedup = target.new_shell_script_build_phase('Deduplicate Rust Static Library')
+      dedup.shell_script = <<~'SHELL'
+        set -e
+        RUST_LIB="${BUILT_PRODUCTS_DIR}/librust_lib_rackery.a"
+        [ -f "$RUST_LIB" ] || exit 0
+
+        TEMP_DIR=$(mktemp -d)
+        ARCHES=$(lipo -archs "$RUST_LIB" 2>/dev/null || echo "")
+
+        if [ -z "$ARCHES" ]; then
+          rm -rf "$TEMP_DIR"; exit 0
+        fi
+
+        DEDUPED_SLICES=""
+        for ARCH in $ARCHES; do
+          SLICE_DIR="$TEMP_DIR/$ARCH"
+          mkdir -p "$SLICE_DIR"
+          lipo "$RUST_LIB" -thin "$ARCH" -output "$SLICE_DIR/thin.a"
+          OBJ_DIR="$SLICE_DIR/objs"
+          mkdir -p "$OBJ_DIR"
+
+          # List all members in order, then extract only the FIRST occurrence of each name.
+          # ar -t lists members; we track seen names and skip later dupes.
+          # ar -x with a member name extracts just that member (first match).
+          ar -t "$SLICE_DIR/thin.a" | awk '!seen[$0]++' | while read -r MEMBER; do
+            [ -z "$MEMBER" ] && continue
+            (cd "$OBJ_DIR" && ar -x "$SLICE_DIR/thin.a" "$MEMBER" 2>/dev/null || true)
+          done
+
+          OBJ_COUNT=$(find "$OBJ_DIR" -name "*.o" | wc -l | tr -d ' ')
+          if [ "$OBJ_COUNT" -gt 0 ]; then
+            (cd "$OBJ_DIR" && find . -name "*.o" -print0 | xargs -0 ar -cr dedup.a)
+            ranlib "$OBJ_DIR/dedup.a" 2>/dev/null || true
+            DEDUPED_SLICES="$DEDUPED_SLICES $OBJ_DIR/dedup.a"
+            echo "[$ARCH] Deduplicated: $OBJ_COUNT unique objects"
+          fi
+        done
+
+        if [ -n "$DEDUPED_SLICES" ]; then
+          lipo -create $DEDUPED_SLICES -output "$RUST_LIB"
+          echo "Rebuilt fat archive: $RUST_LIB"
+        fi
+        rm -rf "$TEMP_DIR"
+      SHELL
+    end
   end
 end

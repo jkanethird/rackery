@@ -12,3 +12,14 @@ PRODUCT_BUNDLE_IDENTIFIER = com.jkane.rackery
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 Joseph J. Kane III. All rights reserved.
+
+// Force-load the Cargokit-built Rust static library directly into Runner.
+// FRB2 with ExternalLibrary.process() looks up symbols in the running process,
+// so the .a must be linked into the Runner binary at the Xcode level.
+//
+// We also link the prebuilt libonnxruntime.a that ort crate downloads to
+// ~/Library/Caches/ort.pyke.io and its required system libraries, since these
+// cargo:rustc-link-lib directives are not propagated by Cargokit to Xcode.
+ORT_DFBIN = $(HOME)/Library/Caches/ort.pyke.io/dfbin/aarch64-apple-darwin/612739f75438dc0a075461e1fb454226b4a1eb175e60a7271ba966bbbb972cd4
+CLANG_RT_LIB_DIR = $(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin
+OTHER_LDFLAGS = $(inherited) -force_load $(PODS_CONFIGURATION_BUILD_DIR)/rust_lib_rackery/librust_lib_rackery.a $(ORT_DFBIN)/libonnxruntime.a -lc++ -framework Foundation -L$(CLANG_RT_LIB_DIR) -lclang_rt.osx

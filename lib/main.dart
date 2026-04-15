@@ -14,16 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:rackery/ui/main_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart' show ExternalLibrary;
 import 'package:rackery/src/rust/frb_generated.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await RustLib.init();
+  // On macOS the Rust crate is statically linked via -force_load so FRB2
+  // must look up symbols from the running process rather than dlopen a framework.
+  await RustLib.init(
+    externalLibrary:
+        Platform.isMacOS ? ExternalLibrary.process(iKnowHowToUseIt: true) : null,
+  );
   await SystemTheme.accentColor.load();
 
   LicenseRegistry.addLicense(() async* {
