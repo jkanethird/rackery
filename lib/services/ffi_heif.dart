@@ -205,14 +205,43 @@ class LibHeif {
         );
       }
     } else {
-      try {
-        _lib = ffi.DynamicLibrary.open('libheif.so.1');
-      } catch (_) {
+      if (Platform.isMacOS) {
+        // Prefer the copy bundled into .app/Contents/Frameworks/ by the
+        // "Bundle libheif dylibs" Podfile build phase.  Fall back to a bare
+        // name (works when DYLD_LIBRARY_PATH includes Homebrew) and then to
+        // an absolute Homebrew path for local dev runs outside the sandbox.
+        final bundleDir = File(Platform.resolvedExecutable).parent.parent.path;
+        final candidates = [
+          '$bundleDir/Frameworks/libheif.1.dylib',
+          'libheif.1.dylib',
+          'libheif.dylib',
+          '/opt/homebrew/opt/libheif/lib/libheif.1.dylib',
+          '/opt/homebrew/lib/libheif.dylib',
+        ];
+        bool loaded = false;
+        for (final path in candidates) {
+          try {
+            _lib = ffi.DynamicLibrary.open(path);
+            loaded = true;
+            break;
+          } catch (_) {
+            continue;
+          }
+        }
+        if (!loaded) {
+          throw Exception(
+            'Failed to open libheif on macOS — tried: ${candidates.join(", ")}',
+          );
+        }
+      } else {
         try {
-          final libName = Platform.isMacOS ? 'libheif.dylib' : 'libheif.so';
-          _lib = ffi.DynamicLibrary.open(libName);
-        } catch (e) {
-          throw Exception("Failed to open libheif natively: \$e");
+          _lib = ffi.DynamicLibrary.open('libheif.so.1');
+        } catch (_) {
+          try {
+            _lib = ffi.DynamicLibrary.open('libheif.so');
+          } catch (e) {
+            throw Exception('Failed to open libheif on Linux: $e');
+          }
         }
       }
     }

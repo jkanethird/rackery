@@ -44,6 +44,57 @@ post_install do |installer|
       config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
     end
 
+    # Bundle libheif and its transitive Homebrew dependencies into Frameworks/
+    # so the sandboxed macOS app can dlopen() them at runtime.
+    if target.name == 'Runner'
+      bundle_heif = target.new_shell_script_build_phase('Bundle libheif dylibs')
+      bundle_heif.shell_script = <<~'SHELL'
+        set -e
+        BREW="/opt/homebrew"
+        FRAMEWORKS="${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+        mkdir -p "$FRAMEWORKS"
+
+        # Ordered list: deps first so install_name_tool rewrites are consistent.
+        DYLIBS=(
+          "${BREW}/opt/libvmaf/lib/libvmaf.3.dylib"
+          "${BREW}/opt/webp/lib/libsharpyuv.0.dylib"
+          "${BREW}/opt/libde265/lib/libde265.0.dylib"
+          "${BREW}/opt/x265/lib/libx265.215.dylib"
+          "${BREW}/opt/aom/lib/libaom.3.dylib"
+          "${BREW}/opt/libheif/lib/libheif.1.dylib"
+        )
+
+        for SRC in "${DYLIBS[@]}"; do
+          [ -f "$SRC" ] || { echo "warning: $SRC not found — skipping"; continue; }
+          BASENAME=$(basename "$SRC")
+          DEST="$FRAMEWORKS/$BASENAME"
+          cp -f "$SRC" "$DEST"
+          chmod u+w "$DEST"
+
+          # Rewrite this dylib's own install name to @rpath-relative
+          install_name_tool -id "@rpath/$BASENAME" "$DEST"
+
+          # Rewrite references to all of its Homebrew siblings
+          for SRC2 in "${DYLIBS[@]}"; do
+            BASENAME2=$(basename "$SRC2")
+            # Replace any absolute Homebrew path pointing to this dep
+            OLD1="${BREW}/opt/libvmaf/lib/$BASENAME2"
+            OLD2="${BREW}/opt/webp/lib/$BASENAME2"
+            OLD3="${BREW}/opt/libde265/lib/$BASENAME2"
+            OLD4="${BREW}/opt/x265/lib/$BASENAME2"
+            OLD5="${BREW}/opt/aom/lib/$BASENAME2"
+            OLD6="${BREW}/opt/libheif/lib/$BASENAME2"
+            NEW="@rpath/$BASENAME2"
+            for OLD in "$OLD1" "$OLD2" "$OLD3" "$OLD4" "$OLD5" "$OLD6"; do
+              install_name_tool -change "$OLD" "$NEW" "$DEST" 2>/dev/null || true
+            done
+          done
+
+          echo "Bundled: $BASENAME"
+        done
+      SHELL
+    end
+
     # The ort crate's ONNX Runtime build includes onnx-ml.pb.cc.o twice in the
     # static archive (from onnxruntime_static + onnx_proto compilation units).
     # When Runner force-loads the .a, the linker fails on the 756 duplicate symbols.
