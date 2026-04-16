@@ -85,10 +85,8 @@ pub fn init_pipeline(
     let _ = init().with_name("rackery").commit();
 
     // Build execution provider list: try most-performant hardware first.
-    // TensorRT is intentionally omitted — it validates ONNX node names more
-    // strictly than the TF-exported EfficientDet model satisfies, causing a
-    // hard failure rather than a graceful fallback to the next provider.
     let eps = [
+        ort::ep::TensorRT::default().build(),
         ort::ep::CUDA::default().build(),
         ort::ep::DirectML::default().build(),
         ort::ep::CoreML::default().build(),
@@ -104,27 +102,46 @@ pub fn init_pipeline(
     let mut cls_sessions = Vec::new();
 
     for _ in 0..pool_size {
-        let det = Session::builder()
-            .map_err(|e| format!("{:?}", e))?
-            .with_execution_providers(eps.clone())
-            .map_err(|e| format!("{:?}", e))?
-            // Level1 avoids the aggressive graph-fusion pass that causes the
-            // Windows ORT binary to reject tf2onnx-exported models with
-            // semicolon-joined node names (a benign export artefact).
-            .with_optimization_level(GraphOptimizationLevel::Level1)
-            .map_err(|e| format!("{:?}", e))?
-            .commit_from_memory(&detector_model_bytes)
-            .map_err(|e| format!("{:?}", e))?;
-        det_sessions.push(det);
-
-        let cls = Session::builder()
+        let det_attempt = Session::builder()
             .map_err(|e| format!("{:?}", e))?
             .with_execution_providers(eps.clone())
             .map_err(|e| format!("{:?}", e))?
             .with_optimization_level(GraphOptimizationLevel::Level3)
             .map_err(|e| format!("{:?}", e))?
-            .commit_from_memory(&classifier_model_bytes)
-            .map_err(|e| format!("{:?}", e))?;
+            .commit_from_memory(&detector_model_bytes);
+
+        let det = match det_attempt {
+            Ok(session) => session,
+            Err(_) => Session::builder()
+                .map_err(|e| format!("{:?}", e))?
+                .with_execution_providers(eps.clone())
+                .map_err(|e| format!("{:?}", e))?
+                .with_optimization_level(GraphOptimizationLevel::Level1)
+                .map_err(|e| format!("{:?}", e))?
+                .commit_from_memory(&detector_model_bytes)
+                .map_err(|e| format!("{:?}", e))?,
+        };
+        det_sessions.push(det);
+
+        let cls_attempt = Session::builder()
+            .map_err(|e| format!("{:?}", e))?
+            .with_execution_providers(eps.clone())
+            .map_err(|e| format!("{:?}", e))?
+            .with_optimization_level(GraphOptimizationLevel::Level3)
+            .map_err(|e| format!("{:?}", e))?
+            .commit_from_memory(&classifier_model_bytes);
+
+        let cls = match cls_attempt {
+            Ok(session) => session,
+            Err(_) => Session::builder()
+                .map_err(|e| format!("{:?}", e))?
+                .with_execution_providers(eps.clone())
+                .map_err(|e| format!("{:?}", e))?
+                .with_optimization_level(GraphOptimizationLevel::Level1)
+                .map_err(|e| format!("{:?}", e))?
+                .commit_from_memory(&classifier_model_bytes)
+                .map_err(|e| format!("{:?}", e))?,
+        };
         cls_sessions.push(cls);
     }
 
