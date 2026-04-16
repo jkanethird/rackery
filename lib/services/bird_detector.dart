@@ -86,7 +86,7 @@ class NativePipeline {
     // Load all model/data assets in parallel
     final futures = await Future.wait([
       rootBundle.load('assets/efficientdet_lite4.onnx'),
-      rootBundle.load('assets/bioclip_vision.onnx'),
+      rootBundle.load('assets/bioclip_vision_int8.onnx'),
       rootBundle.load('assets/species_embeddings.bin'),
       rootBundle.loadString('assets/species_labels.json'),
     ]);

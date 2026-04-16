@@ -73,3 +73,4 @@ tool/
 .venv/
 venv/
 tensors_lite4.txt
+scratch/
