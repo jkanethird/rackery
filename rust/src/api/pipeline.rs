@@ -18,7 +18,7 @@ use image::{imageops::FilterType, GenericImageView};
 use std::cmp::min;
 use std::collections::HashSet;
 use ort::{session::builder::GraphOptimizationLevel, session::Session, value::Value, init};
-use std::sync::{OnceLock, Mutex};
+use std::sync::{OnceLock, Mutex, Condvar};
 use rayon::prelude::*;
 use crate::frb_generated::StreamSink;
 
@@ -49,14 +49,31 @@ const DET_SIZE: u32 = 512;
 
 // ── Static State ───────────────────────────────────────────────────────────
 
-static DETECTOR_SESSION: OnceLock<Mutex<Session>> = OnceLock::new();
-static CLASSIFIER_SESSION: OnceLock<Mutex<Session>> = OnceLock::new();
+struct SessionPool {
+    sessions: Mutex<Vec<Session>>,
+    cvar: Condvar,
+}
+
+impl SessionPool {
+    fn acquire(&self) -> Session {
+        let mut lock = self.sessions.lock().unwrap();
+        while lock.is_empty() {
+            lock = self.cvar.wait(lock).unwrap();
+        }
+        lock.pop().unwrap()
+    }
+    
+    fn release(&self, session: Session) {
+        self.sessions.lock().unwrap().push(session);
+        self.cvar.notify_one();
+    }
+}
+
+static DETECTOR_POOL: OnceLock<SessionPool> = OnceLock::new();
+static CLASSIFIER_POOL: OnceLock<SessionPool> = OnceLock::new();
 
 /// (flat f32 embeddings row-major, species labels, embedding_dim)
 static SPECIES_DATA: OnceLock<(Vec<f32>, Vec<String>, usize)> = OnceLock::new();
-
-/// Whether the ONNX model accepts dynamic batch sizes (tested once).
-static BATCH_SUPPORTED: OnceLock<bool> = OnceLock::new();
 
 // ── FFI Structs ────────────────────────────────────────────────────────────
 
@@ -114,27 +131,37 @@ pub fn init_pipeline(
         ort::ep::CPU::default().build(),
     ];
 
-    // 1. Detector session
-    let det_session = Session::builder()
-        .map_err(|e| format!("{:?}", e))?
-        .with_execution_providers(eps.clone())
-        .map_err(|e| format!("{:?}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level3)
-        .map_err(|e| format!("{:?}", e))?
-        .commit_from_memory(&detector_model_bytes)
-        .map_err(|e| format!("{:?}", e))?;
-    let _ = DETECTOR_SESSION.set(Mutex::new(det_session));
+    let pool_size = std::thread::available_parallelism().map(|n| n.get() / 2).unwrap_or(2).clamp(1, 4);
 
-    // 2. Classifier session
-    let cls_session = Session::builder()
-        .map_err(|e| format!("{:?}", e))?
-        .with_execution_providers(eps)
-        .map_err(|e| format!("{:?}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level3)
-        .map_err(|e| format!("{:?}", e))?
-        .commit_from_memory(&classifier_model_bytes)
-        .map_err(|e| format!("{:?}", e))?;
-    let _ = CLASSIFIER_SESSION.set(Mutex::new(cls_session));
+    let mut det_pool = Vec::new();
+    let mut cls_pool = Vec::new();
+
+    for _ in 0..pool_size {
+        // 1. Detector session
+        let det_session = Session::builder()
+            .map_err(|e| format!("{:?}", e))?
+            .with_execution_providers(eps.clone())
+            .map_err(|e| format!("{:?}", e))?
+            .with_optimization_level(GraphOptimizationLevel::Level3)
+            .map_err(|e| format!("{:?}", e))?
+            .commit_from_memory(&detector_model_bytes)
+            .map_err(|e| format!("{:?}", e))?;
+        det_pool.push(det_session);
+
+        // 2. Classifier session
+        let cls_session = Session::builder()
+            .map_err(|e| format!("{:?}", e))?
+            .with_execution_providers(eps.clone())
+            .map_err(|e| format!("{:?}", e))?
+            .with_optimization_level(GraphOptimizationLevel::Level3)
+            .map_err(|e| format!("{:?}", e))?
+            .commit_from_memory(&classifier_model_bytes)
+            .map_err(|e| format!("{:?}", e))?;
+        cls_pool.push(cls_session);
+    }
+    
+    let _ = DETECTOR_POOL.set(SessionPool { sessions: Mutex::new(det_pool), cvar: Condvar::new() });
+    let _ = CLASSIFIER_POOL.set(SessionPool { sessions: Mutex::new(cls_pool), cvar: Condvar::new() });
 
     // 3. Species embeddings
     // Binary format: [i32 num_species, i32 dim, f32 × num_species × dim]
@@ -214,14 +241,9 @@ pub fn process_pipeline(
 
     // ── 4. Detection inference (batched or sequential) ─────────────────────
     stream.add(PipelineEvent::Progress("Running object detection...".to_string())).ok();
-    let det_mutex = DETECTOR_SESSION.get()
-        .ok_or("Detector not initialized")?;
-    let mut det_session = det_mutex.lock().map_err(|_| "Detector lock error")?;
-
-    let all_detections = run_detection_batched_or_sequential(
-        &mut det_session, &tile_tensors, &tiles, orig_w, orig_h, &stream,
+    let all_detections = run_detection_concurrent(
+        &tile_tensors, &tiles, orig_w, orig_h, &stream,
     )?;
-    drop(det_session); // Release lock early
 
     // ── 5. NMS ─────────────────────────────────────────────────────────────
     stream.add(PipelineEvent::Progress("Filtering detections...".to_string())).ok();
@@ -244,9 +266,7 @@ pub fn process_pipeline(
     )).ok();
     let t1 = std::time::Instant::now();
 
-    let cls_mutex = CLASSIFIER_SESSION.get()
-        .ok_or("Classifier not initialized")?;
-    let mut cls_session = cls_mutex.lock().map_err(|_| "Classifier lock error")?;
+
 
     let mut birds: Vec<NativeBirdResult> = Vec::new();
 
@@ -270,7 +290,6 @@ pub fn process_pipeline(
 
         // 6c. Classify padded crop
         let species_list = classify_image(
-            &mut cls_session,
             &padded,
             &allowed_set,
             false, // not fallback
@@ -304,7 +323,6 @@ pub fn process_pipeline(
             crop_jpg_bytes: buf.into_inner(),
         });
     }
-    drop(cls_session);
 
     let classification_ms = t1.elapsed().as_millis() as u64;
 
@@ -328,11 +346,7 @@ pub fn classify_crop(
 
     let img = image::load_from_memory(&crop_bytes).map_err(|e| e.to_string())?;
 
-    let cls_mutex = CLASSIFIER_SESSION.get()
-        .ok_or("Classifier not initialized")?;
-    let mut cls_session = cls_mutex.lock().map_err(|_| "Classifier lock error")?;
-
-    let species = classify_image(&mut cls_session, &img, &allowed_set, is_fallback)?;
+    let species = classify_image(&img, &allowed_set, is_fallback)?;
     Ok(ClassificationResult { species })
 }
 
@@ -385,115 +399,17 @@ fn prepare_tile_tensor(
     input_vec
 }
 
-/// Run detection using batched inference if the model supports it,
-/// falling back to sequential tile-by-tile inference otherwise.
-fn run_detection_batched_or_sequential(
-    session: &mut Session,
+/// Run detection concurrently using a pool of Sessions.
+fn run_detection_concurrent(
     tile_tensors: &[Vec<u8>],
     tiles: &[[u32; 4]],
     orig_w: u32,
     orig_h: u32,
     stream: &StreamSink<PipelineEvent>,
 ) -> Result<Vec<RawDetection>, String> {
-    // Check if we already know the model doesn't support batching
-    if BATCH_SUPPORTED.get() == Some(&false) {
-        return run_detection_sequential(session, tile_tensors, tiles, orig_w, orig_h, stream);
-    }
+    let pool = DETECTOR_POOL.get().ok_or("Detector pool not initialized")?;
 
-    // Try batched inference
-    match run_detection_batched(session, tile_tensors, tiles, orig_w, orig_h, stream) {
-        Ok(dets) => {
-            let _ = BATCH_SUPPORTED.set(true);
-            Ok(dets)
-        }
-        Err(e) => {
-            eprintln!("Batched detection failed ({}), falling back to sequential", e);
-            let _ = BATCH_SUPPORTED.set(false);
-            run_detection_sequential(session, tile_tensors, tiles, orig_w, orig_h, stream)
-        }
-    }
-}
-
-/// Run detection in chunks of MAX_BATCH tiles per ORT call.
-fn run_detection_batched(
-    session: &mut Session,
-    tile_tensors: &[Vec<u8>],
-    tiles: &[[u32; 4]],
-    orig_w: u32,
-    orig_h: u32,
-    stream: &StreamSink<PipelineEvent>,
-) -> Result<Vec<RawDetection>, String> {
-    let pixel_count = (DET_SIZE * DET_SIZE * 3) as usize;
-    let mut all_detections: Vec<RawDetection> = Vec::new();
-
-    for chunk_start in (0..tiles.len()).step_by(MAX_BATCH) {
-        let chunk_end = (chunk_start + MAX_BATCH).min(tiles.len());
-        let batch_size = chunk_end - chunk_start;
-
-        stream.add(PipelineEvent::Progress(
-            format!("Detection batch {}-{}/{}", chunk_start + 1, chunk_end, tiles.len())
-        )).ok();
-
-        // Concatenate pre-prepared tensors into a single batch
-        let mut batch_input: Vec<u8> = Vec::with_capacity(batch_size * pixel_count);
-        for tensor in &tile_tensors[chunk_start..chunk_end] {
-            batch_input.extend_from_slice(tensor);
-        }
-
-        let input_tensor = Value::from_array(
-            (vec![batch_size as i64, DET_SIZE as i64, DET_SIZE as i64, 3_i64], batch_input)
-        ).map_err(|e| format!("{:?}", e))?;
-
-        let inputs = ort::inputs!["serving_default_images:0" => input_tensor];
-        let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
-
-        let (box_shape, out_boxes) = outputs["StatefulPartitionedCall:3"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_classes) = outputs["StatefulPartitionedCall:2"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_scores) = outputs["StatefulPartitionedCall:1"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_count) = outputs["StatefulPartitionedCall:0"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-
-        // Determine max_det from the boxes shape: [B, max_det, 4]
-        let max_det = if box_shape.len() >= 3 {
-            box_shape[1] as usize
-        } else if box_shape.len() == 2 {
-            // Unbatched shape [max_det, 4] — model doesn't support batching
-            return Err("Model output shape suggests no batch support".to_string());
-        } else {
-            return Err(format!("Unexpected box shape: {:?}", box_shape));
-        };
-
-        // Parse detections for each tile in the batch
-        for b in 0..batch_size {
-            let count = out_count[b] as usize;
-            let tile = tiles[chunk_start + b];
-
-            let dets = parse_tile_detections(
-                out_boxes, out_scores, out_classes,
-                b, max_det, count, tile, orig_w, orig_h,
-            );
-            all_detections.extend(dets);
-        }
-    }
-
-    Ok(all_detections)
-}
-
-/// Fallback: run detection one tile at a time using pre-prepared tensors.
-fn run_detection_sequential(
-    session: &mut Session,
-    tile_tensors: &[Vec<u8>],
-    tiles: &[[u32; 4]],
-    orig_w: u32,
-    orig_h: u32,
-    stream: &StreamSink<PipelineEvent>,
-) -> Result<Vec<RawDetection>, String> {
-    let mut all_detections: Vec<RawDetection> = Vec::new();
-
-    for (i, tensor) in tile_tensors.iter().enumerate() {
+    let detections: Result<Vec<Vec<RawDetection>>, String> = tile_tensors.par_iter().enumerate().map(|(i, tensor)| {
         stream.add(PipelineEvent::Progress(
             format!("Detection tile {}/{}", i + 1, tiles.len())
         )).ok();
@@ -503,29 +419,35 @@ fn run_detection_sequential(
         ).map_err(|e| format!("{:?}", e))?;
 
         let inputs = ort::inputs!["serving_default_images:0" => input_tensor];
-        let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
+        
+        // Grab a session from the parallel pool
+        let mut session = pool.acquire();
+        let dets = {
+            let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
 
-        let (_, out_boxes) = outputs["StatefulPartitionedCall:3"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_classes) = outputs["StatefulPartitionedCall:2"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_scores) = outputs["StatefulPartitionedCall:1"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_count) = outputs["StatefulPartitionedCall:0"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+            let (_, out_boxes) = outputs["StatefulPartitionedCall:3"]
+                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+            let (_, out_classes) = outputs["StatefulPartitionedCall:2"]
+                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+            let (_, out_scores) = outputs["StatefulPartitionedCall:1"]
+                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+            let (_, out_count) = outputs["StatefulPartitionedCall:0"]
+                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
 
-        let count = out_count[0] as usize;
-        let max_det = out_scores.len(); // For batch=1, this is the full score array
-        let tile = tiles[i];
+            let count = out_count[0] as usize;
+            let max_det = out_scores.len(); // For batch=1, this is the full score array
+            let tile = tiles[i];
 
-        let dets = parse_tile_detections(
-            out_boxes, out_scores, out_classes,
-            0, max_det, count, tile, orig_w, orig_h,
-        );
-        all_detections.extend(dets);
-    }
+            parse_tile_detections(
+                out_boxes, out_scores, out_classes,
+                0, max_det, count, tile, orig_w, orig_h,
+            )
+        };
+        pool.release(session);
+        Ok(dets)
+    }).collect();
 
-    Ok(all_detections)
+    Ok(detections?.into_iter().flatten().collect())
 }
 
 /// Parse raw detection outputs for a single tile within a (possibly batched) result.
@@ -641,7 +563,6 @@ fn apply_nms(mut detections: Vec<RawDetection>) -> Vec<RawDetection> {
 // ── Classification Internals ───────────────────────────────────────────────
 
 fn classify_image(
-    session: &mut Session,
     img: &image::DynamicImage,
     allowed_set: &Option<HashSet<String>>,
     is_fallback: bool,
@@ -668,13 +589,20 @@ fn classify_image(
     ).map_err(|e| format!("{:?}", e))?;
 
     let inputs = ort::inputs!["pixel_values" => input_tensor];
-    let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
-
-    let (_, raw_embedding) = outputs["embedding"]
-        .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+    
+    let pool = CLASSIFIER_POOL.get().ok_or("Classifier pool not initialized")?;
+    let mut session = pool.acquire();
+    
+    let raw_embedding_vec = {
+        let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
+        let (_, raw_embedding) = outputs["embedding"]
+            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        raw_embedding.to_vec()
+    };
+    pool.release(session);
 
     // 3. L2-normalize
-    let mut embedding: Vec<f32> = raw_embedding.to_vec();
+    let mut embedding: Vec<f32> = raw_embedding_vec;
     l2_normalize(&mut embedding);
 
     // 4. Cosine similarities + local bonus

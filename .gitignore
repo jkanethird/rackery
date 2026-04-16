@@ -71,4 +71,5 @@ windows/packaging/msix/*.pem
 
 tool/
 .venv/
+venv/
 tensors_lite4.txt
