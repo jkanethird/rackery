@@ -125,9 +125,12 @@ pub fn init_pipeline(
 ) -> Result<(), String> {
     let _ = init().with_name("rackery").commit();
 
-    // Build execution provider list: try CUDA first, always include CPU fallback.
+    // Build execution provider list: try most-performant hardware providers first.
     let eps = [
+        ort::ep::TensorRT::default().build(),
         ort::ep::CUDA::default().build(),
+        ort::ep::DirectML::default().build(),
+        ort::ep::CoreML::default().build(),
         ort::ep::CPU::default().build(),
     ];
 
@@ -399,7 +402,45 @@ fn prepare_tile_tensor(
     input_vec
 }
 
-/// Run detection concurrently using a pool of Sessions.
+fn infer_single_tile(
+    pool: &SessionPool,
+    tensor: &[u8],
+    tile: [u32; 4],
+    orig_w: u32,
+    orig_h: u32,
+) -> Result<Vec<RawDetection>, String> {
+    let input_tensor = Value::from_array(
+        (vec![1_i64, DET_SIZE as i64, DET_SIZE as i64, 3_i64], tensor.to_vec())
+    ).map_err(|e| format!("{:?}", e))?;
+
+    let inputs = ort::inputs!["serving_default_images:0" => input_tensor];
+    
+    let mut session = pool.acquire();
+    let dets = {
+        let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
+
+        let (_, out_boxes) = outputs["StatefulPartitionedCall:3"]
+            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_classes) = outputs["StatefulPartitionedCall:2"]
+            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_scores) = outputs["StatefulPartitionedCall:1"]
+            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_count) = outputs["StatefulPartitionedCall:0"]
+            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+
+        let count = out_count[0] as usize;
+        let max_det = out_scores.len(); // For batch=1, this is the full score array
+
+        parse_tile_detections(
+            out_boxes, out_scores, out_classes,
+            0, max_det, count, tile, orig_w, orig_h,
+        )
+    };
+    pool.release(session);
+    Ok(dets)
+}
+
+/// Run detection concurrently using a pool of Sessions, with Early Exit optimization.
 fn run_detection_concurrent(
     tile_tensors: &[Vec<u8>],
     tiles: &[[u32; 4]],
@@ -409,45 +450,50 @@ fn run_detection_concurrent(
 ) -> Result<Vec<RawDetection>, String> {
     let pool = DETECTOR_POOL.get().ok_or("Detector pool not initialized")?;
 
-    let detections: Result<Vec<Vec<RawDetection>>, String> = tile_tensors.par_iter().enumerate().map(|(i, tensor)| {
+    if !tile_tensors.is_empty() {
         stream.add(PipelineEvent::Progress(
-            format!("Detection tile {}/{}", i + 1, tiles.len())
+            format!("Detection tile 1/{} (Early Exit Check)", tiles.len())
         )).ok();
-
-        let input_tensor = Value::from_array(
-            (vec![1_i64, DET_SIZE as i64, DET_SIZE as i64, 3_i64], tensor.clone())
-        ).map_err(|e| format!("{:?}", e))?;
-
-        let inputs = ort::inputs!["serving_default_images:0" => input_tensor];
         
-        // Grab a session from the parallel pool
-        let mut session = pool.acquire();
-        let dets = {
-            let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
+        let first_dets = infer_single_tile(pool, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
+        
+        // Evaluate early exit criteria on the full image tile [0]
+        let mut early_exit = false;
+        let total_area = (orig_w as f32) * (orig_h as f32);
+        
+        for d in &first_dets {
+            if d.score > 0.65 {
+                let box_area = (d.local_w as f32) * (d.local_h as f32);
+                if box_area / total_area > 0.25 {
+                    early_exit = true;
+                    break;
+                }
+            }
+        }
+        
+        if early_exit {
+            // We found a large, confident bird framed well! Skip sub-tile fragmentation.
+            return Ok(first_dets);
+        }
+        
+        // No prominent subject found globally. Fallback to sub-tiles concurrently.
+        let remaining_tensors = &tile_tensors[1..];
+        let remaining_tiles = &tiles[1..];
+        
+        let parallel_dets: Result<Vec<Vec<RawDetection>>, String> = remaining_tensors.par_iter().enumerate().map(|(i, tensor)| {
+            stream.add(PipelineEvent::Progress(
+                format!("Detection tile {}/{}", i + 2, tiles.len())
+            )).ok();
 
-            let (_, out_boxes) = outputs["StatefulPartitionedCall:3"]
-                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-            let (_, out_classes) = outputs["StatefulPartitionedCall:2"]
-                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-            let (_, out_scores) = outputs["StatefulPartitionedCall:1"]
-                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-            let (_, out_count) = outputs["StatefulPartitionedCall:0"]
-                .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+            infer_single_tile(pool, tensor, remaining_tiles[i], orig_w, orig_h)
+        }).collect();
 
-            let count = out_count[0] as usize;
-            let max_det = out_scores.len(); // For batch=1, this is the full score array
-            let tile = tiles[i];
+        let mut final_dets = first_dets;
+        final_dets.extend(parallel_dets?.into_iter().flatten());
+        return Ok(final_dets);
+    }
 
-            parse_tile_detections(
-                out_boxes, out_scores, out_classes,
-                0, max_det, count, tile, orig_w, orig_h,
-            )
-        };
-        pool.release(session);
-        Ok(dets)
-    }).collect();
-
-    Ok(detections?.into_iter().flatten().collect())
+    Ok(Vec::new())
 }
 
 /// Parse raw detection outputs for a single tile within a (possibly batched) result.
