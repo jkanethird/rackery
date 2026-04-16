@@ -108,7 +108,10 @@ pub fn init_pipeline(
             .map_err(|e| format!("{:?}", e))?
             .with_execution_providers(eps.clone())
             .map_err(|e| format!("{:?}", e))?
-            .with_optimization_level(GraphOptimizationLevel::Level3)
+            // Level1 avoids the aggressive graph-fusion pass that causes the
+            // Windows ORT binary to reject tf2onnx-exported models with
+            // semicolon-joined node names (a benign export artefact).
+            .with_optimization_level(GraphOptimizationLevel::Level1)
             .map_err(|e| format!("{:?}", e))?
             .commit_from_memory(&detector_model_bytes)
             .map_err(|e| format!("{:?}", e))?;
