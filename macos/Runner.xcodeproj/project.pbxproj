@@ -240,6 +240,7 @@
 				33CC110E2044A8840003C045 /* Bundle Framework */,
 				3399D490228B24CF009A79C7 /* ShellScript */,
 				3FBEB516FF5D0D9644A2488D /* [CP] Copy Pods Resources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* Bundle libheif dylibs */,
 			);
 			buildRules = (
 			);
@@ -419,6 +420,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* Bundle libheif dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle libheif dylibs";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nBREW=\"/opt/homebrew\"\nFRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nmkdir -p \"$FRAMEWORKS\"\n\nDYLIBS=(\n  \"${BREW}/opt/libvmaf/lib/libvmaf.3.dylib\"\n  \"${BREW}/opt/webp/lib/libsharpyuv.0.dylib\"\n  \"${BREW}/opt/libde265/lib/libde265.0.dylib\"\n  \"${BREW}/opt/x265/lib/libx265.215.dylib\"\n  \"${BREW}/opt/aom/lib/libaom.3.dylib\"\n  \"${BREW}/opt/libheif/lib/libheif.1.dylib\"\n)\n\nfor SRC in \"${DYLIBS[@]}\"; do\n  [ -f \"$SRC\" ] || { echo \"warning: $SRC not found\"; continue; }\n  BASENAME=$(basename \"$SRC\")\n  DEST=\"$FRAMEWORKS/$BASENAME\"\n  cp -f \"$SRC\" \"$DEST\"\n  chmod u+w \"$DEST\"\n  install_name_tool -id \"@rpath/$BASENAME\" \"$DEST\"\n  for SRC2 in \"${DYLIBS[@]}\"; do\n    BASENAME2=$(basename \"$SRC2\")\n    for PREFIX in libvmaf/lib libwebp/lib webp/lib libde265/lib x265/lib aom/lib libheif/lib; do\n      OLD=\"${BREW}/opt/${PREFIX}/$BASENAME2\"\n      install_name_tool -change \"$OLD\" \"@rpath/$BASENAME2\" \"$DEST\" 2>/dev/null || true\n    done\n  done\n  codesign --force --sign - \"$DEST\" 2>/dev/null || true\n  echo \"Bundled: $BASENAME\"\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
