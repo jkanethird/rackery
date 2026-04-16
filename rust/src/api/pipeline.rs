@@ -588,12 +588,12 @@ fn apply_nms(mut detections: Vec<RawDetection>) -> Vec<RawDetection> {
                 let area1 = (current.local_w * current.local_h) as f32;
                 let area2 = (k.local_w * k.local_h) as f32;
                 let iou = intersect / (area1 + area2 - intersect);
-                let io_min = intersect / area1.min(area2);
+
 
                 let dist = ((c_cx - k_cx).powi(2) + (c_cy - k_cy).powi(2)).sqrt();
                 let dist_thresh = (current.local_w + k.local_w + current.local_h + k.local_h) as f32 / 8.0;
 
-                if iou > 0.30 || io_min > 0.50 || (iou > 0.10 && dist < dist_thresh) {
+                if iou > 0.30 || (iou > 0.10 && dist < dist_thresh) {
                     is_duplicate = true;
                     break;
                 }
