@@ -18,15 +18,17 @@ use image::{imageops::FilterType, GenericImageView};
 use std::cmp::min;
 use std::collections::HashSet;
 use ort::{session::builder::GraphOptimizationLevel, session::Session, value::Value, init};
-use std::sync::{OnceLock, Mutex, Condvar};
 use rayon::prelude::*;
 use crate::frb_generated::StreamSink;
+
+use super::nms::{RawDetection, apply_nms, parse_tile_detections};
+use super::pool::{SessionPool, CLASSIFIER_POOL, DETECTOR_POOL, SPECIES_DATA};
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
 /// CLIP image-normalisation constants (mean / std per channel).
 const CLIP_MEAN: [f32; 3] = [0.48145466, 0.4578275, 0.40821073];
-const CLIP_STD: [f32; 3] = [0.26862954, 0.26130258, 0.27577711];
+const CLIP_STD:  [f32; 3] = [0.26862954, 0.26130258, 0.27577711];
 
 /// Confidence threshold below which an auto-detected crop is rejected.
 const MIN_CONFIDENCE: f32 = 0.18;
@@ -34,48 +36,16 @@ const MIN_CONFIDENCE: f32 = 0.18;
 /// Fallback threshold (entire-image classification, no detected bird).
 const FALLBACK_CONFIDENCE: f32 = 0.25;
 
-/// Bonus added to cosine similarity for species on eBird local checklist.
+/// Bonus added to cosine similarity for species on the eBird local checklist.
 const LOCAL_BONUS: f32 = 0.08;
 
-/// Number of top-K species to return.
+/// Number of top-K species returned per detected bird.
 const TOP_K: usize = 5;
 
-/// Maximum number of tiles to batch in a single detector inference call.
-/// Kept moderate to avoid OOM on smaller GPUs.
-const MAX_BATCH: usize = 16;
-
-/// Detector input resolution.
+/// Detector input resolution (square).
 const DET_SIZE: u32 = 512;
 
-// ── Static State ───────────────────────────────────────────────────────────
-
-struct SessionPool {
-    sessions: Mutex<Vec<Session>>,
-    cvar: Condvar,
-}
-
-impl SessionPool {
-    fn acquire(&self) -> Session {
-        let mut lock = self.sessions.lock().unwrap();
-        while lock.is_empty() {
-            lock = self.cvar.wait(lock).unwrap();
-        }
-        lock.pop().unwrap()
-    }
-    
-    fn release(&self, session: Session) {
-        self.sessions.lock().unwrap().push(session);
-        self.cvar.notify_one();
-    }
-}
-
-static DETECTOR_POOL: OnceLock<SessionPool> = OnceLock::new();
-static CLASSIFIER_POOL: OnceLock<SessionPool> = OnceLock::new();
-
-/// (flat f32 embeddings row-major, species labels, embedding_dim)
-static SPECIES_DATA: OnceLock<(Vec<f32>, Vec<String>, usize)> = OnceLock::new();
-
-// ── FFI Structs ────────────────────────────────────────────────────────────
+// ── FFI Types (exposed to Dart via flutter_rust_bridge) ───────────────────
 
 pub struct NativeBirdResult {
     pub species: String,
@@ -104,17 +74,6 @@ pub struct ClassificationResult {
     pub species: Vec<String>,
 }
 
-// ── Internal Types ─────────────────────────────────────────────────────────
-
-#[derive(Clone, Copy)]
-struct RawDetection {
-    global_x: u32,
-    global_y: u32,
-    local_w: u32,
-    local_h: u32,
-    score: f32,
-}
-
 // ── Initialization ─────────────────────────────────────────────────────────
 
 pub fn init_pipeline(
@@ -125,7 +84,8 @@ pub fn init_pipeline(
 ) -> Result<(), String> {
     let _ = init().with_name("rackery").commit();
 
-    // Build execution provider list: try most-performant hardware providers first.
+    // Build execution provider list: try most-performant hardware first.
+    // Missing providers are silently skipped by ort 2.0.
     let eps = [
         ort::ep::TensorRT::default().build(),
         ort::ep::CUDA::default().build(),
@@ -134,14 +94,16 @@ pub fn init_pipeline(
         ort::ep::CPU::default().build(),
     ];
 
-    let pool_size = std::thread::available_parallelism().map(|n| n.get() / 2).unwrap_or(2).clamp(1, 4);
+    let pool_size = std::thread::available_parallelism()
+        .map(|n| n.get() / 2)
+        .unwrap_or(2)
+        .clamp(1, 4);
 
-    let mut det_pool = Vec::new();
-    let mut cls_pool = Vec::new();
+    let mut det_sessions = Vec::new();
+    let mut cls_sessions = Vec::new();
 
     for _ in 0..pool_size {
-        // 1. Detector session
-        let det_session = Session::builder()
+        let det = Session::builder()
             .map_err(|e| format!("{:?}", e))?
             .with_execution_providers(eps.clone())
             .map_err(|e| format!("{:?}", e))?
@@ -149,10 +111,9 @@ pub fn init_pipeline(
             .map_err(|e| format!("{:?}", e))?
             .commit_from_memory(&detector_model_bytes)
             .map_err(|e| format!("{:?}", e))?;
-        det_pool.push(det_session);
+        det_sessions.push(det);
 
-        // 2. Classifier session
-        let cls_session = Session::builder()
+        let cls = Session::builder()
             .map_err(|e| format!("{:?}", e))?
             .with_execution_providers(eps.clone())
             .map_err(|e| format!("{:?}", e))?
@@ -160,14 +121,14 @@ pub fn init_pipeline(
             .map_err(|e| format!("{:?}", e))?
             .commit_from_memory(&classifier_model_bytes)
             .map_err(|e| format!("{:?}", e))?;
-        cls_pool.push(cls_session);
+        cls_sessions.push(cls);
     }
-    
-    let _ = DETECTOR_POOL.set(SessionPool { sessions: Mutex::new(det_pool), cvar: Condvar::new() });
-    let _ = CLASSIFIER_POOL.set(SessionPool { sessions: Mutex::new(cls_pool), cvar: Condvar::new() });
 
-    // 3. Species embeddings
-    // Binary format: [i32 num_species, i32 dim, f32 × num_species × dim]
+    let _ = DETECTOR_POOL.set(SessionPool::new(det_sessions));
+    let _ = CLASSIFIER_POOL.set(SessionPool::new(cls_sessions));
+
+    // Species embeddings — binary format:
+    // [i32 num_species][i32 dim][f32 × num_species × dim]
     if embeddings_bytes.len() < 8 {
         return Err("Embeddings file too small".to_string());
     }
@@ -192,14 +153,12 @@ pub fn init_pipeline(
     let mut embeddings = Vec::with_capacity(num_species * dim);
     for i in 0..(num_species * dim) {
         let offset = i * 4;
-        let val = f32::from_le_bytes([
+        embeddings.push(f32::from_le_bytes([
             float_bytes[offset], float_bytes[offset + 1],
             float_bytes[offset + 2], float_bytes[offset + 3],
-        ]);
-        embeddings.push(val);
+        ]));
     }
 
-    // 4. Species labels
     let labels: Vec<String> = serde_json::from_str(&labels_json)
         .map_err(|e| format!("Failed to parse labels JSON: {:?}", e))?;
     if labels.len() != num_species {
@@ -226,15 +185,15 @@ pub fn process_pipeline(
     stream.add(PipelineEvent::Progress("Starting detection pipeline...".to_string())).ok();
     let t0 = std::time::Instant::now();
 
-    // ── 1. Decode image ────────────────────────────────────────────────────
+    // 1. Decode image
     let img = image::load_from_memory(&file_bytes).map_err(|e| e.to_string())?;
     let (orig_w, orig_h) = img.dimensions();
 
-    // ── 2. Build tiles (25% overlap instead of 50%) ────────────────────────
+    // 2. Build tiles (25% overlap)
     stream.add(PipelineEvent::Progress("Preparing image tiles...".to_string())).ok();
     let tiles = build_tiles(orig_w, orig_h);
 
-    // ── 3. Parallel tensor preparation ─────────────────────────────────────
+    // 3. Parallel tensor preparation
     stream.add(PipelineEvent::Progress(
         format!("Preparing {} tile tensors...", tiles.len())
     )).ok();
@@ -242,13 +201,11 @@ pub fn process_pipeline(
         .map(|tile| prepare_tile_tensor(&img, *tile))
         .collect();
 
-    // ── 4. Detection inference (batched or sequential) ─────────────────────
+    // 4. Concurrent detection with early-exit optimisation
     stream.add(PipelineEvent::Progress("Running object detection...".to_string())).ok();
-    let all_detections = run_detection_concurrent(
-        &tile_tensors, &tiles, orig_w, orig_h, &stream,
-    )?;
+    let all_detections = run_detection_concurrent(&tile_tensors, &tiles, orig_w, orig_h, &stream)?;
 
-    // ── 5. NMS ─────────────────────────────────────────────────────────────
+    // 5. Non-Maximum Suppression
     stream.add(PipelineEvent::Progress("Filtering detections...".to_string())).ok();
     let kept = apply_nms(all_detections);
 
@@ -263,13 +220,11 @@ pub fn process_pipeline(
         return Ok(());
     }
 
-    // ── 6. Classification ──────────────────────────────────────────────────
+    // 6. Classification
     stream.add(PipelineEvent::Progress(
         format!("Classifying {} detections...", kept.len())
     )).ok();
     let t1 = std::time::Instant::now();
-
-
 
     let mut birds: Vec<NativeBirdResult> = Vec::new();
 
@@ -278,11 +233,11 @@ pub fn process_pipeline(
             format!("Classifying bird {}/{}...", i + 1, kept.len())
         )).ok();
 
-        // 6a. Extract unpadded crop for center color
+        // Extract unpadded crop for centre-colour sampling
         let unpadded = img.crop_imm(det.global_x, det.global_y, det.local_w, det.local_h);
         let center_color = compute_center_color(&unpadded);
 
-        // 6b. Extract padded crop for classification + thumbnail
+        // Extract padded crop for classification + thumbnail
         let pad_x = (det.local_w as f32 * 0.5) as u32;
         let pad_y = (det.local_h as f32 * 0.5) as u32;
         let crop_x1 = det.global_x.saturating_sub(pad_x);
@@ -291,19 +246,12 @@ pub fn process_pipeline(
         let crop_y2 = min(det.global_y + det.local_h + pad_y, orig_h);
         let padded = img.crop_imm(crop_x1, crop_y1, crop_x2 - crop_x1, crop_y2 - crop_y1);
 
-        // 6c. Classify padded crop
-        let species_list = classify_image(
-            &padded,
-            &allowed_set,
-            false, // not fallback
-        )?;
-
-        // If classifier rejects as non-bird, skip
+        let species_list = classify_image(&padded, &allowed_set, false)?;
         if species_list.is_empty() {
-            continue;
+            continue; // BioCLIP rejected this crop as non-bird
         }
 
-        // 6d. Encode thumbnail JPEG
+        // Encode thumbnail JPEG (upscale tiny crops for display)
         let mut thumb = padded.clone();
         if thumb.width() < 150 || thumb.height() < 150 {
             let scale = 150.0 / std::cmp::max(thumb.width(), thumb.height()) as f32;
@@ -337,8 +285,10 @@ pub fn process_pipeline(
     Ok(())
 }
 
-// ── Standalone Classifier (for manual bounding box) ────────────────────────
+// ── Standalone Classifier ──────────────────────────────────────────────────
 
+/// Classify a single pre-cropped image (used for manual bounding boxes and
+/// re-classification requests from Dart).
 pub fn classify_crop(
     crop_bytes: Vec<u8>,
     allowed_species: Option<Vec<String>>,
@@ -348,18 +298,20 @@ pub fn classify_crop(
         .map(|v| v.into_iter().collect());
 
     let img = image::load_from_memory(&crop_bytes).map_err(|e| e.to_string())?;
-
     let species = classify_image(&img, &allowed_set, is_fallback)?;
     Ok(ClassificationResult { species })
 }
 
-// ── Detection Internals ────────────────────────────────────────────────────
+// ── Detection Helpers ──────────────────────────────────────────────────────
 
+/// Partition the image into overlapping 1536×1536 tiles (25% overlap).
+///
+/// The first tile is always the full image at its native resolution; this
+/// is the tile checked for the early-exit optimisation.
 fn build_tiles(orig_w: u32, orig_h: u32) -> Vec<[u32; 4]> {
     let tile_size: u32 = 1536;
-    let stride = tile_size * 3 / 4; // 25% overlap (was 50%)
-    let mut tiles = Vec::new();
-    tiles.push([0, 0, orig_w, orig_h]);
+    let stride = tile_size * 3 / 4;
+    let mut tiles = vec![[0, 0, orig_w, orig_h]]; // full-image tile first
 
     if orig_w > tile_size || orig_h > tile_size {
         let mut y: u32 = 0;
@@ -382,12 +334,9 @@ fn build_tiles(orig_w: u32, orig_h: u32) -> Vec<[u32; 4]> {
     tiles
 }
 
-/// Prepare a single tile's input tensor (crop → resize → RGB bytes).
-/// This is the CPU-intensive pre-processing step that benefits from parallelism.
-fn prepare_tile_tensor(
-    img: &image::DynamicImage,
-    tile: [u32; 4],
-) -> Vec<u8> {
+/// Crop and resize a single tile to the detector's fixed input size,
+/// returning a flat RGB byte buffer (HWC layout, uint8).
+fn prepare_tile_tensor(img: &image::DynamicImage, tile: [u32; 4]) -> Vec<u8> {
     let [left, top, width, height] = tile;
     let cropped = img.crop_imm(left, top, width, height);
     let resized = cropped.resize_exact(DET_SIZE, DET_SIZE, FilterType::Triangle);
@@ -402,6 +351,7 @@ fn prepare_tile_tensor(
     input_vec
 }
 
+/// Run a single tile through the detector using a pool session.
 fn infer_single_tile(
     pool: &SessionPool,
     tensor: &[u8],
@@ -414,33 +364,29 @@ fn infer_single_tile(
     ).map_err(|e| format!("{:?}", e))?;
 
     let inputs = ort::inputs!["serving_default_images:0" => input_tensor];
-    
+
     let mut session = pool.acquire();
     let dets = {
         let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
 
-        let (_, out_boxes) = outputs["StatefulPartitionedCall:3"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_classes) = outputs["StatefulPartitionedCall:2"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_scores) = outputs["StatefulPartitionedCall:1"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        let (_, out_count) = outputs["StatefulPartitionedCall:0"]
-            .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_boxes)   = outputs["StatefulPartitionedCall:3"].try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_classes) = outputs["StatefulPartitionedCall:2"].try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_scores)  = outputs["StatefulPartitionedCall:1"].try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
+        let (_, out_count)   = outputs["StatefulPartitionedCall:0"].try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
 
-        let count = out_count[0] as usize;
-        let max_det = out_scores.len(); // For batch=1, this is the full score array
+        let count   = out_count[0] as usize;
+        let max_det = out_scores.len();
 
-        parse_tile_detections(
-            out_boxes, out_scores, out_classes,
-            0, max_det, count, tile, orig_w, orig_h,
-        )
+        parse_tile_detections(out_boxes, out_scores, out_classes, 0, max_det, count, tile, orig_w, orig_h)
     };
     pool.release(session);
     Ok(dets)
 }
 
-/// Run detection concurrently using a pool of Sessions, with Early Exit optimization.
+/// Run detection across all tiles concurrently, with an early-exit
+/// optimisation: if the full-image tile (tile[0]) contains a large,
+/// high-confidence bird (score > 0.65, area > 25% of image), skip the
+/// remaining sub-tiles entirely.
 fn run_detection_concurrent(
     tile_tensors: &[Vec<u8>],
     tiles: &[[u32; 4]],
@@ -450,160 +396,44 @@ fn run_detection_concurrent(
 ) -> Result<Vec<RawDetection>, String> {
     let pool = DETECTOR_POOL.get().ok_or("Detector pool not initialized")?;
 
-    if !tile_tensors.is_empty() {
-        stream.add(PipelineEvent::Progress(
-            format!("Detection tile 1/{} (Early Exit Check)", tiles.len())
-        )).ok();
-        
-        let first_dets = infer_single_tile(pool, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
-        
-        // Evaluate early exit criteria on the full image tile [0]
-        let mut early_exit = false;
-        let total_area = (orig_w as f32) * (orig_h as f32);
-        
-        for d in &first_dets {
-            if d.score > 0.65 {
-                let box_area = (d.local_w as f32) * (d.local_h as f32);
-                if box_area / total_area > 0.25 {
-                    early_exit = true;
-                    break;
-                }
-            }
-        }
-        
-        if early_exit {
-            // We found a large, confident bird framed well! Skip sub-tile fragmentation.
-            return Ok(first_dets);
-        }
-        
-        // No prominent subject found globally. Fallback to sub-tiles concurrently.
-        let remaining_tensors = &tile_tensors[1..];
-        let remaining_tiles = &tiles[1..];
-        
-        let parallel_dets: Result<Vec<Vec<RawDetection>>, String> = remaining_tensors.par_iter().enumerate().map(|(i, tensor)| {
+    if tile_tensors.is_empty() {
+        return Ok(Vec::new());
+    }
+
+    // --- Early-exit check on full-image tile ---
+    stream.add(PipelineEvent::Progress(
+        format!("Detection tile 1/{} (Early Exit Check)", tiles.len())
+    )).ok();
+
+    let first_dets = infer_single_tile(pool, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
+    let total_area = (orig_w as f32) * (orig_h as f32);
+
+    let early_exit = first_dets.iter().any(|d| {
+        d.score > 0.65 && (d.local_w as f32 * d.local_h as f32) / total_area > 0.25
+    });
+
+    if early_exit {
+        return Ok(first_dets);
+    }
+
+    // --- Fall back to concurrent sub-tile processing ---
+    let remaining_tensors = &tile_tensors[1..];
+    let remaining_tiles = &tiles[1..];
+
+    let parallel_dets: Result<Vec<Vec<RawDetection>>, String> = remaining_tensors
+        .par_iter()
+        .enumerate()
+        .map(|(i, tensor)| {
             stream.add(PipelineEvent::Progress(
                 format!("Detection tile {}/{}", i + 2, tiles.len())
             )).ok();
-
             infer_single_tile(pool, tensor, remaining_tiles[i], orig_w, orig_h)
-        }).collect();
+        })
+        .collect();
 
-        let mut final_dets = first_dets;
-        final_dets.extend(parallel_dets?.into_iter().flatten());
-        return Ok(final_dets);
-    }
-
-    Ok(Vec::new())
-}
-
-/// Parse raw detection outputs for a single tile within a (possibly batched) result.
-///
-/// `batch_idx` — which element in the batch this tile corresponds to
-/// `max_det`   — maximum detections per batch element (from output shape)
-/// `count`     — actual number of valid detections for this tile
-fn parse_tile_detections(
-    out_boxes: &[f32],
-    out_scores: &[f32],
-    out_classes: &[f32],
-    batch_idx: usize,
-    max_det: usize,
-    count: usize,
-    tile: [u32; 4],
-    orig_w: u32,
-    orig_h: u32,
-) -> Vec<RawDetection> {
-    let [left, top, width, height] = tile;
-    let mut detections = Vec::new();
-
-    for j in 0..count {
-        let flat_idx = batch_idx * max_det + j;
-        let score = out_scores[flat_idx];
-        let detected_class = out_classes[flat_idx] as i32;
-
-        // COCO class 15=bird, 16=cat (EfficientDet mapping)
-        if score <= 0.45 || (detected_class != 16 && detected_class != 15) {
-            continue;
-        }
-
-        let box_flat = batch_idx * max_det * 4 + j * 4;
-        let ymin = out_boxes[box_flat].clamp(0.0, 1.0);
-        let xmin = out_boxes[box_flat + 1].clamp(0.0, 1.0);
-        let ymax = out_boxes[box_flat + 2].clamp(0.0, 1.0);
-        let xmax = out_boxes[box_flat + 3].clamp(0.0, 1.0);
-
-        // Skip edge detections on non-full-image tiles
-        if (xmin <= 0.02 && left > 0) ||
-           (ymin <= 0.02 && top > 0) ||
-           (xmax >= 0.98 && (left + width) < orig_w) ||
-           (ymax >= 0.98 && (top + height) < orig_h) {
-            continue;
-        }
-
-        let local_w = ((xmax - xmin) * width as f32) as i32;
-        let local_h = ((ymax - ymin) * height as f32) as i32;
-        let global_x = ((xmin * width as f32) + left as f32) as i32;
-        let global_y = ((ymin * height as f32) + top as f32) as i32;
-
-        let global_x = global_x.clamp(0, (orig_w - 1) as i32);
-        let global_y = global_y.clamp(0, (orig_h - 1) as i32);
-        let w_safe = local_w.clamp(1, orig_w as i32 - global_x);
-        let h_safe = local_h.clamp(1, orig_h as i32 - global_y);
-
-        let aspect = w_safe as f32 / h_safe as f32;
-        if w_safe < 10 || h_safe < 10 || aspect > 5.0 || aspect < 0.20 {
-            continue;
-        }
-
-        detections.push(RawDetection {
-            global_x: global_x as u32,
-            global_y: global_y as u32,
-            local_w: w_safe as u32,
-            local_h: h_safe as u32,
-            score,
-        });
-    }
-    detections
-}
-
-fn apply_nms(mut detections: Vec<RawDetection>) -> Vec<RawDetection> {
-    detections.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
-    let mut kept: Vec<RawDetection> = Vec::new();
-
-    for current in detections {
-        let c_cx = current.global_x as f32 + current.local_w as f32 / 2.0;
-        let c_cy = current.global_y as f32 + current.local_h as f32 / 2.0;
-        let mut is_duplicate = false;
-
-        for k in &kept {
-            let k_cx = k.global_x as f32 + k.local_w as f32 / 2.0;
-            let k_cy = k.global_y as f32 + k.local_h as f32 / 2.0;
-
-            let ix_min = current.global_x.max(k.global_x);
-            let ix_max = (current.global_x + current.local_w).min(k.global_x + k.local_w);
-            let iy_min = current.global_y.max(k.global_y);
-            let iy_max = (current.global_y + current.local_h).min(k.global_y + k.local_h);
-
-            if ix_min < ix_max && iy_min < iy_max {
-                let intersect = ((ix_max - ix_min) * (iy_max - iy_min)) as f32;
-                let area1 = (current.local_w * current.local_h) as f32;
-                let area2 = (k.local_w * k.local_h) as f32;
-                let iou = intersect / (area1 + area2 - intersect);
-
-
-                let dist = ((c_cx - k_cx).powi(2) + (c_cy - k_cy).powi(2)).sqrt();
-                let dist_thresh = (current.local_w + k.local_w + current.local_h + k.local_h) as f32 / 8.0;
-
-                if iou > 0.30 || (iou > 0.10 && dist < dist_thresh) {
-                    is_duplicate = true;
-                    break;
-                }
-            }
-        }
-        if !is_duplicate {
-            kept.push(current);
-        }
-    }
-    kept
+    let mut final_dets = first_dets;
+    final_dets.extend(parallel_dets?.into_iter().flatten());
+    Ok(final_dets)
 }
 
 // ── Classification Internals ───────────────────────────────────────────────
@@ -616,12 +446,11 @@ fn classify_image(
     let (embeddings, labels, dim) = SPECIES_DATA.get()
         .ok_or("Species data not initialized")?;
 
-    // 1. Preprocess: resize 224×224, CLIP-normalize, CHW float32
+    // 1. Preprocess: resize to 224×224, CLIP-normalize, CHW float32
     let resized = img.resize_exact(224, 224, FilterType::Triangle);
     let rgb = resized.to_rgb8();
 
     let mut tensor = Vec::with_capacity(3 * 224 * 224);
-    // CHW layout: channel-first
     for c in 0..3_usize {
         for (_x, _y, pixel) in rgb.enumerate_pixels() {
             let raw = pixel[c] as f32 / 255.0;
@@ -629,16 +458,16 @@ fn classify_image(
         }
     }
 
-    // 2. Run inference
+    // 2. Run BioCLIP inference
     let input_tensor = Value::from_array(
         (vec![1_i64, 3, 224, 224], tensor)
     ).map_err(|e| format!("{:?}", e))?;
 
     let inputs = ort::inputs!["pixel_values" => input_tensor];
-    
+
     let pool = CLASSIFIER_POOL.get().ok_or("Classifier pool not initialized")?;
     let mut session = pool.acquire();
-    
+
     let raw_embedding_vec = {
         let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
         let (_, raw_embedding) = outputs["embedding"]
@@ -647,25 +476,22 @@ fn classify_image(
     };
     pool.release(session);
 
-    // 3. L2-normalize
+    // 3. L2-normalise the embedding
     let mut embedding: Vec<f32> = raw_embedding_vec;
     l2_normalize(&mut embedding);
 
-    // 4. Cosine similarities + local bonus
+    // 4. Cosine similarities with optional eBird local-list bonus
     let num_species = labels.len();
     let mut similarities = vec![0.0_f32; num_species];
     for i in 0..num_species {
         let offset = i * dim;
-        let mut dot: f32 = 0.0;
-        for j in 0..*dim {
-            dot += embedding[j] * embeddings[offset + j];
-        }
-        if let Some(ref allowed) = allowed_set {
-            if allowed.contains(&labels[i]) {
-                dot += LOCAL_BONUS;
-            }
-        }
-        similarities[i] = dot;
+        let dot: f32 = (0..*dim).map(|j| embedding[j] * embeddings[offset + j]).sum();
+        let bonus = if allowed_set.as_ref().map_or(false, |s| s.contains(&labels[i])) {
+            LOCAL_BONUS
+        } else {
+            0.0
+        };
+        similarities[i] = dot + bonus;
     }
 
     // 5. Filter hybrids, rank top-K
@@ -682,13 +508,9 @@ fn classify_image(
         return Ok(vec!["Unknown Bird".to_string()]);
     }
 
-    let top_score = similarities[indices[0]];
     let top_label = &labels[indices[0]];
-
-    // Check confidence (subtract bonus if present to get raw score)
-    let has_bonus = allowed_set.as_ref()
-        .map_or(false, |s| s.contains(top_label));
-    let raw_score = top_score - if has_bonus { LOCAL_BONUS } else { 0.0 };
+    let has_bonus = allowed_set.as_ref().map_or(false, |s| s.contains(top_label));
+    let raw_score = similarities[indices[0]] - if has_bonus { LOCAL_BONUS } else { 0.0 };
     let threshold = if is_fallback { FALLBACK_CONFIDENCE } else { MIN_CONFIDENCE };
 
     if raw_score < threshold {
@@ -698,12 +520,12 @@ fn classify_image(
     Ok(indices.iter().take(TOP_K).map(|&i| labels[i].clone()).collect())
 }
 
+// ── Utility ────────────────────────────────────────────────────────────────
+
 fn l2_normalize(v: &mut [f32]) {
     let norm: f32 = v.iter().map(|x| x * x).sum::<f32>().sqrt();
     if norm > 0.0 {
-        for x in v.iter_mut() {
-            *x /= norm;
-        }
+        for x in v.iter_mut() { *x /= norm; }
     }
 }
 
@@ -712,8 +534,8 @@ fn compute_center_color(img: &image::DynamicImage) -> Vec<f64> {
     let h = img.height();
     let start_x = (w as f32 * 0.4) as u32;
     let start_y = (h as f32 * 0.4) as u32;
-    let end_x = (w as f32 * 0.6) as u32;
-    let end_y = (h as f32 * 0.6) as u32;
+    let end_x   = (w as f32 * 0.6) as u32;
+    let end_y   = (h as f32 * 0.6) as u32;
 
     if start_x < end_x && start_y < end_y {
         let mut sum_r = 0.0_f64;

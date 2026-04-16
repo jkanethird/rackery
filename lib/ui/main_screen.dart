@@ -22,7 +22,7 @@ import 'package:rackery/ui/widgets/file_list_panel.dart';
 import 'package:rackery/ui/widgets/center_pane.dart';
 import 'package:rackery/ui/widgets/observation_list_panel.dart';
 import 'package:rackery/ui/widgets/listenable_selector.dart';
-import 'package:rackery/services/ebird_api_service.dart';
+import 'package:rackery/ui/dialogs/settings_dialog.dart';
 
 String _formatDuration(Duration d) {
   final totalSeconds = d.inSeconds;
@@ -103,112 +103,7 @@ class _MainScreenState extends State<MainScreen> {
         IconButton(
           icon: const Icon(Icons.settings),
           tooltip: 'Settings (eBird API Key)',
-          onPressed: () async {
-            final currentKey = await EbirdApiService.getApiKey() ?? '';
-            final txtController = TextEditingController(text: currentKey);
-            if (!mounted) return;
-
-            showDialog(
-              context: context,
-              builder: (context) {
-                bool isTesting = false;
-                bool isObscured = true;
-                return StatefulBuilder(
-                  builder: (context, setState) {
-                    return AlertDialog(
-                      title: const Text('Settings'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            controller: txtController,
-                            decoration: InputDecoration(
-                              labelText: 'eBird API Key',
-                              hintText: 'Paste your eBird API Token here',
-                              helperText:
-                                  'Required for geographic & seasonal filtering.',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  isObscured
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    isObscured = !isObscured;
-                                  });
-                                },
-                              ),
-                            ),
-                            obscureText: isObscured,
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                              onPressed: isTesting
-                                  ? null
-                                  : () async {
-                                      setState(() => isTesting = true);
-                                      final isValid =
-                                          await EbirdApiService.verifyApiKey(
-                                            txtController.text,
-                                          );
-                                      if (!context.mounted) return;
-                                      setState(() => isTesting = false);
-
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            isValid
-                                                ? '✅ API Key is valid'
-                                                : '❌ Invalid API Key or network error',
-                                          ),
-                                          backgroundColor: isValid
-                                              ? Colors.green.shade800
-                                              : Colors.red.shade800,
-                                        ),
-                                      );
-                                    },
-                              icon: isTesting
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Icon(Icons.check_circle_outline),
-                              label: Text(
-                                isTesting ? 'Testing...' : 'Test API Key',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        FilledButton(
-                          onPressed: () {
-                            EbirdApiService.setApiKey(
-                              txtController.text.trim(),
-                            );
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Save'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            );
-          },
+          onPressed: () => showSettingsDialog(context),
         ),
         IconButton(
           icon: const Icon(Icons.info_outline),

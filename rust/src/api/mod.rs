@@ -16,3 +16,5 @@
 
 pub mod simple;
 pub mod pipeline;
+pub mod pool;
+pub mod nms;
