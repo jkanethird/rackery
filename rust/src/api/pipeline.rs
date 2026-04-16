@@ -85,9 +85,10 @@ pub fn init_pipeline(
     let _ = init().with_name("rackery").commit();
 
     // Build execution provider list: try most-performant hardware first.
-    // Missing providers are silently skipped by ort 2.0.
+    // TensorRT is intentionally omitted — it validates ONNX node names more
+    // strictly than the TF-exported EfficientDet model satisfies, causing a
+    // hard failure rather than a graceful fallback to the next provider.
     let eps = [
-        ort::ep::TensorRT::default().build(),
         ort::ep::CUDA::default().build(),
         ort::ep::DirectML::default().build(),
         ort::ep::CoreML::default().build(),
