@@ -57,7 +57,7 @@ pub fn parse_tile_detections(
         // COCO class 15=bird, 16=cat (EfficientDet mapping).
         // Cats are intentionally included because round-faced birds (e.g. owls)
         // are often misclassified as cats by the generic detector.
-        if score <= 0.45 || (detected_class != 16 && detected_class != 15) {
+        if score <= 0.38 || (detected_class != 16 && detected_class != 15) {
             continue;
         }
 
@@ -135,7 +135,7 @@ pub fn apply_nms(mut detections: Vec<RawDetection>) -> Vec<RawDetection> {
                 let iou = intersect / (area1 + area2 - intersect);
 
                 let dist = ((c_cx - k_cx).powi(2) + (c_cy - k_cy).powi(2)).sqrt();
-                let dist_thresh = (current.local_w + k.local_w + current.local_h + k.local_h) as f32 / 8.0;
+                let dist_thresh = (current.local_w + k.local_w + current.local_h + k.local_h) as f32 / 15.0;
 
                 if iou > 0.30 || (iou > 0.10 && dist < dist_thresh) {
                     is_duplicate = true;
