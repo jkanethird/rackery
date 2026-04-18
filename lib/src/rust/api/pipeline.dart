@@ -8,11 +8,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'pipeline.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `apply_nms`, `build_tiles`, `classify_image`, `compute_center_color`, `l2_normalize`, `run_detector`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `RawDetection`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
+// These functions are ignored because they are not marked as `pub`: `build_tiles`, `classify_image`, `compute_center_color`, `infer_single_tile`, `l2_normalize`, `prepare_tile_tensor`, `run_detection_concurrent`
 
-Future<void> initPipeline({
+Future<String> initPipeline({
   required List<int> detectorModelBytes,
   required List<int> classifierModelBytes,
   required List<int> embeddingsBytes,
@@ -32,6 +30,8 @@ Stream<PipelineEvent> processPipeline({
   allowedSpecies: allowedSpecies,
 );
 
+/// Classify a single pre-cropped image (used for manual bounding boxes and
+/// re-classification requests from Dart).
 Future<ClassificationResult> classifyCrop({
   required List<int> cropBytes,
   List<String>? allowedSpecies,

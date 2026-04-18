@@ -81,7 +81,7 @@ pub fn init_pipeline(
     classifier_model_bytes: Vec<u8>,
     embeddings_bytes: Vec<u8>,
     labels_json: String,
-) -> Result<(), String> {
+) -> Result<String, String> {
     let _ = init().with_name("rackery").commit();
 
     // Build execution provider list: try most-performant hardware first.
@@ -190,7 +190,20 @@ pub fn init_pipeline(
     }
 
     let _ = SPECIES_DATA.set((embeddings, labels, dim));
-    Ok(())
+
+    let mut provider = "CPU".to_string();
+    use ort::ep::ExecutionProvider;
+    if ort::ep::TensorRT::default().is_available().unwrap_or(false) {
+        provider = "TensorRT".to_string();
+    } else if ort::ep::CUDA::default().is_available().unwrap_or(false) {
+        provider = "CUDA".to_string();
+    } else if ort::ep::DirectML::default().is_available().unwrap_or(false) {
+        provider = "DirectML".to_string();
+    } else if ort::ep::CoreML::default().is_available().unwrap_or(false) {
+        provider = "CoreML".to_string();
+    }
+
+    Ok(provider)
 }
 
 // ── Full Pipeline ──────────────────────────────────────────────────────────

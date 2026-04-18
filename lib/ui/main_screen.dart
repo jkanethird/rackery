@@ -102,8 +102,8 @@ class _MainScreenState extends State<MainScreen> {
       actions: [
         IconButton(
           icon: const Icon(Icons.settings),
-          tooltip: 'Settings (eBird API Key)',
-          onPressed: () => showSettingsDialog(context),
+          tooltip: 'Settings',
+          onPressed: () => showSettingsDialog(context, _controller.executionProvider),
         ),
         IconButton(
           icon: const Icon(Icons.info_outline),

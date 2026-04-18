@@ -78,7 +78,10 @@ class IdentifiedBird {
 /// runs natively in Rust. Only lightweight results cross the FFI boundary.
 class NativePipeline {
   bool _isInit = false;
+  String _executionProvider = 'Unknown';
+
   bool get isReady => _isInit;
+  String get executionProvider => _executionProvider;
 
   Future<void> init() async {
     if (_isInit) return;
@@ -96,7 +99,7 @@ class NativePipeline {
     final embeddingsBytes = (futures[2] as ByteData).buffer.asUint8List();
     final labelsJson = futures[3] as String;
 
-    await rust.initPipeline(
+    _executionProvider = await rust.initPipeline(
       detectorModelBytes: detectorBytes,
       classifierModelBytes: classifierBytes,
       embeddingsBytes: embeddingsBytes,

@@ -24,13 +24,13 @@ use std::sync::{Condvar, Mutex, OnceLock};
 /// Callers `acquire` a session (blocking until one is idle) and `release` it
 /// when inference is complete. This lets multiple rayon threads share a fixed
 /// set of GPU/CPU sessions without creating per-thread sessions.
-pub struct SessionPool {
+pub(crate) struct SessionPool {
     sessions: Mutex<Vec<Session>>,
     cvar: Condvar,
 }
 
 impl SessionPool {
-    pub fn new(sessions: Vec<Session>) -> Self {
+    pub(crate) fn new(sessions: Vec<Session>) -> Self {
         Self {
             sessions: Mutex::new(sessions),
             cvar: Condvar::new(),
@@ -38,7 +38,7 @@ impl SessionPool {
     }
 
     /// Blocks until a session is available, then pops and returns it.
-    pub fn acquire(&self) -> Session {
+    pub(crate) fn acquire(&self) -> Session {
         let mut lock = self.sessions.lock().unwrap();
         while lock.is_empty() {
             lock = self.cvar.wait(lock).unwrap();
@@ -47,7 +47,7 @@ impl SessionPool {
     }
 
     /// Returns a session to the pool and wakes one waiting thread.
-    pub fn release(&self, session: Session) {
+    pub(crate) fn release(&self, session: Session) {
         self.sessions.lock().unwrap().push(session);
         self.cvar.notify_one();
     }
@@ -55,8 +55,8 @@ impl SessionPool {
 
 // ── Static Pools ───────────────────────────────────────────────────────────
 
-pub static DETECTOR_POOL: OnceLock<SessionPool> = OnceLock::new();
-pub static CLASSIFIER_POOL: OnceLock<SessionPool> = OnceLock::new();
+pub(crate) static DETECTOR_POOL: OnceLock<SessionPool> = OnceLock::new();
+pub(crate) static CLASSIFIER_POOL: OnceLock<SessionPool> = OnceLock::new();
 
 /// (flat f32 embeddings row-major, species labels, embedding_dim)
-pub static SPECIES_DATA: OnceLock<(Vec<f32>, Vec<String>, usize)> = OnceLock::new();
+pub(crate) static SPECIES_DATA: OnceLock<(Vec<f32>, Vec<String>, usize)> = OnceLock::new();

@@ -18,19 +18,20 @@ import 'package:flutter/material.dart';
 import 'package:rackery/services/ebird_api_service.dart';
 
 /// Shows the eBird API key settings dialog and resolves when dismissed.
-Future<void> showSettingsDialog(BuildContext context) async {
+Future<void> showSettingsDialog(BuildContext context, String executionProvider) async {
   final currentKey = await EbirdApiService.getApiKey() ?? '';
   if (!context.mounted) return;
 
   await showDialog<void>(
     context: context,
-    builder: (context) => _SettingsDialog(initialKey: currentKey),
+    builder: (context) => _SettingsDialog(initialKey: currentKey, executionProvider: executionProvider),
   );
 }
 
 class _SettingsDialog extends StatefulWidget {
   final String initialKey;
-  const _SettingsDialog({required this.initialKey});
+  final String executionProvider;
+  const _SettingsDialog({required this.initialKey, required this.executionProvider});
 
   @override
   State<_SettingsDialog> createState() => _SettingsDialogState();
@@ -102,6 +103,24 @@ class _SettingsDialogState extends State<_SettingsDialog> {
                     )
                   : const Icon(Icons.check_circle_outline),
               label: Text(_isTesting ? 'Testing...' : 'Test API Key'),
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'System Information',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'ONNX Execution Provider: ${widget.executionProvider}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
           ),
         ],

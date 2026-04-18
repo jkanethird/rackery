@@ -57,6 +57,8 @@ class ChecklistController extends ChangeNotifier {
   Duration? batchElapsedTime;
   int observationVersion = 0;
 
+  String get executionProvider => _pipeline.executionProvider;
+
   final List<Observation> observations = [];
   Observation? selectedObservation;
   String? currentlyDisplayedImage;
