@@ -155,14 +155,8 @@ pub fn init_pipeline(
     if embeddings_bytes.len() < 8 {
         return Err("Embeddings file too small".to_string());
     }
-    let num_species = i32::from_le_bytes([
-        embeddings_bytes[0], embeddings_bytes[1],
-        embeddings_bytes[2], embeddings_bytes[3],
-    ]) as usize;
-    let dim = i32::from_le_bytes([
-        embeddings_bytes[4], embeddings_bytes[5],
-        embeddings_bytes[6], embeddings_bytes[7],
-    ]) as usize;
+    let num_species = i32::from_le_bytes(embeddings_bytes[0..4].try_into().unwrap()) as usize;
+    let dim = i32::from_le_bytes(embeddings_bytes[4..8].try_into().unwrap()) as usize;
 
     let float_bytes = &embeddings_bytes[8..];
     let expected_len = num_species * dim * 4;
@@ -173,14 +167,9 @@ pub fn init_pipeline(
         ));
     }
 
-    let embeddings: Vec<f32> = (0..(num_species * dim))
-        .map(|i| {
-            let offset = i * 4;
-            f32::from_le_bytes([
-                float_bytes[offset], float_bytes[offset + 1],
-                float_bytes[offset + 2], float_bytes[offset + 3],
-            ])
-        })
+    let embeddings: Vec<f32> = float_bytes
+        .chunks_exact(4)
+        .map(|chunk| f32::from_le_bytes(chunk.try_into().unwrap()))
         .collect();
 
     let labels: Vec<String> = serde_json::from_str(&labels_json)
@@ -411,7 +400,7 @@ fn infer_single_tile(
 
         parse_tile_detections(out_boxes, out_scores, out_classes, 0, max_det, count, tile, orig_w, orig_h)
     };
-    pool.release(session);
+
     Ok(dets)
 }
 
@@ -504,7 +493,7 @@ fn classify_image(
             .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
         raw_embedding.to_vec()
     };
-    pool.release(session);
+
 
     // 3. L2-normalise the embedding
     let sum_sq: f32 = raw_embedding_vec.iter().map(|v| v * v).sum();
@@ -512,26 +501,27 @@ fn classify_image(
     let embedding: Vec<f32> = raw_embedding_vec.into_iter().map(|v| v / norm).collect();
 
     // 4. Cosine similarities with optional eBird local-list bonus
-    let num_species = labels.len();
-    let similarities: Vec<f32> = (0..num_species).map(|i| {
-        let offset = i * dim;
-        let dot: f32 = (0..*dim).map(|j| embedding[j] * embeddings[offset + j]).sum();
-        let bonus = if allowed_set.as_ref().map_or(false, |s| s.contains(&labels[i])) {
-            LOCAL_BONUS
-        } else {
-            0.0
-        };
-        dot + bonus
-    }).collect();
+    let similarities: Vec<f32> = labels.iter()
+        .zip(embeddings.chunks_exact(*dim))
+        .map(|(label, species_emb)| {
+            let dot: f32 = embedding.iter().zip(species_emb).map(|(a, b)| a * b).sum();
+            let bonus = if allowed_set.as_ref().map_or(false, |s| s.contains(label)) {
+                LOCAL_BONUS
+            } else {
+                0.0
+            };
+            dot + bonus
+        }).collect();
 
     // 5. Filter hybrids, rank top-K
+    let num_species = labels.len();
     let mut indices: Vec<usize> = (0..num_species)
         .filter(|&i| {
             let label = &labels[i];
             !label.contains('/') && !label.contains(" x ") && !label.contains("(hybrid)")
         })
         .collect();
-    indices.sort_by(|&a, &b| similarities[b].partial_cmp(&similarities[a])
+    indices.sort_unstable_by(|&a, &b| similarities[b].partial_cmp(&similarities[a])
         .unwrap_or(std::cmp::Ordering::Equal));
 
     if indices.is_empty() {

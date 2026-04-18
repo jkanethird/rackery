@@ -29,6 +29,32 @@ pub(crate) struct SessionPool {
     cvar: Condvar,
 }
 
+pub(crate) struct PooledSession<'a> {
+    session: Option<Session>,
+    pool: &'a SessionPool,
+}
+
+impl<'a> std::ops::Deref for PooledSession<'a> {
+    type Target = Session;
+    fn deref(&self) -> &Self::Target {
+        self.session.as_ref().unwrap()
+    }
+}
+
+impl<'a> std::ops::DerefMut for PooledSession<'a> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.session.as_mut().unwrap()
+    }
+}
+
+impl<'a> Drop for PooledSession<'a> {
+    fn drop(&mut self) {
+        if let Some(session) = self.session.take() {
+            self.pool.release(session);
+        }
+    }
+}
+
 impl SessionPool {
     pub(crate) fn new(sessions: Vec<Session>) -> Self {
         Self {
@@ -37,17 +63,20 @@ impl SessionPool {
         }
     }
 
-    /// Blocks until a session is available, then pops and returns it.
-    pub(crate) fn acquire(&self) -> Session {
+    /// Blocks until a session is available, then returns a RAII guard.
+    pub(crate) fn acquire(&self) -> PooledSession<'_> {
         let mut lock = self.sessions.lock().unwrap();
         while lock.is_empty() {
             lock = self.cvar.wait(lock).unwrap();
         }
-        lock.pop().unwrap()
+        PooledSession {
+            session: Some(lock.pop().unwrap()),
+            pool: self,
+        }
     }
 
     /// Returns a session to the pool and wakes one waiting thread.
-    pub(crate) fn release(&self, session: Session) {
+    fn release(&self, session: Session) {
         self.sessions.lock().unwrap().push(session);
         self.cvar.notify_one();
     }
