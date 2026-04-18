@@ -98,52 +98,54 @@ pub fn init_pipeline(
         .unwrap_or(2)
         .clamp(1, 4);
 
-    let mut det_sessions = Vec::new();
-    let mut cls_sessions = Vec::new();
-
-    for _ in 0..pool_size {
-        let det_attempt = Session::builder()
-            .map_err(|e| format!("{:?}", e))?
-            .with_execution_providers(eps.clone())
-            .map_err(|e| format!("{:?}", e))?
-            .with_optimization_level(GraphOptimizationLevel::Level3)
-            .map_err(|e| format!("{:?}", e))?
-            .commit_from_memory(&detector_model_bytes);
-
-        let det = match det_attempt {
-            Ok(session) => session,
-            Err(_) => Session::builder()
+    let (det_sessions, cls_sessions): (Vec<_>, Vec<_>) = (0..pool_size)
+        .into_par_iter()
+        .map(|_| {
+            let det_attempt = Session::builder()
                 .map_err(|e| format!("{:?}", e))?
                 .with_execution_providers(eps.clone())
                 .map_err(|e| format!("{:?}", e))?
-                .with_optimization_level(GraphOptimizationLevel::Level1)
+                .with_optimization_level(GraphOptimizationLevel::Level3)
                 .map_err(|e| format!("{:?}", e))?
-                .commit_from_memory(&detector_model_bytes)
-                .map_err(|e| format!("{:?}", e))?,
-        };
-        det_sessions.push(det);
+                .commit_from_memory(&detector_model_bytes);
 
-        let cls_attempt = Session::builder()
-            .map_err(|e| format!("{:?}", e))?
-            .with_execution_providers(eps.clone())
-            .map_err(|e| format!("{:?}", e))?
-            .with_optimization_level(GraphOptimizationLevel::Level3)
-            .map_err(|e| format!("{:?}", e))?
-            .commit_from_memory(&classifier_model_bytes);
+            let det = match det_attempt {
+                Ok(session) => session,
+                Err(_) => Session::builder()
+                    .map_err(|e| format!("{:?}", e))?
+                    .with_execution_providers(eps.clone())
+                    .map_err(|e| format!("{:?}", e))?
+                    .with_optimization_level(GraphOptimizationLevel::Level1)
+                    .map_err(|e| format!("{:?}", e))?
+                    .commit_from_memory(&detector_model_bytes)
+                    .map_err(|e| format!("{:?}", e))?,
+            };
 
-        let cls = match cls_attempt {
-            Ok(session) => session,
-            Err(_) => Session::builder()
+            let cls_attempt = Session::builder()
                 .map_err(|e| format!("{:?}", e))?
                 .with_execution_providers(eps.clone())
                 .map_err(|e| format!("{:?}", e))?
-                .with_optimization_level(GraphOptimizationLevel::Level1)
+                .with_optimization_level(GraphOptimizationLevel::Level3)
                 .map_err(|e| format!("{:?}", e))?
-                .commit_from_memory(&classifier_model_bytes)
-                .map_err(|e| format!("{:?}", e))?,
-        };
-        cls_sessions.push(cls);
-    }
+                .commit_from_memory(&classifier_model_bytes);
+
+            let cls = match cls_attempt {
+                Ok(session) => session,
+                Err(_) => Session::builder()
+                    .map_err(|e| format!("{:?}", e))?
+                    .with_execution_providers(eps.clone())
+                    .map_err(|e| format!("{:?}", e))?
+                    .with_optimization_level(GraphOptimizationLevel::Level1)
+                    .map_err(|e| format!("{:?}", e))?
+                    .commit_from_memory(&classifier_model_bytes)
+                    .map_err(|e| format!("{:?}", e))?,
+            };
+
+            Ok((det, cls))
+        })
+        .collect::<Result<Vec<_>, String>>()?
+        .into_iter()
+        .unzip();
 
     let _ = DETECTOR_POOL.set(SessionPool::new(det_sessions));
     let _ = CLASSIFIER_POOL.set(SessionPool::new(cls_sessions));
