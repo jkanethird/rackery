@@ -26,6 +26,12 @@ import 'package:rackery/services/bird_detector.dart';
 import 'package:rackery/services/image_converter.dart';
 import 'package:rackery/services/ebird_api_service.dart';
 
+class _WorkItem {
+  final int burstIndex;
+  final String filePath;
+  _WorkItem(this.burstIndex, this.filePath);
+}
+
 /// Drives the unified native pipeline for a batch of image files organised
 /// into bursts.
 ///
@@ -107,24 +113,42 @@ class PhotoProcessor {
 
     final Map<String, PhotoProfile> photoProfiles = {};
 
-    // Process bursts sequentially, files within burst sequentially
-    // (pipeline is fully sequential in Rust due to Mutex<Session>)
+    final List<_WorkItem> workItems = [];
+    final Map<int, Map<String, BurstGroup>> burstGroupsMap = {};
+    final Map<int, Map<String, Observation>> emittedObsMap = {};
+
     for (int i = 0; i < bursts.length; i++) {
       final burstFiles = bursts[i];
-      final burstHasNew = burstFiles.any(newPathSet.contains);
-      if (!burstHasNew) continue;
+      if (!burstFiles.any(newPathSet.contains)) continue;
 
-      final Map<String, BurstGroup> burstGroupsBySpecies = {};
-      final Map<String, Observation> emittedObs = {};
+      burstGroupsMap[i] = <String, BurstGroup>{};
+      emittedObsMap[i] = <String, Observation>{};
 
       for (final filePath in burstFiles) {
-        if (!newPathSet.contains(filePath)) continue;
+        if (newPathSet.contains(filePath)) {
+          workItems.add(_WorkItem(i, filePath));
+        }
+      }
+    }
+
+    int currentIdx = 0;
+    Future<void> processWorker() async {
+      while (currentIdx < workItems.length) {
+        final item = workItems[currentIdx++];
+        final i = item.burstIndex;
+        final filePath = item.filePath;
+
+        final burstGroupsBySpecies = burstGroupsMap[i]!;
+        final emittedObs = emittedObsMap[i]!;
+
         onFileStarted(filePath);
 
         try {
           // Pre-process: JPEG conversion + EXIF
           final t1 = Stopwatch()..start();
-          final processedPath = await ImageConverter.convertToJpegIfNeeded(filePath);
+          final processedPath = await ImageConverter.convertToJpegIfNeeded(
+            filePath,
+          );
           final jpegTime = t1.elapsed;
           final exifData = await ExifService.extractExif(filePath);
 
@@ -152,7 +176,9 @@ class PhotoProcessor {
 
           if (pipelineOutput.birds.isEmpty) {
             // Fallback: classify entire image
-            onProgressMessage('Fallback classification for ${p.basename(filePath)}...');
+            onProgressMessage(
+              'Fallback classification for ${p.basename(filePath)}...',
+            );
 
             final fallbackSpecies = await pipeline.classifyFile(
               processedPath,
@@ -179,8 +205,12 @@ class PhotoProcessor {
                   );
 
               _emitBurstUpdates(
-                burstGroupsBySpecies, emittedObs, burstIds[i],
-                onObservationAdded, onObservationsChanged, onIndicesRemapped,
+                burstGroupsBySpecies,
+                emittedObs,
+                burstIds[i],
+                onObservationAdded,
+                onObservationsChanged,
+                onIndicesRemapped,
               );
             }
           } else {
@@ -224,8 +254,12 @@ class PhotoProcessor {
                   );
 
               _emitBurstUpdates(
-                burstGroupsBySpecies, emittedObs, burstIds[i],
-                onObservationAdded, onObservationsChanged, onIndicesRemapped,
+                burstGroupsBySpecies,
+                emittedObs,
+                burstIds[i],
+                onObservationAdded,
+                onObservationsChanged,
+                onIndicesRemapped,
               );
             }
           }
@@ -239,6 +273,10 @@ class PhotoProcessor {
         photoProfiles[filePath]?.printProfile(filePath);
       }
     }
+
+    // Run up to 2 files concurrently to pipeline detection and classification
+    final workers = List.generate(2, (_) => processWorker());
+    await Future.wait(workers);
   }
 }
 
