@@ -274,8 +274,8 @@ class PhotoProcessor {
       }
     }
 
-    // Run up to 2 files concurrently to pipeline detection and classification
-    final workers = List.generate(2, (_) => processWorker());
+    // Run all selected files concurrently
+    final workers = List.generate(workItems.length, (_) => processWorker());
     await Future.wait(workers);
   }
 }
