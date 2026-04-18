@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use image::{imageops::FilterType, GenericImageView};
-use std::cmp::min;
+
 use std::collections::HashSet;
 use ort::{session::builder::GraphOptimizationLevel, session::Session, value::Value, init};
 use rayon::prelude::*;
@@ -173,14 +173,15 @@ pub fn init_pipeline(
         ));
     }
 
-    let mut embeddings = Vec::with_capacity(num_species * dim);
-    for i in 0..(num_species * dim) {
-        let offset = i * 4;
-        embeddings.push(f32::from_le_bytes([
-            float_bytes[offset], float_bytes[offset + 1],
-            float_bytes[offset + 2], float_bytes[offset + 3],
-        ]));
-    }
+    let embeddings: Vec<f32> = (0..(num_species * dim))
+        .map(|i| {
+            let offset = i * 4;
+            f32::from_le_bytes([
+                float_bytes[offset], float_bytes[offset + 1],
+                float_bytes[offset + 2], float_bytes[offset + 3],
+            ])
+        })
+        .collect();
 
     let labels: Vec<String> = serde_json::from_str(&labels_json)
         .map_err(|e| format!("Failed to parse labels JSON: {:?}", e))?;
@@ -193,17 +194,18 @@ pub fn init_pipeline(
 
     let _ = SPECIES_DATA.set((embeddings, labels, dim));
 
-    let mut provider = "CPU".to_string();
     use ort::ep::ExecutionProvider;
-    if ort::ep::TensorRT::default().is_available().unwrap_or(false) {
-        provider = "TensorRT".to_string();
+    let provider = if ort::ep::TensorRT::default().is_available().unwrap_or(false) {
+        "TensorRT".to_string()
     } else if ort::ep::CUDA::default().is_available().unwrap_or(false) {
-        provider = "CUDA".to_string();
+        "CUDA".to_string()
     } else if ort::ep::DirectML::default().is_available().unwrap_or(false) {
-        provider = "DirectML".to_string();
+        "DirectML".to_string()
     } else if ort::ep::CoreML::default().is_available().unwrap_or(false) {
-        provider = "CoreML".to_string();
-    }
+        "CoreML".to_string()
+    } else {
+        "CPU".to_string()
+    };
 
     Ok(provider)
 }
@@ -278,8 +280,8 @@ pub fn process_pipeline(
         let pad_y = (det.local_h as f32 * 0.5) as u32;
         let crop_x1 = det.global_x.saturating_sub(pad_x);
         let crop_y1 = det.global_y.saturating_sub(pad_y);
-        let crop_x2 = min(det.global_x + det.local_w + pad_x, orig_w);
-        let crop_y2 = min(det.global_y + det.local_h + pad_y, orig_h);
+        let crop_x2 = std::cmp::min(det.global_x + det.local_w + pad_x, orig_w);
+        let crop_y2 = std::cmp::min(det.global_y + det.local_h + pad_y, orig_h);
         let padded = img.crop_imm(crop_x1, crop_y1, crop_x2 - crop_x1, crop_y2 - crop_y1);
 
         let species_list = classify_image(&padded, &allowed_set, false)?;
@@ -293,7 +295,7 @@ pub fn process_pipeline(
             let scale = 150.0 / std::cmp::max(thumb.width(), thumb.height()) as f32;
             let new_w = (thumb.width() as f32 * scale).round() as u32;
             let new_h = (thumb.height() as f32 * scale).round() as u32;
-            thumb = thumb.resize_exact(new_w, new_h, FilterType::Triangle);
+            thumb = thumb.resize_exact(new_w, new_h, image::imageops::FilterType::Triangle);
         }
         let mut buf = std::io::Cursor::new(Vec::new());
         let _ = thumb.write_to(&mut buf, image::ImageFormat::Jpeg);
@@ -358,8 +360,8 @@ fn build_tiles(orig_w: u32, orig_h: u32) -> Vec<[u32; 4]> {
                 let mut crop_y = y;
                 if crop_x + tile_size > orig_w { crop_x = orig_w.saturating_sub(tile_size); }
                 if crop_y + tile_size > orig_h { crop_y = orig_h.saturating_sub(tile_size); }
-                let crop_w = min(tile_size, orig_w - crop_x);
-                let crop_h = min(tile_size, orig_h - crop_y);
+                let crop_w = std::cmp::min(tile_size, orig_w - crop_x);
+                let crop_h = std::cmp::min(tile_size, orig_h - crop_y);
                 tiles.push([crop_x, crop_y, crop_w, crop_h]);
                 x += stride;
             }
@@ -378,13 +380,7 @@ fn prepare_tile_tensor(img: &image::DynamicImage, tile: [u32; 4]) -> Vec<u8> {
     let resized = cropped.resize_exact(DET_SIZE, DET_SIZE, FilterType::Triangle);
     let rgb = resized.to_rgb8();
 
-    let mut input_vec: Vec<u8> = Vec::with_capacity((DET_SIZE * DET_SIZE * 3) as usize);
-    for (_x, _y, pixel) in rgb.enumerate_pixels() {
-        input_vec.push(pixel[0]);
-        input_vec.push(pixel[1]);
-        input_vec.push(pixel[2]);
-    }
-    input_vec
+    rgb.into_raw()
 }
 
 /// Run a single tile through the detector using a pool session.
@@ -467,9 +463,7 @@ fn run_detection_concurrent(
         })
         .collect();
 
-    let mut final_dets = first_dets;
-    final_dets.extend(parallel_dets?.into_iter().flatten());
-    Ok(final_dets)
+    Ok(first_dets.into_iter().chain(parallel_dets?.into_iter().flatten()).collect())
 }
 
 // ── Classification Internals ───────────────────────────────────────────────
@@ -513,13 +507,13 @@ fn classify_image(
     pool.release(session);
 
     // 3. L2-normalise the embedding
-    let mut embedding: Vec<f32> = raw_embedding_vec;
-    l2_normalize(&mut embedding);
+    let sum_sq: f32 = raw_embedding_vec.iter().map(|v| v * v).sum();
+    let norm = sum_sq.sqrt().max(1e-12);
+    let embedding: Vec<f32> = raw_embedding_vec.into_iter().map(|v| v / norm).collect();
 
     // 4. Cosine similarities with optional eBird local-list bonus
     let num_species = labels.len();
-    let mut similarities = vec![0.0_f32; num_species];
-    for i in 0..num_species {
+    let similarities: Vec<f32> = (0..num_species).map(|i| {
         let offset = i * dim;
         let dot: f32 = (0..*dim).map(|j| embedding[j] * embeddings[offset + j]).sum();
         let bonus = if allowed_set.as_ref().map_or(false, |s| s.contains(&labels[i])) {
@@ -527,8 +521,8 @@ fn classify_image(
         } else {
             0.0
         };
-        similarities[i] = dot + bonus;
-    }
+        dot + bonus
+    }).collect();
 
     // 5. Filter hybrids, rank top-K
     let mut indices: Vec<usize> = (0..num_species)
@@ -558,12 +552,6 @@ fn classify_image(
 
 // ── Utility ────────────────────────────────────────────────────────────────
 
-fn l2_normalize(v: &mut [f32]) {
-    let norm: f32 = v.iter().map(|x| x * x).sum::<f32>().sqrt();
-    if norm > 0.0 {
-        for x in v.iter_mut() { *x /= norm; }
-    }
-}
 
 fn compute_center_color(img: &image::DynamicImage) -> Vec<f64> {
     let w = img.width();
@@ -574,19 +562,11 @@ fn compute_center_color(img: &image::DynamicImage) -> Vec<f64> {
     let end_y   = (h as f32 * 0.6) as u32;
 
     if start_x < end_x && start_y < end_y {
-        let mut sum_r = 0.0_f64;
-        let mut sum_g = 0.0_f64;
-        let mut sum_b = 0.0_f64;
-        let mut count = 0.0_f64;
-        for y in start_y..end_y {
-            for x in start_x..end_x {
-                let p = img.get_pixel(x, y);
-                sum_r += p[0] as f64;
-                sum_g += p[1] as f64;
-                sum_b += p[2] as f64;
-                count += 1.0;
-            }
-        }
+        let (sum_r, sum_g, sum_b, count) = (start_y..end_y)
+            .flat_map(|y| (start_x..end_x).map(move |x| img.get_pixel(x, y)))
+            .fold((0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64), |(r, g, b, c), p| {
+                (r + p[0] as f64, g + p[1] as f64, b + p[2] as f64, c + 1.0)
+            });
         if count > 0.0 {
             return vec![sum_r / count, sum_g / count, sum_b / count];
         }
