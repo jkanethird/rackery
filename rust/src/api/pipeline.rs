@@ -22,7 +22,7 @@ use rayon::prelude::*;
 use crate::frb_generated::StreamSink;
 
 use super::nms::{RawDetection, apply_nms, parse_tile_detections};
-use super::pool::{SessionPool, CLASSIFIER_POOL, DETECTOR_POOL, SPECIES_DATA};
+use super::pool::{CLASSIFIER_SESSION, DETECTOR_SESSION, SPECIES_DATA};
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -86,69 +86,58 @@ pub fn init_pipeline(
 
     // Build execution provider list: try most-performant hardware first.
     let eps = [
-        ort::ep::TensorRT::default().build(),
+        ort::ep::TensorRT::default()
+            .with_engine_cache(true)
+            .with_engine_cache_path("./trt_cache")
+            .build(),
         ort::ep::CUDA::default().build(),
         ort::ep::DirectML::default().build(),
         ort::ep::CoreML::default().build(),
         ort::ep::CPU::default().build(),
     ];
 
-    let pool_size = std::thread::available_parallelism()
-        .map(|n| n.get() / 2)
-        .unwrap_or(2)
-        .clamp(1, 4);
+    let det_attempt = Session::builder()
+        .map_err(|e| format!("{:?}", e))?
+        .with_execution_providers(eps.clone())
+        .map_err(|e| format!("{:?}", e))?
+        .with_optimization_level(GraphOptimizationLevel::Level3)
+        .map_err(|e| format!("{:?}", e))?
+        .commit_from_memory(&detector_model_bytes);
 
-    let (det_sessions, cls_sessions): (Vec<_>, Vec<_>) = (0..pool_size)
-        .into_par_iter()
-        .map(|_| {
-            let det_attempt = Session::builder()
-                .map_err(|e| format!("{:?}", e))?
-                .with_execution_providers(eps.clone())
-                .map_err(|e| format!("{:?}", e))?
-                .with_optimization_level(GraphOptimizationLevel::Level3)
-                .map_err(|e| format!("{:?}", e))?
-                .commit_from_memory(&detector_model_bytes);
+    let det = match det_attempt {
+        Ok(session) => session,
+        Err(_) => Session::builder()
+            .map_err(|e| format!("{:?}", e))?
+            .with_execution_providers(eps.clone())
+            .map_err(|e| format!("{:?}", e))?
+            .with_optimization_level(GraphOptimizationLevel::Level1)
+            .map_err(|e| format!("{:?}", e))?
+            .commit_from_memory(&detector_model_bytes)
+            .map_err(|e| format!("{:?}", e))?,
+    };
 
-            let det = match det_attempt {
-                Ok(session) => session,
-                Err(_) => Session::builder()
-                    .map_err(|e| format!("{:?}", e))?
-                    .with_execution_providers(eps.clone())
-                    .map_err(|e| format!("{:?}", e))?
-                    .with_optimization_level(GraphOptimizationLevel::Level1)
-                    .map_err(|e| format!("{:?}", e))?
-                    .commit_from_memory(&detector_model_bytes)
-                    .map_err(|e| format!("{:?}", e))?,
-            };
+    let cls_attempt = Session::builder()
+        .map_err(|e| format!("{:?}", e))?
+        .with_execution_providers(eps.clone())
+        .map_err(|e| format!("{:?}", e))?
+        .with_optimization_level(GraphOptimizationLevel::Level3)
+        .map_err(|e| format!("{:?}", e))?
+        .commit_from_memory(&classifier_model_bytes);
 
-            let cls_attempt = Session::builder()
-                .map_err(|e| format!("{:?}", e))?
-                .with_execution_providers(eps.clone())
-                .map_err(|e| format!("{:?}", e))?
-                .with_optimization_level(GraphOptimizationLevel::Level3)
-                .map_err(|e| format!("{:?}", e))?
-                .commit_from_memory(&classifier_model_bytes);
+    let cls = match cls_attempt {
+        Ok(session) => session,
+        Err(_) => Session::builder()
+            .map_err(|e| format!("{:?}", e))?
+            .with_execution_providers(eps.clone())
+            .map_err(|e| format!("{:?}", e))?
+            .with_optimization_level(GraphOptimizationLevel::Level1)
+            .map_err(|e| format!("{:?}", e))?
+            .commit_from_memory(&classifier_model_bytes)
+            .map_err(|e| format!("{:?}", e))?,
+    };
 
-            let cls = match cls_attempt {
-                Ok(session) => session,
-                Err(_) => Session::builder()
-                    .map_err(|e| format!("{:?}", e))?
-                    .with_execution_providers(eps.clone())
-                    .map_err(|e| format!("{:?}", e))?
-                    .with_optimization_level(GraphOptimizationLevel::Level1)
-                    .map_err(|e| format!("{:?}", e))?
-                    .commit_from_memory(&classifier_model_bytes)
-                    .map_err(|e| format!("{:?}", e))?,
-            };
-
-            Ok((det, cls))
-        })
-        .collect::<Result<Vec<_>, String>>()?
-        .into_iter()
-        .unzip();
-
-    let _ = DETECTOR_POOL.set(SessionPool::new(det_sessions));
-    let _ = CLASSIFIER_POOL.set(SessionPool::new(cls_sessions));
+    let _ = DETECTOR_SESSION.set(std::sync::Mutex::new(det));
+    let _ = CLASSIFIER_SESSION.set(std::sync::Mutex::new(cls));
 
     // Species embeddings — binary format:
     // [i32 num_species][i32 dim][f32 × num_species × dim]
@@ -374,7 +363,7 @@ fn prepare_tile_tensor(img: &image::DynamicImage, tile: [u32; 4]) -> Vec<u8> {
 
 /// Run a single tile through the detector using a pool session.
 fn infer_single_tile(
-    pool: &SessionPool,
+    session_mutex: &std::sync::Mutex<Session>,
     tensor: &[u8],
     tile: [u32; 4],
     orig_w: u32,
@@ -386,8 +375,8 @@ fn infer_single_tile(
 
     let inputs = ort::inputs!["serving_default_images:0" => input_tensor];
 
-    let mut session = pool.acquire();
     let dets = {
+        let mut session = session_mutex.lock().unwrap();
         let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
 
         let (_, out_boxes)   = outputs["StatefulPartitionedCall:3"].try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
@@ -415,7 +404,7 @@ fn run_detection_concurrent(
     orig_h: u32,
     stream: &StreamSink<PipelineEvent>,
 ) -> Result<Vec<RawDetection>, String> {
-    let pool = DETECTOR_POOL.get().ok_or("Detector pool not initialized")?;
+    let session_mutex = DETECTOR_SESSION.get().ok_or("Detector session not initialized")?;
 
     if tile_tensors.is_empty() {
         return Ok(Vec::new());
@@ -426,7 +415,7 @@ fn run_detection_concurrent(
         format!("Detection tile 1/{} (Early Exit Check)", tiles.len())
     )).ok();
 
-    let first_dets = infer_single_tile(pool, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
+    let first_dets = infer_single_tile(session_mutex, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
     let total_area = (orig_w as f32) * (orig_h as f32);
 
     let early_exit = first_dets.iter().any(|d| {
@@ -448,7 +437,7 @@ fn run_detection_concurrent(
             stream.add(PipelineEvent::Progress(
                 format!("Detection tile {}/{}", i + 2, tiles.len())
             )).ok();
-            infer_single_tile(pool, tensor, remaining_tiles[i], orig_w, orig_h)
+            infer_single_tile(session_mutex, tensor, remaining_tiles[i], orig_w, orig_h)
         })
         .collect();
 
@@ -484,10 +473,10 @@ fn classify_image(
 
     let inputs = ort::inputs!["pixel_values" => input_tensor];
 
-    let pool = CLASSIFIER_POOL.get().ok_or("Classifier pool not initialized")?;
-    let mut session = pool.acquire();
+    let session_mutex = CLASSIFIER_SESSION.get().ok_or("Classifier session not initialized")?;
 
     let raw_embedding_vec = {
+        let mut session = session_mutex.lock().unwrap();
         let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
         let (_, raw_embedding) = outputs["embedding"]
             .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;

@@ -15,77 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use ort::session::Session;
-use std::sync::{Condvar, Mutex, OnceLock};
+use std::sync::{Mutex, OnceLock};
 
-// ── Session Pool ───────────────────────────────────────────────────────────
+// ── Static Sessions ────────────────────────────────────────────────────────
 
-/// Thread-safe pool of ONNX Runtime sessions.
-///
-/// Callers `acquire` a session (blocking until one is idle) and `release` it
-/// when inference is complete. This lets multiple rayon threads share a fixed
-/// set of GPU/CPU sessions without creating per-thread sessions.
-pub(crate) struct SessionPool {
-    sessions: Mutex<Vec<Session>>,
-    cvar: Condvar,
-}
-
-pub(crate) struct PooledSession<'a> {
-    session: Option<Session>,
-    pool: &'a SessionPool,
-}
-
-impl<'a> std::ops::Deref for PooledSession<'a> {
-    type Target = Session;
-    fn deref(&self) -> &Self::Target {
-        self.session.as_ref().unwrap()
-    }
-}
-
-impl<'a> std::ops::DerefMut for PooledSession<'a> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        self.session.as_mut().unwrap()
-    }
-}
-
-impl<'a> Drop for PooledSession<'a> {
-    fn drop(&mut self) {
-        if let Some(session) = self.session.take() {
-            self.pool.release(session);
-        }
-    }
-}
-
-impl SessionPool {
-    pub(crate) fn new(sessions: Vec<Session>) -> Self {
-        Self {
-            sessions: Mutex::new(sessions),
-            cvar: Condvar::new(),
-        }
-    }
-
-    /// Blocks until a session is available, then returns a RAII guard.
-    pub(crate) fn acquire(&self) -> PooledSession<'_> {
-        let mut lock = self.sessions.lock().unwrap();
-        while lock.is_empty() {
-            lock = self.cvar.wait(lock).unwrap();
-        }
-        PooledSession {
-            session: Some(lock.pop().unwrap()),
-            pool: self,
-        }
-    }
-
-    /// Returns a session to the pool and wakes one waiting thread.
-    fn release(&self, session: Session) {
-        self.sessions.lock().unwrap().push(session);
-        self.cvar.notify_one();
-    }
-}
-
-// ── Static Pools ───────────────────────────────────────────────────────────
-
-pub(crate) static DETECTOR_POOL: OnceLock<SessionPool> = OnceLock::new();
-pub(crate) static CLASSIFIER_POOL: OnceLock<SessionPool> = OnceLock::new();
+pub(crate) static DETECTOR_SESSION: OnceLock<Mutex<Session>> = OnceLock::new();
+pub(crate) static CLASSIFIER_SESSION: OnceLock<Mutex<Session>> = OnceLock::new();
 
 /// (flat f32 embeddings row-major, species labels, embedding_dim)
 pub(crate) static SPECIES_DATA: OnceLock<(Vec<f32>, Vec<String>, usize)> = OnceLock::new();
