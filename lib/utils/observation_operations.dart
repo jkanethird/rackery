@@ -28,36 +28,36 @@ class ObservationOperations {
     final from = observations[fromIdx];
     final into = observations[intoIdx];
 
-    // Merge source images first (needed for correct global index computation)
+    // Merge source images first
     final existingPaths = into.sourceImages.map((s) => s.imagePath).toSet();
     for (final src in from.sourceImages) {
       if (existingPaths.add(src.imagePath)) into.sourceImages.add(src);
     }
 
-    // Build a map of (imagePath, box) → name from the 'from' observation
-    // so we can insert each name at the right sorted position after merging boxes.
-    final fromGlobalMap = _buildGlobalIndexMap(from);
-    final Map<int, String> fromGiToName = {};
-    for (int gi = 0; gi < from.individualNames.length; gi++) {
-      fromGiToName[gi] = from.individualNames[gi];
-    }
-    // Collect (imagePath, box, name) triples from the 'from' observation
-    final fromEntries =
-        <({String imagePath, Rectangle<int> box, String name})>[];
-    for (final entry in fromGiToName.entries) {
-      final loc = fromGlobalMap[entry.key];
-      if (loc != null) {
+    // Collect each individual from 'from' with its local index and name.
+    // In the local-per-photo model, individualNames[li] is the li-th
+    // leftmost bird; the box at local index li in each photo represents
+    // that individual.
+    final fromIndividuals = <({int localIndex, String name,
+        Map<String, Rectangle<int>> boxByPhoto})>[];
+    for (int li = 0; li < from.count; li++) {
+      final name = li < from.individualNames.length
+          ? from.individualNames[li]
+          : generatePronounceableName();
+      final Map<String, Rectangle<int>> boxByPhoto = {};
+      for (final src in from.sourceImages) {
         final boxes = List<Rectangle<int>>.from(
-          from.boxesByImagePath[loc.imagePath] ?? [],
+          from.boxesByImagePath[src.imagePath] ?? [],
         )..sort((a, b) => a.left.compareTo(b.left));
-        if (loc.localIndex < boxes.length) {
-          fromEntries.add((
-            imagePath: loc.imagePath,
-            box: boxes[loc.localIndex],
-            name: entry.value,
-          ));
+        if (li < boxes.length) {
+          boxByPhoto[src.imagePath] = boxes[li];
         }
       }
+      fromIndividuals.add((
+        localIndex: li,
+        name: name,
+        boxByPhoto: boxByPhoto,
+      ));
     }
 
     // Merge boxes into the target
@@ -69,10 +69,11 @@ class ObservationOperations {
           .addAll(entry.value);
     }
 
-    // Now rebuild the global index map for the merged 'into' observation
-    // and insert each 'from' name at the correct position.
-    for (final fe in fromEntries) {
-      _insertNamedBox(into, fe.imagePath, fe.box, fe.name);
+    // Insert each individual's name at its new local index position.
+    // After adding boxes, re-sort each photo's boxes and find where
+    // the individual's box ended up.
+    for (final ind in fromIndividuals) {
+      _insertNameAtLocalIndex(into, ind.boxByPhoto, ind.name);
     }
 
     for (final s in from.possibleSpecies) {
@@ -81,44 +82,30 @@ class ObservationOperations {
     observations.removeAt(fromIdx);
   }
 
-  static Map<int, ({String imagePath, int localIndex})> _buildGlobalIndexMap(
+  /// Find where a box (identified by its per-photo entries) ends up in
+  /// the target observation's sorted local index, and insert the name
+  /// at that position.
+  static void _insertNameAtLocalIndex(
     Observation obs,
-  ) {
-    final Map<int, ({String imagePath, int localIndex})> map = {};
-    int gi = 0;
-    for (final src in obs.sourceImages) {
-      final boxes = List<Rectangle<int>>.from(
-        obs.boxesByImagePath[src.imagePath] ?? [],
-      )..sort((a, b) => a.left.compareTo(b.left));
-      for (int li = 0; li < boxes.length; li++) {
-        map[gi++] = (imagePath: src.imagePath, localIndex: li);
-      }
-    }
-    return map;
-  }
-
-  static void _insertNamedBox(
-    Observation obs,
-    String imagePath,
-    Rectangle<int> box,
+    Map<String, Rectangle<int>> boxByPhoto,
     String name,
   ) {
-    int gi = 0;
+    // Find the local index of the box in the first photo that has it.
+    // In the local-per-photo model, this local index IS the individual
+    // index and should be the same across all photos.
     int insertAt = obs.individualNames.length;
-    bool found = false;
-    for (final src in obs.sourceImages) {
+    for (final entry in boxByPhoto.entries) {
       final boxes = List<Rectangle<int>>.from(
-        obs.boxesByImagePath[src.imagePath] ?? [],
+        obs.boxesByImagePath[entry.key] ?? [],
       )..sort((a, b) => a.left.compareTo(b.left));
-      for (int li = 0; li < boxes.length; li++) {
-        if (src.imagePath == imagePath && boxes[li] == box) {
-          insertAt = gi;
-          found = true;
-          break;
-        }
-        gi++;
+      final li = boxes.indexOf(entry.value);
+      if (li >= 0) {
+        insertAt = li;
+        break;
       }
-      if (found) break;
+    }
+    if (insertAt > obs.individualNames.length) {
+      insertAt = obs.individualNames.length;
     }
     obs.individualNames.insert(insertAt, name);
   }
@@ -137,7 +124,11 @@ class ObservationOperations {
         fullImageDisplayPath: imagePath,
       ));
     }
-    _insertNamedBox(obs, imagePath, box, generatePronounceableName());
+    _insertNameAtLocalIndex(
+      obs,
+      {imagePath: box},
+      generatePronounceableName(),
+    );
   }
 
   static void mergeIndividuals(
@@ -150,79 +141,64 @@ class ObservationOperations {
     final from = observations[fromObsIdx];
     final into = observations[intoIdx];
 
-    final globalIndexMap = _buildGlobalIndexMap(from);
+    // In the local-per-photo model, individual index gi corresponds to
+    // local index gi in every photo that has enough boxes.
     final sortedIndices = List<int>.from(indIndices)
       ..sort((a, b) => b.compareTo(a));
 
-    final movedEntries =
-        <({String imagePath, Rectangle<int> box, String name})>[];
+    // Collect moved individuals: each has a name and per-photo boxes
+    final movedEntries = <({String name,
+        Map<String, Rectangle<int>> boxByPhoto})>[];
     for (final gi in sortedIndices) {
-      final loc = globalIndexMap[gi];
-      if (loc != null) {
+      final name = gi < from.individualNames.length
+          ? from.individualNames[gi]
+          : generatePronounceableName();
+      final Map<String, Rectangle<int>> boxByPhoto = {};
+      for (final src in from.sourceImages) {
         final boxes = List<Rectangle<int>>.from(
-          from.boxesByImagePath[loc.imagePath] ?? [],
+          from.boxesByImagePath[src.imagePath] ?? [],
         )..sort((a, b) => a.left.compareTo(b.left));
-        if (loc.localIndex < boxes.length) {
-          movedEntries.add((
-            imagePath: loc.imagePath,
-            box: boxes[loc.localIndex],
-            name: gi < from.individualNames.length
-                ? from.individualNames[gi]
-                : generatePronounceableName(),
-          ));
+        if (gi < boxes.length) {
+          boxByPhoto[src.imagePath] = boxes[gi];
         }
       }
+      movedEntries.add((name: name, boxByPhoto: boxByPhoto));
     }
 
+    // Remove names (highest indices first to preserve ordering)
     for (final gi in sortedIndices) {
       if (gi < from.individualNames.length) {
         from.individualNames.removeAt(gi);
       }
     }
 
-    final Map<String, List<int>> localIndicesToRemove = {};
-    for (final gi in sortedIndices) {
-      final loc = globalIndexMap[gi];
-      if (loc != null) {
-        localIndicesToRemove
-            .putIfAbsent(loc.imagePath, () => [])
-            .add(loc.localIndex);
-      }
-    }
+    // Remove boxes from source (highest local indices first per photo)
+    _removeBoxesByLocalIndices(from, sortedIndices);
 
-    for (final entry in localIndicesToRemove.entries) {
-      final path = entry.key;
-      final localIndices = entry.value..sort((a, b) => b.compareTo(a));
-      final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final li in localIndices) {
-          if (li < sortedBoxes.length) {
-            final box = sortedBoxes[li];
-            fromBoxes.remove(box);
-            from.boundingBoxes.remove(box);
-          }
-        }
-      }
-    }
-
+    // Add to target
     into.count += movedEntries.length;
     from.count -= movedEntries.length;
 
     for (final me in movedEntries.reversed) {
-      into.boundingBoxes.add(me.box);
-      into.boxesByImagePath.putIfAbsent(me.imagePath, () => []).add(me.box);
+      for (final entry in me.boxByPhoto.entries) {
+        into.boundingBoxes.add(entry.value);
+        into.boxesByImagePath
+            .putIfAbsent(entry.key, () => [])
+            .add(entry.value);
+      }
       final src = from.sourceImages.firstWhere(
-        (s) => s.imagePath == me.imagePath,
+        (s) => me.boxByPhoto.containsKey(s.imagePath),
+        orElse: () => from.sourceImages.first,
       );
       if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
         into.sourceImages.add(src);
       }
-      _insertNamedBox(into, me.imagePath, me.box, me.name);
+      _insertNameAtLocalIndex(into, me.boxByPhoto, me.name);
     }
 
-    if (localIndicesToRemove.isEmpty && from.sourceImages.isNotEmpty) {
+    // Copy over source images from photos that had no boxes moved but
+    // are part of the burst
+    if (movedEntries.isEmpty && from.sourceImages.isNotEmpty) {
       final src = from.sourceImages.first;
       if (!into.sourceImages.any((s) => s.imagePath == src.imagePath)) {
         into.sourceImages.add(src);
@@ -244,42 +220,18 @@ class ObservationOperations {
   ) {
     if (indIndices.isEmpty) return;
     final from = observations[obsIdx];
-    final globalIndexMap = _buildGlobalIndexMap(from);
     final sortedIndices = List<int>.from(indIndices)
       ..sort((a, b) => b.compareTo(a));
 
+    // Remove names (highest indices first)
     for (final gi in sortedIndices) {
       if (gi < from.individualNames.length) {
         from.individualNames.removeAt(gi);
       }
     }
 
-    final Map<String, List<int>> localIndicesToRemove = {};
-    for (final gi in sortedIndices) {
-      final loc = globalIndexMap[gi];
-      if (loc != null) {
-        localIndicesToRemove
-            .putIfAbsent(loc.imagePath, () => [])
-            .add(loc.localIndex);
-      }
-    }
-
-    for (final entry in localIndicesToRemove.entries) {
-      final path = entry.key;
-      final localIndices = entry.value..sort((a, b) => b.compareTo(a));
-      final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final li in localIndices) {
-          if (li < sortedBoxes.length) {
-            final box = sortedBoxes[li];
-            fromBoxes.remove(box);
-            from.boundingBoxes.remove(box);
-          }
-        }
-      }
-    }
+    // Remove boxes
+    _removeBoxesByLocalIndices(from, sortedIndices);
 
     from.count -= indIndices.length;
     if (from.count <= 0) {
@@ -310,79 +262,59 @@ class ObservationOperations {
       individualNames: [],
     );
 
-    final globalIndexMap = _buildGlobalIndexMap(from);
     final sortedIndices = List<int>.from(indIndices)
       ..sort((a, b) => b.compareTo(a));
 
-    final movedEntries =
-        <({String imagePath, Rectangle<int> box, String name})>[];
+    // Collect moved individuals
+    final movedEntries = <({String name,
+        Map<String, Rectangle<int>> boxByPhoto})>[];
     for (final gi in sortedIndices) {
-      final loc = globalIndexMap[gi];
-      if (loc != null) {
+      final name = gi < from.individualNames.length
+          ? from.individualNames[gi]
+          : generatePronounceableName();
+      final Map<String, Rectangle<int>> boxByPhoto = {};
+      for (final src in from.sourceImages) {
         final boxes = List<Rectangle<int>>.from(
-          from.boxesByImagePath[loc.imagePath] ?? [],
+          from.boxesByImagePath[src.imagePath] ?? [],
         )..sort((a, b) => a.left.compareTo(b.left));
-        if (loc.localIndex < boxes.length) {
-          movedEntries.add((
-            imagePath: loc.imagePath,
-            box: boxes[loc.localIndex],
-            name: gi < from.individualNames.length
-                ? from.individualNames[gi]
-                : generatePronounceableName(),
-          ));
+        if (gi < boxes.length) {
+          boxByPhoto[src.imagePath] = boxes[gi];
         }
       }
+      movedEntries.add((name: name, boxByPhoto: boxByPhoto));
     }
 
+    // Remove names from source (highest indices first)
     for (final gi in sortedIndices) {
       if (gi < from.individualNames.length) {
         from.individualNames.removeAt(gi);
       }
     }
 
-    final Map<String, List<int>> localIndicesToRemove = {};
-    for (final gi in sortedIndices) {
-      final loc = globalIndexMap[gi];
-      if (loc != null) {
-        localIndicesToRemove
-            .putIfAbsent(loc.imagePath, () => [])
-            .add(loc.localIndex);
-      }
-    }
-
-    for (final entry in localIndicesToRemove.entries) {
-      final path = entry.key;
-      final localIndices = entry.value..sort((a, b) => b.compareTo(a));
-      final fromBoxes = from.boxesByImagePath[path];
-      if (fromBoxes != null) {
-        final sortedBoxes = List<Rectangle<int>>.from(fromBoxes)
-          ..sort((a, b) => a.left.compareTo(b.left));
-        for (final li in localIndices) {
-          if (li < sortedBoxes.length) {
-            final box = sortedBoxes[li];
-            fromBoxes.remove(box);
-            from.boundingBoxes.remove(box);
-          }
-        }
-      }
-    }
+    // Remove boxes from source
+    _removeBoxesByLocalIndices(from, sortedIndices);
 
     newObs.count = movedEntries.length;
     from.count -= movedEntries.length;
 
     for (final me in movedEntries.reversed) {
-      newObs.boundingBoxes.add(me.box);
-      newObs.boxesByImagePath.putIfAbsent(me.imagePath, () => []).add(me.box);
+      for (final entry in me.boxByPhoto.entries) {
+        newObs.boundingBoxes.add(entry.value);
+        newObs.boxesByImagePath
+            .putIfAbsent(entry.key, () => [])
+            .add(entry.value);
+      }
       final src = from.sourceImages.firstWhere(
-        (s) => s.imagePath == me.imagePath,
+        (s) => me.boxByPhoto.containsKey(s.imagePath),
+        orElse: () => from.sourceImages.first,
       );
       if (!newObs.sourceImages.any((s) => s.imagePath == src.imagePath)) {
         newObs.sourceImages.add(src);
       }
-      _insertNamedBox(newObs, me.imagePath, me.box, me.name);
+      _insertNameAtLocalIndex(newObs, me.boxByPhoto, me.name);
     }
 
-    if (localIndicesToRemove.isEmpty && from.sourceImages.isNotEmpty) {
+    if (movedEntries.isEmpty && from.sourceImages.isNotEmpty) {
       final src = from.sourceImages.first;
       if (!newObs.sourceImages.any((s) => s.imagePath == src.imagePath)) {
         newObs.sourceImages.add(src);
@@ -396,5 +328,25 @@ class ObservationOperations {
     }
     observations.insert(actualInsertIdx, newObs);
     return newObs;
+  }
+
+  /// Remove boxes at the given local indices from every photo in the
+  /// observation. [sortedIndicesDesc] must be sorted descending.
+  static void _removeBoxesByLocalIndices(
+    Observation obs,
+    List<int> sortedIndicesDesc,
+  ) {
+    for (final entry in obs.boxesByImagePath.entries) {
+      final boxes = List<Rectangle<int>>.from(entry.value)
+        ..sort((a, b) => a.left.compareTo(b.left));
+      // Remove from highest local index first
+      for (final li in sortedIndicesDesc) {
+        if (li < boxes.length) {
+          final box = boxes[li];
+          entry.value.remove(box);
+          obs.boundingBoxes.remove(box);
+        }
+      }
+    }
   }
 }

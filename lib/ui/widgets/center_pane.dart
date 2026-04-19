@@ -100,6 +100,11 @@ class CenterPane extends StatelessWidget {
 
     List<PhotoBoxData> boxData = [];
 
+    // In the burst model, `individualNames` is indexed by local rank within a
+    // photo (the nth-leftmost bird = individual n, same across every photo in
+    // the burst). So li (local-per-photo index) == gi (global individual index)
+    // and no offset is needed.
+
     if (boxVisibility == BoundingBoxVisibility.all) {
       for (final o in allObservations) {
         final oBoxes = List<Rectangle<int>>.from(

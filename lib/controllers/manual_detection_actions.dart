@@ -26,12 +26,17 @@ extension ManualDetectionActions on ChecklistController {
           o.sourceImages.any((src) => src.imagePath == imagePath),
       orElse: () => null,
     );
-    final fullDisplayPath =
-        sibling?.fullImageDisplayPath ??
-        sibling?.sourceImages
-            .cast<SourceImage?>()
-            .firstWhere((s) => s!.imagePath == imagePath, orElse: () => null)
-            ?.fullImageDisplayPath;
+    // Resolve the display JPEG path for the specific photo being drawn on,
+    // not the sibling observation's primary image (which may be a different
+    // photo in the same burst).
+    String? fullDisplayPath;
+    if (sibling != null) {
+      final matchingSource = sibling.sourceImages
+          .where((s) => s.imagePath == imagePath)
+          .firstOrNull;
+      fullDisplayPath = matchingSource?.fullImageDisplayPath ??
+          sibling.fullImageDisplayPath;
+    }
 
     final newObs = Observation(
       imagePath: imagePath,
@@ -44,6 +49,9 @@ extension ManualDetectionActions on ChecklistController {
         imagePath: [box],
       },
       fullImageDisplayPath: fullDisplayPath,
+      sourceImages: [
+        (imagePath: imagePath, fullImageDisplayPath: fullDisplayPath),
+      ],
     );
 
     if (sibling != null) {

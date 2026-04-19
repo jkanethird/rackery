@@ -113,6 +113,12 @@ class BurstGroup {
       }
     }
 
+    // Sort each photo's boxes left-to-right so that local index 0 is always
+    // the leftmost bird, index 1 the next, etc. — consistent across photos.
+    for (final entry in boxesByImagePath.entries) {
+      entry.value.sort((a, b) => a.left.compareTo(b.left));
+    }
+
     return Observation(
       imagePath: base.imagePath,
       displayPath: base.displayPath,

@@ -78,26 +78,49 @@ extension SelectionActions on ChecklistController {
     final index = observations.indexOf(obs);
     if (index < 0) return;
 
-    // Phase 1: Jump roughly so the lazy ListView builds the target item.
-    const estimatedItemHeight = 120.0;
-    final roughTarget = (index * estimatedItemHeight).clamp(
-      0.0,
-      observationScrollController.position.maxScrollExtent,
-    );
-    observationScrollController.jumpTo(roughTarget);
-
-    // Let the frame rebuild so the widget is in the tree.
-    await Future.delayed(const Duration(milliseconds: 50));
-
-    // Phase 2: Use the actual widget position for pixel-perfect scrolling.
     final key = GlobalObjectKey(obs);
+
+    // Iterative convergence: jump progressively closer until the lazy
+    // ListView builds the target widget (i.e. its GlobalObjectKey context
+    // becomes non-null). Variable-height items (burst separators, drop
+    // zones) make a single estimate unreliable for large lists.
+    const maxAttempts = 8;
+
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      if (!observationScrollController.hasClients) return;
+
+      // Check if the widget is already in the tree.
+      final ctx = key.currentContext;
+      if (ctx != null && ctx.mounted) {
+        await Scrollable.ensureVisible(
+          ctx,
+          alignment: 0.5,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+        return;
+      }
+
+      // Jump towards the target. Each attempt refines the estimate by
+      // biasing toward the maxScrollExtent when earlier jumps were too low.
+      final fraction = index / observations.length.clamp(1, observations.length);
+      final roughTarget = (fraction *
+              observationScrollController.position.maxScrollExtent)
+          .clamp(0.0, observationScrollController.position.maxScrollExtent);
+      observationScrollController.jumpTo(roughTarget);
+
+      // Let the frame rebuild so the widget enters the tree.
+      await Future.delayed(const Duration(milliseconds: 50));
+    }
+
+    // Final fallback: the widget may have been built by the last jump.
     final ctx = key.currentContext;
     if (ctx != null && ctx.mounted) {
       await Scrollable.ensureVisible(
         ctx,
+        alignment: 0.5,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
       );
     }
   }

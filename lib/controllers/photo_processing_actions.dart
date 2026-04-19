@@ -120,7 +120,25 @@ extension PhotoProcessingActions on ChecklistController {
         notify();
       },
       onObservationAdded: (newObs) {
-        observations.addAll(newObs);
+        for (final obs in newObs) {
+          // Insert next to existing burst siblings so observations from the
+          // same burst stay contiguous regardless of worker completion order.
+          final burstId = obs.burstId;
+          int insertAt = -1;
+          if (burstId.isNotEmpty) {
+            for (int j = observations.length - 1; j >= 0; j--) {
+              if (observations[j].burstId == burstId) {
+                insertAt = j + 1;
+                break;
+              }
+            }
+          }
+          if (insertAt >= 0) {
+            observations.insert(insertAt, obs);
+          } else {
+            observations.add(obs);
+          }
+        }
         observationVersion++;
         notify();
       },

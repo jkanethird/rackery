@@ -232,36 +232,35 @@ class PhotoProcessor {
               );
             }
           } else {
-            // Process each identified bird
+            // ── Phase A: Write crop files (async, may yield) ──────────
+            // Collect all bird data and crop paths before touching the
+            // BurstGroup.  The awaits inside this loop can yield to other
+            // workers in the same burst; keeping BurstGroup mutations
+            // out of this loop prevents interleaved state corruption.
+            final List<({IdentifiedBird bird, String cropPath})> prepared = [];
+
             for (int ci = 0; ci < pipelineOutput.birds.length; ci++) {
               final bird = pipelineOutput.birds[ci];
+              final tempDir = await Directory.systemTemp.createTemp();
+              final filename = p.basename(filePath);
+              final cropPath = '${tempDir.path}/crop_${ci}_$filename';
+              await File(cropPath).writeAsBytes(bird.cropJpgBytes);
+              prepared.add((bird: bird, cropPath: cropPath));
+            }
+
+            // ── Phase B: Update BurstGroup (synchronous, no awaits) ───
+            // All mutations happen in one uninterrupted synchronous block
+            // so concurrent workers cannot interleave.
+            for (final item in prepared) {
+              final bird = item.bird;
               final species = bird.species;
-
-              // Write crop file
-              final bool isNewSpeciesInFile =
-                  !burstGroupsBySpecies.containsKey(species) ||
-                  !burstGroupsBySpecies[species]!.observations.any(
-                    (o) => o.imagePath == filePath,
-                  );
-
-              String cropPath;
-              if (isNewSpeciesInFile) {
-                final tempDir = await Directory.systemTemp.createTemp();
-                final filename = p.basename(filePath);
-                cropPath = '${tempDir.path}/crop_${ci}_$filename';
-                await File(cropPath).writeAsBytes(bird.cropJpgBytes);
-              } else {
-                cropPath = burstGroupsBySpecies[species]!.observations
-                    .firstWhere((o) => o.imagePath == filePath)
-                    .displayPath!;
-              }
 
               burstGroupsBySpecies
                   .putIfAbsent(species, BurstGroup.new)
                   .addObservation(
                     Observation(
                       imagePath: filePath,
-                      displayPath: cropPath,
+                      displayPath: item.cropPath,
                       fullImageDisplayPath: processedPath,
                       speciesName: species,
                       possibleSpecies: bird.possibleSpecies,
@@ -270,16 +269,17 @@ class PhotoProcessor {
                       boundingBoxes: [bird.box],
                     ),
                   );
-
-              _emitBurstUpdates(
-                burstGroupsBySpecies,
-                emittedObs,
-                burstIds[i],
-                onObservationAdded,
-                onObservationsChanged,
-                onIndicesRemapped,
-              );
             }
+
+            // Emit once after all birds for this photo have been added.
+            _emitBurstUpdates(
+              burstGroupsBySpecies,
+              emittedObs,
+              burstIds[i],
+              onObservationAdded,
+              onObservationsChanged,
+              onIndicesRemapped,
+            );
           }
         } catch (e) {
           onError(filePath, e);

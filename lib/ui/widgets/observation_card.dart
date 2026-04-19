@@ -321,13 +321,15 @@ class _ObservationCardState extends State<ObservationCard>
   // ── Individuals list ──────────────────────────────────────────────────────
 
   Widget _buildIndividualsList() {
-    final sortedIndices = List.generate(widget.obs.count, (i) => i)
+    final obs = widget.obs;
+
+    final sortedIndices = List.generate(obs.count, (i) => i)
       ..sort((a, b) {
-        final nameA = a < widget.obs.individualNames.length
-            ? widget.obs.individualNames[a]
+        final nameA = a < obs.individualNames.length
+            ? obs.individualNames[a]
             : 'Individual ${a + 1}';
-        final nameB = b < widget.obs.individualNames.length
-            ? widget.obs.individualNames[b]
+        final nameB = b < obs.individualNames.length
+            ? obs.individualNames[b]
             : 'Individual ${b + 1}';
         return nameA.compareTo(nameB);
       });
@@ -346,15 +348,15 @@ class _ObservationCardState extends State<ObservationCard>
               IndividualTile(
                 index: i,
                 obsIndex: widget.index,
-                individualName: i < widget.obs.individualNames.length
-                    ? widget.obs.individualNames[i]
+                individualName: i < obs.individualNames.length
+                    ? obs.individualNames[i]
                     : 'Individual ${i + 1}',
                 isSelected: widget.isSelected,
                 isMultiSelected: widget.isSelected &&
                     widget.selectedIndividualIndices.contains(i) &&
                     widget.selectedIndividualIndices.length > 1,
                 multiSelectedCount: widget.selectedIndividualIndices.length,
-                sourceImages: widget.obs.sourceImages,
+                sourceImages: _sourceImagesForIndividual(obs, i),
                 selectedIndividualIndices: widget.selectedIndividualIndices,
                 onTap: widget.onTapIndividual,
                 onDragStarted: widget.onDragStarted,
@@ -367,4 +369,21 @@ class _ObservationCardState extends State<ObservationCard>
       ),
     );
   }
+
+  /// Returns the source images where individual [gi] has a bounding box.
+  ///
+  /// In the burst model, `individualNames[gi]` is the nth-leftmost bird.
+  /// That bird appears in photo p whenever p has at least gi+1 boxes (sorted
+  /// left-to-right), i.e. `boxesByImagePath[p].length > gi`.
+  ///
+  /// For a manually-drawn single-photo box, only the drawn-on photo will
+  /// have enough boxes, so only that photo is returned — which is correct.
+  List<SourceImage> _sourceImagesForIndividual(Observation obs, int gi) {
+    final matching = obs.sourceImages
+        .where((s) => (obs.boxesByImagePath[s.imagePath]?.length ?? 0) > gi)
+        .toList();
+    // If no photo qualifies (shouldn't happen normally), fall back to all.
+    return matching.isNotEmpty ? matching : obs.sourceImages;
+  }
+
 }
