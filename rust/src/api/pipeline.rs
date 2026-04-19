@@ -253,14 +253,24 @@ pub fn process_pipeline(
         let unpadded = img.crop_imm(det.global_x, det.global_y, det.local_w, det.local_h);
         let center_color = compute_center_color(&unpadded);
 
-        // Extract padded crop for classification + thumbnail
-        let pad_x = (det.local_w as f32 * 0.5) as u32;
-        let pad_y = (det.local_h as f32 * 0.5) as u32;
-        let crop_x1 = det.global_x.saturating_sub(pad_x);
-        let crop_y1 = det.global_y.saturating_sub(pad_y);
-        let crop_x2 = std::cmp::min(det.global_x + det.local_w + pad_x, orig_w);
-        let crop_y2 = std::cmp::min(det.global_y + det.local_h + pad_y, orig_h);
-        let padded = img.crop_imm(crop_x1, crop_y1, crop_x2 - crop_x1, crop_y2 - crop_y1);
+        // Extract padded square crop for classification + thumbnail
+        let center_x = det.global_x + det.local_w / 2;
+        let center_y = det.global_y + det.local_h / 2;
+        let target_size = std::cmp::max(det.local_w, det.local_h) * 2;
+        let size = std::cmp::min(target_size, std::cmp::min(orig_w, orig_h));
+        let half_size = size / 2;
+
+        let mut crop_x1 = center_x.saturating_sub(half_size);
+        let mut crop_y1 = center_y.saturating_sub(half_size);
+
+        if crop_x1 + size > orig_w {
+            crop_x1 = orig_w - size;
+        }
+        if crop_y1 + size > orig_h {
+            crop_y1 = orig_h - size;
+        }
+
+        let padded = img.crop_imm(crop_x1, crop_y1, size, size);
 
         let species_list = classify_image(&padded, &allowed_set, false)?;
         if species_list.is_empty() {
