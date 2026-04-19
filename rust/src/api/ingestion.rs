@@ -128,9 +128,7 @@ fn extract_exif(path: &str) -> (Option<i64>, Option<f64>, Option<f64>) {
 
 fn parse_exif_date(display: &str) -> Option<i64> {
     // EXIF dates: "2024-03-15 10:30:00" or "2024:03:15 10:30:00"
-    let cleaned = display
-        .trim_matches('"')
-        .replacen(':', "-", 2);
+    let cleaned = display.trim_matches('"');
 
     // Try parsing with chrono-like manual parsing
     // Format: "YYYY-MM-DD HH:MM:SS"
@@ -139,7 +137,8 @@ fn parse_exif_date(display: &str) -> Option<i64> {
         return None;
     }
 
-    let date_parts: Vec<&str> = parts[0].split('-').collect();
+    let date_part = parts[0].replace(':', "-");
+    let date_parts: Vec<&str> = date_part.split('-').collect();
     let time_parts: Vec<&str> = parts[1].split(':').collect();
     if date_parts.len() < 3 || time_parts.len() < 3 {
         return None;
