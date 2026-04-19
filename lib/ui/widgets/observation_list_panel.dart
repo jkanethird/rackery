@@ -208,7 +208,7 @@ class ObservationListPanel extends StatelessWidget {
           child: ListenableBuilder(
             listenable: scrollController,
             builder: (context, _) {
-              final show =
+              final show = observations.isNotEmpty &&
                   scrollController.hasClients &&
                   scrollController.position.hasContentDimensions &&
                   scrollController.position.maxScrollExtent > 0 &&
@@ -236,7 +236,7 @@ class ObservationListPanel extends StatelessWidget {
           child: ListenableBuilder(
             listenable: scrollController,
             builder: (context, _) {
-              final show =
+              final show = observations.isNotEmpty &&
                   scrollController.hasClients &&
                   scrollController.position.hasContentDimensions &&
                   scrollController.position.maxScrollExtent > 0 &&
