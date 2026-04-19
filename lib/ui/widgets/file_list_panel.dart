@@ -33,6 +33,7 @@ class FileListPanel extends StatefulWidget {
   final String? currentlyDisplayedImage;
 
   final Map<String, Duration> fileElapsedTimes;
+  final Map<String, String> fileProgressMessages;
 
   /// Called when the user taps a file tile. Provides the file path.
   final void Function(String filePath) onFileTapped;
@@ -47,6 +48,7 @@ class FileListPanel extends StatefulWidget {
     required this.observations,
     required this.currentlyDisplayedImage,
     required this.fileElapsedTimes,
+    required this.fileProgressMessages,
     required this.onFileTapped,
   });
 
@@ -115,10 +117,26 @@ class _FileListPanelState extends State<FileListPanel> {
           Widget statusIndicator;
           if (isActive) {
             // Actively being detected/classified right now — full spinner
-            statusIndicator = const SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(strokeWidth: 1.5),
+            statusIndicator = Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.fileProgressMessages[file] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      widget.fileProgressMessages[file]!,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                const SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: CircularProgressIndicator(strokeWidth: 1.5),
+                ),
+              ],
             );
           } else if (isProcessing) {
             // In the queue, waiting for its turn — dim spinner

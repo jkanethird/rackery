@@ -247,6 +247,7 @@ class _MainScreenState extends State<MainScreen> {
         c.currentlyDisplayedImage,
         c.observations.length,
         Object.hashAll(c.fileElapsedTimes.keys),
+        Object.hashAll(c.fileProgressMessages.values),
       ),
       builder: (context, _, child) {
         return FileListPanel(
@@ -257,6 +258,7 @@ class _MainScreenState extends State<MainScreen> {
           imageExifData: _controller.imageExifData,
           observations: _controller.observations,
           currentlyDisplayedImage: _controller.currentlyDisplayedImage,
+          fileProgressMessages: _controller.fileProgressMessages,
           fileElapsedTimes: _controller.fileElapsedTimes,
           onFileTapped: _controller.selectFile,
         );

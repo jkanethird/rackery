@@ -104,6 +104,7 @@ class PhotoProcessor {
     required Map<String, FileIngestionData> ingestionData,
     required void Function(double) onProgress,
     required void Function(String) onProgressMessage,
+    required void Function(String filePath, String message) onFileProgressMessage,
     required void Function(List<Observation>) onObservationAdded,
     required void Function() onObservationsChanged,
     required void Function(String filePath) onFileStarted,
@@ -179,7 +180,7 @@ class PhotoProcessor {
           final pipelineOutput = await pipeline.processPhoto(
             processedPath,
             allowedSpecies: allowedMask,
-            onProgress: onProgressMessage,
+            onProgress: (msg) => onFileProgressMessage(filePath, msg),
           );
           onFileTimerAdd(filePath, pipelineOutput.detectionTime);
           onFileTimerAdd(filePath, pipelineOutput.classificationTime);
@@ -192,8 +193,9 @@ class PhotoProcessor {
 
           if (pipelineOutput.birds.isEmpty) {
             // Fallback: classify entire image
-            onProgressMessage(
-              'Fallback classification for ${p.basename(filePath)}...',
+            onFileProgressMessage(
+              filePath,
+              'Fallback classification...',
             );
 
             final fallbackSpecies = await pipeline.classifyFile(

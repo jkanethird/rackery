@@ -115,6 +115,10 @@ extension PhotoProcessingActions on ChecklistController {
         progressMessage = msg;
         notify();
       },
+      onFileProgressMessage: (filePath, msg) {
+        fileProgressMessages[filePath] = msg;
+        notify();
+      },
       onObservationAdded: (newObs) {
         observations.addAll(newObs);
         observationVersion++;

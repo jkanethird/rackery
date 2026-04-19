@@ -72,6 +72,7 @@ class ChecklistController extends ChangeNotifier {
   final Map<String, Stopwatch> fileStopwatches = {};
   final Map<String, Duration> fileExtraDurations = {};
   final Map<String, Duration> fileElapsedTimes = {};
+  final Map<String, String> fileProgressMessages = {};
   List<List<String>> fileBursts = [];
 
   // Right panel scroll controller
@@ -198,6 +199,7 @@ class ChecklistController extends ChangeNotifier {
     fileStopwatches.clear();
     fileExtraDurations.clear();
     fileElapsedTimes.clear();
+    fileProgressMessages.clear();
     progress = 0.0;
     progressMessage = '';
     isProcessing = false;
