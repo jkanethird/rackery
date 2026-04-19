@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'pipeline.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `build_tiles`, `classify_image`, `compute_center_color`, `infer_single_tile`, `l2_normalize`, `prepare_tile_tensor`, `run_detection_concurrent`
+// These functions are ignored because they are not marked as `pub`: `build_tiles`, `classify_image`, `compute_center_color`, `infer_single_tile`, `prepare_tile_tensor`, `run_detection_concurrent`
 
 Future<String> initPipeline({
   required List<int> detectorModelBytes,

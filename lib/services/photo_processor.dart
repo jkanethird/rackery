@@ -23,8 +23,18 @@ import 'package:rackery/models/observation.dart';
 import 'package:rackery/models/burst_group.dart';
 import 'package:rackery/services/exif_service.dart';
 import 'package:rackery/services/bird_detector.dart';
-import 'package:rackery/services/image_converter.dart';
 import 'package:rackery/services/ebird_api_service.dart';
+
+/// Pre-extracted data for a single file, provided by the ingestion pipeline.
+class FileIngestionData {
+  final String processedPath;
+  final ExifData exifData;
+
+  const FileIngestionData({
+    required this.processedPath,
+    required this.exifData,
+  });
+}
 
 class _WorkItem {
   final int burstIndex;
@@ -36,8 +46,6 @@ class _WorkItem {
 /// into bursts.
 ///
 /// The entire detect → classify flow runs in Rust. Dart only handles:
-/// - File I/O / JPEG conversion
-/// - EXIF extraction
 /// - eBird geographic species mask (network call)
 /// - Assembling Observations from pipeline results
 class PhotoProcessor {
@@ -93,6 +101,7 @@ class PhotoProcessor {
     required List<String> newPaths,
     required List<List<String>> bursts,
     required List<String> burstIds,
+    required Map<String, FileIngestionData> ingestionData,
     required void Function(double) onProgress,
     required void Function(String) onProgressMessage,
     required void Function(List<Observation>) onObservationAdded,
@@ -144,13 +153,10 @@ class PhotoProcessor {
         onFileStarted(filePath);
 
         try {
-          // Pre-process: JPEG conversion + EXIF
-          final t1 = Stopwatch()..start();
-          final processedPath = await ImageConverter.convertToJpegIfNeeded(
-            filePath,
-          );
-          final jpegTime = t1.elapsed;
-          final exifData = await ExifService.extractExif(filePath);
+          // Use pre-extracted data from ingestion pipeline
+          final fileData = ingestionData[filePath];
+          final processedPath = fileData?.processedPath ?? filePath;
+          final exifData = fileData?.exifData ?? ExifData();
 
           // Fetch eBird geographic mask (Dart network call)
           Set<String>? allowedMask;
@@ -170,7 +176,7 @@ class PhotoProcessor {
           );
 
           photoProfiles[filePath] = PhotoProfile()
-            ..jpegConvertTime = jpegTime
+            ..jpegConvertTime = Duration.zero // already done in ingestion
             ..detectionTime = pipelineOutput.detectionTime
             ..classificationTime = pipelineOutput.classificationTime;
 

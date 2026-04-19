@@ -16,13 +16,41 @@
 
 import 'dart:io';
 import 'package:file_selector/file_selector.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rackery/services/exif_service.dart';
 import 'package:rackery/services/burst_grouper.dart';
-import 'package:rackery/services/env_hasher.dart';
+import 'package:rackery/src/rust/api/ingestion.dart' as rust;
 
 const _kLastPickerDirKey = 'last_picker_directory';
 
+/// Lightweight result from the file-picker phase (no heavy processing yet).
+class PickerResult {
+  final List<String> newPaths;
+  final List<String> allFiles;
+
+  PickerResult({required this.newPaths, required this.allFiles});
+}
+
+/// Per-file ingestion result, converted from Rust stream into Dart types.
+class IngestedFile {
+  final String path;
+  final String processedPath;
+  final ExifData exifData;
+  final String? visualHash;
+  final int fileSize;
+
+  IngestedFile({
+    required this.path,
+    required this.processedPath,
+    required this.exifData,
+    this.visualHash,
+    required this.fileSize,
+  });
+}
+
+/// Full ingestion result after all files are processed and burst-grouped.
 class IngestionResult {
   final List<String> newPaths;
   final List<String> allFiles;
@@ -40,12 +68,10 @@ class IngestionResult {
 }
 
 class IngestionPipeline {
-  static Future<IngestionResult?> gatherFiles({
+  /// Phase 1: Open file picker, deduplicate against already-selected files.
+  /// Returns the raw path lists without doing any heavy processing.
+  static Future<PickerResult?> pickFiles({
     required List<String> currentSelectedFiles,
-    required Map<String, ExifData> currentExifData,
-    required Map<String, String> currentVisualHashes,
-    required BurstGrouper burstGrouper,
-    void Function()? onStartProcessing,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final lastDir = prefs.getString(_kLastPickerDirKey);
@@ -82,33 +108,55 @@ class IngestionPipeline {
         .toList();
     if (newPaths.isEmpty) return null;
 
-    if (onStartProcessing != null) onStartProcessing();
-
-    newPaths.sort(
-      (a, b) => File(a).lengthSync().compareTo(File(b).lengthSync()),
-    );
-
-    final Map<String, ExifData> updatedExifData = Map.of(currentExifData);
-    for (final path in newPaths) {
-      try {
-        updatedExifData[path] = await ExifService.extractExif(path);
-      } catch (_) {
-        updatedExifData[path] = ExifData();
-      }
-    }
-
-    final Map<String, String> newHashes = await EnvHasher.computeHashes(
-      newPaths,
-    );
-    final Map<String, String> updatedVisualHashes = Map.of(currentVisualHashes)
-      ..addAll(newHashes);
-
     final allFiles = [...currentSelectedFiles, ...newPaths];
+    return PickerResult(newPaths: newPaths, allFiles: allFiles);
+  }
+
+  /// Phase 2: Stream per-file ingestion results from Rust (EXIF, hash, HEIC
+  /// conversion). Each [IngestedFile] is yielded as soon as its Rust
+  /// processing completes—callers can start detection immediately.
+  static Stream<IngestedFile> streamIngestion(List<String> paths) async* {
+    final cacheDir = await getApplicationSupportDirectory();
+    final heicCacheDir = p.join(cacheDir.path, 'heic_cache');
+
+    final rustStream = rust.ingestFiles(
+      paths: paths,
+      heicCacheDir: heicCacheDir,
+    );
+
+    await for (final r in rustStream) {
+      final exifData = ExifData(
+        dateTime: r.exifDateMs != null
+            ? DateTime.fromMillisecondsSinceEpoch(r.exifDateMs!)
+            : null,
+        latitude: r.latitude,
+        longitude: r.longitude,
+      );
+
+      yield IngestedFile(
+        path: r.path,
+        processedPath: r.processedPath,
+        exifData: exifData,
+        visualHash: r.visualHash,
+        fileSize: r.fileSize.toInt(),
+      );
+    }
+  }
+
+  /// Phase 3: Once all files are ingested, compute burst groups.
+  /// This is nearly instant and must run after all EXIF+hash data is available.
+  static IngestionResult buildBursts({
+    required List<String> newPaths,
+    required List<String> allFiles,
+    required Map<String, ExifData> exifData,
+    required Map<String, String> visualHashes,
+    required BurstGrouper burstGrouper,
+  }) {
     final allFileData = allFiles.map((path) {
       return {
         'path': path,
-        'exif': updatedExifData[path] ?? ExifData(),
-        'visualHash': updatedVisualHashes[path],
+        'exif': exifData[path] ?? ExifData(),
+        'visualHash': visualHashes[path],
       };
     }).toList();
 
@@ -122,15 +170,14 @@ class IngestionPipeline {
     });
 
     final bursts = burstGrouper.group(allFileData);
-
     final sortedAllFiles = bursts.expand((b) => b).toList();
 
     return IngestionResult(
       newPaths: newPaths,
       allFiles: sortedAllFiles,
       bursts: bursts,
-      exifData: updatedExifData,
-      visualHashes: updatedVisualHashes,
+      exifData: exifData,
+      visualHashes: visualHashes,
     );
   }
 }

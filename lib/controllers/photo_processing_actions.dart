@@ -19,33 +19,65 @@ part of 'checklist_controller.dart';
 /// Photo selection and processing actions for [ChecklistController].
 extension PhotoProcessingActions on ChecklistController {
   Future<void> selectAndProcessPhotos(BuildContext context) async {
-    final result = await IngestionPipeline.gatherFiles(
+    // ── Phase 1: File picker + dedup ──────────────────────────────────────
+    final pickerResult = await IngestionPipeline.pickFiles(
       currentSelectedFiles: selectedFiles,
-      currentExifData: imageExifData,
-      currentVisualHashes: imageVisualHashes,
-      burstGrouper: _burstGrouper,
-      onStartProcessing: () {
-        isProcessing = true;
-        progress = 0.0;
-        progressMessage = 'Preparing files...';
-        batchStartTime = DateTime.now();
-        batchElapsedTime = null;
-        notify();
-      },
     );
 
-    if (result == null) return;
+    if (pickerResult == null) return;
 
-    selectedFiles = result.allFiles;
-    processingFiles.addAll(result.newPaths);
-    fileBursts = result.bursts;
-    imageExifData.addAll(result.exifData);
-    imageVisualHashes.addAll(result.visualHashes);
+    isProcessing = true;
+    progress = 0.0;
+    progressMessage = 'Preparing files...';
+    batchStartTime = DateTime.now();
+    batchElapsedTime = null;
+    notify();
+
+    selectedFiles = pickerResult.allFiles;
+    processingFiles.addAll(pickerResult.newPaths);
 
     if (currentlyDisplayedImage == null && processingFiles.isNotEmpty) {
       currentlyDisplayedImage = processingFiles.first;
       notify();
     }
+
+    // ── Phase 2: Stream ingestion from Rust ───────────────────────────────
+    //
+    // EXIF extraction, perceptual hashing, and HEIC→JPEG conversion all
+    // happen in Rust via Rayon parallelism. Results stream back per-file.
+    progressMessage = 'Ingesting photos (Rust)...';
+    notify();
+
+    final Map<String, FileIngestionData> ingestionData = {};
+
+    await for (final file in IngestionPipeline.streamIngestion(
+      pickerResult.newPaths,
+    )) {
+      imageExifData[file.path] = file.exifData;
+      if (file.visualHash != null) {
+        imageVisualHashes[file.path] = file.visualHash!;
+      }
+
+      ingestionData[file.path] = FileIngestionData(
+        processedPath: file.processedPath,
+        exifData: file.exifData,
+      );
+    }
+
+    // ── Phase 3: Burst grouping (deferred until all files ingested) ──────
+    progressMessage = 'Grouping bursts...';
+    notify();
+
+    final ingestionResult = IngestionPipeline.buildBursts(
+      newPaths: pickerResult.newPaths,
+      allFiles: selectedFiles,
+      exifData: imageExifData,
+      visualHashes: imageVisualHashes,
+      burstGrouper: _burstGrouper,
+    );
+
+    selectedFiles = ingestionResult.allFiles;
+    fileBursts = ingestionResult.bursts;
 
     final int sessionTime = DateTime.now().millisecondsSinceEpoch;
     final List<String> burstIds = List.generate(
@@ -65,14 +97,16 @@ extension PhotoProcessingActions on ChecklistController {
 
     notify();
 
+    // ── Phase 4: Detection + Classification ──────────────────────────────
     final processor = PhotoProcessor(
       pipeline: _pipeline,
     );
 
     await processor.run(
-      newPaths: result.newPaths,
-      bursts: result.bursts,
+      newPaths: pickerResult.newPaths,
+      bursts: ingestionResult.bursts,
       burstIds: burstIds,
+      ingestionData: ingestionData,
       onProgress: (value) {
         progress = value;
         notify();
