@@ -103,7 +103,8 @@ class _MainScreenState extends State<MainScreen> {
         IconButton(
           icon: const Icon(Icons.settings),
           tooltip: 'Settings',
-          onPressed: () => showSettingsDialog(context, _controller.executionProvider),
+          onPressed: () =>
+              showSettingsDialog(context, _controller.executionProvider),
         ),
         IconButton(
           icon: const Icon(Icons.info_outline),
@@ -245,7 +246,6 @@ class _MainScreenState extends State<MainScreen> {
         Object.hashAll(c.activeFiles),
         c.currentlyDisplayedImage,
         c.observations.length,
-        Object.hashAll(c.fileStartTimes.keys),
         Object.hashAll(c.fileElapsedTimes.keys),
       ),
       builder: (context, _, child) {
@@ -257,7 +257,6 @@ class _MainScreenState extends State<MainScreen> {
           imageExifData: _controller.imageExifData,
           observations: _controller.observations,
           currentlyDisplayedImage: _controller.currentlyDisplayedImage,
-          fileStartTimes: _controller.fileStartTimes,
           fileElapsedTimes: _controller.fileElapsedTimes,
           onFileTapped: _controller.selectFile,
         );

@@ -199,7 +199,6 @@ pub fn process_pipeline(
         .map(|v| v.into_iter().collect());
 
     stream.add(PipelineEvent::Progress("Starting detection pipeline...".to_string())).ok();
-    let t0 = std::time::Instant::now();
 
     // 1. Decode image
     let img = image::load_from_memory(&file_bytes).map_err(|e| e.to_string())?;
@@ -219,13 +218,11 @@ pub fn process_pipeline(
 
     // 4. Concurrent detection with early-exit optimisation
     stream.add(PipelineEvent::Progress("Running object detection...".to_string())).ok();
-    let all_detections = run_detection_concurrent(&tile_tensors, &tiles, orig_w, orig_h, &stream)?;
+    let (all_detections, detection_ms) = run_detection_concurrent(&tile_tensors, &tiles, orig_w, orig_h, &stream)?;
 
     // 5. Non-Maximum Suppression
     stream.add(PipelineEvent::Progress("Filtering detections...".to_string())).ok();
     let kept = apply_nms(all_detections);
-
-    let detection_ms = t0.elapsed().as_millis() as u64;
 
     if kept.is_empty() {
         stream.add(PipelineEvent::Complete(PipelineResult {
@@ -240,8 +237,7 @@ pub fn process_pipeline(
     stream.add(PipelineEvent::Progress(
         format!("Classifying {} detections...", kept.len())
     )).ok();
-    let t1 = std::time::Instant::now();
-
+    let mut classification_ms: u64 = 0;
     let mut birds: Vec<NativeBirdResult> = Vec::new();
 
     for (i, det) in kept.iter().enumerate() {
@@ -272,7 +268,8 @@ pub fn process_pipeline(
 
         let padded = img.crop_imm(crop_x1, crop_y1, size, size);
 
-        let species_list = classify_image(&padded, &allowed_set, false)?;
+        let (species_list, cls_ms) = classify_image(&padded, &allowed_set, false)?;
+        classification_ms += cls_ms;
         if species_list.is_empty() {
             continue; // BioCLIP rejected this crop as non-bird
         }
@@ -301,7 +298,7 @@ pub fn process_pipeline(
         });
     }
 
-    let classification_ms = t1.elapsed().as_millis() as u64;
+
 
     stream.add(PipelineEvent::Complete(PipelineResult {
         birds,
@@ -324,7 +321,7 @@ pub fn classify_crop(
         .map(|v| v.into_iter().collect());
 
     let img = image::load_from_memory(&crop_bytes).map_err(|e| e.to_string())?;
-    let species = classify_image(&img, &allowed_set, is_fallback)?;
+    let (species, _) = classify_image(&img, &allowed_set, is_fallback)?;
     Ok(ClassificationResult { species })
 }
 
@@ -372,13 +369,15 @@ fn prepare_tile_tensor(img: &image::DynamicImage, tile: [u32; 4]) -> Vec<u8> {
 }
 
 /// Run a single tile through the detector using a pool session.
+/// Returns (detections, inference_ms) — inference_ms is ONLY the time spent
+/// inside the mutex lock (actual GPU inference), NOT mutex wait time.
 fn infer_single_tile(
     session_mutex: &std::sync::Mutex<Session>,
     tensor: &[u8],
     tile: [u32; 4],
     orig_w: u32,
     orig_h: u32,
-) -> Result<Vec<RawDetection>, String> {
+) -> Result<(Vec<RawDetection>, u64), String> {
     let input_tensor = Value::from_array(
         (vec![1_i64, DET_SIZE as i64, DET_SIZE as i64, 3_i64], tensor.to_vec())
     ).map_err(|e| format!("{:?}", e))?;
@@ -387,6 +386,7 @@ fn infer_single_tile(
 
     let dets = {
         let mut session = session_mutex.lock().unwrap();
+        let t_infer = std::time::Instant::now();
         let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
 
         let (_, out_boxes)   = outputs["StatefulPartitionedCall:3"].try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
@@ -396,8 +396,9 @@ fn infer_single_tile(
 
         let count   = out_count[0] as usize;
         let max_det = out_scores.len();
+        let infer_ms = t_infer.elapsed().as_millis() as u64;
 
-        parse_tile_detections(out_boxes, out_scores, out_classes, 0, max_det, count, tile, orig_w, orig_h)
+        (parse_tile_detections(out_boxes, out_scores, out_classes, 0, max_det, count, tile, orig_w, orig_h), infer_ms)
     };
 
     Ok(dets)
@@ -407,17 +408,19 @@ fn infer_single_tile(
 /// optimisation: if the full-image tile (tile[0]) contains a large,
 /// high-confidence bird (score > 0.65, area > 25% of image), skip the
 /// remaining sub-tiles entirely.
+/// Returns (detections, total_inference_ms) — inference_ms accumulates ONLY
+/// the time each tile spends inside the detector mutex (actual GPU work).
 fn run_detection_concurrent(
     tile_tensors: &[Vec<u8>],
     tiles: &[[u32; 4]],
     orig_w: u32,
     orig_h: u32,
     stream: &StreamSink<PipelineEvent>,
-) -> Result<Vec<RawDetection>, String> {
+) -> Result<(Vec<RawDetection>, u64), String> {
     let session_mutex = DETECTOR_SESSION.get().ok_or("Detector session not initialized")?;
 
     if tile_tensors.is_empty() {
-        return Ok(Vec::new());
+        return Ok((Vec::new(), 0));
     }
 
     // --- Early-exit check on full-image tile ---
@@ -425,7 +428,7 @@ fn run_detection_concurrent(
         format!("Detection tile 1/{} (Early Exit Check)", tiles.len())
     )).ok();
 
-    let first_dets = infer_single_tile(session_mutex, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
+    let (first_dets, first_ms) = infer_single_tile(session_mutex, &tile_tensors[0], tiles[0], orig_w, orig_h)?;
     let total_area = (orig_w as f32) * (orig_h as f32);
 
     let early_exit = first_dets.iter().any(|d| {
@@ -433,14 +436,14 @@ fn run_detection_concurrent(
     });
 
     if early_exit {
-        return Ok(first_dets);
+        return Ok((first_dets, first_ms));
     }
 
     // --- Fall back to concurrent sub-tile processing ---
     let remaining_tensors = &tile_tensors[1..];
     let remaining_tiles = &tiles[1..];
 
-    let parallel_dets: Result<Vec<Vec<RawDetection>>, String> = remaining_tensors
+    let parallel_results: Result<Vec<(Vec<RawDetection>, u64)>, String> = remaining_tensors
         .par_iter()
         .enumerate()
         .map(|(i, tensor)| {
@@ -451,7 +454,13 @@ fn run_detection_concurrent(
         })
         .collect();
 
-    Ok(first_dets.into_iter().chain(parallel_dets?.into_iter().flatten()).collect())
+    let results = parallel_results?;
+    let total_ms = first_ms + results.iter().map(|(_, ms)| ms).sum::<u64>();
+    let all_dets = first_dets.into_iter()
+        .chain(results.into_iter().flat_map(|(dets, _)| dets))
+        .collect();
+
+    Ok((all_dets, total_ms))
 }
 
 // ── Classification Internals ───────────────────────────────────────────────
@@ -460,7 +469,7 @@ fn classify_image(
     img: &image::DynamicImage,
     allowed_set: &Option<HashSet<String>>,
     is_fallback: bool,
-) -> Result<Vec<String>, String> {
+) -> Result<(Vec<String>, u64), String> {
     let (embeddings, labels, dim) = SPECIES_DATA.get()
         .ok_or("Species data not initialized")?;
 
@@ -485,12 +494,13 @@ fn classify_image(
 
     let session_mutex = CLASSIFIER_SESSION.get().ok_or("Classifier session not initialized")?;
 
-    let raw_embedding_vec = {
+    let (raw_embedding_vec, infer_ms) = {
         let mut session = session_mutex.lock().unwrap();
+        let t_infer = std::time::Instant::now();
         let outputs = session.run(inputs).map_err(|e| format!("{:?}", e))?;
         let (_, raw_embedding) = outputs["embedding"]
             .try_extract_tensor::<f32>().map_err(|e| format!("{:?}", e))?;
-        raw_embedding.to_vec()
+        (raw_embedding.to_vec(), t_infer.elapsed().as_millis() as u64)
     };
 
 
@@ -524,7 +534,7 @@ fn classify_image(
         .unwrap_or(std::cmp::Ordering::Equal));
 
     if indices.is_empty() {
-        return Ok(vec!["Unknown Bird".to_string()]);
+        return Ok((vec!["Unknown Bird".to_string()], infer_ms));
     }
 
     let top_label = &labels[indices[0]];
@@ -533,10 +543,10 @@ fn classify_image(
     let threshold = if is_fallback { FALLBACK_CONFIDENCE } else { MIN_CONFIDENCE };
 
     if raw_score < threshold {
-        return Ok(vec![]); // Rejected as non-bird
+        return Ok((vec![], infer_ms)); // Rejected as non-bird
     }
 
-    Ok(indices.iter().take(TOP_K).map(|&i| labels[i].clone()).collect())
+    Ok((indices.iter().take(TOP_K).map(|&i| labels[i].clone()).collect(), infer_ms))
 }
 
 // ── Utility ────────────────────────────────────────────────────────────────

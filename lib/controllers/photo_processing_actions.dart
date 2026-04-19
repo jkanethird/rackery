@@ -126,17 +126,29 @@ extension PhotoProcessingActions on ChecklistController {
       },
       onFileStarted: (filePath) {
         activeFiles.add(filePath);
-        fileStartTimes.putIfAbsent(filePath, () => DateTime.now());
+        fileStopwatches.putIfAbsent(filePath, Stopwatch.new).start();
         notify();
       },
       onFileCompleted: (filePath) {
         processingFiles.remove(filePath);
         activeFiles.remove(filePath);
-        final startTime = fileStartTimes.remove(filePath);
-        if (startTime != null) {
-          fileElapsedTimes[filePath] = DateTime.now().difference(startTime);
+        final sw = fileStopwatches.remove(filePath);
+        if (sw != null) {
+          sw.stop();
+          final extra = fileExtraDurations.remove(filePath) ?? Duration.zero;
+          fileElapsedTimes[filePath] = sw.elapsed + extra;
         }
         notify();
+      },
+      onFileTimerPause: (filePath) {
+        fileStopwatches[filePath]?.stop();
+      },
+      onFileTimerResume: (filePath) {
+        fileStopwatches[filePath]?.start();
+      },
+      onFileTimerAdd: (filePath, extra) {
+        fileExtraDurations[filePath] =
+            (fileExtraDurations[filePath] ?? Duration.zero) + extra;
       },
       onError: (filePath, error) {
         if (context.mounted) {

@@ -108,6 +108,9 @@ class PhotoProcessor {
     required void Function() onObservationsChanged,
     required void Function(String filePath) onFileStarted,
     required void Function(String filePath) onFileCompleted,
+    required void Function(String filePath) onFileTimerPause,
+    required void Function(String filePath) onFileTimerResume,
+    required void Function(String filePath, Duration extra) onFileTimerAdd,
     required void Function(String filePath, dynamic error) onError,
     void Function(Observation obs, Map<int, int> oldToNew)? onIndicesRemapped,
   }) async {
@@ -169,11 +172,18 @@ class PhotoProcessor {
           }
 
           // Run full native pipeline (detect + classify)
+          // Pause the Dart timer during the pipeline call since the Rust
+          // mutex may serialize GPU access. We'll add the Rust-reported
+          // actual inference durations instead.
+          onFileTimerPause(filePath);
           final pipelineOutput = await pipeline.processPhoto(
             processedPath,
             allowedSpecies: allowedMask,
             onProgress: onProgressMessage,
           );
+          onFileTimerAdd(filePath, pipelineOutput.detectionTime);
+          onFileTimerAdd(filePath, pipelineOutput.classificationTime);
+          onFileTimerResume(filePath);
 
           photoProfiles[filePath] = PhotoProfile()
             ..jpegConvertTime = Duration.zero // already done in ingestion
@@ -280,7 +290,9 @@ class PhotoProcessor {
       }
     }
 
-    // Run all selected files concurrently
+    // Full concurrency — all workers run in parallel so eBird API calls
+    // overlap with GPU work. Per-file timers are accurate because they
+    // pause during the pipeline await and use Rust-reported inference times.
     final workers = List.generate(workItems.length, (_) => processWorker());
     await Future.wait(workers);
   }

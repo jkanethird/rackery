@@ -69,7 +69,8 @@ class ChecklistController extends ChangeNotifier {
   final Set<String> activeFiles = {};
   final Map<String, ExifData> imageExifData = {};
   final Map<String, String> imageVisualHashes = {};
-  final Map<String, DateTime> fileStartTimes = {};
+  final Map<String, Stopwatch> fileStopwatches = {};
+  final Map<String, Duration> fileExtraDurations = {};
   final Map<String, Duration> fileElapsedTimes = {};
   List<List<String>> fileBursts = [];
 
@@ -194,7 +195,8 @@ class ChecklistController extends ChangeNotifier {
     imageExifData.clear();
     imageVisualHashes.clear();
     _imageSizeCache.clear();
-    fileStartTimes.clear();
+    fileStopwatches.clear();
+    fileExtraDurations.clear();
     fileElapsedTimes.clear();
     progress = 0.0;
     progressMessage = '';

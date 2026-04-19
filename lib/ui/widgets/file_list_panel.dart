@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import 'dart:async';
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:rackery/models/observation.dart';
@@ -31,7 +31,7 @@ class FileListPanel extends StatefulWidget {
   final Map<String, ExifData> imageExifData;
   final List<Observation> observations;
   final String? currentlyDisplayedImage;
-  final Map<String, DateTime> fileStartTimes;
+
   final Map<String, Duration> fileElapsedTimes;
 
   /// Called when the user taps a file tile. Provides the file path.
@@ -46,7 +46,6 @@ class FileListPanel extends StatefulWidget {
     required this.imageExifData,
     required this.observations,
     required this.currentlyDisplayedImage,
-    required this.fileStartTimes,
     required this.fileElapsedTimes,
     required this.onFileTapped,
   });
@@ -56,38 +55,6 @@ class FileListPanel extends StatefulWidget {
 }
 
 class _FileListPanelState extends State<FileListPanel> {
-  Timer? _ticker;
-
-  @override
-  void didUpdateWidget(covariant FileListPanel oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _syncTicker();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _syncTicker();
-  }
-
-  @override
-  void dispose() {
-    _ticker?.cancel();
-    super.dispose();
-  }
-
-  /// Starts a 1-second ticker while any files are actively being processed,
-  /// so the live elapsed-time labels stay up to date.
-  void _syncTicker() {
-    if (widget.fileStartTimes.isNotEmpty) {
-      _ticker ??= Timer.periodic(const Duration(seconds: 1), (_) {
-        if (mounted) setState(() {});
-      });
-    } else {
-      _ticker?.cancel();
-      _ticker = null;
-    }
-  }
 
   /// Formats a [Duration] as a compact string: "3s", "1m 12s", etc.
   static String _formatDuration(Duration d) {
@@ -139,16 +106,9 @@ class _FileListPanelState extends State<FileListPanel> {
                 (sum, o) => sum + (o.boxesByImagePath[file]?.length ?? 0),
               );
 
-          // ── Timer label ──────────────────────────────────────────────
+          // ── Timer label (final time only) ──────────────────────────
           String? timerLabel;
-          if (widget.fileStartTimes.containsKey(file)) {
-            // Currently processing — show live elapsed time
-            final elapsed = DateTime.now().difference(
-              widget.fileStartTimes[file]!,
-            );
-            timerLabel = _formatDuration(elapsed);
-          } else if (widget.fileElapsedTimes.containsKey(file)) {
-            // Finished — show final elapsed time
+          if (widget.fileElapsedTimes.containsKey(file)) {
             timerLabel = _formatDuration(widget.fileElapsedTimes[file]!);
           }
 
